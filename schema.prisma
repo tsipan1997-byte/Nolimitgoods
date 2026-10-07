@@ -1,0 +1,31 @@
+generator client {
+    provider = "prisma-client-js"
+    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
+    output = "/home/ubuntu/logistics_landing_page/nextjs_space/node_modules/.prisma/client"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  company   String?
+  phone     String?
+  service   String?
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model RFQSubmission {
+  id           String   @id @default(cuid())
+  partNumber   String
+  machineModel String
+  quantity     String
+  country      String
+  contact      String
+  createdAt    DateTime @default(now())
+}

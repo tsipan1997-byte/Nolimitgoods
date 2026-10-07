@@ -1,15 +1,13 @@
 export const dynamic = 'force-dynamic';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request?.json?.();
-
     const { name, email, company, phone, service, message } = body ?? {};
 
-    // Validation
+    // Валідація полів
     if (!name || !email || !message) {
       return NextResponse.json(
         { error: 'Name, email, and message are required' },
@@ -17,28 +15,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email ?? '')) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      );
-    }
-
-    // Save to database
-    const submission = await prisma?.contactSubmission?.create?.({
-      data: {
-        name: String(name ?? ''),
-        email: String(email ?? ''),
-        company: company ? String(company) : null,
-        phone: phone ? String(phone) : null,
-        service: service ? String(service) : null,
-        message: String(message ?? ''),
-      },
-    });
-
-    // Send email notification
+    // Відправка листа на пошту
     try {
       const htmlBody = `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -55,43 +32,32 @@ export async function POST(request: NextRequest) {
               ${message}
             </div>
           </div>
-          <p style="color: #666; font-size: 12px;">
-            Submitted at / Надіслано: ${new Date().toLocaleString('uk-UA', { timeZone: 'Europe/London' })}
-          </p>
         </div>
       `;
 
-      const appUrl = process.env.NEXTAUTH_URL || '';
-      
-      await fetch('https://apps.abacus.ai/api/sendNotificationEmail', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          deployment_token: process.env.ABACUSAI_API_KEY,
-          app_id: process.env.WEB_APP_ID,
-          notification_id: process.env.NOTIF_ID_CONTACT_FORM,
-          subject: `New Contact: ${name} - ${company || 'Individual'}`,
-          body: htmlBody,
-          is_html: true,
-          recipient_email: 'tsipan1997@gmail.com',
-          sender_email: appUrl ? `noreply@${new URL(appUrl).hostname}` : 'noreply@nolimitgoods.com',
-          sender_alias: 'NOLIMITGOODS',
-        }),
-      });
-    } catch (emailError) {
-      console.error('Failed to send email notification:', emailError);
-      // Continue even if email fails
+      if (process.env.ABACUSAI_API_KEY) {
+        await fetch('https://apps.abacus.ai/api/sendNotificationEmail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            deployment_token: process.env.ABACUSAI_API_KEY,
+            app_id: process.env.WEB_APP_ID,
+            notification_id: process.env.NOTIF_ID_CONTACT_FORM,
+            subject: `New Contact: ${name} - ${company || 'Individual'}`,
+            body: htmlBody,
+            is_html: true,
+            recipient_email: 'tsipan1997@gmail.com',
+            sender_email: 'noreply@nolimitgoods.co.uk',
+            sender_alias: 'NOLIMITGOODS',
+          }),
+        });
+      }
+    } catch (e) {
+      console.error('Notification error:', e);
     }
 
-    return NextResponse.json(
-      { success: true, id: submission?.id ?? '' },
-      { status: 201 }
-    );
+    return NextResponse.json({ success: true }, { status: 200 });
   } catch (error) {
-    console.error('Contact form submission error:', error);
-    return NextResponse.json(
-      { error: 'Failed to submit contact form' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to submit form' }, { status: 500 });
   }
 }

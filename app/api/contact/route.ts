@@ -15,15 +15,15 @@ export async function POST(request: NextRequest) {
     const chatId = process.env.TELEGRAM_CHAT_ID;
     const sheetUrl = process.env.GOOGLE_SHEET_URL;
 
-    // 1. Надсилання до Telegram
+    // 1. Надсилання до Telegram (звичайний текст без Markdown, щоб не було збоїв через спецсимволи)
     if (token && chatId) {
-      const text = `📬 *Нове повідомлення з сайту*\n\n` +
-        `👤 *Імʼя:* ${name}\n` +
-        `📧 *Email:* \`${email}\`\n` +
-        `🏢 *Компанія:* ${company || '-'}\n` +
-        `📞 *Телефон:* ${phone ? `\`${phone}\`` : '-'}\n` +
-        `🛠 *Послуга:* ${service || '-'}\n` +
-        `💬 *Текст:*\n${message}`;
+      const text = `📬 Нове повідомлення з сайту\n\n` +
+        `👤 Імʼя: ${name}\n` +
+        `📧 Email: ${email}\n` +
+        `🏢 Компанія: ${company || '-'}\n` +
+        `📞 Телефон: ${phone || '-'}\n` +
+        `🛠 Послуга: ${service || '-'}\n` +
+        `💬 Текст:\n${message}`;
 
       const inlineKeyboard: any[] = [];
       const buttonsRow: any[] = [];
@@ -42,16 +42,20 @@ export async function POST(request: NextRequest) {
         inlineKeyboard.push(buttonsRow);
       }
 
-      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: chatId,
           text: text,
-          parse_mode: 'Markdown',
           reply_markup: inlineKeyboard.length > 0 ? { inline_keyboard: inlineKeyboard } : undefined,
         }),
-      }).catch((err) => console.error('Telegram error:', err));
+      });
+
+      if (!tgRes.ok) {
+        const errDetails = await tgRes.text();
+        console.error('Telegram API error:', errDetails);
+      }
     }
 
     // 2. Запис у Google Таблицю

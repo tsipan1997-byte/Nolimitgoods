@@ -23,18 +23,17 @@ export async function POST(request: NextRequest) {
     let basePrice = 0;
     let note = '';
 
-    // 1. Запит до Perplexity через оновлений ендпоінт
     if (!apiKey) {
-      note = 'Помилка: PERPLEXITY_API_KEY порожній або не знайдений у Vercel';
+      note = 'Помилка: PERPLEXITY_API_KEY порожній або не заданий';
     } else {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 18000);
 
-        const promptText = `Find current retail price in GBP (£) for spare part "${cleanPart}" (or "${partNumber}") for machinery "${machineModel}". What is the typical market price in GBP? Return price number and source store briefly.`;
+        const promptText = `Find current retail price in GBP for spare part "${cleanPart}" (original query "${partNumber}") for machinery "${machineModel}". What is the typical market price in GBP? Return price number and online store source briefly.`;
 
-        // Спроба 1: новий ендпоінт /v1/responses для Perplexity Sonar
-        let aiRes = await fetch('https://api.perplexity.ai/v1/responses', {
+        // Використовуємо новий ендпоінт /v1/responses (Perplexity Agent API)
+        const res = await fetch('https://api.perplexity.ai/v1/responses', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${apiKey}`,
@@ -47,38 +46,21 @@ export async function POST(request: NextRequest) {
           }),
         });
 
-        // Якщо новий ендпоінт повернув помилку, пробуємо сумісний chat/completions із заголовком
-        if (!aiRes.ok) {
-          aiRes = await fetch('https://api.perplexity.ai/chat/completions', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${apiKey}`,
-              'Content-Type': 'application/json',
-            },
-            signal: controller.signal,
-            body: JSON.stringify({
-              model: 'sonar',
-              messages: [
-                { role: 'user', content: promptText }
-              ],
-            }),
-          });
-        }
-
         clearTimeout(timeoutId);
 
-        if (!aiRes.ok) {
-          const errDetail = await aiRes.text();
-          note = `Помилка API (${aiRes.status}): ${errDetail.slice(0, 80)}`;
+        if (!res.ok) {
+          const errDetail = await res.text();
+          note = `Помилка API (${res.status}): ${errDetail.slice(0, 100)}`;
         } else {
-          const aiJson = await aiRes.json();
-          const content: string = 
-            aiJson?.output_text || 
-            aiJson?.response || 
-            aiJson?.choices?.[0]?.message?.content || 
-            '';
+          const aiJson = await res.json();
+          // Отримуємо відповідь з нового або резервного формату
+          const content: string =
+            aiJson?.output_text ||
+            aiJson?.response ||
+            aiJson?.output?.[0]?.content ||
+            aiJson?.choices?.[0]?.message?.content ||
+            JSON.stringify(aiJson);
 
-          // Пошук ціни у GBP (£XX або XX GBP)
           const match = content.match(/(?:£|GBP\s*)(\d+(?:\.\d{1,2})?)/i) || content.match(/(\d+(?:\.\d{1,2})?)\s*(?:£|GBP)/i);
           if (match) {
             basePrice = Math.round(parseFloat(match[1]));
@@ -93,23 +75,21 @@ export async function POST(request: NextRequest) {
               basePrice = Math.round(parseFloat(usdMatch[1]) * 0.78);
               note = `Конвертовано з USD: ${content.split('\n')[0].slice(0, 100)}`;
             } else {
-              note = `ШІ відповів без точної суми: ${content.slice(0, 80)}`;
+              note = `Знайдено інфо, але без точної суми: ${content.slice(0, 80)}`;
             }
           }
         }
       } catch (aiErr: any) {
-        note = `Збій звʼязку з AI: ${aiErr?.message || 'timeout'}`;
+        note = `Збій запиту: ${aiErr?.message || 'timeout'}`;
       }
     }
 
-    // 2. Логіка доставки та націнки (+25% до £500, +20% понад £500)
     const delivery = 30;
     const marginPercent = basePrice > 500 ? 20 : 25;
     const marginAmount = Math.round((basePrice * marginPercent) / 100);
     const unitPrice = basePrice > 0 ? basePrice + marginAmount + delivery : 0;
     const totalEstimate = unitPrice > 0 ? unitPrice * qty : 0;
 
-    // 3. Відправка до Telegram
     if (token && chatId) {
       let priceInfo = '⚠️ Точну ціну не визначено онлайн (потрібен ручний прорахунок)';
       if (unitPrice > 0) {
@@ -153,7 +133,6 @@ export async function POST(request: NextRequest) {
       }).catch((err) => console.error('Telegram error:', err));
     }
 
-    // 4. Запис у Google Таблицю
     if (sheetUrl) {
       await fetch(sheetUrl, {
         method: 'POST',

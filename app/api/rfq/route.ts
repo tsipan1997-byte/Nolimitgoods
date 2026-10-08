@@ -17,12 +17,12 @@ export async function POST(request: NextRequest) {
 
     // 1. Надсилання до Telegram
     if (token && chatId) {
-      const text = `🔧 *Новий запит запчастини (RFQ)*\n\n` +
-        `⚙️ *Артикул:* ${partNumber}\n` +
-        `🚜 *Модель техніки:* ${machineModel}\n` +
-        `🔢 *Кількість:* ${quantity}\n` +
-        `🌍 *Країна:* ${country}\n` +
-        `📱 *Контакт:* \`${contact}\``;
+      const text = `🔧 Новий запит запчастини (RFQ)\n\n` +
+        `⚙️ Артикул: ${partNumber}\n` +
+        `🚜 Модель техніки: ${machineModel}\n` +
+        `🔢 Кількість: ${quantity}\n` +
+        `🌍 Країна: ${country}\n` +
+        `📱 Контакт: ${contact}`;
 
       const cleanPhone = String(contact).replace(/[^0-9]/g, '');
       const inlineKeyboard: any[] = [];
@@ -37,16 +37,20 @@ export async function POST(request: NextRequest) {
         ]);
       }
 
-      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      const tgRes = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: chatId,
           text: text,
-          parse_mode: 'Markdown',
           reply_markup: inlineKeyboard.length > 0 ? { inline_keyboard: inlineKeyboard } : undefined,
         }),
-      }).catch((err) => console.error('Telegram error:', err));
+      });
+
+      if (!tgRes.ok) {
+        const errDetails = await tgRes.text();
+        console.error('Telegram API error:', errDetails);
+      }
     }
 
     // 2. Запис у Google Таблицю

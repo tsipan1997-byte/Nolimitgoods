@@ -23,17 +23,18 @@ export async function POST(request: NextRequest) {
     let basePrice = 0;
     let note = '';
 
-    // 1. Запит до Perplexity AI з детальною діагностикою
+    // 1. Запит до Perplexity через оновлений ендпоінт
     if (!apiKey) {
       note = 'Помилка: PERPLEXITY_API_KEY порожній або не знайдений у Vercel';
     } else {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 15000);
+        const timeoutId = setTimeout(() => controller.abort(), 18000);
 
-        const promptText = `Find current retail price in GBP (£) for spare part "${cleanPart}" (or "${partNumber}") for machine "${machineModel}". What is the price in GBP? Return price number and sources briefly.`;
+        const promptText = `Find current retail price in GBP (£) for spare part "${cleanPart}" (or "${partNumber}") for machinery "${machineModel}". What is the typical market price in GBP? Return price number and source store briefly.`;
 
-        const aiRes = await fetch('https://api.perplexity.ai/chat/completions', {
+        // Спроба 1: новий ендпоінт /v1/responses для Perplexity Sonar
+        let aiRes = await fetch('https://api.perplexity.ai/v1/responses', {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${apiKey}`,
@@ -42,16 +43,27 @@ export async function POST(request: NextRequest) {
           signal: controller.signal,
           body: JSON.stringify({
             model: 'sonar',
-            messages: [
-              {
-                role: 'system',
-                content: 'You search and extract part prices. Always state the approximate price in GBP (£) and note where you found it. Keep response short.'
-              },
-              { role: 'user', content: promptText }
-            ],
-            temperature: 0.1,
+            input: promptText,
           }),
         });
+
+        // Якщо новий ендпоінт повернув помилку, пробуємо сумісний chat/completions із заголовком
+        if (!aiRes.ok) {
+          aiRes = await fetch('https://api.perplexity.ai/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json',
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+              model: 'sonar',
+              messages: [
+                { role: 'user', content: promptText }
+              ],
+            }),
+          });
+        }
 
         clearTimeout(timeoutId);
 
@@ -60,7 +72,11 @@ export async function POST(request: NextRequest) {
           note = `Помилка API (${aiRes.status}): ${errDetail.slice(0, 80)}`;
         } else {
           const aiJson = await aiRes.json();
-          const content: string = aiJson?.choices?.[0]?.message?.content || '';
+          const content: string = 
+            aiJson?.output_text || 
+            aiJson?.response || 
+            aiJson?.choices?.[0]?.message?.content || 
+            '';
 
           // Пошук ціни у GBP (£XX або XX GBP)
           const match = content.match(/(?:£|GBP\s*)(\d+(?:\.\d{1,2})?)/i) || content.match(/(\d+(?:\.\d{1,2})?)\s*(?:£|GBP)/i);
@@ -68,7 +84,6 @@ export async function POST(request: NextRequest) {
             basePrice = Math.round(parseFloat(match[1]));
             note = content.split('\n')[0].slice(0, 140);
           } else {
-            // Перевірка на EUR або USD з конвертацією
             const eurMatch = content.match(/(?:€|EUR\s*)(\d+(?:\.\d{1,2})?)/i);
             const usdMatch = content.match(/(?:\$|USD\s*)(\d+(?:\.\d{1,2})?)/i);
             if (eurMatch) {
@@ -78,7 +93,7 @@ export async function POST(request: NextRequest) {
               basePrice = Math.round(parseFloat(usdMatch[1]) * 0.78);
               note = `Конвертовано з USD: ${content.split('\n')[0].slice(0, 100)}`;
             } else {
-              note = `ШІ знайшов інфо, але без точної ціни: ${content.slice(0, 80)}`;
+              note = `ШІ відповів без точної суми: ${content.slice(0, 80)}`;
             }
           }
         }

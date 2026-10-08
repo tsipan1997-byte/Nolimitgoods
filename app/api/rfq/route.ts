@@ -1,20 +1,6 @@
-export const dynamic = 'force-dynamic';
-export const maxDuration = 60; // Дозволяє Vercel чекати до 60 секунд
-
-import { NextRequest, NextResponse } from 'next/server';
-
-interface PriceCalculation {
-  basePrice: number;
-  delivery: number;
-  marginPercent: number;
-  marginAmount: number;
-  finalPrice: number;
-  currency: string;
-  sourceNote: string;
-}
-
 async function findPriceWithAI(partNumber: string, machineModel: string, country: string): Promise<PriceCalculation> {
-  const apiKey = process.env.PERPLEXITY_API_KEY;
+  const rawKey = process.env.PERPLEXITY_API_KEY || '';
+  const apiKey = rawKey.trim();
   const cleanPart = partNumber.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
   if (!apiKey) {
@@ -25,52 +11,65 @@ async function findPriceWithAI(partNumber: string, machineModel: string, country
       marginAmount: 0,
       finalPrice: 0,
       currency: 'GBP',
-      sourceNote: 'API ключ не вказано',
+      sourceNote: 'API ключ не знайдено у системі',
     };
   }
 
-  // Контролер таймауту на 15 секунд
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
 
   try {
-    const prompt = `Part Number: "${cleanPart}". Model: "${machineModel || 'Any'}". Target region: "${country || 'UK'}". 
-Find the estimated market price in GBP (£).
-Return ONLY a valid JSON: {"estimatedPriceGBP": number, "summary": "short note"}`;
+    const query = `Find retail or wholesale price in GBP (£) for spare part "${cleanPart}" (or "${partNumber}") for "${machineModel || 'machinery'}". What is the price in GBP? Return price number and sources.`;
 
     const res = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey.trim()}`,
+        'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
       signal: controller.signal,
       body: JSON.stringify({
         model: 'sonar',
         messages: [
-          { role: 'system', content: 'You are an auto/machinery parts price finder. Output strictly valid JSON.' },
-          { role: 'user', content: prompt },
+          {
+            role: 'system',
+            content: 'You search and extract part prices. State the approximate price in GBP and note the website or store where you found it. Keep it brief.'
+          },
+          { role: 'user', content: query },
         ],
-        temperature: 0.1,
+        temperature: 0.2,
       }),
     });
 
     clearTimeout(timeoutId);
 
     if (!res.ok) {
-      throw new Error(`Perplexity status: ${res.status}`);
+      const errText = await res.text();
+      console.error('Perplexity API response error:', res.status, errText);
+      throw new Error(`API error ${res.status}`);
     }
 
     const aiData = await res.json();
-    const content = aiData?.choices?.[0]?.message?.content || '{}';
-    const jsonMatch = content.match(/\{[\s\S]*\}/);
-    const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
+    const answer: string = aiData?.choices?.[0]?.message?.content || '';
 
-    const basePrice = Math.round(Number(parsed.estimatedPriceGBP) || 0);
+    // Знаходимо будь-яку згадку ціни в GBP (£XX або XX GBP)
+    const match = answer.match(/(?:£|GBP\s*)(\d+(?:\.\d{1,2})?)/i) || answer.match(/(\d+(?:\.\d{1,2})?)\s*(?:£|GBP)/i);
+    let basePrice = match ? Math.round(parseFloat(match[1])) : 0;
+
+    // Якщо раптом знайдено в EUR (€) чи USD ($), конвертуємо приблизно в GBP
+    if (basePrice === 0) {
+      const eurMatch = answer.match(/(?:€|EUR\s*)(\d+(?:\.\d{1,2})?)/i);
+      const usdMatch = answer.match(/(?:\$|USD\s*)(\d+(?:\.\d{1,2})?)/i);
+      if (eurMatch) basePrice = Math.round(parseFloat(eurMatch[1]) * 0.85);
+      else if (usdMatch) basePrice = Math.round(parseFloat(usdMatch[1]) * 0.78);
+    }
+
     const delivery = 30;
     const marginPercent = basePrice > 500 ? 20 : 25;
     const marginAmount = Math.round((basePrice * marginPercent) / 100);
     const finalPrice = basePrice > 0 ? basePrice + marginAmount + delivery : 0;
+
+    const shortSummary = answer.split('\n')[0].substring(0, 150);
 
     return {
       basePrice,
@@ -79,11 +78,11 @@ Return ONLY a valid JSON: {"estimatedPriceGBP": number, "summary": "short note"}
       marginAmount,
       finalPrice,
       currency: 'GBP',
-      sourceNote: parsed.summary || 'Знайдено в онлайн-каталогах',
+      sourceNote: shortSummary || 'Знайдено в онлайн-джерелах',
     };
   } catch (error: any) {
     clearTimeout(timeoutId);
-    console.error('AI Search Warning/Timeout:', error.message);
+    console.error('AI Search Warning:', error.message);
     return {
       basePrice: 0,
       delivery: 30,
@@ -93,100 +92,5 @@ Return ONLY a valid JSON: {"estimatedPriceGBP": number, "summary": "short note"}
       currency: 'GBP',
       sourceNote: 'Потрібен індивідуальний запит постачальникам',
     };
-  }
-}
-
-export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { partNumber, machineModel, quantity, country, contact } = body ?? {};
-
-    if (!partNumber || !machineModel || !quantity || !country || !contact) {
-      return NextResponse.json({ error: 'Всі поля обовʼязкові' }, { status: 400 });
-    }
-
-    const cleanPart = String(partNumber).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
-    const qty = Math.max(1, parseInt(String(quantity), 10) || 1);
-
-    // 1. Пошук орієнтовної ціни (з контролем таймауту)
-    const pricing = await findPriceWithAI(partNumber, machineModel, country);
-    const totalEstimate = pricing.finalPrice > 0 ? pricing.finalPrice * qty : 0;
-
-    const token = process.env.TELEGRAM_BOT_TOKEN;
-    const chatId = process.env.TELEGRAM_CHAT_ID;
-    const sheetUrl = process.env.GOOGLE_SHEET_URL;
-
-    // 2. Формування тексту для Telegram
-    let priceSection = '⚠️ Точну ціну не визначено онлайн (потрібен ручний прорахунок)';
-    if (pricing.finalPrice > 0) {
-      priceSection = `💰 Оцінка собівартості: ~£${pricing.basePrice} / шт\n` +
-        `📦 Буфер доставки: £${pricing.delivery}\n` +
-        `📈 Націнка: ${pricing.marginPercent}% (+£${pricing.marginAmount})\n` +
-        `🏷 Орієнтир клієнту: ~£${pricing.finalPrice} / шт (Разом: ~£${totalEstimate})`;
-    }
-
-    const text = `🔧 Новий запит деталі (RFQ) + AI Розрахунок\n\n` +
-      `⚙️ Артикул: ${cleanPart} (${partNumber})\n` +
-      `🚜 Модель: ${machineModel}\n` +
-      `🔢 Кількість: ${qty} шт\n` +
-      `🌍 Країна: ${country}\n` +
-      `📱 Контакт: ${contact}\n\n` +
-      `ℹ️ Статус: ${pricing.sourceNote}\n\n` +
-      `${priceSection}`;
-
-    const cleanPhone = String(contact).replace(/[^0-9]/g, '');
-    const inlineKeyboard: any[] = [];
-
-    if (cleanPhone.length >= 9) {
-      const msg = encodeURIComponent(`Вітаю! Щодо запиту на ${cleanPart}: орієнтовна вартість із доставкою становить ~£${totalEstimate || pricing.finalPrice}. Чи актуально?`);
-      inlineKeyboard.push([
-        { text: '💬 WhatsApp (з готовим КП)', url: `https://wa.me/${cleanPhone}?text=${msg}` }
-      ]);
-    } else if (String(contact).includes('@')) {
-      inlineKeyboard.push([
-        { text: '✉️ Відповісти на Email', url: `mailto:${contact}` }
-      ]);
-    }
-
-    // 3. Відправка до Telegram
-    if (token && chatId) {
-      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: text,
-          reply_markup: inlineKeyboard.length > 0 ? { inline_keyboard: inlineKeyboard } : undefined,
-        }),
-      }).catch((err) => console.error('Telegram error:', err));
-    }
-
-    // 4. Запис у Google Таблицю
-    if (sheetUrl) {
-      await fetch(sheetUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'RFQ (AI Розрахунок)',
-          name: '-',
-          contact: contact,
-          partOrService: `${cleanPart} (Орієнтир: £${totalEstimate || 'Уточнюється'})`,
-          details: `Модель: ${machineModel}, К-сть: ${qty}`,
-          message: `Країна: ${country} | ${pricing.sourceNote}`,
-        }),
-      }).catch((err) => console.error('Google Sheets error:', err));
-    }
-
-    return NextResponse.json({
-      success: true,
-      estimatedPrice: pricing.finalPrice,
-      totalEstimate: totalEstimate,
-      currency: pricing.currency,
-      note: pricing.sourceNote,
-    }, { status: 200 });
-
-  } catch (error) {
-    console.error('Fatal route error:', error);
-    return NextResponse.json({ error: 'Помилка обробки' }, { status: 500 });
   }
 }

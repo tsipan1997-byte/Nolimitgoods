@@ -1,4 +1,5 @@
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60; // Дозволяє Vercel чекати до 60 секунд
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -24,42 +25,40 @@ async function findPriceWithAI(partNumber: string, machineModel: string, country
       marginAmount: 0,
       finalPrice: 0,
       currency: 'GBP',
-      sourceNote: 'API ключ не налаштовано',
+      sourceNote: 'API ключ не вказано',
     };
   }
 
-  try {
-    const prompt = `You are a spare parts procurement specialist. Search the web for current retail/market price for:
-Part Number: "${cleanPart}" (Original query: "${partNumber}")
-Machine Model: "${machineModel || 'Any'}"
-Target delivery to: "${country || 'UK/Europe'}".
+  // Контролер таймауту на 15 секунд
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-Find the current market price in GBP (£). If price is in EUR or USD, convert to GBP at current rates.
-Respond ONLY with a valid raw JSON object without markdown formatting:
-{
-  "estimatedPriceGBP": number,
-  "found": boolean,
-  "summary": "short note about where found or estimated range"
-}`;
+  try {
+    const prompt = `Part Number: "${cleanPart}". Model: "${machineModel || 'Any'}". Target region: "${country || 'UK'}". 
+Find the estimated market price in GBP (£).
+Return ONLY a valid JSON: {"estimatedPriceGBP": number, "summary": "short note"}`;
 
     const res = await fetch('https://api.perplexity.ai/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        'Authorization': `Bearer ${apiKey.trim()}`,
         'Content-Type': 'application/json',
       },
+      signal: controller.signal,
       body: JSON.stringify({
         model: 'sonar',
         messages: [
-          { role: 'system', content: 'You are an accurate auto and machinery parts pricing engine. Always return strict JSON.' },
+          { role: 'system', content: 'You are an auto/machinery parts price finder. Output strictly valid JSON.' },
           { role: 'user', content: prompt },
         ],
         temperature: 0.1,
       }),
     });
 
+    clearTimeout(timeoutId);
+
     if (!res.ok) {
-      throw new Error(`Perplexity API responded with status ${res.status}`);
+      throw new Error(`Perplexity status: ${res.status}`);
     }
 
     const aiData = await res.json();
@@ -68,7 +67,7 @@ Respond ONLY with a valid raw JSON object without markdown formatting:
     const parsed = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
 
     const basePrice = Math.round(Number(parsed.estimatedPriceGBP) || 0);
-    const delivery = 30; // стандартний орієнтовний буфер доставки
+    const delivery = 30;
     const marginPercent = basePrice > 500 ? 20 : 25;
     const marginAmount = Math.round((basePrice * marginPercent) / 100);
     const finalPrice = basePrice > 0 ? basePrice + marginAmount + delivery : 0;
@@ -80,10 +79,11 @@ Respond ONLY with a valid raw JSON object without markdown formatting:
       marginAmount,
       finalPrice,
       currency: 'GBP',
-      sourceNote: parsed.summary || 'Знайдено у відкритих каталогах',
+      sourceNote: parsed.summary || 'Знайдено в онлайн-каталогах',
     };
   } catch (error: any) {
-    console.error('AI Search Error:', error);
+    clearTimeout(timeoutId);
+    console.error('AI Search Warning/Timeout:', error.message);
     return {
       basePrice: 0,
       delivery: 30,
@@ -91,7 +91,7 @@ Respond ONLY with a valid raw JSON object without markdown formatting:
       marginAmount: 0,
       finalPrice: 0,
       currency: 'GBP',
-      sourceNote: 'Помилка онлайн-пошуку або деталь під індивідуальний запит',
+      sourceNote: 'Потрібен індивідуальний запит постачальникам',
     };
   }
 }
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
     const cleanPart = String(partNumber).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
     const qty = Math.max(1, parseInt(String(quantity), 10) || 1);
 
-    // 1. Пошук орієнтовної ціни через ШІ
+    // 1. Пошук орієнтовної ціни (з контролем таймауту)
     const pricing = await findPriceWithAI(partNumber, machineModel, country);
     const totalEstimate = pricing.finalPrice > 0 ? pricing.finalPrice * qty : 0;
 
@@ -116,39 +116,40 @@ export async function POST(request: NextRequest) {
     const chatId = process.env.TELEGRAM_CHAT_ID;
     const sheetUrl = process.env.GOOGLE_SHEET_URL;
 
-    // 2. Надсилання детального розрахунку в Telegram
+    // 2. Формування тексту для Telegram
+    let priceSection = '⚠️ Точну ціну не визначено онлайн (потрібен ручний прорахунок)';
+    if (pricing.finalPrice > 0) {
+      priceSection = `💰 Оцінка собівартості: ~£${pricing.basePrice} / шт\n` +
+        `📦 Буфер доставки: £${pricing.delivery}\n` +
+        `📈 Націнка: ${pricing.marginPercent}% (+£${pricing.marginAmount})\n` +
+        `🏷 Орієнтир клієнту: ~£${pricing.finalPrice} / шт (Разом: ~£${totalEstimate})`;
+    }
+
+    const text = `🔧 Новий запит деталі (RFQ) + AI Розрахунок\n\n` +
+      `⚙️ Артикул: ${cleanPart} (${partNumber})\n` +
+      `🚜 Модель: ${machineModel}\n` +
+      `🔢 Кількість: ${qty} шт\n` +
+      `🌍 Країна: ${country}\n` +
+      `📱 Контакт: ${contact}\n\n` +
+      `ℹ️ Статус: ${pricing.sourceNote}\n\n` +
+      `${priceSection}`;
+
+    const cleanPhone = String(contact).replace(/[^0-9]/g, '');
+    const inlineKeyboard: any[] = [];
+
+    if (cleanPhone.length >= 9) {
+      const msg = encodeURIComponent(`Вітаю! Щодо запиту на ${cleanPart}: орієнтовна вартість із доставкою становить ~£${totalEstimate || pricing.finalPrice}. Чи актуально?`);
+      inlineKeyboard.push([
+        { text: '💬 WhatsApp (з готовим КП)', url: `https://wa.me/${cleanPhone}?text=${msg}` }
+      ]);
+    } else if (String(contact).includes('@')) {
+      inlineKeyboard.push([
+        { text: '✉️ Відповісти на Email', url: `mailto:${contact}` }
+      ]);
+    }
+
+    // 3. Відправка до Telegram
     if (token && chatId) {
-      let priceSection = '⚠️ Точну ціну не знайдено автоматично (потрібен ручний запит постачальникам)';
-      if (pricing.finalPrice > 0) {
-        priceSection = `💰 *Оцінка собівартості:* ~£${pricing.basePrice} / шт\n` +
-          `📦 *Буфер логістики:* £${pricing.delivery}\n` +
-          `📈 *Націнка:* ${pricing.marginPercent}% (+£${pricing.marginAmount})\n` +
-          `🏷 *Клієнту названо:* ~£${pricing.finalPrice} / шт (Разом: ~£${totalEstimate})`;
-      }
-
-      const text = `🔧 Новий запит деталі (RFQ) + AI Розрахунок\n\n` +
-        `⚙️ Артикул: ${cleanPart} (було: ${partNumber})\n` +
-        `🚜 Модель: ${machineModel}\n` +
-        `🔢 Кількість: ${qty} шт\n` +
-        `🌍 Країна: ${country}\n` +
-        `📱 Контакт: ${contact}\n\n` +
-        `ℹ️ Джерела / примітка: ${pricing.sourceNote}\n\n` +
-        `${priceSection}`;
-
-      const cleanPhone = String(contact).replace(/[^0-9]/g, '');
-      const inlineKeyboard: any[] = [];
-
-      if (cleanPhone.length >= 9) {
-        const msg = encodeURIComponent(`Вітаю! Щодо вашого запиту на деталь ${cleanPart}: орієнтовна вартість із доставкою становить ~£${totalEstimate || pricing.finalPrice}. Чи актуальне замовлення?`);
-        inlineKeyboard.push([
-          { text: '💬 WhatsApp (з готовим КП)', url: `https://wa.me/${cleanPhone}?text=${msg}` }
-        ]);
-      } else if (String(contact).includes('@')) {
-        inlineKeyboard.push([
-          { text: '✉️ Відповісти на Email', url: `mailto:${contact}` }
-        ]);
-      }
-
       await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -160,7 +161,7 @@ export async function POST(request: NextRequest) {
       }).catch((err) => console.error('Telegram error:', err));
     }
 
-    // 3. Запис у Google Таблицю
+    // 4. Запис у Google Таблицю
     if (sheetUrl) {
       await fetch(sheetUrl, {
         method: 'POST',
@@ -171,7 +172,7 @@ export async function POST(request: NextRequest) {
           contact: contact,
           partOrService: `${cleanPart} (Орієнтир: £${totalEstimate || 'Уточнюється'})`,
           details: `Модель: ${machineModel}, К-сть: ${qty}`,
-          message: `Країна: ${country} | Примітка: ${pricing.sourceNote}`,
+          message: `Країна: ${country} | ${pricing.sourceNote}`,
         }),
       }).catch((err) => console.error('Google Sheets error:', err));
     }
@@ -185,6 +186,7 @@ export async function POST(request: NextRequest) {
     }, { status: 200 });
 
   } catch (error) {
+    console.error('Fatal route error:', error);
     return NextResponse.json({ error: 'Помилка обробки' }, { status: 500 });
   }
 }

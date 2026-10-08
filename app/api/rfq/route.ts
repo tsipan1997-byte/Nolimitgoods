@@ -1,4 +1,5 @@
 export const dynamic = 'force-dynamic';
+export const maxDuration = 60;
 
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -20,15 +21,17 @@ export async function POST(request: NextRequest) {
     const apiKey = (process.env.PERPLEXITY_API_KEY || '').trim();
 
     let basePrice = 0;
-    let note = 'Потрібен індивідуальний запит постачальникам';
+    let note = '';
 
-    // 1. Швидкий запит до Perplexity (таймаут 10 секунд)
-    if (apiKey) {
+    // 1. Запит до Perplexity AI з детальною діагностикою
+    if (!apiKey) {
+      note = 'Помилка: PERPLEXITY_API_KEY порожній або не знайдений у Vercel';
+    } else {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
 
-        const promptText = `Find current retail price in GBP for part number "${cleanPart}" (model: "${machineModel}"). Return just the estimated price number in GBP and short source name.`;
+        const promptText = `Find current retail price in GBP (£) for spare part "${cleanPart}" (or "${partNumber}") for machine "${machineModel}". What is the price in GBP? Return price number and sources briefly.`;
 
         const aiRes = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',
@@ -40,7 +43,10 @@ export async function POST(request: NextRequest) {
           body: JSON.stringify({
             model: 'sonar',
             messages: [
-              { role: 'system', content: 'You are a spare parts price assistant. Keep answers very short with prices in GBP.' },
+              {
+                role: 'system',
+                content: 'You search and extract part prices. Always state the approximate price in GBP (£) and note where you found it. Keep response short.'
+              },
               { role: 'user', content: promptText }
             ],
             temperature: 0.1,
@@ -49,22 +55,39 @@ export async function POST(request: NextRequest) {
 
         clearTimeout(timeoutId);
 
-        if (aiRes.ok) {
+        if (!aiRes.ok) {
+          const errDetail = await aiRes.text();
+          note = `Помилка API (${aiRes.status}): ${errDetail.slice(0, 80)}`;
+        } else {
           const aiJson = await aiRes.json();
-          const content = aiJson?.choices?.[0]?.message?.content || '';
-          
+          const content: string = aiJson?.choices?.[0]?.message?.content || '';
+
+          // Пошук ціни у GBP (£XX або XX GBP)
           const match = content.match(/(?:£|GBP\s*)(\d+(?:\.\d{1,2})?)/i) || content.match(/(\d+(?:\.\d{1,2})?)\s*(?:£|GBP)/i);
           if (match) {
             basePrice = Math.round(parseFloat(match[1]));
-            note = content.split('\n')[0].slice(0, 120);
+            note = content.split('\n')[0].slice(0, 140);
+          } else {
+            // Перевірка на EUR або USD з конвертацією
+            const eurMatch = content.match(/(?:€|EUR\s*)(\d+(?:\.\d{1,2})?)/i);
+            const usdMatch = content.match(/(?:\$|USD\s*)(\d+(?:\.\d{1,2})?)/i);
+            if (eurMatch) {
+              basePrice = Math.round(parseFloat(eurMatch[1]) * 0.85);
+              note = `Конвертовано з EUR: ${content.split('\n')[0].slice(0, 100)}`;
+            } else if (usdMatch) {
+              basePrice = Math.round(parseFloat(usdMatch[1]) * 0.78);
+              note = `Конвертовано з USD: ${content.split('\n')[0].slice(0, 100)}`;
+            } else {
+              note = `ШІ знайшов інфо, але без точної ціни: ${content.slice(0, 80)}`;
+            }
           }
         }
-      } catch (aiErr) {
-        console.error('AI lookup skipped or timed out:', aiErr);
+      } catch (aiErr: any) {
+        note = `Збій звʼязку з AI: ${aiErr?.message || 'timeout'}`;
       }
     }
 
-    // 2. Розрахунок доставки та націнки
+    // 2. Логіка доставки та націнки (+25% до £500, +20% понад £500)
     const delivery = 30;
     const marginPercent = basePrice > 500 ? 20 : 25;
     const marginAmount = Math.round((basePrice * marginPercent) / 100);
@@ -81,13 +104,13 @@ export async function POST(request: NextRequest) {
           `🏷 Орієнтир клієнту: ~£${unitPrice} / шт (Разом: ~£${totalEstimate})`;
       }
 
-      const text = `🔧 Новий запит деталі (RFQ)\n\n` +
+      const text = `🔧 Новий запит деталі (RFQ) + AI Розрахунок\n\n` +
         `⚙️ Артикул: ${cleanPart} (${partNumber})\n` +
         `🚜 Модель: ${machineModel}\n` +
         `🔢 Кількість: ${qty} шт\n` +
         `🌍 Країна: ${country}\n` +
         `📱 Контакт: ${contact}\n\n` +
-        `ℹ️ Статус: ${note}\n\n` +
+        `ℹ️ Статус AI: ${note}\n\n` +
         `${priceInfo}`;
 
       const cleanPhone = String(contact).replace(/[^0-9]/g, '');
@@ -121,7 +144,7 @@ export async function POST(request: NextRequest) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'RFQ (Запит деталі)',
+          type: 'RFQ (AI Розрахунок)',
           name: '-',
           contact: contact,
           partOrService: `${cleanPart} (Орієнтир: £${totalEstimate || 'Уточнюється'})`,

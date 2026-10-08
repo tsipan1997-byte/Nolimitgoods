@@ -23,16 +23,16 @@ export async function POST(request: NextRequest) {
     let basePrice = 0;
     let note = '';
 
+    // 1. Прямий запит до Perplexity Agent API (/v1/responses)
     if (!apiKey) {
-      note = 'Помилка: PERPLEXITY_API_KEY порожній або не заданий';
+      note = 'Помилка: PERPLEXITY_API_KEY не знайдений';
     } else {
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 18000);
+        const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-        const promptText = `Find current retail price in GBP for spare part "${cleanPart}" (original query "${partNumber}") for machinery "${machineModel}". What is the typical market price in GBP? Return price number and online store source briefly.`;
+        const promptText = `Find the retail price in GBP (£) for spare part "${cleanPart}" (original query "${partNumber}") for machine "${machineModel}". What is the typical market price in GBP? Return price number and online store source briefly.`;
 
-        // Використовуємо новий ендпоінт /v1/responses (Perplexity Agent API)
         const res = await fetch('https://api.perplexity.ai/v1/responses', {
           method: 'POST',
           headers: {
@@ -53,29 +53,30 @@ export async function POST(request: NextRequest) {
           note = `Помилка API (${res.status}): ${errDetail.slice(0, 100)}`;
         } else {
           const aiJson = await res.json();
-          // Отримуємо відповідь з нового або резервного формату
+          // Отримуємо відповідь з поля виводу Agent API
           const content: string =
             aiJson?.output_text ||
             aiJson?.response ||
-            aiJson?.output?.[0]?.content ||
+            (Array.isArray(aiJson?.output) ? JSON.stringify(aiJson.output) : '') ||
             aiJson?.choices?.[0]?.message?.content ||
             JSON.stringify(aiJson);
 
+          // Витягуємо ціну в GBP (£XX або XX GBP)
           const match = content.match(/(?:£|GBP\s*)(\d+(?:\.\d{1,2})?)/i) || content.match(/(\d+(?:\.\d{1,2})?)\s*(?:£|GBP)/i);
           if (match) {
             basePrice = Math.round(parseFloat(match[1]));
-            note = content.split('\n')[0].slice(0, 140);
+            note = content.slice(0, 140);
           } else {
             const eurMatch = content.match(/(?:€|EUR\s*)(\d+(?:\.\d{1,2})?)/i);
             const usdMatch = content.match(/(?:\$|USD\s*)(\d+(?:\.\d{1,2})?)/i);
             if (eurMatch) {
               basePrice = Math.round(parseFloat(eurMatch[1]) * 0.85);
-              note = `Конвертовано з EUR: ${content.split('\n')[0].slice(0, 100)}`;
+              note = `Конвертовано з EUR: ${content.slice(0, 100)}`;
             } else if (usdMatch) {
               basePrice = Math.round(parseFloat(usdMatch[1]) * 0.78);
-              note = `Конвертовано з USD: ${content.split('\n')[0].slice(0, 100)}`;
+              note = `Конвертовано з USD: ${content.slice(0, 100)}`;
             } else {
-              note = `Знайдено інфо, але без точної суми: ${content.slice(0, 80)}`;
+              note = `Відповідь є, але суму не розпізнано: ${content.slice(0, 80)}`;
             }
           }
         }
@@ -84,12 +85,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // 2. Логіка розрахунку: £30 доставка + націнка (25% до £500, 20% від £500)
     const delivery = 30;
     const marginPercent = basePrice > 500 ? 20 : 25;
     const marginAmount = Math.round((basePrice * marginPercent) / 100);
     const unitPrice = basePrice > 0 ? basePrice + marginAmount + delivery : 0;
     const totalEstimate = unitPrice > 0 ? unitPrice * qty : 0;
 
+    // 3. Відправка до Telegram
     if (token && chatId) {
       let priceInfo = '⚠️ Точну ціну не визначено онлайн (потрібен ручний прорахунок)';
       if (unitPrice > 0) {
@@ -133,6 +136,7 @@ export async function POST(request: NextRequest) {
       }).catch((err) => console.error('Telegram error:', err));
     }
 
+    // 4. Запис у Google Таблицю
     if (sheetUrl) {
       await fetch(sheetUrl, {
         method: 'POST',

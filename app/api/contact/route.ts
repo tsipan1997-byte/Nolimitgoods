@@ -11,35 +11,37 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Заповніть обовʼязкові поля' }, { status: 400 });
     }
 
-    const text = `📬 *Нове повідомлення з сайту*\n\n` +
-      `👤 *Імʼя:* ${name}\n` +
-      `📧 *Email:* \`${email}\`\n` +
-      `🏢 *Компанія:* ${company || '-'}\n` +
-      `📞 *Телефон:* ${phone ? `\`${phone}\`` : '-'}\n` +
-      `🛠 *Послуга:* ${service || '-'}\n` +
-      `💬 *Текст:*\n${message}`;
-
     const token = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
+    const sheetUrl = process.env.GOOGLE_SHEET_URL;
 
-    const inlineKeyboard: any[] = [];
-    const buttonsRow: any[] = [];
-
-    if (phone) {
-      const cleanPhone = phone.replace(/[^0-9]/g, '');
-      if (cleanPhone.length >= 9) {
-        buttonsRow.push({ text: '💬 WhatsApp', url: `https://wa.me/${cleanPhone}` });
-      }
-    }
-    if (email) {
-      buttonsRow.push({ text: '✉️ Написати Email', url: `mailto:${email}` });
-    }
-
-    if (buttonsRow.length > 0) {
-      inlineKeyboard.push(buttonsRow);
-    }
-
+    // 1. Надсилання до Telegram
     if (token && chatId) {
+      const text = `📬 *Нове повідомлення з сайту*\n\n` +
+        `👤 *Імʼя:* ${name}\n` +
+        `📧 *Email:* \`${email}\`\n` +
+        `🏢 *Компанія:* ${company || '-'}\n` +
+        `📞 *Телефон:* ${phone ? `\`${phone}\`` : '-'}\n` +
+        `🛠 *Послуга:* ${service || '-'}\n` +
+        `💬 *Текст:*\n${message}`;
+
+      const inlineKeyboard: any[] = [];
+      const buttonsRow: any[] = [];
+
+      if (phone) {
+        const cleanPhone = String(phone).replace(/[^0-9]/g, '');
+        if (cleanPhone.length >= 9) {
+          buttonsRow.push({ text: '💬 WhatsApp', url: `https://wa.me/${cleanPhone}` });
+        }
+      }
+      if (email) {
+        buttonsRow.push({ text: '✉️ Написати Email', url: `mailto:${email}` });
+      }
+
+      if (buttonsRow.length > 0) {
+        inlineKeyboard.push(buttonsRow);
+      }
+
       await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -49,7 +51,23 @@ export async function POST(request: NextRequest) {
           parse_mode: 'Markdown',
           reply_markup: inlineKeyboard.length > 0 ? { inline_keyboard: inlineKeyboard } : undefined,
         }),
-      });
+      }).catch((err) => console.error('Telegram error:', err));
+    }
+
+    // 2. Запис у Google Таблицю
+    if (sheetUrl) {
+      await fetch(sheetUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'Контактна форма',
+          name: company ? `${name} (${company})` : name,
+          contact: phone ? `${phone} / ${email}` : email,
+          partOrService: service || 'Загальне звернення',
+          details: '-',
+          message: message,
+        }),
+      }).catch((err) => console.error('Google Sheets error:', err));
     }
 
     return NextResponse.json({ success: true }, { status: 200 });

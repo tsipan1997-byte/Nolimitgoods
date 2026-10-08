@@ -1,34 +1,55 @@
-import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import { headers } from 'next/headers';
-import { LanguageProvider } from '@/lib/language-context';
+import './globals.css';
 
-export const dynamic = 'force-dynamic';
-
-const inter = Inter({ subsets: ['latin', 'cyrillic'] });
-
-export async function generateMetadata(): Promise<Metadata> {
-  const headersList = headers();
-  const host = headersList.get('x-forwarded-host') || headersList.get('host') || '';
-  const protocol = headersList.get('x-forwarded-proto') || 'https';
-  const baseUrl = host ? `${protocol}://${host}` : process.env.NEXTAUTH_URL || 'http://localhost:3000';
-
-  return {
-    metadataBase: new URL(baseUrl),
-    title: 'NOLIMITGOODS - Logistics & Heavy Equipment Parts Supplier UK | JCB, Caterpillar, Komatsu Parts',
-    description: 'UK-based logistics company and heavy equipment parts supplier. Worldwide delivery services and genuine & aftermarket parts for JCB, Caterpillar, Komatsu, CNH and other industrial brands.',
-    keywords: ['logistics UK', 'worldwide delivery', 'heavy equipment parts', 'JCB parts', 'Caterpillar parts', 'Komatsu parts', 'CNH parts', 'construction machinery parts', 'hydraulic filters', 'fuel filters', 'spare parts UK', 'industrial parts supplier', 'NOLIMITGOODS', 'логістика', 'доставка', 'запчастини для техніки', 'запчастини JCB'],
-    icons: {
-      icon: '/favicon.svg',
+export const metadata: Metadata = {
+  metadataBase: new URL('https://nolimitgoods.co.uk'),
+  title: {
+    default: 'NoLimitGoods | Heavy Machinery & Automotive Spare Parts Sourcing',
+    template: '%s | NoLimitGoods',
+  },
+  description: 'Global sourcing and rapid delivery of genuine & OEM spare parts for heavy machinery, construction equipment, and commercial vehicles. Direct procurement from UK & Europe.',
+  keywords: [
+    'heavy machinery spare parts',
+    'construction equipment parts',
+    'JCB spare parts UK',
+    'Caterpillar parts supplier',
+    'Komatsu genuine parts',
+    'Donaldson filters supply',
+    'industrial equipment sourcing',
+    'commercial vehicle parts export',
+    'OEM parts procurement',
+  ],
+  authors: [{ name: 'NoLimitGoods Ltd' }],
+  creator: 'NoLimitGoods',
+  publisher: 'NoLimitGoods',
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
     },
-    openGraph: {
-      title: 'NOLIMITGOODS - Logistics & Heavy Equipment Parts Supplier UK',
-      description: 'UK-based logistics company and heavy equipment parts supplier. Worldwide delivery and parts for JCB, Caterpillar, Komatsu, CNH and other industrial brands.',
-      images: ['/og-image.png'],
-    },
-  };
-}
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'en_GB',
+    url: 'https://nolimitgoods.co.uk',
+    title: 'NoLimitGoods | Heavy Machinery & OEM Spare Parts Procurement',
+    description: 'Fast RFQ pricing, worldwide delivery, and sourcing of genuine equipment parts from top UK and EU distributors.',
+    siteName: 'NoLimitGoods',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'NoLimitGoods | Spare Parts Sourcing',
+    description: 'Request genuine and OEM parts for machinery & industrial vehicles with quick worldwide delivery.',
+  },
+  alternates: {
+    canonical: 'https://nolimitgoods.co.uk',
+  },
+};
 
 export default function RootLayout({
   children,
@@ -36,14 +57,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <script src="https://apps.abacus.ai/chatllm/appllm-lib.js" />
-      </head>
-      <body className={inter.className} suppressHydrationWarning>
-        <LanguageProvider>
-          {children}
-        </LanguageProvider>
+    <html lang="en">
+      <body className="antialiased min-h-screen bg-slate-900 text-white">
+        {children}
       </body>
     </html>
   );

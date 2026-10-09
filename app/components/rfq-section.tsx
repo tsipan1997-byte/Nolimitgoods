@@ -52,8 +52,12 @@ export default function RFQSection() {
     }
   };
 
+  const revolutRate = 56;
+  const totalUAH = calculation ? Math.round(Number(calculation.total) * revolutRate).toLocaleString('uk-UA') : '0';
+  const unitUAH = calculation ? Math.round(Number(calculation.unitPrice) * revolutRate).toLocaleString('uk-UA') : '0';
+
   const managerWhatsApp = `https://wa.me/380501400245?text=${encodeURIComponent(
-    `Hello NoLimitGoods! I want to confirm order for Part: ${calculation?.part}, Quantity:${calculation?.qty}. Estimated total is ~£${calculation?.total}. Please check final availability.`
+    `Доброго дня, NoLimitGoods! Хочу підтвердити замовлення:\nДеталь: ${calculation?.part}\nКількість: ${calculation?.qty} шт.\nОрієнтовна вартість: ~£${calculation?.total} (≈${totalUAH} грн за курсом Revolut).\nПрошу уточнити наявність та реквізити для оплати.`
   )}`;
 
   return (
@@ -99,13 +103,24 @@ export default function RFQSection() {
                 <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">
                   Total Estimated Price (incl. delivery)
                 </div>
-                <div className="text-4xl font-extrabold text-red-600 mb-2">
+                
+                <div className="text-4xl font-black text-red-600 tracking-tight my-1">
                   ~£{calculation.total}
                 </div>
-                <div className="text-sm font-medium text-slate-700">
-                  Approx. £{calculation.unitPrice} / item ({calculation.qty} pcs)
+                
+                <div className="text-xl font-bold text-slate-800 mb-2">
+                  ≈ {totalUAH} грн
                 </div>
-                <p className="text-xs text-slate-400 mt-3">
+
+                <div className="text-sm font-medium text-slate-600 pt-2 border-t border-slate-200">
+                  Approx. £{calculation.unitPrice} (≈ {unitUAH} грн) / item ({calculation.qty} pcs)
+                </div>
+
+                <div className="inline-block mt-3 px-3 py-1 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-800 font-medium">
+                  Оплата: Revolut Pay, IBAN або картка (курс Revolut ~56 грн/£)
+                </div>
+
+                <p className="text-xs text-slate-400 mt-2">
                   * Final invoice verified by procurement manager before payment.
                 </p>
               </div>
@@ -118,7 +133,7 @@ export default function RFQSection() {
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-md transition-colors"
                 >
                   <MessageSquare className="w-5 h-5" />
-                  Confirm Order via WhatsApp
+                  Підтвердити замовлення у WhatsApp
                 </a>
                 <button
                   type="button"
@@ -129,107 +144,4 @@ export default function RFQSection() {
                   }}
                   className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3.5 px-6 rounded-lg transition-colors"
                 >
-                  Calculate Another Part
-                </button>
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Part Number *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.partNumber}
-                    onChange={(e) => setFormData({ ...formData, partNumber: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. P553004 or 32/925950"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Machine Model / Brand *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.machineModel}
-                    onChange={(e) => setFormData({ ...formData, machineModel: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. JCB 3CX / Donaldson"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Quantity *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={formData.quantity}
-                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Delivery Country *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. Ukraine / Poland / UK"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Contact (WhatsApp or Email) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.contact}
-                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                  className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                  placeholder="+380... or email@domain.com"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70 shadow-lg cursor-pointer"
-              >
-                {status === 'sending' ? (
-                  <span>Calculating Price...</span>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    <span>Get Instant Price Estimation</span>
-                    <ArrowRight className="w-5 h-5 ml-1" />
-                  </>
-                )}
-              </button>
-
-              {status === 'error' && (
-                <p className="mt-4 text-red-600 text-center font-semibold">
-                  Something went wrong. Please check your data or contact us directly via WhatsApp.
-                </p>
-              )}
-            </form>
-          )}
-        </motion.div>
-      </div>
-    </section>
-  );
-}
+                  Calculate

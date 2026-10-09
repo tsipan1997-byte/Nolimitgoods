@@ -20,16 +20,32 @@ export default function BrandsSection() {
   ];
 
   const handleBrandSelect = (brandName: string) => {
-    const input = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
-    if (input) {
-      input.value = `${brandName} - запчастини`;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+    // 1. Записуємо бренд у поле "Модель машини"
+    const modelInput = document.getElementById('rfq-machine-input') as HTMLInputElement | null;
+    if (modelInput) {
+      modelInput.value = brandName;
+      modelInput.dispatchEvent(new Event('input', { bubbles: true }));
+      modelInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
+
+    // 2. Очищаємо поле "Номер запчастини", щоб клієнт вписав свій артикул
+    const partInput = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
+    if (partInput) {
+      partInput.value = '';
+      partInput.dispatchEvent(new Event('input', { bubbles: true }));
+      partInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // 3. Плавно скролимо до форми та ставимо фокус на введення номера
     const rfq = document.getElementById('rfq');
     if (rfq) {
       rfq.scrollIntoView({ behavior: 'smooth' });
     }
+    setTimeout(() => {
+      if (partInput) {
+        partInput.focus();
+      }
+    }, 400);
   };
 
   return (
@@ -51,12 +67,12 @@ export default function BrandsSection() {
           </h2>
           <p className="text-slate-400 text-base max-w-2xl mx-auto">
             {isUk
-              ? 'Прямі контракти з британськими та європейськими дистриб’юторами. Натисніть на бренд для миттєвого запиту наявності.'
+              ? 'Прямі контракти з дистриб’юторами в Англії. Натисніть на бренд для автоматичного підбору в формі розрахунку.'
               : 'Direct supply lines across the UK distribution network. Click any manufacturer to request component matching.'}
           </p>
         </div>
 
-        {/* Сітка брендів */}
+        {/* Галерея брендів */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
           {brands.map((b) => (
             <div

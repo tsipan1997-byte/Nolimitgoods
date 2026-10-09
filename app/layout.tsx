@@ -1,60 +1,23 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
+import { Inter } from 'next/font/google';
 import './globals.css';
 
+const inter = Inter({ subsets: ['latin'] });
+
 export const metadata: Metadata = {
-  metadataBase: new URL('https://nolimitgoods.co.uk'),
-  title: {
-    default: 'NoLimitGoods | Heavy Machinery & Automotive Spare Parts Sourcing',
-    template: '%s | NoLimitGoods',
-  },
-  description:
-    'Global sourcing and rapid delivery of genuine & OEM spare parts for heavy machinery, construction equipment, and commercial vehicles. Direct procurement from UK & Europe.',
-  keywords: [
-    'heavy machinery spare parts',
-    'construction equipment parts',
-    'JCB spare parts UK',
-    'Caterpillar parts supplier',
-    'Komatsu genuine parts',
-    'Donaldson filters supply',
-    'industrial equipment sourcing',
-    'commercial vehicle parts export',
-    'OEM parts procurement',
-  ],
-  authors: [{ name: 'NoLimitGoods Ltd' }],
-  creator: 'NoLimitGoods',
-  publisher: 'NoLimitGoods',
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
+  title: 'NoLimitGoods | Запчастини до спецтехніки з Британії',
+  description: 'Прямий експортер оригінальних запчастин Donaldson, JCB, CAT, Perkins з хабу в Ковентрі (UK) в Україну. Офіційний інвойс 0% VAT, швидка доставка.',
+  icons: {
+    icon: '/icon',
+    apple: '/icon',
   },
   openGraph: {
+    title: 'NoLimitGoods | Запчастини до спецтехніки з Великобританії',
+    description: 'Оригінальні фільтри, мости, гідравліка та двигуни зі складу в Ковентрі (UK). Доставка 5–8 днів.',
+    url: 'https://nolimitgoods.com',
+    siteName: 'NoLimitGoods Limited',
+    locale: 'uk_UA',
     type: 'website',
-    locale: 'en_GB',
-    url: 'https://nolimitgoods.co.uk',
-    title: 'NoLimitGoods | Heavy Machinery & OEM Spare Parts Procurement',
-    description:
-      'Fast RFQ pricing, worldwide delivery, and sourcing of genuine equipment parts from top UK and EU distributors.',
-    siteName: 'NoLimitGoods',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'NoLimitGoods | Spare Parts Sourcing',
-    description:
-      'Request genuine and OEM parts for machinery & industrial vehicles with quick worldwide delivery.',
-  },
-  alternates: {
-    canonical: 'https://nolimitgoods.co.uk',
-  },
-  verification: {
-    google: 'gHruZQx_jM4aYST2XHYbUyCRpztaRf2N0YgkKGiQEsM',
   },
 };
 
@@ -64,20 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="antialiased min-h-screen bg-slate-900 text-white">
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-670192610"
-          strategy="afterInteractive"
-        />
-        <Script id="google-gtag" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'AW-670192610');
-          `}
-        </Script>
+    <html lang="uk" className="dark">
+      <head>
+        <link rel="icon" href="/icon" sizes="any" />
+      </head>
+      <body className={`${inter.className} bg-slate-950 text-white antialiased`}>
         {children}
       </body>
     </html>

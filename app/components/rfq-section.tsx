@@ -63,9 +63,19 @@ export default function RFQSection() {
   };
 
   const getWhatsAppLink = () => {
-    if (!calculation) return 'https://wa.me/380501400245';
+    if (!calculation) return 'https://wa.me/447426826595';
     const text = `Доброго дня! Хочу замовити деталь ${calculation.part} (${calculation.qty} шт). Орієнтовний розрахунок: ~£${calculation.total} (≈ ${getUahTotal()} грн).`;
-    return `https://wa.me/380501400245?text=${encodeURIComponent(text)}`;
+    return `https://wa.me/447426826595?text=${encodeURIComponent(text)}`;
+  };
+
+  const getViberLink = () => {
+    return 'viber://chat?number=%2B447426826595';
+  };
+
+  const getTelegramLink = () => {
+    if (!calculation) return 'https://t.me/+447426826595';
+    const text = `Доброго дня! Хочу замовити деталь ${calculation.part} (${calculation.qty} шт). Орієнтовний розрахунок: ~£${calculation.total}.`;
+    return `https://t.me/+447426826595?text=${encodeURIComponent(text)}`;
   };
 
   return (
@@ -133,16 +143,44 @@ export default function RFQSection() {
                 </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a
-                  href={getWhatsAppLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-md transition-colors"
-                >
-                  <MessageSquare className="w-5 h-5" />
-                  Підтвердити замовлення у WhatsApp
-                </a>
+              <div className="space-y-4 max-w-md mx-auto">
+                <p className="text-sm font-bold text-slate-800">
+                  Оберіть зручний месенджер для підтвердження або запитання:
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* Viber */}
+                  <a
+                    href={getViberLink()}
+                    className="flex items-center justify-center gap-2 bg-[#7360f2] hover:bg-[#604ec9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
+                  >
+                    <span className="text-base">🟣</span>
+                    <span>Viber</span>
+                  </a>
+
+                  {/* WhatsApp */}
+                  <a
+                    href={getWhatsAppLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  {/* Telegram */}
+                  <a
+                    href={getTelegramLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
+                  >
+                    <span className="text-base">🔵</span>
+                    <span>Telegram</span>
+                  </a>
+                </div>
+
                 <button
                   type="button"
                   onClick={() => {
@@ -150,109 +188,4 @@ export default function RFQSection() {
                     setCalculation(null);
                     setFormData({ partNumber: '', machineModel: '', quantity: '1', country: 'Україна', contact: '' });
                   }}
-                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3.5 px-6 rounded-lg transition-colors cursor-pointer"
-                >
-                  Розрахувати іншу деталь
-                </button>
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Каталожний номер деталі (Part Number) *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.partNumber}
-                    onChange={(e) => setFormData({ ...formData, partNumber: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="наприклад: P553004 або 32/925950"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Модель техніки або Бренд *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.machineModel}
-                    onChange={(e) => setFormData({ ...formData, machineModel: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="наприклад: JCB 3CX / Donaldson / CAT"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Кількість *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={formData.quantity}
-                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Країна доставки *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="Україна"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Контакт (WhatsApp або Номер телефону / Email) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.contact}
-                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                  className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                  placeholder="+380... або email@domain.com"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70 shadow-lg cursor-pointer"
-              >
-                {status === 'sending' ? (
-                  <span>Розраховуємо вартість...</span>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    <span>Отримати миттєвий розрахунок</span>
-                    <ArrowRight className="w-5 h-5 ml-1" />
-                  </>
-                )}
-              </button>
-
-              {status === 'error' && (
-                <p className="mt-4 text-red-600 text-center font-semibold">
-                  Виникла помилка. Перевірте дані або напишіть нам напряму у WhatsApp.
-                </p>
-              )}
-            </form>
-          )}
-        </motion.div>
-      </div>
-    </section>
-  );
-}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-

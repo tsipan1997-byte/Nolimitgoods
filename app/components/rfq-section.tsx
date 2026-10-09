@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Send, FileText, CheckCircle, MessageSquare, ArrowRight } from 'lucide-react';
@@ -149,43 +149,3 @@ export default function RFQSection() {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {/* Viber */}
-                  <a
-                    href={getViberLink()}
-                    className="flex items-center justify-center gap-2 bg-[#7360f2] hover:bg-[#604ec9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
-                  >
-                    <span className="text-base">🟣</span>
-                    <span>Viber</span>
-                  </a>
-
-                  {/* WhatsApp */}
-                  <a
-                    href={getWhatsAppLink()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>WhatsApp</span>
-                  </a>
-
-                  {/* Telegram */}
-                  <a
-                    href={getTelegramLink()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
-                  >
-                    <span className="text-base">🔵</span>
-                    <span>Telegram</span>
-                  </a>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStatus('idle');
-                    setCalculation(null);
-                    setFormData({ partNumber: '', machineModel: '', quantity: '1', country: 'Україна', contact: '' });
-                  }}
-                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-

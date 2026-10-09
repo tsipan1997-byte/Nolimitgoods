@@ -2,30 +2,100 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { useLanguage } from '@/lib/language-context';
-import { Filter, Fuel, Settings, Droplets, Cog, Thermometer, Zap, Truck } from 'lucide-react';
+import { 
+  Filter, 
+  Cpu, 
+  Wrench, 
+  Truck, 
+  Gauge, 
+  Disc, 
+  ArrowRight,
+  ShieldCheck
+} from 'lucide-react';
 
-const icons = [Filter, Fuel, Settings, Droplets, Cog, Thermometer, Zap, Truck];
+const categories = [
+  {
+    icon: Filter,
+    title: 'Filtration & Fluids',
+    desc: 'Air, oil, fuel and hydraulic filters (Donaldson, Fleetguard, MANN). Complete service kits.',
+    popular: 'Donaldson P553004, Baldwin, MANN',
+    preset: 'Filtration Kit (Oil/Air/Fuel)'
+  },
+  {
+    icon: Gauge,
+    title: 'Hydraulic Pumps & Valves',
+    desc: 'Main pumps, control valves, cylinders, seal kits (Rexroth, Parker, Kawasaki, Danfoss).',
+    popular: 'Bosch Rexroth A10VSO, Parker PV',
+    preset: 'Hydraulic Main Pump / Cylinder'
+  },
+  {
+    icon: Wrench,
+    title: 'Engine & Turbo Systems',
+    desc: 'Pistons, liners, gasket sets, turbochargers, injectors (Perkins, Cummins, CAT, Deutz).',
+    popular: 'Perkins 1104, Cummins QSB, CAT C-Series',
+    preset: 'Engine Overhaul Kit / Injectors'
+  },
+  {
+    icon: Disc,
+    title: 'Undercarriage & Tracks',
+    desc: 'Rubber tracks, steel track chains, rollers, idlers, sprockets for mini & heavy excavators.',
+    popular: 'JCB JS series, CAT 320, Komatsu PC',
+    preset: 'Rubber Tracks / Track Rollers'
+  },
+  {
+    icon: Truck,
+    title: 'Transmission & Axles',
+    desc: 'Driveline components, planetary gears, friction plates, differentials (Carraro, Dana, ZF).',
+    popular: 'Dana Spicer, Carraro 28.32, ZF Powershift',
+    preset: 'Transmission Gears / Axle Spares'
+  },
+  {
+    icon: Cpu,
+    title: 'Electrical & Sensors',
+    desc: 'Starters, alternators, controllers (ECU), wiring harnesses, pressure & temp sensors.',
+    popular: 'Denso, Bosch, Delco Remy 24V',
+    preset: 'Starter / Alternator / Sensor'
+  },
+];
 
 export default function PartsSection() {
-  const { t } = useLanguage();
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
 
+  const handleSelectCategory = (presetText: string) => {
+    const rfqElement = document.getElementById('rfq');
+    if (rfqElement) {
+      rfqElement.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    setTimeout(() => {
+      const inputs = document.querySelectorAll('input');
+      inputs.forEach((input) => {
+        if (input.placeholder && input.placeholder.toLowerCase().includes('p553004')) {
+          input.value = presetText;
+          input.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+      });
+    }, 400);
+  };
+
   return (
-    <section id="parts" className="py-20 bg-white">
+    <section id="parts" className="py-20 bg-slate-900 text-white border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-12"
+          className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            {t.partsSupply.title}
+          <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-red-600/20 text-red-400 text-xs font-bold uppercase tracking-wider mb-4 border border-red-500/30">
+            <ShieldCheck className="w-4 h-4" /> Direct UK & European Warehouses
+          </div>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
+            Heavy Machinery Spare Parts Categories
           </h2>
-          <p className="text-xl text-gray-600">
-            {t.partsSupply.subtitle}
+          <p className="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto">
+            Select a category below to instantly estimate procurement and express delivery from the UK.
           </p>
         </motion.div>
 
@@ -33,25 +103,39 @@ export default function PartsSection() {
           initial={{ opacity: 0 }}
           animate={inView ? { opacity: 1 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-6"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {t.partsSupply.items.map((item: string, index: number) => {
-            const Icon = icons[index % icons.length];
+          {categories.map((cat, idx) => {
+            const Icon = cat.icon;
             return (
               <motion.div
-                key={index}
+                key={cat.title}
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="bg-gray-50 rounded-xl p-6 hover:bg-red-50 hover:border-red-200 border-2 border-transparent transition-all duration-300 group"
+                transition={{ duration: 0.4, delay: idx * 0.08 }}
+                onClick={() => handleSelectCategory(cat.preset)}
+                className="group relative bg-slate-800/80 hover:bg-slate-800 rounded-2xl p-7 border border-slate-700/80 hover:border-red-500/80 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-red-500/10 flex flex-col justify-between"
               >
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center group-hover:bg-red-200 transition-colors">
-                    <Icon className="w-6 h-6 text-red-600" />
+                <div>
+                  <div className="w-14 h-14 rounded-xl bg-red-600/10 text-red-500 flex items-center justify-center mb-6 group-hover:bg-red-600 group-hover:text-white transition-colors duration-300">
+                    <Icon className="w-7 h-7" />
                   </div>
-                  <span className="font-semibold text-gray-800 group-hover:text-red-700 transition-colors">
-                    {item}
-                  </span>
+                  <h3 className="text-xl font-bold text-white mb-2 group-hover:text-red-400 transition-colors">
+                    {cat.title}
+                  </h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-4">
+                    {cat.desc}
+                  </p>
+                </div>
+
+                <div className="pt-4 border-t border-slate-700/60 mt-2">
+                  <div className="text-xs text-slate-500 mb-2 truncate">
+                    <span className="text-slate-400 font-semibold">Common:</span> {cat.popular}
+                  </div>
+                  <div className="flex items-center text-sm font-semibold text-red-400 group-hover:text-red-300">
+                    <span>Instant RFQ Estimation</span>
+                    <ArrowRight className="w-4 h-4 ml-1.5 transform group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
               </motion.div>
             );

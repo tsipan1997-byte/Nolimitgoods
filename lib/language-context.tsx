@@ -10,51 +10,42 @@ export interface LanguageContextType {
 }
 
 const defaultContext: LanguageContextType = {
-  language: 'ua' as Language,
+  language: 'uk',
   setLanguage: () => {},
-  t: (translations as any).ua || (translations as any).uk || (translations as any).en,
+  t: translations.uk,
 };
 
 export const LanguageContext = createContext<LanguageContextType>(defaultContext);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguage] = useState<Language>('ua' as Language);
-  const [mounted, setMounted] = useState(false);
+  const [language, setLanguageState] = useState<Language>('uk');
 
   useEffect(() => {
-    setMounted(true);
-    const savedLang = localStorage.getItem('language') as Language;
-    if (savedLang && (savedLang === 'en' || savedLang === 'ua' || (savedLang as any) === 'uk')) {
-      setLanguage(savedLang);
+    const saved = localStorage.getItem('site_language') as Language;
+    if (saved === 'en' || saved === 'uk') {
+      setLanguageState(saved);
     }
   }, []);
 
-  const handleSetLanguage = (lang: Language) => {
-    setLanguage(lang);
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('language', lang);
+      localStorage.setItem('site_language', lang);
     }
   };
 
-  const t =
-    (translations as any)[language] ||
-    (translations as any).ua ||
-    (translations as any).uk ||
-    (translations as any).en;
+  const t = translations[language] || translations.uk;
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
     </LanguageContext.Provider>
   );
 }
 
 export function useLanguage(): LanguageContextType {
-  const context = useContext(LanguageContext);
-  if (!context) {
-    return defaultContext;
-  }
-  return context;
+  const ctx = useContext(LanguageContext);
+  return ctx || defaultContext;
 }
 
 export default useLanguage;

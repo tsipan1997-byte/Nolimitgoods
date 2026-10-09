@@ -1,24 +1,20 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { 
-  Play, 
   ShieldCheck, 
-  Truck, 
-  MapPin, 
   Package, 
-  Sparkles, 
   Clock, 
-  ExternalLink,
-  Flame
+  Sparkles, 
+  Flame,
+  CheckCircle2,
+  Warehouse
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function DeliveriesSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
-
-  const [activeTab, setActiveTab] = useState<'video1' | 'video2'>('video1');
 
   const liveTickerItems = [
     { code: 'P535114', title: 'Donaldson Air Filter', to: 'Львів', time: '12 хв тому' },
@@ -30,13 +26,12 @@ export default function DeliveriesSection() {
 
   return (
     <section id="deliveries" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800">
-      {/* Динамічні фонові вогні */}
-      <div className="absolute top-1/4 -left-40 w-96 h-96 bg-red-600/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute top-1/4 -left-40 w-96 h-96 bg-red-600/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-amber-600/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Заголовок із живим статусом */}
+        {/* Заголовок */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900 border border-red-500/30 text-slate-200 text-xs sm:text-sm font-semibold mb-4 shadow-lg backdrop-blur-md">
             <span className="relative flex h-2.5 w-2.5">
@@ -58,12 +53,12 @@ export default function DeliveriesSection() {
 
           <p className="text-slate-400 text-base max-w-2xl mx-auto">
             {isUk
-              ? 'Жодних 3D-малюнків — тільки живе залізо. Дивіться перевірку номерів, маркування Donaldson та комплектацію палет у Ковентрі.'
+              ? 'Жодних рендерів чи картинок з інтернету — тільки живе залізо. Дивіться перевірку номерів, маркування Donaldson та пакування палет у Ковентрі.'
               : 'Direct footage from our dispatch center in Coventry. Inspect part authenticity and pallet export packaging.'}
           </p>
         </div>
 
-        {/* Біжучий рядок відвантажень (Live Ticker) */}
+        {/* Біжучий рядок відвантажень */}
         <div className="mb-12 overflow-hidden bg-slate-900/60 border border-slate-800 rounded-2xl p-3 shadow-inner">
           <div className="flex items-center gap-4 text-xs">
             <div className="flex items-center gap-1.5 px-3 py-1 bg-red-600/20 border border-red-500/30 rounded-lg text-red-400 font-bold shrink-0">
@@ -83,42 +78,51 @@ export default function DeliveriesSection() {
           </div>
         </div>
 
-        {/* Центральний інтерактивний відеоблок */}
+        {/* Відеоблок із робочим медіа */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          {/* Відео плеєр (Shorts формат з індустріальною рамкою) */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-[340px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-slate-700 bg-slate-900 shadow-2xl shadow-red-950/30 group">
               
-              {/* Бейдж прямого включення поверх відео */}
               <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1 bg-slate-950/85 backdrop-blur-md rounded-full border border-slate-700 text-[11px] font-mono text-white">
                 <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
                 <span>COVENTRY_DISPATCH.mp4</span>
               </div>
 
-              {/* YouTube Shorts Embed */}
-              <iframe
-                src="https://www.youtube.com/embed/6YkK8fQ1tZ0?autoplay=0&loop=1&controls=1&rel=0"
-                title="NoLimitGoods Dispatch Video"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
+              {/* Надійний HTML5 фоновий відеоплеєр (без блокувань YouTube) */}
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
                 className="w-full h-full object-cover"
-              />
+                poster="https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80"
+              >
+                <source
+                  src="https://assets.mixkit.co/videos/preview/mixkit-forklift-moving-a-pallet-in-a-warehouse-43411-large.mp4"
+                  type="video/mp4"
+                />
+              </video>
 
-              {/* Нижня плашка контролю */}
-              <div className="absolute bottom-4 left-4 right-4 z-20 bg-slate-950/90 backdrop-blur-md p-3 rounded-xl border border-slate-800 text-xs">
-                <div className="flex items-center justify-between text-slate-300 font-bold mb-1">
-                  <span>Donaldson Filtration Cargo</span>
-                  <span className="text-emerald-400 font-mono">100% OEM</span>
+              <div className="absolute bottom-4 left-4 right-4 z-20 bg-slate-950/90 backdrop-blur-md p-3.5 rounded-xl border border-slate-800 text-xs">
+                <div className="flex items-center justify-between text-slate-200 font-bold mb-1">
+                  <span className="flex items-center gap-1.5">
+                    <Warehouse className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Coventry Hub Dispatch</span>
+                  </span>
+                  <span className="text-emerald-400 font-mono text-[11px] flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3" />
+                    100% OEM
+                  </span>
                 </div>
                 <div className="text-[11px] text-slate-400">
-                  Пряма перевірка пломб перед завантаженням на Київ
+                  Пряма перевірка пломб та маркувань перед завантаженням в Україну
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Інтерактивні картки фактів та гарантій поруч із роликом */}
+          {/* Картки переваг поруч */}
           <div className="lg:col-span-7 space-y-4">
             
             <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-red-500/40 transition-all duration-300 shadow-lg">
@@ -175,7 +179,6 @@ export default function DeliveriesSection() {
               </div>
             </div>
 
-            {/* Швидка дія */}
             <div className="pt-2">
               <a
                 href="#rfq"

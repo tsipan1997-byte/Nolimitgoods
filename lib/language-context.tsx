@@ -10,7 +10,7 @@ interface LanguageContextType {
 }
 
 const defaultContext: LanguageContextType = {
-  language: 'en',
+  language: 'ua',
   setLanguage: () => {},
   t: translations.en,
 };

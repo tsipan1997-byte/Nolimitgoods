@@ -84,7 +84,7 @@ export default function Footer() {
           {/* Швидкі месенджери */}
           <div>
             <h4 className="text-white text-base font-semibold mb-4">
-              Зв'язок з директором
+              Зв'язок з менеджером
             </h4>
             <p className="text-xs text-slate-400 mb-4">
               Швидка консультація щодо замовлень та наявності:

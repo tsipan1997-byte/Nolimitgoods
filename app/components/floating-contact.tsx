@@ -3,14 +3,13 @@
 import { Phone, MessageCircle } from 'lucide-react';
 
 export default function FloatingContact() {
-  const whatsappNumber = '447426826595'; // Номер з контактів сайту
+  const whatsappNumber = '447426826595';
   const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
     'Hello! I need a quote for heavy equipment spare parts.'
   )}`;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end">
-      {/* WhatsApp кнопка */}
       <a
         href={waUrl}
         target="_blank"
@@ -22,7 +21,6 @@ export default function FloatingContact() {
         <span className="text-sm hidden sm:inline">WhatsApp Parts Quote</span>
       </a>
 
-      {/* Швидкий дзвінок */}
       <a
         href={`tel:+${whatsappNumber}`}
         aria-label="Call Us"

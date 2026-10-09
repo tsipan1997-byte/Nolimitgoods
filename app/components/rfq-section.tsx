@@ -64,8 +64,8 @@ export default function RFQSection() {
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/447426826595';
-    const text = `Доброго дня! Хочу замовити деталь ${calculation.part} (${calculation.qty} шт). Орієнтовний розрахунок: ~£${calculation.total} (≈ ${getUahTotal()} грн).`;
-    return `https://wa.me/447426826595?text=${encodeURIComponent(text)}`;
+    const msg = `Доброго дня! Хочу замовити деталь ${calculation.part} (${calculation.qty} шт). Розрахунок: ~£${calculation.total} (≈ ${getUahTotal()} грн).`;
+    return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
   const getViberLink = () => {
@@ -73,9 +73,7 @@ export default function RFQSection() {
   };
 
   const getTelegramLink = () => {
-    if (!calculation) return 'https://t.me/+447426826595';
-    const text = `Доброго дня! Хочу замовити деталь ${calculation.part} (${calculation.qty} шт). Орієнтовний розрахунок: ~£${calculation.total}.`;
-    return `https://t.me/+447426826595?text=${encodeURIComponent(text)}`;
+    return 'https://t.me/+447426826595';
   };
 
   return (
@@ -95,7 +93,7 @@ export default function RFQSection() {
             {t.rfq.title}
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Миттєвий онлайн-розрахунок вартості та пряме постачання запчастин з Британії та Європи
+            {t.rfq.subtitle}
           </p>
         </motion.div>
 
@@ -149,3 +147,145 @@ export default function RFQSection() {
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <a
+                    href={getViberLink()}
+                    className="flex items-center justify-center gap-2 bg-[#7360f2] hover:bg-[#604ec9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
+                  >
+                    <span>🟣</span>
+                    <span>Viber</span>
+                  </a>
+
+                  <a
+                    href={getWhatsAppLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  <a
+                    href={getTelegramLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
+                  >
+                    <span>🔵</span>
+                    <span>Telegram</span>
+                  </a>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStatus('idle');
+                    setCalculation(null);
+                    setFormData({ partNumber: '', machineModel: '', quantity: '1', country: 'Україна', contact: '' });
+                  }}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-6 rounded-xl transition-colors cursor-pointer text-sm mt-3"
+                >
+                  Розрахувати іншу деталь
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {t.rfq.form.partNumber} *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.partNumber}
+                    onChange={(e) => setFormData({ ...formData, partNumber: e.target.value })}
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="наприклад: P553004 або 32/925950"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {t.rfq.form.machineModel} *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.machineModel}
+                    onChange={(e) => setFormData({ ...formData, machineModel: e.target.value })}
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="наприклад: JCB 3CX / Donaldson / CAT"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {t.rfq.form.quantity} *
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={formData.quantity}
+                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    {t.rfq.form.country} *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.country}
+                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="Україна"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  {t.rfq.form.contact} *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.contact}
+                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                  className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                  placeholder="+380... або email@domain.com"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70 shadow-lg cursor-pointer"
+              >
+                {status === 'sending' ? (
+                  <span>{t.rfq.form.sending}</span>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    <span>{t.rfq.form.submit}</span>
+                    <ArrowRight className="w-5 h-5 ml-1" />
+                  </>
+                )}
+              </button>
+
+              {status === 'error' && (
+                <p className="mt-4 text-red-600 text-center font-semibold">
+                  {t.rfq.form.error}
+                </p>
+              )}
+            </form>
+          )}
+        </motion.div>
+      </div>
+    </section>
+  );
+}

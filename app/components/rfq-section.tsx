@@ -1,7 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, MessageSquare, ArrowRight, Calculator, Printer, FileText, Loader2, Search, Box, Clock, CreditCard, ShieldCheck } from 'lucide-react';
+import {
+  CheckCircle,
+  MessageSquare,
+  ArrowRight,
+  Calculator,
+  Printer,
+  FileText,
+  Loader2,
+  Search,
+  Box,
+  Clock,
+  CreditCard,
+  ShieldCheck,
+} from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function RFQSection() {
@@ -101,7 +114,6 @@ export default function RFQSection() {
 
       setSearchStep('3/3 Обробка результатів пошуку...');
 
-      // Якщо деталь не підтверджена зі 100% точністю — переводимо в статус WAIT FOR RFQ
       if (!data.found || data.status === 'wait_for_rfq') {
         setStatus('wait_for_rfq');
         return;
@@ -122,7 +134,6 @@ export default function RFQSection() {
       setStatus('success');
     } catch (err) {
       console.error('B2B calculation error:', err);
-      // БІЛЬШЕ НІЯКИХ ЗАШИТИХ ФЕЙКОВИХ ЦІН! Якщо помилка — відправляємо до менеджера:
       setStatus('wait_for_rfq');
     }
   };
@@ -209,7 +220,10 @@ export default function RFQSection() {
             <div className="py-16 text-center space-y-6">
               <div className="relative w-20 h-20 mx-auto">
                 <div className="absolute inset-0 rounded-full border-4 border-red-600/20 border-t-red-600 animate-spin" />
-                <div className="absolute inset-2 rounded-full border-4 border-amber-500/20 border-b-amber-500 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+                <div
+                  className="absolute inset-2 rounded-full border-4 border-amber-500/20 border-b-amber-500 animate-spin"
+                  style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}
+                />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Search className="w-7 h-7 text-white animate-pulse" />
                 </div>
@@ -413,7 +427,7 @@ export default function RFQSection() {
                 </div>
               </div>
 
-              {/* Оплата карткою онлайн */}
+              {/* Блок онлайн-оплати карткою */}
               <div className="max-w-md mx-auto space-y-3 mb-6">
                 <button
                   type="button"
@@ -562,4 +576,25 @@ export default function RFQSection() {
               <button
                 type="submit"
                 disabled={status === 'searching'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-3
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 text-base sm:text-lg disabled:opacity-70 shadow-lg cursor-pointer"
+              >
+                {status === 'searching' ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Сканування підтверджених складів UK...</span>
+                  </>
+                ) : (
+                  <>
+                    <Box className="w-5 h-5" />
+                    <span>{isUk ? 'Запустити B2B-агента та отримати інвойс' : 'Launch B2B Agent & Generate Invoice'}</span>
+                    <ArrowRight className="w-5 h-5 ml-1" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}

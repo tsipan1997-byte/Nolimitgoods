@@ -56,9 +56,11 @@ export default function RFQSection() {
   const totalUAH = calculation ? Math.round(Number(calculation.total) * revolutRate).toLocaleString('uk-UA') : '0';
   const unitUAH = calculation ? Math.round(Number(calculation.unitPrice) * revolutRate).toLocaleString('uk-UA') : '0';
 
-  const managerWhatsApp = `https://wa.me/380501400245?text=${encodeURIComponent(
-    `Доброго дня, NoLimitGoods! Хочу підтвердити замовлення:\nДеталь: ${calculation?.part}\nКількість: ${calculation?.qty} шт.\nОрієнтовна вартість: ~£${calculation?.total} (≈${totalUAH} грн за курсом Revolut).\nПрошу уточнити наявність та реквізити для оплати.`
-  )}`;
+  const waText = calculation
+    ? `Доброго дня, NoLimitGoods! Хочу замовити деталь: ${calculation.part}, Кількість: ${calculation.qty} шт. Орієнтовна вартість: ~£${calculation.total} (≈ ${totalUAH} грн за курсом Revolut). Уточніть наявність та реквізити.`
+    : 'Доброго дня! Хочу уточнити вартість запчастини.';
+
+  const managerWhatsApp = `https://wa.me/380501400245?text=${encodeURIComponent(waText)}`;
 
   return (
     <section id="rfq" className="py-20 bg-gradient-to-br from-red-600 to-red-700">
@@ -103,45 +105,13 @@ export default function RFQSection() {
                 <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">
                   Total Estimated Price (incl. delivery)
                 </div>
-                
+
                 <div className="text-4xl font-black text-red-600 tracking-tight my-1">
                   ~£{calculation.total}
                 </div>
-                
+
                 <div className="text-xl font-bold text-slate-800 mb-2">
                   ≈ {totalUAH} грн
                 </div>
 
-                <div className="text-sm font-medium text-slate-600 pt-2 border-t border-slate-200">
-                  Approx. £{calculation.unitPrice} (≈ {unitUAH} грн) / item ({calculation.qty} pcs)
-                </div>
-
-                <div className="inline-block mt-3 px-3 py-1 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-800 font-medium">
-                  Оплата: Revolut Pay, IBAN або картка (курс Revolut ~56 грн/£)
-                </div>
-
-                <p className="text-xs text-slate-400 mt-2">
-                  * Final invoice verified by procurement manager before payment.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a
-                  href={managerWhatsApp}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-md transition-colors"
-                >
-                  <MessageSquare className="w-5 h-5" />
-                  Підтвердити замовлення у WhatsApp
-                </a>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStatus('idle');
-                    setCalculation(null);
-                    setFormData({ partNumber: '', machineModel: '', quantity: '1', country: '', contact: '' });
-                  }}
-                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3.5 px-6 rounded-lg transition-colors"
-                >
-                  Calculate
+                <div className="text-sm font-medium text-slate-6

@@ -4,7 +4,6 @@ import FeaturesSection from './components/features-section';
 import RFQSection from './components/rfq-section';
 import BrandsSection from './components/brands-section';
 import PartsSection from './components/parts-section';
-import TrustSection from '@/components/trust-section';
 import ClientsSection from './components/clients-section';
 import WhyUsSection from './components/why-us-section';
 import ContactSection from './components/contact-section';
@@ -21,7 +20,6 @@ export default function Home() {
       <RFQSection />
       <BrandsSection />
       <PartsSection />
-      <TrustSection />
       <ClientsSection />
       <WhyUsSection />
       <ContactSection />

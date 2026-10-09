@@ -1,46 +1,44 @@
 'use client';
 
-import { LanguageProvider } from '@/lib/language-context';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
 import RFQSection from './components/rfq-section';
+import DeliveriesSection from './components/deliveries-section';
 import PartsSection from './components/parts-section';
 import BrandsSection from './components/brands-section';
-import DeliveriesSection from './components/deliveries-section';
-import FeaturesSection from './components/features-section';
-import ContactSection from './components/contact-section';
+import LegalSection from './components/legal-section';
 import Footer from './components/footer';
-import WhatsAppButton from './components/whatsapp-button';
+import FloatingContact from './components/floating-contact';
 
 export default function Home() {
   return (
-    <LanguageProvider>
-      <main className="min-h-screen bg-slate-950 text-white">
-        <Header />
-        
-        {/* 1. ПЕРШИМ ЗАВЖДИ ЙДЕ ГОЛОВНИЙ ЕКРАН HERO */}
-        <HeroSection />
+    <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-red-500 selection:text-white">
+      {/* 1. Шапка з навігацією та перемикачем мов */}
+      <Header />
 
-        {/* 2. Калькулятор розрахунку ціни (RFQ) */}
-        <RFQSection />
+      {/* 2. Головний екран із пошуком та популярними кодами */}
+      <HeroSection />
 
-        {/* 3. Каталог 10 деталей із цінами */}
-        <PartsSection />
+      {/* 3. Калькулятор вартості, тарифів Nova Post та генератор інвойсу */}
+      <RFQSection />
 
-        {/* 4. Бренди OEM */}
-        <BrandsSection />
+      {/* 4. Відеозвіт доставки (YouTube Shorts із розвантаженням) */}
+      <DeliveriesSection />
 
-        {/* 5. Відео зі складу */}
-        <DeliveriesSection />
+      {/* 5. Каталог деталей (сітка 3х3) */}
+      <PartsSection />
 
-        {/* 6. Покрокова логістика */}
-        <FeaturesSection />
+      {/* 6. Бренди OEM техніки */}
+      <BrandsSection />
 
-        {/* 7. Контакти та футер */}
-        <ContactSection />
-        <Footer />
-        <WhatsAppButton />
-      </main>
-    </LanguageProvider>
+      {/* 7. Офіційні юридичні реквізити NoLimitGoods Limited */}
+      <LegalSection />
+
+      {/* 8. Підвал сайту */}
+      <Footer />
+
+      {/* Плаваюча кнопка швидкого зв'язку в кутку */}
+      <FloatingContact />
+    </main>
   );
 }

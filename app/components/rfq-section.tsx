@@ -104,7 +104,7 @@ export default function RFQSection() {
         }),
       });
 
-      setSearchStep('2/3 Сканування наявності та специфікацій у магазинах UK...');
+      setSearchStep('2/3 Сканування наявності та специфікацій у каталогах UK...');
 
       if (!res.ok) {
         throw new Error(`HTTP error ${res.status}`);
@@ -159,7 +159,7 @@ export default function RFQSection() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert(data.error || 'Помилка платіжного шлюзу. Зверніться до диспатчера.');
+        alert(data.error || 'Помилка платіжного шлюзу. Зв’яжіться з офісом NoLimitGoods.');
       }
     } catch (err) {
       console.error('Payment error:', err);
@@ -175,13 +175,13 @@ export default function RFQSection() {
   };
 
   const getWaitWhatsAppLink = () => {
-    const msg = `Доброго дня! Мій запит (WAIT FOR RFQ): деталь ${partNumber} (${machineModel}) у кількості ${quantity} шт. Прошу уточнити наявність та фінальну ціну зі складу в Ковентрі. Мій контакт: ${contact}`;
+    const msg = `Доброго дня! Запит (STATUS: WAIT FOR RFQ): деталь ${partNumber} (${machineModel}), кількість: ${quantity} шт. Прошу надати комерційну пропозицію від офісу NoLimitGoods Ltd (Ковентрі). Контакт для зв'язку: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/447426826595';
-    const msg = `Доброго дня! Підтверджую замовлення ${calculation.invoiceNumber}: ${calculation.part} (${machineModel}) — ${calculation.qty} шт. Доставка: ${calculation.parcelTypeLabel} — £${calculation.shippingCost}. Разом: £${calculation.total} (≈ ${getUahTotal()} грн). Мій телефон: ${contact}`;
+    const msg = `Доброго дня! Підтверджую рахунок ${calculation.invoiceNumber}: ${calculation.part} (${machineModel}) — ${calculation.qty} шт. Доставка: ${calculation.parcelTypeLabel} — £${calculation.shippingCost}. Разом: £${calculation.total} (≈ ${getUahTotal()} грн). Контакт: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
@@ -210,7 +210,7 @@ export default function RFQSection() {
           </h2>
           <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {isUk
-              ? 'Агент сканує підтверджені склади у Великобританії в реальному часі. Якщо позиція відсутня або вимагає підбору за VIN — запит передається диспатчеру.'
+              ? 'Агент сканує підтверджені склади у Великобританії в реальному часі. Якщо позиція потребує індивідуального підбору — запит передається в офіс у Ковентрі.'
               : 'Direct pricing connected to Coventry warehouse stocks. Zero UK export VAT.'}
           </p>
         </div>
@@ -253,12 +253,12 @@ export default function RFQSection() {
                   STATUS: WAIT FOR RFQ
                 </span>
                 <h3 className="text-2xl font-black text-white mb-2">
-                  {isUk ? 'Запит передано логісту в Ковентрі' : 'Transferred to Coventry Dispatch'}
+                  {isUk ? 'Запит прийнято в обробку (Хаб Ковентрі)' : 'Transferred to Coventry Office'}
                 </h3>
                 <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
                   {isUk
-                    ? `Для позиції «${partNumber}» потрібна точна перевірка за специфікацією OEM. Ми не генеруємо неточних цифр. Черговий інженер зв'яжеться з вами з остаточною пропозицією.`
-                    : 'This part requires manual verification by UK dispatch. An official quotation will be provided directly.'}
+                    ? `Для позиції «${partNumber}» проводиться індивідуальна звірка складських залишків у Великобританії. Комерційну пропозицію з гарантованою ціною буде підготовлено офісом NoLimitGoods.`
+                    : 'This position requires individual catalog verification in the UK. An official quotation will be provided directly.'}
                 </p>
               </div>
 
@@ -268,7 +268,7 @@ export default function RFQSection() {
                   <span className="font-mono text-white font-bold">{partNumber}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
-                  <span>Техніка:</span>
+                  <span>Техніка / Вузол:</span>
                   <span className="text-white">{machineModel || 'Спецтехніка'}</span>
                 </div>
                 <div className="flex justify-between text-slate-400">
@@ -289,7 +289,7 @@ export default function RFQSection() {
                   className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  <span>Уточнити у чергового логіста (WhatsApp UK)</span>
+                  <span>Зв’язатися з офісом у Ковентрі (WhatsApp UK)</span>
                 </a>
 
                 <button
@@ -466,7 +466,7 @@ export default function RFQSection() {
               {/* Месенджери */}
               <div className="space-y-4 max-w-md mx-auto text-center border-t border-slate-800 pt-6">
                 <p className="text-xs text-slate-400">
-                  Або підтвердіть рахунок для безготівкової оплати (IBAN/SWIFT):
+                  Або узгодьте реквізити для безготівкової оплати (IBAN/SWIFT) з офісом у Ковентрі:
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

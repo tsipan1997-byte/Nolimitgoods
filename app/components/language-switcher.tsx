@@ -20,40 +20,54 @@ export default function LanguageSwitcher() {
   }, []);
 
   const languages = [
-    { code: 'en' as const, label: 'English', flag: '🇬🇧' },
-    { code: 'uk' as const, label: 'Українська', flag: '🇺🇦' },
+    { code: 'uk' as const, displayCode: 'UA', label: 'Українська', flag: '🇺🇦' },
+    { code: 'en' as const, displayCode: 'EN', label: 'English', flag: '🇬🇧' },
   ];
 
-  const currentLang = languages.find(l => l.code === language) || languages[0];
+  // Співставляємо з урахуванням 'uk', 'ua' та ставимо українську за замовчуванням
+  const currentLang =
+    languages.find(
+      (l) => l.code === language || (language === 'ua' && l.code === 'uk')
+    ) || languages[0];
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700 border border-gray-200"
+        className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700 border border-gray-200 cursor-pointer"
         aria-label="Select language"
       >
-        <Globe className="w-4 h-4" />
-        <span className="text-sm font-medium">{currentLang.flag} {currentLang.code.toUpperCase()}</span>
+        <Globe className="w-4 h-4 text-gray-500" />
+        <span className="text-sm font-semibold">
+          {currentLang.flag} {currentLang.displayCode}
+        </span>
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50">
-          {languages.map((lang) => (
-            <button
-              key={lang.code}
-              onClick={() => {
-                setLanguage(lang.code);
-                setIsOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
-                language === lang.code ? 'bg-blue-50 text-blue-700' : 'text-gray-700'
-              }`}
-            >
-              <span className="text-lg">{lang.flag}</span>
-              <span className="text-sm font-medium">{lang.label}</span>
-            </button>
-          ))}
+        <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50">
+          {languages.map((lang) => {
+            const isSelected =
+              language === lang.code || (language === 'ua' && lang.code === 'uk');
+
+            return (
+              <button
+                key={lang.code}
+                type="button"
+                onClick={() => {
+                  setLanguage(lang.code as any);
+                  setIsOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${
+                  isSelected
+                    ? 'bg-red-50 text-red-600 font-bold'
+                    : 'text-gray-700 hover:bg-gray-50 font-medium'
+                }`}
+              >
+                <span className="text-lg">{lang.flag}</span>
+                <span className="text-sm">{lang.label}</span>
+              </button>
+            );
+          })}
         </div>
       )}
     </div>

@@ -1,220 +1,222 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Phone, Mail, MapPin, Clock, Send, MessageSquare } from 'lucide-react';
+import React from 'react';
+import { 
+  Building2, 
+  MapPin, 
+  Phone, 
+  Mail, 
+  MessageSquare, 
+  Clock, 
+  ShieldCheck, 
+  FileText,
+  ExternalLink
+} from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function ContactSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    company: '',
-    phone: '',
-    message: '',
-  });
-  const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('sending');
-    try {
-      const res = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
-      });
-      if (res.ok) {
-        setStatus('success');
-        setForm({ name: '', email: '', company: '', phone: '', message: '' });
-      } else {
-        setStatus('error');
-      }
-    } catch {
-      setStatus('error');
-    }
-  };
-
   return (
-    <section id="contact" className="py-20 bg-slate-50 text-slate-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
-          {/* Левая колонка: Контактные данные */}
-          <div className="lg:col-span-5 space-y-8">
-            <div>
-              <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
-                {isUk ? 'Контактна інформація' : 'Contact Information'}
-              </h2>
-              <p className="text-slate-600 text-sm">
-                {isUk
-                  ? 'Зв’яжіться з нашим офісом у Ковентрі напряму через месенджери або форму зворотного зв’язку.'
-                  : 'Contact our Coventry office directly via instant messengers or the enquiry form.'}
-              </p>
-            </div>
+    <section id="contact" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-red-600/10 blur-3xl pointer-events-none" />
 
-            <div className="space-y-6">
-              {/* Телефон и мессенджеры */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <Phone className="w-6 h-6" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Заголовок */}
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs sm:text-sm font-semibold mb-4">
+            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+            <span>{isUk ? 'Офіційні контакти та юридичні реквізити' : 'Official Corporate Contacts & UK Legal Data'}</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4 text-white">
+            {isUk ? (
+              <>Звʼяжіться з нашим <span className="text-red-500">хабом у Великобританії</span></>
+            ) : (
+              <>Direct Contact with <span className="text-red-500">Our UK Hub</span></>
+            )}
+          </h2>
+          <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+            {isUk
+              ? 'Консультуємо щодо підбору номерів деталей Donaldson, JCB, Perkins, узгоджуємо контракти та відвантажуємо щотижня.'
+              : 'Direct liaison with our Coventry dispatch office. Fast quoting, T1 documentation, and European transit support.'}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          {/* Ліва колонка: Юридичний паспорт компанії NoLimitGoods Limited */}
+          <div className="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-md">
+            <div className="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-red-600/20 border border-red-500/30 flex items-center justify-center text-red-500">
+                  <Building2 className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900">{isUk ? 'Телефон' : 'Phone'}</h4>
-                  <p className="text-base font-semibold text-slate-800 mt-0.5">+44 7426 826595</p>
-                  <div className="flex items-center gap-3 mt-1.5 text-xs font-medium">
-                    <a href="https://wa.me/447426826595" target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline">
-                      🟢 WhatsApp
-                    </a>
-                    <a href="https://t.me/+447426826595" target="_blank" rel="noreferrer" className="text-sky-600 hover:underline">
-                      🔵 Telegram
-                    </a>
-                    <a href="viber://chat?number=%2B447426826595" className="text-purple-600 hover:underline">
-                      🟣 Viber
-                    </a>
-                  </div>
+                  <h3 className="text-xl font-black text-white">NoLimitGoods Limited</h3>
+                  <p className="text-xs text-amber-400 font-mono">Incorporated in England & Wales</p>
                 </div>
               </div>
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                Active / Verified
+              </span>
+            </div>
 
-              {/* Email */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <Mail className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">Email</h4>
-                  <a href="mailto:sales@nolimitgoods.co.uk" className="text-base font-medium text-slate-700 hover:text-blue-600 transition-colors">
-                    sales@nolimitgoods.co.uk
+            {/* Таблиця реквізитів */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6 text-xs sm:text-sm">
+              <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-850">
+                <span className="text-slate-500 block text-[11px] font-semibold uppercase tracking-wider mb-0.5">
+                  Company Number (UK):
+                </span>
+                <span className="text-white font-mono font-bold text-sm">13146899</span>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-850">
+                <span className="text-slate-500 block text-[11px] font-semibold uppercase tracking-wider mb-0.5">
+                  UK VAT Registration:
+                </span>
+                <span className="text-white font-mono font-bold text-sm">GB 372 6541 87</span>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-850">
+                <span className="text-slate-500 block text-[11px] font-semibold uppercase tracking-wider mb-0.5">
+                  EORI Number (Customs):
+                </span>
+                <span className="text-white font-mono font-bold text-sm">GB079878335000</span>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-950/80 border border-slate-850">
+                <span className="text-slate-500 block text-[11px] font-semibold uppercase tracking-wider mb-0.5">
+                  Managing Director:
+                </span>
+                <span className="text-white font-bold text-sm">Ivan Tsipan</span>
+              </div>
+            </div>
+
+            {/* Адреса */}
+            <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-850 flex items-start gap-3.5 mb-6">
+              <MapPin className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+              <div>
+                <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+                  {isUk ? 'Юридична та складська адреса:' : 'Registered Office & Dispatch Hub:'}
+                </span>
+                <p className="text-sm font-medium text-slate-200">
+                  374 Hipsell Highway, Coventry, West Midlands, CV2 5FR, United Kingdom
+                </p>
+              </div>
+            </div>
+
+            {/* Податковий статус */}
+            <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200/90 leading-relaxed">
+              <span className="font-bold text-amber-300">Прямий експорт (0% UK VAT): </span>
+              {isUk 
+                ? 'Для українських підприємств рахунки виставляються за нульовою ставкою британського ПДВ (0% Export VAT) на підставі митної декларації T1 / DOUANE.'
+                : 'Zero-rated VAT applicable for compliant export freights outside the UK jurisdiction.'}
+            </div>
+          </div>
+
+          {/* Права колонка: Швидкі кнопки прямого звʼязку */}
+          <div className="lg:col-span-5 space-y-4">
+            
+            {/* Телефон / WhatsApp */}
+            <div className="p-6 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-xl">
+              <h4 className="text-base font-bold text-white mb-4 flex items-center gap-2">
+                <Clock className="w-4 h-4 text-amber-400" />
+                <span>{isUk ? 'Миттєвий звʼязок з менеджером' : 'Direct Dispatch Desk'}</span>
+              </h4>
+
+              <div className="space-y-3">
+                <a
+                  href="tel:+447426826595"
+                  className="flex items-center justify-between p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-white transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-red-600/20 text-red-400 flex items-center justify-center">
+                      <Phone className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] text-slate-400 block font-medium">Телефон хабу (UK):</span>
+                      <span className="font-mono font-bold text-sm text-white group-hover:text-red-400 transition-colors">
+                        +44 7426 826595
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors" />
+                </a>
+
+                <a
+                  href="mailto:nolimitgoods@gmail.com"
+                  className="flex items-center justify-between p-3.5 rounded-xl bg-slate-950 hover:bg-slate-800/80 border border-slate-800 text-white transition-colors group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-amber-600/20 text-amber-400 flex items-center justify-center">
+                      <Mail className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[11px] text-slate-400 block font-medium">Офіційний Email:</span>
+                      <span className="font-mono font-bold text-sm text-white group-hover:text-amber-400 transition-colors">
+                        nolimitgoods@gmail.com
+                      </span>
+                    </div>
+                  </div>
+                  <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-white transition-colors" />
+                </a>
+              </div>
+
+              {/* Месенджери в 3 кнопки */}
+              <div className="mt-5 pt-5 border-t border-slate-850">
+                <span className="text-xs text-slate-400 font-semibold block mb-3">
+                  {isUk ? 'Напишіть у зручний месенджер:' : 'Chat directly in messenger:'}
+                </span>
+
+                <div className="grid grid-cols-3 gap-2">
+                  <a
+                    href="viber://chat?number=%2B447426826595"
+                    className="py-3 rounded-xl bg-[#7360f2] hover:bg-[#6350e0] text-white font-bold text-xs flex flex-col items-center justify-center gap-1 transition-transform active:scale-95 shadow-md"
+                  >
+                    <span className="text-sm">🟣</span>
+                    <span>Viber</span>
+                  </a>
+
+                  <a
+                    href="https://wa.me/447426826595"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex flex-col items-center justify-center gap-1 transition-transform active:scale-95 shadow-md"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  <a
+                    href="https://t.me/+447426826595"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-3 rounded-xl bg-[#229ED9] hover:bg-[#1d8dbf] text-white font-bold text-xs flex flex-col items-center justify-center gap-1 transition-transform active:scale-95 shadow-md"
+                  >
+                    <span className="text-sm">🔵</span>
+                    <span>Telegram</span>
                   </a>
                 </div>
               </div>
 
-              {/* Новый адрес */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <MapPin className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">{isUk ? 'Адреса' : 'Address'}</h4>
-                  <p className="text-base text-slate-700 font-medium leading-relaxed">
-                    374 Hipsell Highway<br />
-                    Coventry, CV2 5FR, United Kingdom
-                  </p>
-                </div>
-              </div>
-
-              {/* График работы */}
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
-                  <Clock className="w-6 h-6" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-slate-900">{isUk ? 'Робочі години' : 'Working Hours'}</h4>
-                  <p className="text-sm text-slate-600 font-medium">
-                    {isUk ? 'Пн – Пт: 9:00 – 18:00 (UK time)' : 'Mon – Fri: 9:00 – 18:00 (UK time)'}
-                  </p>
-                </div>
-              </div>
             </div>
-          </div>
 
-          {/* Правая колонка: Форма отправки */}
-          <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-slate-200">
-            {status === 'success' ? (
-              <div className="text-center py-12">
-                <div className="w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Send className="w-6 h-6" />
-                </div>
-                <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                  {isUk ? 'Повідомлення надіслано!' : 'Message Sent!'}
-                </h3>
-                <p className="text-slate-600 text-sm">
-                  {isUk ? 'Менеджер зв’яжеться з вами найближчим часом.' : 'Our team will contact you shortly.'}
-                </p>
+            {/* Бейдж графіка роботи */}
+            <div className="p-4 rounded-2xl bg-slate-900/60 border border-slate-800 text-xs text-slate-400 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                <span>Графік комплектації: Пн–Пт, 08:00–18:00 (GMT)</span>
               </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                      {isUk ? "Повне ім'я *" : 'Full Name *'}
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={form.name}
-                      onChange={(e) => setForm({ ...form, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 outline-none text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={form.email}
-                      onChange={(e) => setForm({ ...form, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 outline-none text-sm"
-                    />
-                  </div>
-                </div>
+              <span className="font-mono text-slate-500">Coventry, UK</span>
+            </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                      {isUk ? 'Назва компанії' : 'Company Name'}
-                    </label>
-                    <input
-                      type="text"
-                      value={form.company}
-                      onChange={(e) => setForm({ ...form, company: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 outline-none text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                      {isUk ? 'Номер телефону' : 'Phone Number'}
-                    </label>
-                    <input
-                      type="text"
-                      value={form.phone}
-                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 outline-none text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase mb-1.5">
-                    {isUk ? 'Ваше повідомлення *' : 'Your Message *'}
-                  </label>
-                  <textarea
-                    rows={4}
-                    required
-                    value={form.message}
-                    onChange={(e) => setForm({ ...form, message: e.target.value })}
-                    placeholder={isUk ? 'Розкажіть нам про ваші потреби в деталях або доставці...' : 'Describe your parts or logistics request...'}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-red-500 outline-none text-sm"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={status === 'sending'}
-                  className="w-full bg-[#f95721] hover:bg-[#e04815] text-white font-bold py-3.5 px-6 rounded-xl transition-colors shadow-lg flex items-center justify-center gap-2 cursor-pointer text-base disabled:opacity-70"
-                >
-                  <Send className="w-5 h-5" />
-                  <span>{status === 'sending' ? (isUk ? 'Надсилання...' : 'Sending...') : (isUk ? 'Надіслати повідомлення' : 'Send Message')}</span>
-                </button>
-              </form>
-            )}
           </div>
 
         </div>
+
       </div>
     </section>
   );

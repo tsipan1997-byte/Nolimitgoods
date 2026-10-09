@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import FloatingContact from '@/components/floating-contact';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://nolimitgoods.co.uk'),
@@ -64,7 +63,6 @@ export default function RootLayout({
     <html lang="en">
       <body className="antialiased min-h-screen bg-slate-900 text-white">
         {children}
-        <FloatingContact />
       </body>
     </html>
   );

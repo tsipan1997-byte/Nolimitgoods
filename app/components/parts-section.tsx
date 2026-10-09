@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { 
@@ -12,54 +13,69 @@ import {
   ArrowRight,
   ShieldCheck
 } from 'lucide-react';
-
-const categories = [
-  {
-    icon: Filter,
-    title: 'Filtration & Fluids',
-    desc: 'Air, oil, fuel and hydraulic filters (Donaldson, Fleetguard, MANN). Complete service kits.',
-    popular: 'Donaldson P553004, Baldwin, MANN',
-    preset: 'Filtration Kit (Oil/Air/Fuel)'
-  },
-  {
-    icon: Gauge,
-    title: 'Hydraulic Pumps & Valves',
-    desc: 'Main pumps, control valves, cylinders, seal kits (Rexroth, Parker, Kawasaki, Danfoss).',
-    popular: 'Bosch Rexroth A10VSO, Parker PV',
-    preset: 'Hydraulic Main Pump / Cylinder'
-  },
-  {
-    icon: Wrench,
-    title: 'Engine & Turbo Systems',
-    desc: 'Pistons, liners, gasket sets, turbochargers, injectors (Perkins, Cummins, CAT, Deutz).',
-    popular: 'Perkins 1104, Cummins QSB, CAT C-Series',
-    preset: 'Engine Overhaul Kit / Injectors'
-  },
-  {
-    icon: Disc,
-    title: 'Undercarriage & Tracks',
-    desc: 'Rubber tracks, steel track chains, rollers, idlers, sprockets for mini & heavy excavators.',
-    popular: 'JCB JS series, CAT 320, Komatsu PC',
-    preset: 'Rubber Tracks / Track Rollers'
-  },
-  {
-    icon: Truck,
-    title: 'Transmission & Axles',
-    desc: 'Driveline components, planetary gears, friction plates, differentials (Carraro, Dana, ZF).',
-    popular: 'Dana Spicer, Carraro 28.32, ZF Powershift',
-    preset: 'Transmission Gears / Axle Spares'
-  },
-  {
-    icon: Cpu,
-    title: 'Electrical & Sensors',
-    desc: 'Starters, alternators, controllers (ECU), wiring harnesses, pressure & temp sensors.',
-    popular: 'Denso, Bosch, Delco Remy 24V',
-    preset: 'Starter / Alternator / Sensor'
-  },
-];
+import { useLanguage } from '@/lib/language-context';
 
 export default function PartsSection() {
+  const { language } = useLanguage();
+  const isUk = language === 'uk' || (language as string) === 'ua';
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+
+  const categories = [
+    {
+      icon: Filter,
+      title: isUk ? 'Фільтрація та рідини' : 'Filtration & Fluids',
+      desc: isUk
+        ? 'Повітряні, масляні, паливні та гідравлічні фільтри (Donaldson, Fleetguard, MANN). Комплекти ТО.'
+        : 'Air, oil, fuel and hydraulic filters (Donaldson, Fleetguard, MANN). Complete service kits.',
+      popular: 'Donaldson P553004, Baldwin, MANN',
+      preset: isUk ? 'Комплект фільтрів (масло/повітря/паливо)' : 'Filtration Kit (Oil/Air/Fuel)'
+    },
+    {
+      icon: Gauge,
+      title: isUk ? 'Гідравлічні насоси та клапани' : 'Hydraulic Pumps & Valves',
+      desc: isUk
+        ? 'Головні насоси, гідророзподільники, циліндри, ремкомплекти сальників (Rexroth, Parker, Kawasaki, Danfoss).'
+        : 'Main pumps, control valves, cylinders, seal kits (Rexroth, Parker, Kawasaki, Danfoss).',
+      popular: 'Bosch Rexroth A10VSO, Parker PV',
+      preset: isUk ? 'Гідравлічний насос / циліндр' : 'Hydraulic Main Pump / Cylinder'
+    },
+    {
+      icon: Wrench,
+      title: isUk ? 'Двигуни та турбосистеми' : 'Engine & Turbo Systems',
+      desc: isUk
+        ? 'Поршні, гільзи, комплекти прокладок, турбокомпресори, форсунки (Perkins, Cummins, CAT, Deutz).'
+        : 'Pistons, liners, gasket sets, turbochargers, injectors (Perkins, Cummins, CAT, Deutz).',
+      popular: 'Perkins 1104, Cummins QSB, CAT C-Series',
+      preset: isUk ? 'Ремкомплект двигуна / форсунки' : 'Engine Overhaul Kit / Injectors'
+    },
+    {
+      icon: Disc,
+      title: isUk ? 'Ходова частина та гусениці' : 'Undercarriage & Tracks',
+      desc: isUk
+        ? 'Гумові та сталеві гусениці, опорні та підтримуючі котки, лінивці, зірочки для міні- та важких екскаваторів.'
+        : 'Rubber tracks, steel track chains, rollers, idlers, sprockets for mini & heavy excavators.',
+      popular: 'JCB JS series, CAT 320, Komatsu PC',
+      preset: isUk ? 'Гумові гусениці / опорні котки' : 'Rubber Tracks / Track Rollers'
+    },
+    {
+      icon: Truck,
+      title: isUk ? 'Трансмісія та мости' : 'Transmission & Axles',
+      desc: isUk
+        ? 'Елементи трансмісії, планетарні передачі, фрикційні диски, диференціали (Carraro, Dana, ZF).'
+        : 'Driveline components, planetary gears, friction plates, differentials (Carraro, Dana, ZF).',
+      popular: 'Dana Spicer, Carraro 28.32, ZF Powershift',
+      preset: isUk ? 'Шестерні КПП / запчастини моста' : 'Transmission Gears / Axle Spares'
+    },
+    {
+      icon: Cpu,
+      title: isUk ? 'Електрика та датчики' : 'Electrical & Sensors',
+      desc: isUk
+        ? 'Стартери, генератори, блоки управління (ECU), джгути проводки, датчики тиску та температури.'
+        : 'Starters, alternators, controllers (ECU), wiring harnesses, pressure & temp sensors.',
+      popular: 'Denso, Bosch, Delco Remy 24V',
+      preset: isUk ? 'Стартер / генератор / датчик' : 'Starter / Alternator / Sensor'
+    },
+  ];
 
   const handleSelectCategory = (presetText: string) => {
     const rfqElement = document.getElementById('rfq');
@@ -89,13 +105,16 @@ export default function PartsSection() {
           className="text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 py-1 px-4 rounded-full bg-red-600/20 text-red-400 text-xs font-bold uppercase tracking-wider mb-4 border border-red-500/30">
-            <ShieldCheck className="w-4 h-4" /> Direct UK & European Warehouses
+            <ShieldCheck className="w-4 h-4" />{' '}
+            {isUk ? 'Прямі склади у Великобританії та Європі' : 'Direct UK & European Warehouses'}
           </div>
           <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
-            Heavy Machinery Spare Parts Categories
+            {isUk ? 'Категорії запчастин для спецтехніки' : 'Heavy Machinery Spare Parts Categories'}
           </h2>
           <p className="text-slate-400 text-lg md:text-xl max-w-3xl mx-auto">
-            Select a category below to instantly estimate procurement and express delivery from the UK.
+            {isUk
+              ? 'Оберіть категорію нижче для миттєвого розрахунку вартості та експрес-доставки з Великобританії.'
+              : 'Select a category below to instantly estimate procurement and express delivery from the UK.'}
           </p>
         </motion.div>
 
@@ -130,10 +149,11 @@ export default function PartsSection() {
 
                 <div className="pt-4 border-t border-slate-700/60 mt-2">
                   <div className="text-xs text-slate-500 mb-2 truncate">
-                    <span className="text-slate-400 font-semibold">Common:</span> {cat.popular}
+                    <span className="text-slate-400 font-semibold">{isUk ? 'Популярні:' : 'Common:'}</span>{' '}
+                    {cat.popular}
                   </div>
                   <div className="flex items-center text-sm font-semibold text-red-400 group-hover:text-red-300">
-                    <span>Instant RFQ Estimation</span>
+                    <span>{isUk ? 'Миттєвий розрахунок RFQ' : 'Instant RFQ Estimation'}</span>
                     <ArrowRight className="w-4 h-4 ml-1.5 transform group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>

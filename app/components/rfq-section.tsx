@@ -22,26 +22,42 @@ export default function RFQSection() {
     qty: string;
   } | null>(null);
 
+  // Синхронізація обох інпутів (і номер деталі, і виробник/модель)
   useEffect(() => {
     const handleSync = () => {
-      const el = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
-      if (el && el.value !== partNumber) {
-        setPartNumber(el.value);
+      const partEl = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
+      if (partEl && partEl.value !== partNumber) {
+        setPartNumber(partEl.value);
+      }
+      const modelEl = document.getElementById('rfq-machine-input') as HTMLInputElement | null;
+      if (modelEl && modelEl.value !== machineModel) {
+        setMachineModel(modelEl.value);
       }
     };
 
-    const el = document.getElementById('rfq-parts-input');
-    if (el) {
-      el.addEventListener('input', handleSync);
-      el.addEventListener('change', handleSync);
+    const partEl = document.getElementById('rfq-parts-input');
+    const modelEl = document.getElementById('rfq-machine-input');
+
+    if (partEl) {
+      partEl.addEventListener('input', handleSync);
+      partEl.addEventListener('change', handleSync);
     }
+    if (modelEl) {
+      modelEl.addEventListener('input', handleSync);
+      modelEl.addEventListener('change', handleSync);
+    }
+
     return () => {
-      if (el) {
-        el.removeEventListener('input', handleSync);
-        el.removeEventListener('change', handleSync);
+      if (partEl) {
+        partEl.removeEventListener('input', handleSync);
+        partEl.removeEventListener('change', handleSync);
+      }
+      if (modelEl) {
+        modelEl.removeEventListener('input', handleSync);
+        modelEl.removeEventListener('change', handleSync);
       }
     };
-  }, [partNumber]);
+  }, [partNumber, machineModel]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +105,7 @@ export default function RFQSection() {
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/447426826595';
-    const msg = `Доброго дня! Хочу замовити деталь ${calculation.part} (${calculation.qty} шт). Розрахунок: ~£${calculation.total} (≈ ${getUahTotal()} грн).`;
+    const msg = `Доброго дня! Хочу замовити деталь ${calculation.part} (${machineModel}) у кількості ${calculation.qty} шт. Орієнтовно: ~£${calculation.total} (≈ ${getUahTotal()} грн).`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
@@ -132,7 +148,7 @@ export default function RFQSection() {
               </h3>
               <p className="text-slate-400 mb-6">
                 {isUk ? 'Орієнтовна вартість для деталі' : 'Estimated price for part'}{' '}
-                <strong className="text-white">{calculation.part}</strong>
+                <strong className="text-white">{calculation.part}</strong> {machineModel && `(${machineModel})`}
               </p>
 
               <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-md mx-auto mb-8 shadow-inner">
@@ -229,6 +245,7 @@ export default function RFQSection() {
                     {t.rfq.form.machineModel} *
                   </label>
                   <input
+                    id="rfq-machine-input"
                     type="text"
                     required
                     value={machineModel}

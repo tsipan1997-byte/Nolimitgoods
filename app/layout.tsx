@@ -65,11 +65,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        {/* Google tag (gtag.js) */}
+      <body className="antialiased min-h-screen bg-slate-900 text-white">
         <Script
-          async
           src="https://www.googletagmanager.com/gtag/js?id=AW-670192610"
           strategy="afterInteractive"
         />
-        <Script id="google-tag-init" strategy="after
+        <Script id="google-gtag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-670192610');
+          `}
+        </Script>
+        {children}
+      </body>
+    </html>
+  );
+}

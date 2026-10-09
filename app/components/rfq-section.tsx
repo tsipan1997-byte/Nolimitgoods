@@ -181,4 +181,78 @@ export default function RFQSection() {
                     required
                     value={formData.machineModel}
                     onChange={(e) => setFormData({ ...formData, machineModel: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="наприклад: JCB 3CX / Donaldson / CAT"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Кількість *
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={formData.quantity}
+                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-700 mb-2">
+                    Країна доставки *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.country}
+                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="Україна"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Контакт (WhatsApp або Номер телефону / Email) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={formData.contact}
+                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+                  className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                  placeholder="+380... або email@domain.com"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status === 'sending'}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70 shadow-lg cursor-pointer"
+              >
+                {status === 'sending' ? (
+                  <span>Розраховуємо вартість...</span>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    <span>Отримати миттєвий розрахунок</span>
+                    <ArrowRight className="w-5 h-5 ml-1" />
+                  </>
+                )}
+              </button>
+
+              {status === 'error' && (
+                <p className="mt-4 text-red-600 text-center font-semibold">
+                  Виникла помилка. Перевірте дані або напишіть нам напряму у WhatsApp.
+                </p>
+              )}
+            </form>
+          )}
+        </motion.div>
+      </div>
+    </section>
+  );
+}

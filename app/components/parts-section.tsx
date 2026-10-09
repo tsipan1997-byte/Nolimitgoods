@@ -3,18 +3,16 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { 
-  ShieldCheck, 
   ArrowRight, 
-  ExternalLink, 
   CheckCircle2, 
-  PackageCheck,
-  Sparkles
+  PackageCheck
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 interface PartCard {
   id: string;
   code: string;
+  brand: string;
   titleUk: string;
   titleEn: string;
   categoryUk: string;
@@ -33,8 +31,9 @@ export default function PartsSection() {
     {
       id: 'p1',
       code: 'P553004',
-      titleUk: 'Фільтр масляний Donaldson',
-      titleEn: 'Donaldson Lube Filter',
+      brand: 'Donaldson (JCB / Cummins / CAT)',
+      titleUk: 'Фільтр масляний двигуна',
+      titleEn: 'Donaldson Engine Oil Filter',
       categoryUk: 'Фільтрація',
       categoryEn: 'Filtration',
       priceGbp: 18,
@@ -44,17 +43,19 @@ export default function PartsSection() {
     {
       id: 'p2',
       code: 'P535114',
-      titleUk: 'Фільтр повітряний Donaldson RadialSeal',
+      brand: 'Donaldson (Спецтехніка AG & CE)',
+      titleUk: 'Фільтр повітряний RadialSeal',
       titleEn: 'Donaldson Air Primary RadialSeal',
       categoryUk: 'Фільтрація',
       categoryEn: 'Filtration',
       priceGbp: 42,
       imageUrl: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=600&q=80',
-      specs: 'Високий ресурс • Спецтехніка AG & CE',
+      specs: 'Високий ресурс • Посилений каркас',
     },
     {
       id: 'p3',
-      code: 'JCB 458/20403',
+      code: '458/20403',
+      brand: 'JCB 3CX / 4CX (Drivetrain)',
       titleUk: 'Головна пара моста / шестерні диференціалу',
       titleEn: 'Crown Wheel & Pinion Axle Kit',
       categoryUk: 'Мости та КПП',
@@ -65,7 +66,8 @@ export default function PartsSection() {
     },
     {
       id: 'p4',
-      code: 'Carraro 149298',
+      code: '149298',
+      brand: 'Carraro (Бортовий редуктор моста)',
       titleUk: 'Шестерня редуктора та сателіти моста Carraro',
       titleEn: 'Carraro Planetary Gear Set',
       categoryUk: 'Мости та КПП',
@@ -76,7 +78,8 @@ export default function PartsSection() {
     },
     {
       id: 'p5',
-      code: 'Perkins 26561117',
+      code: '26561117',
+      brand: 'Perkins (Двигуни 1104D / 1106D)',
       titleUk: 'Паливний фільтр-сепаратор Perkins',
       titleEn: 'Perkins Fuel Water Separator',
       categoryUk: 'Двигуни',
@@ -87,26 +90,37 @@ export default function PartsSection() {
     },
     {
       id: 'p6',
-      code: 'Rexroth A10VSO',
+      code: 'A10VSO',
+      brand: 'Bosch Rexroth (Гідравліка екскаваторів)',
       titleUk: 'Гідронасос аксіально-поршневий',
       titleEn: 'Axial Piston Hydraulic Pump',
       categoryUk: 'Гідравліка',
       categoryEn: 'Hydraulics',
       priceGbp: 820,
       imageUrl: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&w=600&q=80',
-      specs: '315 bar • Гідросистеми екскаваторів',
+      specs: '315 bar • Гідросистеми спецтехніки',
     },
   ];
 
   const handleOrderClick = (part: PartCard) => {
-    // Вставляємо в інпут форми швидкого розрахунку
-    const input = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
-    if (input) {
-      input.value = `${part.code} (${isUk ? part.titleUk : part.titleEn})`;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      input.dispatchEvent(new Event('change', { bubbles: true }));
+    // 1. Вставляємо артикул в "Номер запчастини"
+    const partInput = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
+    if (partInput) {
+      partInput.value = part.code;
+      partInput.dispatchEvent(new Event('input', { bubbles: true }));
+      partInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
 
+    // 2. Вставляємо бренд та модель у "Модель машини / виробник"
+    const machineInput = document.getElementById('rfq-machine-input') as HTMLInputElement | null;
+    if (machineInput) {
+      const partName = isUk ? part.titleUk : part.titleEn;
+      machineInput.value = `${part.brand} — ${partName}`;
+      machineInput.dispatchEvent(new Event('input', { bubbles: true }));
+      machineInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    // 3. Плавно скролимо до форми розрахунку
     const rfq = document.getElementById('rfq');
     if (rfq) {
       rfq.scrollIntoView({ behavior: 'smooth' });
@@ -129,7 +143,7 @@ export default function PartsSection() {
     <section id="parts" className="py-24 bg-slate-900 text-white relative overflow-hidden border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Верхній блок */}
+        {/* Заголовок */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs sm:text-sm font-semibold mb-4">
             <PackageCheck className="w-4 h-4 text-emerald-400" />
@@ -144,8 +158,8 @@ export default function PartsSection() {
           </h2>
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
             {isUk
-              ? 'Реальні приклади вузлів, які ми доставляємо з Ковентрі. Натисніть «Замовити деталь», щоб отримати миттєвий фінальний рахунок.'
-              : 'Verified parts shipped weekly from our Coventry facility. Click any item to request an export invoice.'}
+              ? 'Натисніть «Замовити цю деталь» — код і назва виробника автоматично підставляться у форму для миттєвого розрахунку.'
+              : 'Click "Order This Part" to automatically fill the part code and machine manufacturer into the RFQ calculator.'}
           </p>
         </div>
 
@@ -167,7 +181,7 @@ export default function PartsSection() {
           ))}
         </div>
 
-        {/* Сітка карток деталей з фото та цінами */}
+        {/* Сітка карток деталей */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredParts.map((part) => {
             const priceUah = Math.round(part.priceGbp * 56).toLocaleString('uk-UA');
@@ -178,7 +192,6 @@ export default function PartsSection() {
                 className="bg-slate-950/90 border border-slate-800 hover:border-slate-700 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between group shadow-xl"
               >
                 <div>
-                  {/* Фото деталі */}
                   <div className="relative h-48 w-full bg-slate-900 overflow-hidden">
                     <Image
                       src={part.imageUrl}
@@ -195,7 +208,6 @@ export default function PartsSection() {
                     </div>
                   </div>
 
-                  {/* Опис і характеристики */}
                   <div className="p-5">
                     <span className="text-[11px] font-bold text-red-500 uppercase tracking-wider block mb-1">
                       {isUk ? part.categoryUk : part.categoryEn}
@@ -203,13 +215,12 @@ export default function PartsSection() {
                     <h3 className="text-lg font-bold text-white mb-2 leading-snug group-hover:text-red-400 transition-colors">
                       {isUk ? part.titleUk : part.titleEn}
                     </h3>
-                    <p className="text-xs text-slate-400 mb-4 bg-slate-900/60 p-2.5 rounded-lg border border-slate-850 font-mono">
+                    <p className="text-xs text-slate-400 mb-4 bg-slate-900/60 p-2.5 rounded-lg border border-slate-800 font-mono">
                       {part.specs}
                     </p>
                   </div>
                 </div>
 
-                {/* Ціновий блок і кнопка дії */}
                 <div className="p-5 pt-0">
                   <div className="flex items-baseline justify-between mb-4 border-t border-slate-900 pt-3">
                     <div>

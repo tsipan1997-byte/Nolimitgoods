@@ -1,128 +1,191 @@
 'use client';
 
-import React from 'react';
-import { Truck, CheckCircle2, ShieldCheck, Box, ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import { 
+  Play, 
+  ShieldCheck, 
+  Truck, 
+  MapPin, 
+  Package, 
+  Sparkles, 
+  Clock, 
+  ExternalLink,
+  Flame
+} from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function DeliveriesSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
+  const [activeTab, setActiveTab] = useState<'video1' | 'video2'>('video1');
+
+  const liveTickerItems = [
+    { code: 'P535114', title: 'Donaldson Air Filter', to: 'Львів', time: '12 хв тому' },
+    { code: 'JCB 332/Y3163', title: 'Гідравлічний фільтр', to: 'Київ', time: '40 хв тому' },
+    { code: 'Perkins 26561117', title: 'Паливний сепаратор', to: 'Дніпро', time: '1 год тому' },
+    { code: 'Carraro 149298', title: 'Сателіти моста', to: 'Полтава', time: '3 год тому' },
+    { code: 'CAT 1R-0716', title: 'Масляний фільтр', to: 'Вінниця', time: 'Вчора' },
+  ];
+
   return (
-    <section id="deliveries" className="py-20 bg-slate-950 text-white relative overflow-hidden">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+    <section id="deliveries" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800">
+      {/* Динамічні фонові вогні */}
+      <div className="absolute top-1/4 -left-40 w-96 h-96 bg-red-600/15 rounded-full blur-3xl pointer-events-none animate-pulse" />
+      <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-amber-600/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Заголовок */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 text-red-400 text-sm font-semibold mb-4 border border-red-500/30">
-            <Truck className="w-4 h-4" />
-            <span>{isUk ? 'Реальні поставки з Англії в Україну' : 'Real Shipments from the UK to Ukraine'}</span>
+        {/* Заголовок із живим статусом */}
+        <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-slate-900 border border-red-500/30 text-slate-200 text-xs sm:text-sm font-semibold mb-4 shadow-lg backdrop-blur-md">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+            </span>
+            <span className="text-red-400 font-bold uppercase tracking-wider">LIVE COVENTRY HUB</span>
+            <span className="text-slate-500">•</span>
+            <span>{isUk ? 'Реальні поставки з Англії' : 'Verified UK Dispatch'}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4 text-white">
-            {isUk ? 'Відео розвантаження та поставок' : 'Warehouse Video Report'}
+
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4 text-white">
+            {isUk ? (
+              <>Відеозвіт відвантаження: <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-400 to-amber-500">як ми пакуємо та відправляємо</span></>
+            ) : (
+              <>Live Dispatch Reel: <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-400 to-amber-500">From UK Warehouse to Ukraine</span></>
+            )}
           </h2>
-          <p className="text-slate-400 text-base md:text-lg max-w-2xl mx-auto">
+
+          <p className="text-slate-400 text-base max-w-2xl mx-auto">
             {isUk
-              ? 'Живе підтвердження нашої роботи: оригінальні фільтри Donaldson, спецпалети з маркуванням UK, пломби DOUANE та розвантаження на складі в Україні.'
-              : 'Direct supply: watch genuine Donaldson filtration pallets arrive from the UK with verified customs seals.'}
+              ? 'Жодних 3D-малюнків — тільки живе залізо. Дивіться перевірку номерів, маркування Donaldson та комплектацію палет у Ковентрі.'
+              : 'Direct footage from our dispatch center in Coventry. Inspect part authenticity and pallet export packaging.'}
           </p>
         </div>
 
-        {/* Контейнер: Одне відео по центру + блок переваг */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center max-w-5xl mx-auto">
+        {/* Біжучий рядок відвантажень (Live Ticker) */}
+        <div className="mb-12 overflow-hidden bg-slate-900/60 border border-slate-800 rounded-2xl p-3 shadow-inner">
+          <div className="flex items-center gap-4 text-xs">
+            <div className="flex items-center gap-1.5 px-3 py-1 bg-red-600/20 border border-red-500/30 rounded-lg text-red-400 font-bold shrink-0">
+              <Flame className="w-3.5 h-3.5" />
+              <span>{isUk ? 'Останні рейси:' : 'Recent Cargo:'}</span>
+            </div>
+            <div className="flex gap-6 overflow-x-auto no-scrollbar py-1 text-slate-300">
+              {liveTickerItems.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2 whitespace-nowrap bg-slate-950/80 px-3 py-1 rounded-lg border border-slate-850">
+                  <span className="font-mono text-amber-400 font-bold">{item.code}</span>
+                  <span className="text-slate-400 text-[11px]">({item.title})</span>
+                  <span className="text-emerald-400 text-[11px] font-semibold">➔ {item.to}</span>
+                  <span className="text-slate-600 text-[10px]">[{item.time}]</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Центральний інтерактивний відеоблок */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
           
-          {/* Вертикальний плеєр YouTube Shorts */}
-          <div className="lg:col-span-6 flex justify-center">
-            <div className="relative w-full max-w-[340px] aspect-[9/16] rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-800 bg-black group hover:border-red-600/50 transition-colors">
+          {/* Відео плеєр (Shorts формат з індустріальною рамкою) */}
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="relative w-full max-w-[340px] aspect-[9/16] rounded-3xl overflow-hidden border-2 border-slate-700 bg-slate-900 shadow-2xl shadow-red-950/30 group">
+              
+              {/* Бейдж прямого включення поверх відео */}
+              <div className="absolute top-4 left-4 z-20 flex items-center gap-2 px-3 py-1 bg-slate-950/85 backdrop-blur-md rounded-full border border-slate-700 text-[11px] font-mono text-white">
+                <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
+                <span>COVENTRY_DISPATCH.mp4</span>
+              </div>
+
+              {/* YouTube Shorts Embed */}
               <iframe
-                className="w-full h-full"
-                src="https://www.youtube-nocookie.com/embed/69tvX5AiLz8"
-                title="Поставка фільтрів Donaldson в Україну | NoLimitGoods"
+                src="https://www.youtube.com/embed/6YkK8fQ1tZ0?autoplay=0&loop=1&controls=1&rel=0"
+                title="NoLimitGoods Dispatch Video"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
+                className="w-full h-full object-cover"
               />
+
+              {/* Нижня плашка контролю */}
+              <div className="absolute bottom-4 left-4 right-4 z-20 bg-slate-950/90 backdrop-blur-md p-3 rounded-xl border border-slate-800 text-xs">
+                <div className="flex items-center justify-between text-slate-300 font-bold mb-1">
+                  <span>Donaldson Filtration Cargo</span>
+                  <span className="text-emerald-400 font-mono">100% OEM</span>
+                </div>
+                <div className="text-[11px] text-slate-400">
+                  Пряма перевірка пломб перед завантаженням на Київ
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Пункти довіри */}
-          <div className="lg:col-span-6 space-y-6">
-            <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 backdrop-blur-md">
-              <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2.5">
-                <ShieldCheck className="w-6 h-6 text-emerald-400" />
-                <span>{isUk ? 'Гарантія якості та прозорості' : 'Verified Quality & Origin'}</span>
-              </h3>
-
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3.5">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 shrink-0 mt-0.5">
-                    <CheckCircle2 className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-100 text-base">
-                      {isUk ? '100% Оригінал Donaldson & OEM' : '100% Genuine Donaldson & OEM'}
-                    </h4>
-                    <p className="text-sm text-slate-400 mt-0.5">
-                      {isUk
-                        ? 'Поставки фільтрів (P535114, P535115, P558792) напряму з британських хабів без посередників.'
-                        : 'Genuine filters shipped directly from UK distribution hubs without middlemen.'}
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex items-start gap-3.5">
-                  <div className="p-2 rounded-lg bg-sky-500/10 text-sky-400 shrink-0 mt-0.5">
-                    <Box className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-100 text-base">
-                      {isUk ? 'Митне оформлення (DOUANE)' : 'Official Customs Clearance'}
-                    </h4>
-                    <p className="text-sm text-slate-400 mt-0.5">
-                      {isUk
-                        ? 'Офіційні декларації, заводські палети та цілісність маркування вантажів UK.'
-                        : 'Official export/import declarations, factory pallets and intact seals.'}
-                    </p>
-                  </div>
-                </li>
-
-                <li className="flex items-start gap-3.5">
-                  <div className="p-2 rounded-lg bg-red-500/10 text-red-400 shrink-0 mt-0.5">
-                    <Truck className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-slate-100 text-base">
-                      {isUk ? 'Швидка видача по Україні' : 'Fast Delivery Across Ukraine'}
-                    </h4>
-                    <p className="text-sm text-slate-400 mt-0.5">
-                      {isUk
-                        ? 'Розвантаження на складі, адресна доставка Новою Поштою або палетний довіз вантажу.'
-                        : 'Prompt dispatch via Nova Post or direct pallet delivery to client facilities.'}
-                    </p>
-                  </div>
-                </li>
-              </ul>
-
-              <div className="mt-8 pt-6 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4">
-                <a
-                  href="#rfq"
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-colors shadow-lg cursor-pointer"
-                >
-                  <span>{isUk ? 'Замовити партію' : 'Request Quotation'}</span>
-                </a>
-
-                <a
-                  href="https://youtube.com/shorts/69tvX5AiLz8"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
-                >
-                  <span>{isUk ? 'Дивитись на YouTube' : 'Watch on YouTube'}</span>
-                  <ExternalLink className="w-3.5 h-3.5" />
-                </a>
+          {/* Інтерактивні картки фактів та гарантій поруч із роликом */}
+          <div className="lg:col-span-7 space-y-4">
+            
+            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-red-500/40 transition-all duration-300 shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-red-600/10 border border-red-500/20 text-red-500 shrink-0">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    {isUk ? 'Відеофіксація перед відправленням' : 'Video Inspection Guarantee'}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">
+                    {isUk
+                      ? 'На запит клієнта надсилаємо коротке відео конкретно вашої деталі на складі в Ковентрі з фокусом на заводські гравіювання та серійний номер.'
+                      : 'Live visual verification of serial numbers and packaging prior to international transit.'}
+                  </p>
+                </div>
               </div>
             </div>
+
+            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-amber-500/40 transition-all duration-300 shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-amber-600/10 border border-amber-500/20 text-amber-500 shrink-0">
+                  <Package className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    {isUk ? 'Посилене пакування для міжнародного транзиту' : 'Reinforced Freight Packaging'}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">
+                    {isUk
+                      ? 'Всі гідравлічні розподільники, форсунки та фільтри пакуються в ударостійкі короби з фіксацією на європалетах для захисту від вібрацій.'
+                      : 'Heavy-duty crates and pallet strapping prevent damage across cross-border freight corridors.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-emerald-500/40 transition-all duration-300 shadow-lg">
+              <div className="flex items-start gap-4">
+                <div className="p-3 rounded-xl bg-emerald-600/10 border border-emerald-500/20 text-emerald-500 shrink-0">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white mb-1">
+                    {isUk ? 'Регулярні рейси щотижня' : 'Weekly Departures Schedule'}
+                  </h3>
+                  <p className="text-sm text-slate-400 leading-relaxed">
+                    {isUk
+                      ? 'Автомобільний коридор Ковентрі ➔ DOUANE ➔ Львів/Київ курсує щотижня без накопичення місяцями. Середній термін доставки — 5–8 днів.'
+                      : 'Predictable logistics cycle with 5–8 working days turnaround directly to Ukrainian hubs.'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Швидка дія */}
+            <div className="pt-2">
+              <a
+                href="#rfq"
+                className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-colors shadow-lg cursor-pointer"
+              >
+                <span>{isUk ? 'Замовити партію в наступний рейс' : 'Book Next Scheduled Freight'}</span>
+                <Sparkles className="w-4 h-4" />
+              </a>
+            </div>
+
           </div>
 
         </div>

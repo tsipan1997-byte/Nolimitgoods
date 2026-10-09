@@ -5,7 +5,13 @@ import {
   ArrowRight, 
   CheckCircle2, 
   PackageCheck,
-  Search
+  Search,
+  Cog,
+  Filter,
+  Gauge,
+  Zap,
+  Layers,
+  Wrench
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
@@ -18,7 +24,7 @@ interface PartCard {
   categoryUk: string;
   categoryEn: string;
   priceGbp: number;
-  imageUrl: string;
+  type: 'filter' | 'gear' | 'pump' | 'turbo' | 'starter' | 'valve';
   specs: string;
 }
 
@@ -28,7 +34,7 @@ export default function PartsSection() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchTerm, setSearchTerm] = useState<string>('');
 
-  // 9 ходових деталей = рівно 3 повні ряди по 3 картки
+  // Ровно 9 ходовых запчастей = 3 ряда по 3 карточки
   const partsList: PartCard[] = [
     // РЯД 1
     {
@@ -40,7 +46,7 @@ export default function PartsSection() {
       categoryUk: 'Фільтри ТО',
       categoryEn: 'Filtration',
       priceGbp: 18,
-      imageUrl: 'https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?auto=format&fit=crop&w=800&q=80',
+      type: 'filter',
       specs: 'Різьба M24x1.5 • JCB 3CX / Cummins / CAT',
     },
     {
@@ -52,19 +58,19 @@ export default function PartsSection() {
       categoryUk: 'Фільтри ТО',
       categoryEn: 'Filtration',
       priceGbp: 42,
-      imageUrl: 'https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=800&q=80',
+      type: 'filter',
       specs: 'Посилена сталева сітка • JCB 3CX, 4CX, Case',
     },
     {
       id: 'p3',
       code: '332/Y3163',
       brand: 'JCB Filtration',
-      titleUk: 'Гідравлічний напірний картридж JCB',
+      titleUk: 'Гідравлічний напірний картридж JCB High-Pressure',
       titleEn: 'JCB Genuine Hydraulic Filter Element',
       categoryUk: 'Фільтри ТО',
       categoryEn: 'Filtration',
       priceGbp: 64,
-      imageUrl: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
+      type: 'filter',
       specs: 'Тонкість 5 мікрон • Захист клапанів та розподільника',
     },
 
@@ -73,36 +79,36 @@ export default function PartsSection() {
       id: 'p4',
       code: '458/20403',
       brand: 'JCB Drivetrain',
-      titleUk: 'Головна пара моста JCB (Pinion & Crown)',
+      titleUk: 'Головна пара моста JCB (Pinion & Crown Wheel)',
       titleEn: 'JCB Crown Wheel & Pinion Axle Gear Set',
       categoryUk: 'Мости та КПП',
       categoryEn: 'Axles & Transmission',
       priceGbp: 340,
-      imageUrl: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80',
-      specs: 'JCB 3CX / 4CX • 33/9 зубів • Загартована сталь',
+      type: 'gear',
+      specs: 'JCB 3CX / 4CX • 33/9 зубів • Загартована сталь 18CrNiMo',
     },
     {
       id: 'p5',
       code: '149298',
       brand: 'Carraro Drivetrain',
-      titleUk: 'Планетарна шестерня редуктора Carraro',
+      titleUk: 'Планетарна шестерня бортового редуктора Carraro',
       titleEn: 'Carraro Planetary Hub Reduction Gear',
       categoryUk: 'Мости та КПП',
       categoryEn: 'Axles & Transmission',
       priceGbp: 195,
-      imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
-      specs: 'Оригінал Carraro UK • Сателіти моста техніки',
+      type: 'gear',
+      specs: 'Оригінал Carraro UK • Сателіти моста тракторів',
     },
     {
       id: 'p6',
       code: 'A10VSO71',
       brand: 'Bosch Rexroth',
-      titleUk: 'Аксіально-поршневий гідронасос Rexroth',
+      titleUk: 'Аксіально-поршневий гідронасос Rexroth A10VSO',
       titleEn: 'Bosch Rexroth Axial Piston Pump',
       categoryUk: 'Гідравліка',
       categoryEn: 'Hydraulics',
       priceGbp: 820,
-      imageUrl: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&w=800&q=80',
+      type: 'pump',
       specs: 'Робочий тиск 315 bar • Головний насос екскаватора',
     },
 
@@ -116,32 +122,32 @@ export default function PartsSection() {
       categoryUk: 'Двигуни',
       categoryEn: 'Engines',
       priceGbp: 28,
-      imageUrl: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80',
+      type: 'filter',
       specs: 'Двигуни серії Perkins 1104D / 1106D та CAT C4.4',
     },
     {
       id: 'p8',
       code: '320/06047',
       brand: 'Garrett / JCB',
-      titleUk: 'Турбокомпресор JCB Dieselmax GT25',
+      titleUk: 'Турбокомпресор (Турбіна) JCB Dieselmax GT25',
       titleEn: 'Turbocharger JCB Dieselmax GT25',
       categoryUk: 'Двигуни',
       categoryEn: 'Engines',
       priceGbp: 480,
-      imageUrl: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80',
-      specs: 'Оригінальний Garrett UK • Двигуни JCB Dieselmax',
+      type: 'turbo',
+      specs: 'Оригінальний Garrett UK • Екскаватори JCB 3CX, 4CX',
     },
     {
       id: 'p9',
       code: '714/40159',
       brand: 'JCB Electrical',
-      titleUk: 'Стартер редукторний 12V 4.2kW JCB',
+      titleUk: 'Стартер редукторний 12V 4.2kW JCB Dieselmax',
       titleEn: 'Starter Motor 12V 4.2kW JCB Dieselmax',
       categoryUk: 'Двигуни',
       categoryEn: 'Engines',
       priceGbp: 165,
-      imageUrl: 'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80',
-      specs: '10 зубів • Надійний холодний запуск 4.4L / 4.8L',
+      type: 'starter',
+      specs: '10 зубів • Надійний холодний запуск двигунів 4.4L / 4.8L',
     },
   ];
 
@@ -164,6 +170,23 @@ export default function PartsSection() {
     const rfq = document.getElementById('rfq');
     if (rfq) {
       rfq.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const renderPartIcon = (type: PartCard['type']) => {
+    switch (type) {
+      case 'filter':
+        return <Filter className="w-14 h-14 text-red-500/80 stroke-[1.5]" />;
+      case 'gear':
+        return <Cog className="w-14 h-14 text-amber-500/80 stroke-[1.5]" />;
+      case 'pump':
+        return <Gauge className="w-14 h-14 text-sky-400/80 stroke-[1.5]" />;
+      case 'turbo':
+        return <Layers className="w-14 h-14 text-orange-500/80 stroke-[1.5]" />;
+      case 'starter':
+        return <Zap className="w-14 h-14 text-yellow-400/80 stroke-[1.5]" />;
+      default:
+        return <Wrench className="w-14 h-14 text-slate-400 stroke-[1.5]" />;
     }
   };
 
@@ -192,7 +215,7 @@ export default function PartsSection() {
         <div className="text-center max-w-3xl mx-auto mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs sm:text-sm font-semibold mb-4">
             <PackageCheck className="w-4 h-4 text-emerald-400" />
-            <span>{isUk ? 'Реальний склад у Великобританії (Ковентрі)' : 'Coventry UK Hub Inventory'}</span>
+            <span>{isUk ? 'Прямі складські позиції Великобританії (Ковентрі)' : 'Coventry UK Hub Inventory'}</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4 text-white">
             {isUk ? (
@@ -203,12 +226,12 @@ export default function PartsSection() {
           </h2>
           <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
             {isUk
-              ? 'Фільтрація Donaldson, турбіни Garrett, редуктори Carraro та компоненти JCB. Натисніть «Замовити цю деталь» для миттєвого прорахунку рейсу.'
+              ? 'Оригінальні фільтри Donaldson, турбіни Garrett, редуктори Carraro та компоненти JCB. Натисніть «Замовити цю деталь» для миттєвого прорахунку доставки.'
               : 'Direct supply lines across the UK distribution network. Click any component to calculate landed price.'}
           </p>
         </div>
 
-        {/* Фільтри й пошук */}
+        {/* Фильтры и поиск */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-10">
           <div className="flex flex-wrap items-center justify-center md:justify-start gap-2">
             {categories.map((cat) => (
@@ -239,7 +262,7 @@ export default function PartsSection() {
           </div>
         </div>
 
-        {/* Рівно 3 повні ряди по 3 картки (3x3 = 9 деталей) */}
+        {/* Ровно 3 ряда по 3 карточки (9 деталей) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredParts.map((part) => {
             const priceUah = Math.round(part.priceGbp * 56).toLocaleString('uk-UA');
@@ -250,16 +273,23 @@ export default function PartsSection() {
                 className="bg-slate-950/90 border border-slate-800 hover:border-slate-700 rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between group shadow-xl"
               >
                 <div>
-                  {/* Чітке фото деталі без блокувань */}
-                  <div className="relative h-48 w-full bg-slate-900 overflow-hidden border-b border-slate-800/80">
-                    <img
-                      src={part.imageUrl}
-                      alt={`${part.brand} ${part.code}`}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
+                  {/* Инженерный блок чертежа детали без легковых авто и битых ссылок */}
+                  <div className="relative h-44 w-full bg-gradient-to-b from-slate-900 to-slate-950 border-b border-slate-800/80 flex items-center justify-center p-6 overflow-hidden">
+                    {/* Фоновая координатная сетка чертежа */}
+                    <div 
+                      className="absolute inset-0 opacity-15 pointer-events-none" 
+                      style={{
+                        backgroundImage: 'radial-gradient(circle, #94a3b8 1px, transparent 1px)',
+                        backgroundSize: '16px 16px'
+                      }}
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent pointer-events-none" />
-                    <div className="absolute top-3 left-3 bg-slate-950/90 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-700 text-xs font-mono font-bold text-amber-400">
+
+                    {/* Центрированная иконка-схема узла */}
+                    <div className="relative z-10 p-4 rounded-2xl bg-slate-900/90 border border-slate-800 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                      {renderPartIcon(part.type)}
+                    </div>
+
+                    <div className="absolute top-3 left-3 bg-slate-950/95 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-700 text-xs font-mono font-bold text-amber-400">
                       {part.code}
                     </div>
                     <div className="absolute top-3 right-3 bg-emerald-500/90 text-white px-2.5 py-0.5 rounded-full text-[11px] font-bold flex items-center gap-1 shadow-md">
@@ -268,7 +298,7 @@ export default function PartsSection() {
                     </div>
                   </div>
 
-                  {/* Опис */}
+                  {/* Описание детали */}
                   <div className="p-5">
                     <span className="text-[11px] font-bold text-red-500 uppercase tracking-wider block mb-1">
                       {part.brand}
@@ -282,7 +312,7 @@ export default function PartsSection() {
                   </div>
                 </div>
 
-                {/* Ціни та дія */}
+                {/* Цены и кнопка заказа */}
                 <div className="p-5 pt-0">
                   <div className="flex items-baseline justify-between mb-4 border-t border-slate-900 pt-3">
                     <div>

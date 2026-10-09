@@ -12,7 +12,7 @@ interface LanguageContextType {
 const defaultContext: LanguageContextType = {
   language: 'ua',
   setLanguage: () => {},
-  t: translations.en,
+  t: translations.ua || translations.uk || translations.en,
 };
 
 const LanguageContext = createContext<LanguageContextType>(defaultContext);
@@ -24,7 +24,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     setMounted(true);
     const savedLang = localStorage.getItem('language') as Language;
-    if (savedLang && (savedLang === 'en' || savedLang === 'uk')) {
+    if (savedLang && (savedLang === 'en' || savedLang === 'ua' || savedLang === 'uk')) {
       setLanguage(savedLang);
     }
   }, []);
@@ -34,7 +34,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     localStorage.setItem('language', lang);
   };
 
-  const t = translations[language];
+  const t = translations[language] || translations.ua || translations.uk || translations.en;
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, t }}>

@@ -1,14 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Send, FileText, CheckCircle, MessageSquare, ArrowRight } from 'lucide-react';
+import { Send, FileText, CheckCircle, MessageSquare, ArrowRight, Calculator } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function RFQSection() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isUk = language === 'uk' || (language as string) === 'ua';
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.1 });
+
   const [formData, setFormData] = useState({
     partNumber: '',
     machineModel: '',
@@ -16,6 +18,7 @@ export default function RFQSection() {
     country: 'Україна',
     contact: '',
   });
+
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [calculation, setCalculation] = useState<{
     unitPrice: number;
@@ -23,6 +26,28 @@ export default function RFQSection() {
     part: string;
     qty: string;
   } | null>(null);
+
+  // Слухаємо оновлення інпуту з Hero-секції для React-стану
+  useEffect(() => {
+    const handleInputSync = () => {
+      const inputEl = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
+      if (inputEl && inputEl.value !== formData.partNumber) {
+        setFormData((prev) => ({ ...prev, partNumber: inputEl.value }));
+      }
+    };
+
+    const inputEl = document.getElementById('rfq-parts-input');
+    if (inputEl) {
+      inputEl.addEventListener('input', handleInputSync);
+      inputEl.addEventListener('change', handleInputSync);
+    }
+    return () => {
+      if (inputEl) {
+        inputEl.removeEventListener('input', handleInputSync);
+        inputEl.removeEventListener('change', handleInputSync);
+      }
+    };
+  }, [formData.partNumber]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,22 +102,25 @@ export default function RFQSection() {
   };
 
   return (
-    <section id="rfq" className="py-20 bg-gradient-to-br from-red-600 to-red-700">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="rfq" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
           ref={ref}
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          className="text-center mb-12"
         >
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-6">
-            <FileText className="w-8 h-8 text-white" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 text-red-400 text-xs sm:text-sm font-semibold mb-4 border border-red-500/30">
+            <Calculator className="w-4 h-4" />
+            <span>{isUk ? 'Прямий розрахунок вартості' : 'Direct Price Calculation'}</span>
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             {t.rfq.title}
           </h2>
-          <p className="text-xl text-white/90 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {t.rfq.subtitle}
           </p>
         </motion.div>
@@ -101,191 +129,55 @@ export default function RFQSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-white rounded-2xl p-8 shadow-2xl text-slate-900"
+          className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-md"
         >
           {status === 'success' && calculation ? (
             <div className="text-center py-4">
-              <div className="inline-flex items-center justify-center w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full mb-4">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full mb-4 border border-emerald-500/30">
                 <CheckCircle className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                Орієнтовну вартість розраховано!
+              <h3 className="text-2xl font-bold text-white mb-2">
+                {isUk ? 'Орієнтовну вартість розраховано!' : 'Estimated Price Ready!'}
               </h3>
-              <p className="text-slate-600 mb-6">
-                Орієнтовна ринкова вартість для деталі <strong>{calculation.part}</strong>
+              <p className="text-slate-400 mb-6">
+                {isUk ? 'Орієнтовна вартість для деталі' : 'Estimated price for part'}{' '}
+                <strong className="text-white">{calculation.part}</strong>
               </p>
 
-              <div className="bg-slate-50 border-2 border-red-100 rounded-xl p-6 max-w-md mx-auto mb-8 shadow-sm">
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
-                  Загальна орієнтовна вартість (з доставкою)
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-md mx-auto mb-8 shadow-inner">
+                <div className="text-xs font-semibold text-slate-400 uppercase tracking-wide mb-1">
+                  {isUk ? 'Загальна орієнтовна вартість (з доставкою)' : 'Total Estimated Cost (with Shipping)'}
                 </div>
 
-                <div className="text-4xl font-black text-red-600 tracking-tight my-1">
+                <div className="text-4xl font-black text-red-500 tracking-tight my-2">
                   ~£{calculation.total}
                 </div>
 
-                <div className="text-xl font-bold text-slate-800 mb-2">
+                <div className="text-xl font-bold text-slate-200 mb-3">
                   ≈ {getUahTotal()} грн
                 </div>
 
-                <div className="text-sm font-medium text-slate-600 pt-2 border-t border-slate-200">
-                  Близько £{calculation.unitPrice} (≈ {getUahUnit()} грн) / шт ({calculation.qty} шт)
+                <div className="text-sm font-medium text-slate-400 pt-3 border-t border-slate-800">
+                  £{calculation.unitPrice} (≈ {getUahUnit()} грн) / {isUk ? 'шт' : 'unit'} ({calculation.qty} {isUk ? 'шт' : 'pcs'})
                 </div>
 
-                <div className="inline-block mt-3 px-3 py-1 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-800 font-medium">
-                  Оплата: Revolut Pay, IBAN або картка (курс Revolut ~56 грн/£)
+                <div className="inline-block mt-3 px-3 py-1 bg-amber-500/10 border border-amber-500/30 rounded-lg text-xs text-amber-300 font-medium">
+                  {isUk ? 'Оплата: Revolut Pay, IBAN або картка (~56 грн/£)' : 'Payment: Revolut Pay, IBAN or Card (~56 UAH/£)'}
                 </div>
 
-                <p className="text-xs text-slate-400 mt-2">
-                  * Фінальний рахунок узгоджується та перевіряється менеджером перед оплатою.
+                <p className="text-xs text-slate-500 mt-3">
+                  {isUk 
+                    ? '* Фінальний рахунок узгоджується та перевіряється менеджером перед оплатою.' 
+                    : '* Final invoice is confirmed by our manager before payment.'}
                 </p>
               </div>
 
               <div className="space-y-4 max-w-md mx-auto">
-                <p className="text-sm font-bold text-slate-800">
-                  Оберіть зручний месенджер для підтвердження або запитання:
+                <p className="text-sm font-bold text-slate-300">
+                  {isUk ? 'Оберіть зручний месенджер для підтвердження замовлення:' : 'Select preferred messenger to confirm order:'}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <a
                     href={getViberLink()}
-                    className="flex items-center justify-center gap-2 bg-[#7360f2] hover:bg-[#604ec9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
-                  >
-                    <span>🟣</span>
-                    <span>Viber</span>
-                  </a>
-
-                  <a
-                    href={getWhatsAppLink()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
-                  >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>WhatsApp</span>
-                  </a>
-
-                  <a
-                    href={getTelegramLink()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm cursor-pointer"
-                  >
-                    <span>🔵</span>
-                    <span>Telegram</span>
-                  </a>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setStatus('idle');
-                    setCalculation(null);
-                    setFormData({ partNumber: '', machineModel: '', quantity: '1', country: 'Україна', contact: '' });
-                  }}
-                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3 px-6 rounded-xl transition-colors cursor-pointer text-sm mt-3"
-                >
-                  Розрахувати іншу деталь
-                </button>
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.partNumber} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.partNumber}
-                    onChange={(e) => setFormData({ ...formData, partNumber: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="наприклад: P553004 або 32/925950"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.machineModel} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.machineModel}
-                    onChange={(e) => setFormData({ ...formData, machineModel: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="наприклад: JCB 3CX / Donaldson / CAT"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.quantity} *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={formData.quantity}
-                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.country} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="Україна"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  {t.rfq.form.contact} *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.contact}
-                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                  className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                  placeholder="+380... або email@domain.com"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70 shadow-lg cursor-pointer"
-              >
-                {status === 'sending' ? (
-                  <span>{t.rfq.form.sending}</span>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    <span>{t.rfq.form.submit}</span>
-                    <ArrowRight className="w-5 h-5 ml-1" />
-                  </>
-                )}
-              </button>
-
-              {status === 'error' && (
-                <p className="mt-4 text-red-600 text-center font-semibold">
-                  {t.rfq.form.error}
-                </p>
-              )}
-            </form>
-          )}
-        </motion.div>
-      </div>
-    </section>
-  );
-}
+                    className="flex items-center justify-center gap-2 bg-[#7360f2] hover:bg-[#604ec9] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-sm

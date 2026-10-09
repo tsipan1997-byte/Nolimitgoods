@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Send, FileText, CheckCircle, MessageSquare } from 'lucide-react';
+import { Send, FileText, CheckCircle, MessageSquare, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function RFQSection() {
@@ -12,12 +12,17 @@ export default function RFQSection() {
   const [formData, setFormData] = useState({
     partNumber: '',
     machineModel: '',
-    quantity: '',
+    quantity: '1',
     country: '',
     contact: '',
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
-  const [estimateData, setEstimateData] = useState<{ estimatedPrice: number; totalEstimate: number } | null>(null);
+  const [calculation, setCalculation] = useState<{
+    unitPrice: number;
+    total: number;
+    part: string;
+    qty: string;
+  } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,9 +37,11 @@ export default function RFQSection() {
 
       if (response.ok) {
         const data = await response.json();
-        setEstimateData({
-          estimatedPrice: data.estimatedPrice || 0,
-          totalEstimate: data.totalEstimate || 0,
+        setCalculation({
+          unitPrice: data.estimatedPrice || 0,
+          total: data.totalEstimate || 0,
+          part: formData.partNumber,
+          qty: formData.quantity,
         });
         setStatus('success');
       } else {
@@ -45,9 +52,8 @@ export default function RFQSection() {
     }
   };
 
-  const cleanPhone = String(formData.contact).replace(/[^0-9]/g, '');
-  const waUrl = `https://wa.me/380501400245?text=${encodeURIComponent(
-    `Hello! RFQ request: Part ${formData.partNumber}, Model: ${formData.machineModel}, Qty:${formData.quantity}. Estimated total: £${estimateData?.totalEstimate || ''}`
+  const managerWhatsApp = `https://wa.me/380501400245?text=${encodeURIComponent(
+    `Hello NoLimitGoods! I want to confirm order for Part: ${calculation?.part}, Quantity:${calculation?.qty}. Estimated total is ~£${calculation?.total}. Please check final availability.`
   )}`;
 
   return (
@@ -67,7 +73,7 @@ export default function RFQSection() {
             {t.rfq.title}
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            {t.rfq.subtitle}
+            Get instant AI price estimation & order your parts directly from UK
           </p>
         </motion.div>
 
@@ -77,54 +83,53 @@ export default function RFQSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="bg-white rounded-2xl p-8 shadow-2xl text-slate-900"
         >
-          {status === 'success' ? (
-            <div className="text-center py-6">
-              <div className="flex items-center justify-center gap-3 text-emerald-600 mb-4">
+          {status === 'success' && calculation ? (
+            <div className="text-center py-4">
+              <div className="inline-flex items-center justify-center w-14 h-14 bg-emerald-100 text-emerald-600 rounded-full mb-4">
                 <CheckCircle className="w-8 h-8" />
-                <h3 className="text-2xl font-bold">Request Submitted Successfully!</h3>
+              </div>
+              <h3 className="text-2xl font-bold text-slate-900 mb-2">
+                Estimated Price Calculated!
+              </h3>
+              <p className="text-slate-600 mb-6">
+                Online market estimation for part <strong>{calculation.part}</strong>
+              </p>
+
+              <div className="bg-slate-50 border-2 border-red-100 rounded-xl p-6 max-w-md mx-auto mb-8 shadow-sm">
+                <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Total Estimated Price (incl. delivery)
+                </div>
+                <div className="text-4xl font-extrabold text-red-600 mb-2">
+                  ~£{calculation.total}
+                </div>
+                <div className="text-sm font-medium text-slate-700">
+                  Approx. £{calculation.unitPrice} / item ({calculation.qty} pcs)
+                </div>
+                <p className="text-xs text-slate-400 mt-3">
+                  * Final invoice verified by procurement manager before payment.
+                </p>
               </div>
 
-              {estimateData && estimateData.totalEstimate > 0 ? (
-                <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 my-6 text-left max-w-lg mx-auto">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1">
-                    AI Instant Market Estimation
-                  </p>
-                  <div className="text-3xl font-extrabold text-slate-900 mb-1">
-                    ~£{estimateData.totalEstimate}{' '}
-                    <span className="text-sm font-medium text-slate-500">
-                      (approx. £{estimateData.estimatedPrice} / unit incl. UK delivery buffer)
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-2">
-                    * Indicative price based on current UK/EU suppliers. Manager will verify exact stock availability shortly.
-                  </p>
-                </div>
-              ) : (
-                <p className="text-slate-600 mb-6">
-                  {t.rfq.form.success}
-                </p>
-              )}
-
-              <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
                 <a
-                  href={waUrl}
+                  href={managerWhatsApp}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-8 rounded-lg shadow-md transition-colors"
                 >
                   <MessageSquare className="w-5 h-5" />
-                  Chat on WhatsApp
+                  Confirm Order via WhatsApp
                 </a>
                 <button
                   type="button"
                   onClick={() => {
                     setStatus('idle');
-                    setEstimateData(null);
-                    setFormData({ partNumber: '', machineModel: '', quantity: '', country: '', contact: '' });
+                    setCalculation(null);
+                    setFormData({ partNumber: '', machineModel: '', quantity: '1', country: '', contact: '' });
                   }}
-                  className="bg-slate-200 hover:bg-slate-300 text-slate-800 font-semibold py-3 px-6 rounded-lg transition-colors"
+                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3.5 px-6 rounded-lg transition-colors"
                 >
-                  Submit Another RFQ
+                  Calculate Another Part
                 </button>
               </div>
             </div>
@@ -133,7 +138,7 @@ export default function RFQSection() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.partNumber} *
+                    Part Number *
                   </label>
                   <input
                     type="text"
@@ -141,12 +146,12 @@ export default function RFQSection() {
                     value={formData.partNumber}
                     onChange={(e) => setFormData({ ...formData, partNumber: e.target.value })}
                     className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. 32/925950"
+                    placeholder="e.g. P553004 or 32/925950"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.machineModel} *
+                    Machine Model / Brand *
                   </label>
                   <input
                     type="text"
@@ -154,25 +159,26 @@ export default function RFQSection() {
                     value={formData.machineModel}
                     onChange={(e) => setFormData({ ...formData, machineModel: e.target.value })}
                     className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. JCB 3CX"
+                    placeholder="e.g. JCB 3CX / Donaldson"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.quantity} *
+                    Quantity *
                   </label>
                   <input
-                    type="text"
+                    type="number"
+                    min="1"
                     required
                     value={formData.quantity}
                     onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
                     className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. 10"
+                    placeholder="1"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    {t.rfq.form.country} *
+                    Delivery Country *
                   </label>
                   <input
                     type="text"
@@ -180,14 +186,14 @@ export default function RFQSection() {
                     value={formData.country}
                     onChange={(e) => setFormData({ ...formData, country: e.target.value })}
                     className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. Ukraine"
+                    placeholder="e.g. Ukraine / Poland / UK"
                   />
                 </div>
               </div>
 
               <div className="mb-6">
                 <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  {t.rfq.form.contact} *
+                  Contact (WhatsApp or Email) *
                 </label>
                 <input
                   type="text"
@@ -195,21 +201,30 @@ export default function RFQSection() {
                   value={formData.contact}
                   onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                   className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                  placeholder="email@example.com or +380..."
+                  placeholder="+380... or email@domain.com"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={status === 'sending'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70"
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70 shadow-lg cursor-pointer"
               >
-                <Send className="w-5 h-5" />
-                {status === 'sending' ? t.rfq.form.sending : t.rfq.form.submit}
+                {status === 'sending' ? (
+                  <span>Calculating Price...</span>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    <span>Get Instant Price Estimation</span>
+                    <ArrowRight className="w-5 h-5 ml-1" />
+                  </>
+                )}
               </button>
 
               {status === 'error' && (
-                <p className="mt-4 text-red-600 text-center font-medium">{t.rfq.form.error}</p>
+                <p className="mt-4 text-red-600 text-center font-semibold">
+                  Something went wrong. Please check your data or contact us directly via WhatsApp.
+                </p>
               )}
             </form>
           )}

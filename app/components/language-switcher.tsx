@@ -1,8 +1,9 @@
 'use client';
 
+import React, { useState, useRef, useEffect } from 'react';
 import { useLanguage } from '@/lib/language-context';
 import { Globe } from 'lucide-react';
-import { useState, useRef, useEffect } from 'react';
+import { Language } from '@/lib/translations';
 
 export default function LanguageSwitcher() {
   const { language, setLanguage } = useLanguage();
@@ -19,55 +20,47 @@ export default function LanguageSwitcher() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const languages = [
-    { code: 'uk' as const, displayCode: 'UA', label: 'Українська', flag: '🇺🇦' },
-    { code: 'en' as const, displayCode: 'EN', label: 'English', flag: '🇬🇧' },
+  const languages: { code: Language; label: string; flag: string; badge: string }[] = [
+    { code: 'uk', label: 'Українська', flag: '🇺🇦', badge: 'UA' },
+    { code: 'en', label: 'English', flag: '🇬🇧', badge: 'EN' },
   ];
 
-  // Співставляємо з урахуванням 'uk', 'ua' та ставимо українську за замовчуванням
-  const currentLang =
-    languages.find(
-      (l) => l.code === language || (language === 'ua' && l.code === 'uk')
-    ) || languages[0];
+  const current = languages.find((l) => l.code === language) || languages[0];
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700 border border-gray-200 cursor-pointer"
         aria-label="Select language"
       >
         <Globe className="w-4 h-4 text-gray-500" />
         <span className="text-sm font-semibold">
-          {currentLang.flag} {currentLang.displayCode}
+          {current.flag} {current.badge}
         </span>
       </button>
 
       {isOpen && (
         <div className="absolute right-0 mt-2 w-44 bg-white rounded-lg shadow-xl border border-gray-200 overflow-hidden z-50">
-          {languages.map((lang) => {
-            const isSelected =
-              language === lang.code || (language === 'ua' && lang.code === 'uk');
-
-            return (
-              <button
-                key={lang.code}
-                type="button"
-                onClick={() => {
-                  setLanguage(lang.code as any);
-                  setIsOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${
-                  isSelected
-                    ? 'bg-red-50 text-red-600 font-bold'
-                    : 'text-gray-700 hover:bg-gray-50 font-medium'
-                }`}
-              >
-                <span className="text-lg">{lang.flag}</span>
-                <span className="text-sm">{lang.label}</span>
-              </button>
-            );
-          })}
+          {languages.map((item) => (
+            <button
+              key={item.code}
+              type="button"
+              onClick={() => {
+                setLanguage(item.code);
+                setIsOpen(false);
+              }}
+              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors cursor-pointer ${
+                language === item.code
+                  ? 'bg-red-50 text-red-600 font-bold'
+                  : 'text-gray-700 hover:bg-gray-50 font-medium'
+              }`}
+            >
+              <span className="text-lg">{item.flag}</span>
+              <span className="text-sm">{item.label}</span>
+            </button>
+          ))}
         </div>
       )}
     </div>

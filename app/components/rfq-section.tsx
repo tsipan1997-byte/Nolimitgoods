@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Send, CheckCircle, MessageSquare, ArrowRight, Calculator, Truck, Package } from 'lucide-react';
+import { Send, CheckCircle, MessageSquare, ArrowRight, Calculator, Truck, FileDown } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function RFQSection() {
@@ -22,9 +22,11 @@ export default function RFQSection() {
     total: number;
     part: string;
     qty: number;
+    invoiceNumber: string;
+    invoiceDate: string;
   } | null>(null);
 
-  // Синхронізація інпутів із кліками по каталогу та брендах
+  // Синхронізація з каталогом деталей та брендами
   useEffect(() => {
     const handleSync = () => {
       const partEl = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
@@ -61,7 +63,7 @@ export default function RFQSection() {
     };
   }, [partNumber, machineModel]);
 
-  // Розрахунок тарифів Nova Post прямо на фронтенді (все в одному)
+  // Розрахунок вартості та логістики Nova Post
   const calculateQuote = () => {
     const qty = Math.max(1, parseInt(quantity, 10) || 1);
 
@@ -89,11 +91,13 @@ export default function RFQSection() {
       }
     }
 
-    // Тарифи Nova Post: Small = £27, Medium = £41, Large = £68
     const shippingRates = { small: 27, medium: 41, large: 68 };
     const baseShipping = shippingRates[parcelSize];
     const shippingEstimate = qty === 1 ? baseShipping : Math.round(baseShipping + (qty - 1) * 12);
     const totalEstimate = (unitPrice * qty) + shippingEstimate;
+
+    const invNum = `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
+    const today = new Date().toLocaleDateString('uk-UA');
 
     return {
       unitPrice,
@@ -102,6 +106,8 @@ export default function RFQSection() {
       total: totalEstimate,
       part: partNumber || 'Запчастина за запитом',
       qty,
+      invoiceNumber: invNum,
+      invoiceDate: today,
     };
   };
 
@@ -111,7 +117,6 @@ export default function RFQSection() {
 
     const result = calculateQuote();
 
-    // Спроба відправити на бекенд (якщо API налаштоване)
     try {
       await fetch('/api/rfq', {
         method: 'POST',
@@ -122,10 +127,12 @@ export default function RFQSection() {
           quantity,
           country,
           contact,
+          invoiceNumber: result.invoiceNumber,
+          total: result.total,
         }),
       });
     } catch {
-      // Працює автономно навіть якщо бекенд не відповів
+      // Працює автономно
     }
 
     setCalculation(result);
@@ -137,11 +144,6 @@ export default function RFQSection() {
     return Math.round(Number(calculation.total) * 56).toLocaleString('uk-UA');
   };
 
-  const getUahUnit = () => {
-    if (!calculation) return '0';
-    return Math.round(Number(calculation.unitPrice) * 56).toLocaleString('uk-UA');
-  };
-
   const getUahShipping = () => {
     if (!calculation) return '0';
     return Math.round(Number(calculation.shippingCost) * 56).toLocaleString('uk-UA');
@@ -149,16 +151,151 @@ export default function RFQSection() {
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/447426826595';
-    const msg = `Доброго дня! Хочу замовити: ${calculation.part} (${machineModel}) у кількості ${calculation.qty} шт. Вартість деталі: £${calculation.unitPrice * calculation.qty}. Доставка Nova Post (${calculation.parcelCategory.toUpperCase()}): £${calculation.shippingCost}. Загалом: ~£${calculation.total} (≈ ${getUahTotal()} грн). Мій контакт: ${contact}`;
+    const msg = `Доброго дня! Хочу замовити: ${calculation.part} (${machineModel}) у кількості ${calculation.qty} шт. Замовлення ${calculation.invoiceNumber}. Доставка Nova Post (${calculation.parcelCategory.toUpperCase()}): £${calculation.shippingCost}. Загальна вартість: ~£${calculation.total} (≈ ${getUahTotal()} грн). Мій контакт: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
-  const getViberLink = () => {
-    return 'viber://chat?number=%2B447426826595';
-  };
+  const getViberLink = () => 'viber://chat?number=%2B447426826595';
+  const getTelegramLink = () => 'https://t.me/+447426826595';
 
-  const getTelegramLink = () => {
-    return 'https://t.me/+447426826595';
+  // Друк / Збереження офіційного Proforma Invoice (PDF)
+  const handleDownloadInvoice = () => {
+    if (!calculation) return;
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Proforma Invoice - ${calculation.invoiceNumber}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; padding: 40px; color: #0f172a; margin: 0; }
+          .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #dc2626; padding-bottom: 20px; margin-bottom: 30px; }
+          .brand { font-size: 26px; font-weight: 900; color: #0f172a; }
+          .brand span { color: #dc2626; }
+          .company-info { font-size: 12px; color: #475569; line-height: 1.5; text-align: right; }
+          .doc-title { font-size: 20px; font-weight: 800; text-transform: uppercase; margin-bottom: 20px; color: #0f172a; }
+          .meta-grid { display: flex; justify-content: space-between; margin-bottom: 30px; font-size: 13px; }
+          .meta-box { width: 48%; }
+          .meta-box h4 { margin: 0 0 6px 0; font-size: 12px; color: #64748b; text-transform: uppercase; }
+          table { width: 100%; border-collapse: collapse; margin-bottom: 30px; font-size: 13px; }
+          th { background: #f8fafc; border-bottom: 2px solid #cbd5e1; text-align: left; padding: 12px; font-size: 11px; text-transform: uppercase; color: #475569; }
+          td { border-bottom: 1px solid #e2e8f0; padding: 12px; }
+          .totals { margin-left: auto; width: 320px; margin-bottom: 40px; }
+          .totals-row { display: flex; justify-content: space-between; padding: 6px 0; font-size: 13px; }
+          .totals-row.grand { border-top: 2px solid #0f172a; font-weight: 900; font-size: 18px; color: #dc2626; padding-top: 10px; margin-top: 6px; }
+          .footer-note { font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 15px; line-height: 1.6; }
+          .badge { display: inline-block; background: #ecfdf5; border: 1px solid #a7f3d0; color: #065f46; font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; }
+          @media print {
+            body { padding: 20px; }
+            button { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="brand">NoLimitGoods <span>LTD</span></div>
+            <div style="font-size: 12px; color: #64748b; margin-top: 4px;">UK Export & Heavy Machinery Logistics</div>
+          </div>
+          <div class="company-info">
+            <strong>NoLimitGoods Limited</strong><br />
+            Company No: 13146899<br />
+            VAT: GB 372 6541 87 | EORI: GB079878335000<br />
+            374 Hipsell Highway, Coventry, CV2 5FR, United Kingdom<br />
+            Email: nolimitgoods@gmail.com | Phone: +44 7426 826595
+          </div>
+        </div>
+
+        <div class="doc-title">PROFORMA INVOICE / РАХУНОК-ПРОФОРМА</div>
+        <div class="badge">UK EXPORT — 0% VAT ZERO-RATED</div>
+
+        <div class="meta-grid">
+          <div class="meta-box">
+            <h4>Покупець / Consignee:</h4>
+            <strong>Клієнт:</strong> ${contact || 'Приватний замовник'}<br />
+            <strong>Країна доставки:</strong> ${country}<br />
+            <strong>Техніка / Вузол:</strong> ${machineModel || 'Спецтехніка'}
+          </div>
+          <div class="meta-box" style="text-align: right;">
+            <h4>Дані рахунку:</h4>
+            <strong>Invoice №:</strong> ${calculation.invoiceNumber}<br />
+            <strong>Дата:</strong> ${calculation.invoiceDate}<br />
+            <strong>Умови поставки:</strong> CPT / Door-to-Door (Nova Post)
+          </div>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Опис / Part Description</th>
+              <th>Каталожний номер</th>
+              <th>К-сть</th>
+              <th>Ціна (GBP)</th>
+              <th>Сума (GBP)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>Оригінальна запасна частина (${machineModel || 'OEM'})</td>
+              <td><strong>${calculation.part}</strong></td>
+              <td>${calculation.qty} шт</td>
+              <td>£${calculation.unitPrice.toFixed(2)}</td>
+              <td>£${(calculation.unitPrice * calculation.qty).toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>Експрес-доставка Nova Post Global (${calculation.parcelCategory.toUpperCase()})</td>
+              <td>FREIGHT-UK-UA</td>
+              <td>1 рейс</td>
+              <td>£${calculation.shippingCost.toFixed(2)}</td>
+              <td>£${calculation.shippingCost.toFixed(2)}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div class="totals-row">
+            <span>Разом товари (Net):</span>
+            <span>£${(calculation.unitPrice * calculation.qty).toFixed(2)}</span>
+          </div>
+          <div class="totals-row">
+            <span>Доставка до дверей:</span>
+            <span>£${calculation.shippingCost.toFixed(2)}</span>
+          </div>
+          <div class="totals-row">
+            <span>UK VAT (Експорт 0%):</span>
+            <span>£0.00</span>
+          </div>
+          <div class="totals-row grand">
+            <span>РАЗОМ ДО СПЛАТИ:</span>
+            <span>£${calculation.total.toFixed(2)}</span>
+          </div>
+          <div style="font-size: 13px; color: #475569; text-align: right; margin-top: 4px;">
+            ≈ ${getUahTotal()} грн (за комерційним курсом)
+          </div>
+        </div>
+
+        <div class="footer-note">
+          <strong>Банківські реквізити та умови оплати:</strong><br />
+          Оплата здійснюється у GBP або еквіваленті через SWIFT / SEPA / IBAN або карткою міжнародного зразка. Рахунок виставлено компанією NoLimitGoods Limited згідно з нормами зовнішньоекономічної діяльності Великобританії.<br />
+          Термін комплектації та доставки: 5–8 робочих днів з моменту підтвердження.
+        </div>
+
+        <script>
+          window.onload = function() { window.print(); }
+        </script>
+      </body>
+      </html>
+    `;
+
+    printWindow.document.open();
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
   };
 
   const resetForm = () => {
@@ -186,8 +323,8 @@ export default function RFQSection() {
           </h2>
           <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {isUk
-              ? 'Введіть номер деталі або оберіть її в каталозі нижче. Тариф доставки Nova Post (Small £27, Medium £41, Large £68) прораховується автоматично.'
-              : 'Enter part number or choose from catalog. Nova Post UK express tariffs are calculated automatically.'}
+              ? 'Введіть номер деталі або оберіть її в каталозі. Тариф Nova Post (Small £27, Medium £41, Large £68) прораховується автоматично з можливістю завантажити Proforma Invoice.'
+              : 'Enter part number or choose from catalog. Instant Nova Post UK tariffs & Proforma Invoice generation.'}
           </p>
         </div>
 
@@ -198,15 +335,15 @@ export default function RFQSection() {
                 <CheckCircle className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold text-white mb-2">
-                {isUk ? 'Повний розрахунок вартості готовий!' : 'Calculation Completed!'}
+                {isUk ? 'Розрахунок вартості готовий!' : 'Calculation Completed!'}
               </h3>
               <p className="text-slate-400 mb-6">
-                {isUk ? 'Позиція:' : 'Item:'}{' '}
-                <strong className="text-white">{calculation.part}</strong> {machineModel && `(${machineModel})`}
+                {isUk ? 'Номер рахунку:' : 'Invoice Ref:'}{' '}
+                <strong className="text-amber-400 font-mono">{calculation.invoiceNumber}</strong> • {calculation.part} {machineModel && `(${machineModel})`}
               </p>
 
-              {/* Картка підсумку з деталізацією ціни та доставки Новою Поштою */}
-              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-md mx-auto mb-8 shadow-inner text-left">
+              {/* Картка підсумку */}
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-6 max-w-md mx-auto mb-6 shadow-inner text-left">
                 <div className="flex items-center justify-between text-xs text-slate-400 border-b border-slate-850 pb-3 mb-3">
                   <span>{isUk ? 'Ціна деталі зі складу UK:' : 'Part Price (UK stock):'}</span>
                   <span className="font-bold text-white">£{calculation.unitPrice * calculation.qty} (≈ {Math.round(calculation.unitPrice * calculation.qty * 56).toLocaleString('uk-UA')} грн)</span>
@@ -233,14 +370,26 @@ export default function RFQSection() {
                 </div>
 
                 <div className="mt-4 p-2.5 bg-slate-900 border border-slate-800 rounded-xl text-[11px] text-slate-400 text-center">
-                  {isUk ? 'Оплата: 0% UK VAT експортний рахунок, IBAN, картка або безготівка.' : 'Payment: 0% UK VAT export invoice, IBAN or Card.'}
+                  {isUk ? 'Офіційний експорт: 0% UK VAT, повний пакет митних документів T1.' : '0% UK Export VAT compliant.'}
                 </div>
               </div>
 
-              {/* Кнопки месенджерів */}
+              {/* Кнопка завантаження офіційного Proforma Invoice */}
+              <div className="max-w-md mx-auto mb-6">
+                <button
+                  type="button"
+                  onClick={handleDownloadInvoice}
+                  className="w-full flex items-center justify-center gap-2.5 py-3.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-700 text-white font-bold text-sm transition-all shadow-md cursor-pointer active:scale-95 group"
+                >
+                  <FileDown className="w-4 h-4 text-red-500 group-hover:scale-110 transition-transform" />
+                  <span>{isUk ? '📄 Завантажити рахунок-проформу (PDF)' : '📄 Download Proforma Invoice (PDF)'}</span>
+                </button>
+              </div>
+
+              {/* Месенджери */}
               <div className="space-y-4 max-w-md mx-auto">
                 <p className="text-sm font-bold text-slate-300">
-                  {isUk ? 'Підтвердіть замовлення у зручному месенджері:' : 'Confirm order via preferred messenger:'}
+                  {isUk ? 'Підтвердіть замовлення в один клік:' : 'Confirm order via messenger:'}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -276,7 +425,7 @@ export default function RFQSection() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-3 px-6 rounded-xl transition-colors cursor-pointer text-sm mt-3"
+                  className="w-full bg-slate-900 hover:bg-slate-800 text-slate-400 font-semibold py-3 px-6 rounded-xl transition-colors cursor-pointer text-sm mt-3"
                 >
                   {isUk ? 'Розрахувати іншу деталь' : 'Calculate Another Part'}
                 </button>

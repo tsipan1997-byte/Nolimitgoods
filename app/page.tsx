@@ -1,3 +1,6 @@
+'use client';
+
+import { LanguageProvider } from '@/lib/language-context';
 import DeliveriesSection from './components/deliveries-section';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
@@ -14,20 +17,22 @@ import WhatsAppButton from './components/whatsapp-button';
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white">
-      <Header />
-      <HeroSection />
-      <RFQSection />
-      <DeliveriesSection />
-      <FeaturesSection />
-      <BrandsSection />
-      <PartsSection />
-      <ClientsSection />
-      <WhyUsSection />
-      <ContactSection />
-      <SEOSection />
-      <Footer />
-      <WhatsAppButton />
-    </main>
+    <LanguageProvider>
+      <main className="min-h-screen bg-white">
+        <Header />
+        <HeroSection />
+        <RFQSection />
+        <DeliveriesSection />
+        <FeaturesSection />
+        <BrandsSection />
+        <PartsSection />
+        <ClientsSection />
+        <WhyUsSection />
+        <ContactSection />
+        <SEOSection />
+        <Footer />
+        <WhatsAppButton />
+      </main>
+    </LanguageProvider>
   );
 }

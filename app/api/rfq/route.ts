@@ -1,245 +1,536 @@
-import { NextResponse } from 'next/server';
+'use client';
 
-export const maxDuration = 60; // Дозволяємо до 60 секунд на глибокий аналіз ринку UK
+import React, { useState, useEffect } from 'react';
+import { CheckCircle, MessageSquare, ArrowRight, Calculator, Printer, FileText, Loader2, Search, Box, Clock, AlertTriangle } from 'lucide-react';
+import { useLanguage } from '@/lib/language-context';
 
-export async function POST(request: Request) {
-  try {
-    const body = await request.json();
-    const {
-      partNumber,
-      machineModel,
-      quantity,
-      country,
-      contact,
-      invoiceNumber,
-    } = body;
+export default function RFQSection() {
+  const { t, language } = useLanguage();
+  const isUk = language === 'uk' || (language as string) === 'ua';
 
-    const qty = Math.max(1, parseInt(quantity, 10) || 1);
-    const pplxKey = process.env.PERPLEXITY_API_KEY;
-    const tgToken = process.env.TELEGRAM_BOT_TOKEN;
-    const tgChatId = process.env.TELEGRAM_CHAT_ID;
-    const xeroWebhook = process.env.XERO_WEBHOOK_URL;
+  const [partNumber, setPartNumber] = useState('');
+  const [machineModel, setMachineModel] = useState('');
+  const [quantity, setQuantity] = useState('1');
+  const [country, setCountry] = useState('Україна');
+  const [contact, setContact] = useState('');
 
-    // 1. АГЕНТСЬКИЙ ПОШУК РЕАЛЬНОГО ДЖЕРЕЛА ТА ЦІНИ В UK
-    let supplierPrice = 0;
-    let supplierSourceUrl = '';
-    let supplierTitle = `${partNumber} ${machineModel || ''}`.trim();
-    let weightKgPerUnit = 1.0;
-    let supplierStoreName = 'UK Parts Distributor';
+  const [status, setStatus] = useState<'idle' | 'searching' | 'success' | 'wait_for_rfq' | 'error'>('idle');
+  const [searchStep, setSearchStep] = useState<string>('');
 
-    if (pplxKey) {
-      try {
-        const agentPrompt = `
-Search live UK spare parts suppliers, distributors, and stores (such as Vicary Plant, Holt JCB, Plant Spares Online, AP Air Europe, Agriline Diesel, eBay UK, or Donaldson UK distributors) for:
-Part Number: "${partNumber}"
-Machine/Application: "${machineModel || 'Heavy machinery'}"
+  const [calculation, setCalculation] = useState<{
+    unitPrice: number;
+    shippingCost: number;
+    parcelTypeLabel: string;
+    totalWeightKg: number;
+    total: number;
+    part: string;
+    qty: number;
+    invoiceNumber: string;
+    invoiceDate: string;
+    categoryLabel: string;
+  } | null>(null);
 
-Find:
-1. Current actual UK purchase price in British Pounds (GBP £).
-2. The specific direct URL or store website where this exact or equivalent part can be bought right now.
-3. Realistic physical weight per unit in kilograms (kg).
-4. Full OEM or aftermarket product name.
-5. Name of the UK supplier/store.
+  useEffect(() => {
+    const handleSync = () => {
+      const partEl = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
+      if (partEl && partEl.value !== partNumber) {
+        setPartNumber(partEl.value);
+      }
+      const modelEl = document.getElementById('rfq-machine-input') as HTMLInputElement | null;
+      if (modelEl && modelEl.value !== machineModel) {
+        setMachineModel(modelEl.value);
+      }
+    };
 
-Return ONLY a valid JSON object without markdown fences, commentary, or backticks:
-{
-  "buyPriceGbp": 45.50,
-  "sourceUrl": "https://...",
-  "weightKg": 1.2,
-  "productName": "Donaldson P553004 Fuel Filter Water Separator",
-  "storeName": "Vicary Plant Spares UK"
-}`;
+    const partEl = document.getElementById('rfq-parts-input');
+    const modelEl = document.getElementById('rfq-machine-input');
 
-        const pplxRes = await fetch('https://api.perplexity.ai/chat/completions', {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${pplxKey}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: 'sonar',
-            messages: [
-              {
-                role: 'system',
-                content:
-                  'You are an expert UK machinery procurement agent. Search and extract verified real-world pricing and direct purchase links in the UK. Output raw valid JSON only.',
-              },
-              { role: 'user', content: agentPrompt },
-            ],
-            temperature: 0.1,
-          }),
-        });
+    if (partEl) {
+      partEl.addEventListener('input', handleSync);
+      partEl.addEventListener('change', handleSync);
+    }
+    if (modelEl) {
+      modelEl.addEventListener('input', handleSync);
+      modelEl.addEventListener('change', handleSync);
+    }
 
-        if (pplxRes.ok) {
-          const pplxData = await pplxRes.json();
-          const rawText = pplxData.choices?.[0]?.message?.content || '{}';
-          const cleanJson = rawText
-            .replace(/```json/g, '')
-            .replace(/```/g, '')
-            .trim();
+    return () => {
+      if (partEl) {
+        partEl.removeEventListener('input', handleSync);
+        partEl.removeEventListener('change', handleSync);
+      }
+      if (modelEl) {
+        modelEl.removeEventListener('input', handleSync);
+        modelEl.removeEventListener('change', handleSync);
+      }
+    };
+  }, [partNumber, machineModel]);
 
-          const parsed = JSON.parse(cleanJson);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus('searching');
 
-          if (parsed.buyPriceGbp && Number(parsed.buyPriceGbp) > 0) {
-            supplierPrice = Math.round(Number(parsed.buyPriceGbp) * 100) / 100;
-          }
-          if (parsed.sourceUrl && parsed.sourceUrl.startsWith('http')) {
-            supplierSourceUrl = parsed.sourceUrl;
-          }
-          if (parsed.weightKg && Number(parsed.weightKg) > 0) {
-            weightKgPerUnit = Math.round(Number(parsed.weightKg) * 10) / 10;
-          }
-          if (parsed.productName) {
-            supplierTitle = parsed.productName;
-          }
-          if (parsed.storeName) {
-            supplierStoreName = parsed.storeName;
-          }
+    const invNum = `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
+    const today = new Date().toLocaleDateString('uk-UA');
+    const qtyVal = Math.max(1, parseInt(quantity, 10) || 1);
+
+    setSearchStep('1/3 Підключення до B2B-агента пошуку ринку Великобританії...');
+
+    try {
+      const responsePromise = fetch('/api/rfq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          partNumber: partNumber.trim(),
+          machineModel: machineModel.trim(),
+          quantity: qtyVal,
+          country,
+          contact,
+          invoiceNumber: invNum,
+        }),
+      });
+
+      setTimeout(() => {
+        setSearchStep('2/3 Верифікація за каталогами OEM та перевірка наявності в UK...');
+      }, 1200);
+
+      setTimeout(() => {
+        setSearchStep('3/3 Розрахунок консолідації вантажу та експортної декларації...');
+      }, 2400);
+
+      const res = await responsePromise;
+
+      if (res.ok) {
+        const data = await res.json();
+
+        // Якщо агент не знайшов підтвердженої ціни або посилання — переходимо в статус WAIT FOR RFQ
+        if (!data.found || data.status === 'wait_for_rfq') {
+          setStatus('wait_for_rfq');
+          return;
         }
-      } catch (err) {
-        console.error('Perplexity Agent search error:', err);
-      }
-    }
 
-    // Резервна верифікація за базою, якщо API повернув 0
-    if (supplierPrice <= 0) {
-      const fallbackCatalog: Record<string, { price: number; kg: number; title: string }> = {
-        'p553004': { price: 14.5, kg: 0.6, title: 'Фільтр Donaldson P553004' },
-        'p535114': { price: 34.0, kg: 1.8, title: 'Фільтр Donaldson P535114 RadialSeal' },
-        '26561117': { price: 21.0, kg: 0.65, title: 'Фільтр паливний Perkins 26561117' },
-        '332/y3163': { price: 48.0, kg: 0.4, title: 'Ремінь привідний JCB 332/Y3163' },
-        '458/20403': { price: 260.0, kg: 16.0, title: 'Головна пара моста JCB 458/20403' },
-        '149298': { price: 145.0, kg: 4.5, title: 'Шестерня планетарна Carraro 149298' },
-        'a10vso71': { price: 620.0, kg: 28.0, title: 'Гідронасос Rexroth A10VSO71' },
-      };
-
-      const cleanCode = partNumber.toLowerCase().trim();
-      if (fallbackCatalog[cleanCode]) {
-        supplierPrice = fallbackCatalog[cleanCode].price;
-        weightKgPerUnit = fallbackCatalog[cleanCode].kg;
-        supplierTitle = fallbackCatalog[cleanCode].title;
-      } else {
-        // Динамічний базовий орієнтир ринку
-        supplierPrice = 45.0;
-        weightKgPerUnit = 1.2;
-      }
-
-      supplierSourceUrl = `https://www.google.co.uk/search?q=${encodeURIComponent(
-        `${partNumber}${machineModel || ''} buy UK machinery parts`
-      )}`;
-      supplierStoreName = 'Google UK Industrial Search';
-    }
-
-    // 2. КОМЕРЦІЙНА НАЦІНКА ТА ЗАХИСТ ВІД МІНУСУ
-    // Комерційна маржа 30% (але не менше £12 на позиції)
-    const marginPerUnit = Math.max(12, Math.round(supplierPrice * 0.3));
-    const clientUnitPrice = Math.round(supplierPrice + marginPerUnit);
-
-    // 3. ПОВНА КОНСОЛІДАЦІЯ ЛОГІСТИКИ NOVA POST GLOBAL
-    const totalBatchWeightKg = Math.round(weightKgPerUnit * qty * 10) / 10;
-    let shippingCost = 27;
-    let parcelType = 'Nova Post Small (до 2 кг)';
-
-    if (totalBatchWeightKg <= 2.0) {
-      shippingCost = 27;
-      parcelType = `Nova Post Small (${totalBatchWeightKg} кг)`;
-    } else if (totalBatchWeightKg <= 10.0) {
-      shippingCost = 41;
-      parcelType = `Nova Post Medium (${totalBatchWeightKg} кг)`;
-    } else if (totalBatchWeightKg <= 30.0) {
-      shippingCost = 68;
-      parcelType = `Nova Post Large (${totalBatchWeightKg} кг)`;
-    } else if (totalBatchWeightKg <= 60.0) {
-      shippingCost = 115;
-      parcelType = `Nova Post Heavy 2-Box (${totalBatchWeightKg} кг)`;
-    } else if (totalBatchWeightKg <= 150.0) {
-      shippingCost = 165;
-      parcelType = `Mini Pallet Freight (${totalBatchWeightKg} кг)`;
-    } else {
-      shippingCost = 240;
-      parcelType = `Euro-Pallet Freight (${totalBatchWeightKg} кг)`;
-    }
-
-    const clientTotal = clientUnitPrice * qty + shippingCost;
-    const totalEstimatedProfit = marginPerUnit * qty;
-
-    // 4. МИТТЄВА ВІДПРАВКА КАРТКИ ЗАКУПІВЛІ В TELEGRAM
-    if (tgToken && tgChatId) {
-      const cleanUrl = supplierSourceUrl.startsWith('http')
-        ? supplierSourceUrl
-        : `https://www.google.co.uk/search?q=${encodeURIComponent(`${partNumber} UK buy`)}`;
-
-      const tgMessage = `🚨 <b>НОВИЙ B2B ЗАПИТ: ${invoiceNumber || 'NLG-ORDER'}</b>
-━━━━━━━━━━━━━━━━━━━━━━━━
-⚙️ <b>Артикул:</b> <code>${partNumber}</code>
-🚜 <b>Техніка / Вузол:</b> ${machineModel || 'Спецтехніка'}
-🏷 <b>Опис:</b> ${supplierTitle}
-📦 <b>Партія:</b> ${qty} шт | Сумарна вага: <b>${totalBatchWeightKg} кг</b>
-🚚 <b>Логістика:</b> ${parcelType} — <b>£${shippingCost}</b>
-
-👤 <b>Клієнт:</b> ${contact}
-📍 <b>Країна доставки:</b> ${country || 'Україна'}
-
-💰 <b>РОЗРАХУНОК ФІНАНСІВ:</b>
-• Ціна в інвойсі клієнту: <b>£${clientUnitPrice}</b> / шт
-• Всього до сплати клієнтом: <b>£${clientTotal}</b> (з доставкою)
-• Орієнтир закупки в UK: <b>£${supplierPrice}</b> / шт
-• Джерело / магазин: <b>${supplierStoreName}</b>
-• <b>ТВІЙ ЧИСТИЙ ПРИБУТОК:</b> <b>£${totalEstimatedProfit}</b> 🔥
-
-🛒 <b>ДЕ КУПИТИ В АНГЛІЇ (ПРЯМЕ ПОСИЛАННЯ):</b>
-👉 <a href="${cleanUrl}">Відкрити сторінку закупівлі товару</a>`;
-
-      try {
-        await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: tgChatId,
-            text: tgMessage,
-            parse_mode: 'HTML',
-            disable_web_page_preview: false,
-          }),
+        setCalculation({
+          unitPrice: data.unitPrice,
+          shippingCost: data.shippingCost,
+          parcelTypeLabel: data.parcelType,
+          totalWeightKg: data.totalWeightKg,
+          total: data.total,
+          part: partNumber.trim(),
+          qty: qtyVal,
+          invoiceNumber: invNum,
+          invoiceDate: today,
+          categoryLabel: data.categoryLabel || 'Оригінальна запасна частина',
         });
-      } catch (tgErr) {
-        console.error('Telegram API notification error:', tgErr);
+        setStatus('success');
+        return;
       }
+    } catch (err) {
+      console.error('B2B calculation error:', err);
     }
 
-    // 5. ДУБЛЮВАННЯ В XERO ЧЕРЕЗ WEBHOOK MAKE
-    if (xeroWebhook) {
-      try {
-        await fetch(xeroWebhook, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            invoiceNumber: invoiceNumber || `NLG-${Date.now()}`,
-            contactName: contact || 'Website Client',
-            itemDescription: `${supplierTitle} (${partNumber}) x${qty}`,
-            quantity: qty,
-            unitAmount: clientUnitPrice,
-            shippingAmount: shippingCost,
-            currencyCode: 'GBP',
-            date: new Date().toISOString().split('T')[0],
-          }),
-        });
-      } catch (xeroErr) {
-        console.error('Xero Webhook error:', xeroErr);
-      }
-    }
+    setStatus('wait_for_rfq');
+  };
 
-    // Відповідь клієнтській частині
-    return NextResponse.json({
-      success: true,
-      unitPrice: clientUnitPrice,
-      shippingCost,
-      parcelType,
-      totalWeightKg: totalBatchWeightKg,
-      categoryLabel: supplierTitle,
-      total: clientTotal,
-    });
-  } catch (error) {
-    console.error('B2B Agent Route Error:', error);
-    return NextResponse.json({ error: 'Server internal error' }, { status: 500 });
-  }
+  const getUahTotal = () => {
+    if (!calculation) return '0';
+    return Math.round(Number(calculation.total) * 56).toLocaleString('uk-UA');
+  };
+
+  const getWaitWhatsAppLink = () => {
+    const msg = `Доброго дня! Мій запит (WAIT FOR RFQ): деталь ${partNumber} (${machineModel}) у кількості ${quantity} шт. Прошу уточнити наявність та фінальну ціну зі складу в Ковентрі. Мій контакт: ${contact}`;
+    return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
+  };
+
+  const getWhatsAppLink = () => {
+    if (!calculation) return 'https://wa.me/447426826595';
+    const msg = `Доброго дня! Підтверджую замовлення ${calculation.invoiceNumber}: ${calculation.part} (${machineModel}) — ${calculation.qty} шт. Доставка: ${calculation.parcelTypeLabel} — £${calculation.shippingCost}. Разом: £${calculation.total} (≈ ${getUahTotal()} грн). Мій телефон: ${contact}`;
+    return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
+  };
+
+  const resetForm = () => {
+    setStatus('idle');
+    setCalculation(null);
+    setPartNumber('');
+    setMachineModel('');
+    setQuantity('1');
+    setCountry('Україна');
+    setContact('');
+  };
+
+  return (
+    <section id="rfq" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="text-center mb-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 text-red-400 text-xs sm:text-sm font-semibold mb-4 border border-red-500/30">
+            <Calculator className="w-4 h-4" />
+            <span>{isUk ? 'B2B Агент пошуку запчастин у Великобританії' : 'Live UK B2B Sourcing Agent'}</span>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
+            {t.rfq.title}
+          </h2>
+          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+            {isUk
+              ? 'Агент сканує підтверджені склади у Великобританії. Якщо позиція потребує індивідуального прорахунку за VIN-кодом — запит передається диспатчеру.'
+              : 'Direct pricing connected to Coventry warehouse stocks. Zero UK export VAT.'}
+          </p>
+        </div>
+
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-md">
+          {status === 'searching' ? (
+            <div className="py-16 text-center space-y-6">
+              <div className="relative w-20 h-20 mx-auto">
+                <div className="absolute inset-0 rounded-full border-4 border-red-600/20 border-t-red-600 animate-spin" />
+                <div className="absolute inset-2 rounded-full border-4 border-amber-500/20 border-b-amber-500 animate-spin" style={{ animationDirection: 'reverse', animationDuration: '1.5s' }} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Search className="w-7 h-7 text-white animate-pulse" />
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-white mb-2">
+                  {isUk ? 'B2B-агент перевіряє наявність у Великобританії...' : 'Querying Live UK Stocks...'}
+                </h3>
+                <p className="text-sm font-mono text-amber-400 max-w-md mx-auto transition-all">
+                  {searchStep}
+                </p>
+              </div>
+
+              <div className="max-w-xs mx-auto bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-800">
+                <div className="bg-gradient-to-r from-red-600 to-amber-500 h-full w-full animate-pulse" />
+              </div>
+            </div>
+          ) : status === 'wait_for_rfq' ? (
+            /* БЛОК "WAIT FOR RFQ" - КОЛИ ЦІНУ НЕ ЗНАЙДЕНО АБО ПОТРІБЕН РУЧНИЙ ПІДБІР */
+            <div className="py-8 text-center space-y-6">
+              <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto">
+                <Clock className="w-8 h-8 animate-pulse" />
+              </div>
+
+              <div>
+                <span className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
+                  STATUS: WAIT FOR RFQ
+                </span>
+                <h3 className="text-2xl font-black text-white mb-2">
+                  {isUk ? 'Запит передано логісту в Ковентрі' : 'Transferred to Coventry Dispatch'}
+                </h3>
+                <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                  {isUk
+                    ? `Для деталі «${partNumber}» потрібна точна перевірка за каталогом OEM та заводською специфікацією. Ми не виставляємо приблизних рахунків. Наш інженер зв'яжеться з вами з точною пропозицією.`
+                    : 'This part requires manual verification by UK dispatch. An official quotation will be provided directly.'}
+                </p>
+              </div>
+
+              <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 max-w-md mx-auto text-left text-xs space-y-2">
+                <div className="flex justify-between text-slate-400">
+                  <span>Артикул:</span>
+                  <span className="font-mono text-white font-bold">{partNumber}</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Техніка:</span>
+                  <span className="text-white">{machineModel || 'Спецтехніка'}</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Кількість:</span>
+                  <span className="text-white">{quantity} шт</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Контакт:</span>
+                  <span className="text-white">{contact}</span>
+                </div>
+              </div>
+
+              <div className="space-y-3 max-w-md mx-auto">
+                <a
+                  href={getWaitWhatsAppLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Уточнити у чергового логіста (WhatsApp UK)</span>
+                </a>
+
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-medium py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-xs"
+                >
+                  {isUk ? 'Розрахувати іншу деталь' : 'New Quote'}
+                </button>
+              </div>
+            </div>
+          ) : status === 'success' && calculation ? (
+            <div className="py-2">
+              <div className="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
+                    <CheckCircle className="w-6 h-6" />
+                  </div>
+                  <div>
+                    <h3 className="text-lg sm:text-xl font-bold text-white">
+                      {isUk ? 'Рахунок сформовано за актуальною ціною UK' : 'Invoice Generated via Live UK Sourcing'}
+                    </h3>
+                    <p className="text-xs text-slate-400 font-mono">
+                      Ref: {calculation.invoiceNumber} • {calculation.invoiceDate}
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 cursor-pointer active:scale-95"
+                >
+                  <Printer className="w-4 h-4 text-red-500" />
+                  <span>{isUk ? 'Друкувати / PDF' : 'Print / PDF'}</span>
+                </button>
+              </div>
+
+              {/* Бланк інвойсу */}
+              <div className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 mb-8 font-sans">
+                <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-red-600 pb-5 mb-5 gap-4">
+                  <div>
+                    <div className="text-2xl font-black tracking-tight text-slate-950">
+                      NoLimitGoods <span className="text-red-600">LTD</span>
+                    </div>
+                    <div className="text-[11px] text-slate-500 font-medium">
+                      UK Export Hub & Machinery Logistics Solutions
+                    </div>
+                  </div>
+                  <div className="text-left sm:text-right text-[11px] text-slate-600 leading-relaxed font-mono">
+                    <strong className="text-slate-900">NoLimitGoods Limited</strong><br />
+                    Company No: 13146899 | VAT: GB 372654187<br />
+                    EORI: GB079878335000<br />
+                    374 Hipsell Highway, Coventry, CV2 5FR, UK
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h4 className="text-lg font-black uppercase text-slate-900 tracking-wider">
+                      PROFORMA INVOICE
+                    </h4>
+                    <span className="inline-block bg-emerald-50 border border-emerald-300 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded mt-1">
+                      UK EXPORT — 0% VAT ZERO-RATED
+                    </span>
+                  </div>
+                  <div className="text-right text-xs">
+                    <span className="text-slate-400 block text-[10px] uppercase font-bold">Рахунок №:</span>
+                    <strong className="text-slate-900 font-mono">{calculation.invoiceNumber}</strong>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100 text-xs">
+                  <div>
+                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">Покупець / Consignee:</span>
+                    <p className="font-semibold text-slate-900">{contact || 'Приватний замовник'}</p>
+                    <p className="text-slate-600">Країна доставки: {country}</p>
+                    <p className="text-slate-600">Обладнання: {machineModel || 'Спецтехніка'}</p>
+                  </div>
+                  <div className="sm:text-right">
+                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">Логістична консолідація:</span>
+                    <p className="text-slate-600">Маршрут: <strong>Coventry Hub ➔ Україна</strong></p>
+                    <p className="text-slate-600">Формат: <strong>{calculation.parcelTypeLabel}</strong></p>
+                    <p className="text-slate-600">Митне декларування: <strong>T1 Transit Cleared</strong></p>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto mb-6">
+                  <table className="w-full text-left text-xs border-collapse">
+                    <thead>
+                      <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px]">
+                        <th className="py-2">Найменування вузла</th>
+                        <th className="py-2">Каталожний номер</th>
+                        <th className="py-2 text-center">К-сть</th>
+                        <th className="py-2 text-right">Ціна (£)</th>
+                        <th className="py-2 text-right">Сума (£)</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      <tr>
+                        <td className="py-3 font-semibold text-slate-800">
+                          {calculation.categoryLabel}
+                        </td>
+                        <td className="py-3 font-mono font-bold text-red-600">{calculation.part}</td>
+                        <td className="py-3 text-center">{calculation.qty} шт</td>
+                        <td className="py-3 text-right">£{calculation.unitPrice.toFixed(2)}</td>
+                        <td className="py-3 text-right font-semibold">£{(calculation.unitPrice * calculation.qty).toFixed(2)}</td>
+                      </tr>
+                      <tr>
+                        <td className="py-3 text-slate-700">
+                          Консолідоване відправлення Nova Post ({calculation.totalWeightKg} кг)
+                        </td>
+                        <td className="py-3 font-mono text-slate-500">FREIGHT-COV-UA</td>
+                        <td className="py-3 text-center">1 партія</td>
+                        <td className="py-3 text-right">£{calculation.shippingCost.toFixed(2)}</td>
+                        <td className="py-3 text-right font-semibold">£{calculation.shippingCost.toFixed(2)}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                  <div className="text-[11px] text-slate-500 max-w-sm">
+                    Рахунок дійсний 5 банківських днів. Оплата за безготівковим розрахунком (IBAN/SWIFT) або карткою. 0% UK VAT.
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[11px] text-slate-500 uppercase font-bold block">Разом до сплати:</span>
+                    <div className="text-2xl sm:text-3xl font-black text-red-600">
+                      £{calculation.total.toFixed(2)}
+                    </div>
+                    <div className="text-xs font-bold text-slate-700">
+                      ≈ {getUahTotal()} грн
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Кнопка збереження PDF */}
+              <div className="max-w-md mx-auto mb-6">
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-xs transition-all shadow-md active:scale-95 cursor-pointer"
+                >
+                  <FileText className="w-4 h-4 text-red-500" />
+                  <span>{isUk ? 'Зберегти / Роздрукувати рахунок (PDF)' : 'Save / Print Invoice (PDF)'}</span>
+                </button>
+              </div>
+
+              {/* Месенджери */}
+              <div className="space-y-4 max-w-md mx-auto text-center">
+                <p className="text-xs text-slate-300 font-semibold">
+                  {isUk ? 'Підтвердити замовлення у чергового логіста в UK:' : 'Confirm invoice with UK dispatch:'}
+                </p>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <a
+                    href={getWhatsAppLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all text-xs cursor-pointer"
+                  >
+                    <MessageSquare className="w-4 h-4" />
+                    <span>WhatsApp UK</span>
+                  </a>
+
+                  <a
+                    href="https://t.me/+447426826595"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all text-xs cursor-pointer"
+                  >
+                    <span>Telegram</span>
+                  </a>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={resetForm}
+                  className="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-medium py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-xs"
+                >
+                  {isUk ? 'Розрахувати інший вузол' : 'New Quote'}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit}>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    {t.rfq.form.partNumber} *
+                  </label>
+                  <input
+                    id="rfq-parts-input"
+                    type="text"
+                    required
+                    value={partNumber}
+                    onChange={(e) => setPartNumber(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="наприклад: 458/20403 або P553004"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    {t.rfq.form.machineModel} *
+                  </label>
+                  <input
+                    id="rfq-machine-input"
+                    type="text"
+                    required
+                    value={machineModel}
+                    onChange={(e) => setMachineModel(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="наприклад: JCB 3CX / Donaldson / Perkins"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    {t.rfq.form.quantity} *
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    required
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="1"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-slate-300 mb-2">
+                    {t.rfq.form.country} *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                    placeholder="Україна"
+                  />
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-slate-300 mb-2">
+                  {t.rfq.form.contact} *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                  className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
+                  placeholder="+380... або email@domain.com"
+                />
+              </div>
+
+              <button
+                type="submit"
+                disabled={status === 'searching'}
+                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 text-base sm:text-lg disabled:opacity-70 shadow-lg cursor-pointer"
+              >
+                {status === 'searching' ? (
+                  <>
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                    <span>Сканування підтверджених складів UK...</span>
+                  </>
+                ) : (
+                  <>
+                    <Box className="w-5 h-5" />
+                    <span>{isUk ? 'Запустити B2B-агента та отримати інвойс' : 'Launch B2B Agent & Generate Invoice'}</span>
+                    <ArrowRight className="w-5 h-5 ml-1" />
+                  </>
+                )}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }

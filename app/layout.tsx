@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -7,7 +8,8 @@ export const metadata: Metadata = {
     default: 'NoLimitGoods | Heavy Machinery & Automotive Spare Parts Sourcing',
     template: '%s | NoLimitGoods',
   },
-  description: 'Global sourcing and rapid delivery of genuine & OEM spare parts for heavy machinery, construction equipment, and commercial vehicles. Direct procurement from UK & Europe.',
+  description:
+    'Global sourcing and rapid delivery of genuine & OEM spare parts for heavy machinery, construction equipment, and commercial vehicles. Direct procurement from UK & Europe.',
   keywords: [
     'heavy machinery spare parts',
     'construction equipment parts',
@@ -38,13 +40,15 @@ export const metadata: Metadata = {
     locale: 'en_GB',
     url: 'https://nolimitgoods.co.uk',
     title: 'NoLimitGoods | Heavy Machinery & OEM Spare Parts Procurement',
-    description: 'Fast RFQ pricing, worldwide delivery, and sourcing of genuine equipment parts from top UK and EU distributors.',
+    description:
+      'Fast RFQ pricing, worldwide delivery, and sourcing of genuine equipment parts from top UK and EU distributors.',
     siteName: 'NoLimitGoods',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'NoLimitGoods | Spare Parts Sourcing',
-    description: 'Request genuine and OEM parts for machinery & industrial vehicles with quick worldwide delivery.',
+    description:
+      'Request genuine and OEM parts for machinery & industrial vehicles with quick worldwide delivery.',
   },
   alternates: {
     canonical: 'https://nolimitgoods.co.uk',
@@ -61,9 +65,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="antialiased min-h-screen bg-slate-900 text-white">
-        {children}
-      </body>
-    </html>
-  );
-}
+      <head>
+        {/* Google tag (gtag.js) */}
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=AW-670192610"
+          strategy="afterInteractive"
+        />
+        <Script id="google-tag-init" strategy="after

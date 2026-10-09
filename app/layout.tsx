@@ -49,6 +49,9 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://nolimitgoods.co.uk',
   },
+  verification: {
+    google: 'gHruZQx_jM4aYST2XHYbUyCRpztaRf2N0YgkKGiQEsM',
+  },
 };
 
 export default function RootLayout({

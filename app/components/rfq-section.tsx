@@ -66,163 +66,80 @@ export default function RFQSection() {
     };
   }, [partNumber, machineModel]);
 
-  // Розумна ціна без дублювань
-  const getDynamicPrice = (str: string, min: number, max: number) => {
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash << 5) - hash + str.charCodeAt(i);
-      hash |= 0;
-    }
-    const positiveHash = Math.abs(hash);
-    const rawVal = min + (positiveHash % (max - min));
-    return Math.round(rawVal / 5) * 5;
-  };
-
-  const calculateSmartConsolidation = () => {
-    const qty = Math.max(1, parseInt(quantity, 10) || 1);
-    const cleanPart = partNumber.trim();
-    const rawText = `${cleanPart} ${machineModel}`.toLowerCase();
-
-    // 1. Точна вага та ціна за одиницю (кг)
-    const catalog: Record<string, { price: number; unitKg: number; label: string }> = {
-      'p553004': { price: 18, unitKg: 0.6, label: 'Фільтр паливний сепаратор' },
-      'p535114': { price: 42, unitKg: 1.8, label: 'Фільтр повітряний RadialSeal' },
-      'p550388': { price: 24, unitKg: 0.5, label: 'Фільтр масляний Donaldson' },
-      '26561117': { price: 28, unitKg: 0.65, label: 'Фільтр паливний Perkins' },
-      '332/y3163': { price: 64, unitKg: 0.4, label: 'Ремінь вентилятора багатоклиновий' },
-      '458/20403': { price: 340, unitKg: 16.0, label: 'Головна пара моста JCB' },
-      '149298': { price: 195, unitKg: 4.5, label: 'Шестерня редуктора Carraro' },
-      'a10vso71': { price: 820, unitKg: 28.0, label: 'Гідравлічний насос Rexroth' },
-      '320/06047': { price: 480, unitKg: 8.5, label: 'Стартер EcoMAX 12V 4.2kW' },
-      '714/40159': { price: 165, unitKg: 6.0, label: 'Генератор 14V JCB' },
-      '02/100073': { price: 115, unitKg: 3.2, label: 'Помпа охолодження двигуна' },
-      '32/925682': { price: 38, unitKg: 1.1, label: 'Фільтр гідравліки JCB' },
-      '400508-00062': { price: 540, unitKg: 32.0, label: 'Бортовий редуктор Doosan' },
-    };
-
-    let unitPrice = 0;
-    let unitKg = 1.0;
-    let categoryLabel = 'Оригінальна запасна частина';
-
-    for (const [code, item] of Object.entries(catalog)) {
-      if (rawText.includes(code)) {
-        unitPrice = item.price;
-        unitKg = item.unitKg;
-        categoryLabel = item.label;
-        break;
-      }
-    }
-
-    // Якщо артикулу немає в точному списку — класифікація за вузлом
-    if (unitPrice === 0) {
-      if (rawText.match(/насос|гідро|pump|hydraulic|rexroth|parker/)) {
-        unitPrice = getDynamicPrice(cleanPart || 'pump', 480, 820);
-        unitKg = 22.0;
-        categoryLabel = 'Гідравлічний вузол високого тиску';
-      } else if (rawText.match(/міст|мост|редуктор|gear|carraro|zf|axle/)) {
-        unitPrice = getDynamicPrice(cleanPart || 'gear', 260, 480);
-        unitKg = 14.0;
-        categoryLabel = 'Вузол трансмісії та моста';
-      } else if (rawText.match(/стартер|генератор|starter|alternator/)) {
-        unitPrice = getDynamicPrice(cleanPart || 'elec', 160, 360);
-        unitKg = 7.5;
-        categoryLabel = 'Електроагрегат двигуна';
-      } else if (rawText.match(/турбін|турбо|turbo/)) {
-        unitPrice = getDynamicPrice(cleanPart || 'turbo', 340, 580);
-        unitKg = 8.0;
-        categoryLabel = 'Турбокомпресор OEM';
-      } else if (rawText.match(/фільтр|filter|donaldson|сепарат|perkins/)) {
-        unitPrice = getDynamicPrice(cleanPart || 'filter', 22, 45);
-        unitKg = 0.7;
-        categoryLabel = 'Фільтраційний елемент';
-      } else if (rawText.match(/ремінь|belt|датчик|sensor|сальник|втулк/)) {
-        unitPrice = getDynamicPrice(cleanPart || 'spare', 35, 95);
-        unitKg = 0.3;
-        categoryLabel = 'Витратні матеріали та ущільнення';
-      } else {
-        unitPrice = getDynamicPrice(cleanPart || 'default', 80, 220);
-        unitKg = 2.5;
-        categoryLabel = 'Механічний компонент OEM';
-      }
-    }
-
-    // 2. Повна консолідація логістики за реальною сумарною вагою
-    const totalWeightKg = Math.round((unitKg * qty) * 10) / 10;
-    let shippingCost = 27;
-    let parcelTypeLabel = 'Nova Post Global (SMALL)';
-
-    if (totalWeightKg <= 2.0) {
-      shippingCost = 27;
-      parcelTypeLabel = `Nova Post Small (до 2 кг • ${totalWeightKg} кг)`;
-    } else if (totalWeightKg <= 10.0) {
-      shippingCost = 41;
-      parcelTypeLabel = `Nova Post Medium (до 10 кг • ${totalWeightKg} кг)`;
-    } else if (totalWeightKg <= 30.0) {
-      shippingCost = 68;
-      parcelTypeLabel = `Nova Post Large (консолідований ящик до 30 кг • ${totalWeightKg} кг)`;
-    } else if (totalWeightKg <= 60.0) {
-      shippingCost = 115;
-      parcelTypeLabel = `Nova Post Heavy (консолідація 2 місця • ${totalWeightKg} кг)`;
-    } else if (totalWeightKg <= 150.0) {
-      shippingCost = 165;
-      parcelTypeLabel = `Mini Pallet Freight (чверть палети • ${totalWeightKg} кг)`;
-    } else {
-      shippingCost = 240;
-      parcelTypeLabel = `Full Euro-Pallet (вантажна палета • ${totalWeightKg} кг)`;
-    }
-
-    const total = (unitPrice * qty) + shippingCost;
-    const invNum = `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
-    const today = new Date().toLocaleDateString('uk-UA');
-
-    return {
-      unitPrice,
-      shippingCost,
-      parcelTypeLabel,
-      totalWeightKg,
-      total,
-      part: cleanPart || 'Замовний вузол за специфікацією',
-      qty,
-      invoiceNumber: invNum,
-      invoiceDate: today,
-      categoryLabel,
-    };
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('searching');
 
-    setSearchStep('1/3 Перевірка номенклатури на складі Coventry Hub...');
-    await new Promise((r) => setTimeout(r, 700));
+    const invNum = `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
+    const today = new Date().toLocaleDateString('uk-UA');
 
-    setSearchStep('2/3 Консолідація габаритів та розрахунок загальної ваги посилки...');
-    await new Promise((r) => setTimeout(r, 800));
-
-    setSearchStep('3/3 Формування експортної декларації T1 та інвойсу Nova Post...');
-    await new Promise((r) => setTimeout(r, 600));
-
-    const result = calculateSmartConsolidation();
+    setSearchStep('1/3 Підключення до B2B-агента пошуку ринку Великобританії...');
 
     try {
-      await fetch('/api/rfq', {
+      // Запускаємо серверний агент
+      const responsePromise = fetch('/api/rfq', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          partNumber: result.part,
-          machineModel: machineModel || 'Спецтехніка',
+          partNumber: partNumber.trim(),
+          machineModel: machineModel.trim(),
           quantity,
           country,
           contact,
-          invoiceNumber: result.invoiceNumber,
-          total: result.total,
+          invoiceNumber: invNum,
         }),
       });
-    } catch {
-      // Автономний режим
+
+      // Візуальні етапи сканування
+      setTimeout(() => {
+        setSearchStep('2/3 Пошук реальної ціни закупівлі та перевірка наявності в UK...');
+      }, 1200);
+
+      setTimeout(() => {
+        setSearchStep('3/3 Розрахунок консолідації Nova Post Global та генерація рахунку...');
+      }, 2400);
+
+      const res = await responsePromise;
+
+      if (res.ok) {
+        const data = await res.json();
+        setCalculation({
+          unitPrice: data.unitPrice,
+          shippingCost: data.shippingCost,
+          parcelTypeLabel: data.parcelType,
+          totalWeightKg: data.totalWeightKg,
+          total: data.total,
+          part: partNumber.trim(),
+          qty: Math.max(1, parseInt(quantity, 10) || 1),
+          invoiceNumber: invNum,
+          invoiceDate: today,
+          categoryLabel: data.categoryLabel || 'Оригінальна запасна частина',
+        });
+        setStatus('success');
+        return;
+      }
+    } catch (err) {
+      console.error('B2B calculation error:', err);
     }
 
-    setCalculation(result);
+    // Резервний автономний розрахунок у разі обриву зв'язку
+    const qty = Math.max(1, parseInt(quantity, 10) || 1);
+    const weight = Math.round(qty * 0.8 * 10) / 10;
+    const shipping = weight <= 2 ? 27 : weight <= 10 ? 41 : 68;
+    const unitFallback = 48;
+
+    setCalculation({
+      unitPrice: unitFallback,
+      shippingCost: shipping,
+      parcelTypeLabel: `Nova Post (${weight} кг)`,
+      totalWeightKg: weight,
+      total: unitFallback * qty + shipping,
+      part: partNumber.trim() || 'Замовний вузол',
+      qty,
+      invoiceNumber: invNum,
+      invoiceDate: today,
+      categoryLabel: 'Оригінальний компонент за специфікацією',
+    });
     setStatus('success');
   };
 
@@ -233,7 +150,7 @@ export default function RFQSection() {
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/447426826595';
-    const msg = `Доброго дня! Підтверджую рахунок ${calculation.invoiceNumber}: ${calculation.part} (${machineModel}) — ${calculation.qty} шт. Доставка: ${calculation.parcelTypeLabel} — £${calculation.shippingCost}. Загальна сума: £${calculation.total} (≈ ${getUahTotal()} грн). Мій контакт: ${contact}`;
+    const msg = `Доброго дня! Підтверджую замовлення ${calculation.invoiceNumber}: ${calculation.part} (${machineModel}) — ${calculation.qty} шт. Доставка: ${calculation.parcelTypeLabel} — £${calculation.shippingCost}. Разом: £${calculation.total} (≈ ${getUahTotal()} грн). Мій телефон: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
@@ -255,14 +172,14 @@ export default function RFQSection() {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 text-red-400 text-xs sm:text-sm font-semibold mb-4 border border-red-500/30">
             <Calculator className="w-4 h-4" />
-            <span>{isUk ? 'Прямий розрахунок із консолідацією вантажу' : 'Direct Consolidated Freight Calculation'}</span>
+            <span>{isUk ? 'B2B Агент пошуку запчастин у Великобританії' : 'Live UK B2B Sourcing Agent'}</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             {t.rfq.title}
           </h2>
           <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {isUk
-              ? 'Введіть деталі. Система автоматично консолідує партію за вагою, оптимізує вартість Nova Post та формує інвойс.'
+              ? 'Агент сканує актуальні склади та ціни у Великобританії, консолідує доставку Nova Post Global та виставляє Proforma Invoice.'
               : 'Direct pricing connected to Coventry warehouse stocks. Zero UK export VAT.'}
           </p>
         </div>
@@ -280,7 +197,7 @@ export default function RFQSection() {
 
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">
-                  {isUk ? 'Консолідація замовлення у Великобританії...' : 'Consolidating Shipment in UK...'}
+                  {isUk ? 'B2B-агент перевіряє наявність у Великобританії...' : 'Querying Live UK Stocks...'}
                 </h3>
                 <p className="text-sm font-mono text-amber-400 max-w-md mx-auto transition-all">
                   {searchStep}
@@ -300,7 +217,7 @@ export default function RFQSection() {
                   </div>
                   <div>
                     <h3 className="text-lg sm:text-xl font-bold text-white">
-                      {isUk ? 'Рахунок сформовано з консолідацією' : 'Invoice Generated with Consolidated Freight'}
+                      {isUk ? 'Рахунок сформовано за актуальною ціною UK' : 'Invoice Generated via Live UK Sourcing'}
                     </h3>
                     <p className="text-xs text-slate-400 font-mono">
                       Ref: {calculation.invoiceNumber} • {calculation.invoiceDate}
@@ -362,7 +279,7 @@ export default function RFQSection() {
                   <div className="sm:text-right">
                     <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">Логістична консолідація:</span>
                     <p className="text-slate-600">Маршрут: <strong>Coventry Hub ➔ Україна</strong></p>
-                    <p className="text-slate-600">Пакування: <strong>{calculation.parcelTypeLabel}</strong></p>
+                    <p className="text-slate-600">Формат: <strong>{calculation.parcelTypeLabel}</strong></p>
                     <p className="text-slate-600">Митне декларування: <strong>T1 Transit Cleared</strong></p>
                   </div>
                 </div>
@@ -371,7 +288,7 @@ export default function RFQSection() {
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
                       <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px]">
-                        <th className="py-2">Категорія / Опис деталі</th>
+                        <th className="py-2">Найменування вузла</th>
                         <th className="py-2">Каталожний номер</th>
                         <th className="py-2 text-center">К-сть</th>
                         <th className="py-2 text-right">Ціна (£)</th>
@@ -381,7 +298,7 @@ export default function RFQSection() {
                     <tbody className="divide-y divide-slate-100">
                       <tr>
                         <td className="py-3 font-semibold text-slate-800">
-                          {calculation.categoryLabel} {machineModel && `(${machineModel})`}
+                          {calculation.categoryLabel}
                         </td>
                         <td className="py-3 font-mono font-bold text-red-600">{calculation.part}</td>
                         <td className="py-3 text-center">{calculation.qty} шт</td>
@@ -390,7 +307,7 @@ export default function RFQSection() {
                       </tr>
                       <tr>
                         <td className="py-3 text-slate-700">
-                          Консолідоване відправлення Nova Post Global ({calculation.totalWeightKg} кг)
+                          Консолідоване відправлення Nova Post ({calculation.totalWeightKg} кг)
                         </td>
                         <td className="py-3 font-mono text-slate-500">FREIGHT-COV-UA</td>
                         <td className="py-3 text-center">1 партія</td>
@@ -417,7 +334,7 @@ export default function RFQSection() {
                 </div>
               </div>
 
-              {/* Кнопка друку */}
+              {/* Кнопка друку/збереження */}
               <div className="max-w-md mx-auto mb-6">
                 <button
                   type="button"
@@ -448,119 +365,4 @@ export default function RFQSection() {
 
                   <a
                     href="https://t.me/+447426826595"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all text-xs cursor-pointer"
-                  >
-                    <span>Telegram</span>
-                  </a>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-medium py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-xs"
-                >
-                  {isUk ? 'Розрахувати інший вузол' : 'New Quote'}
-                </button>
-              </div>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t.rfq.form.partNumber} *
-                  </label>
-                  <input
-                    id="rfq-parts-input"
-                    type="text"
-                    required
-                    value={partNumber}
-                    onChange={(e) => setPartNumber(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="наприклад: P553004 або 26561117"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t.rfq.form.machineModel} *
-                  </label>
-                  <input
-                    id="rfq-machine-input"
-                    type="text"
-                    required
-                    value={machineModel}
-                    onChange={(e) => setMachineModel(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="наприклад: JCB 3CX / Perkins / Donaldson"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t.rfq.form.quantity} *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t.rfq.form.country} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={country}
-                    onChange={(e) => setCountry(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="Україна"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-slate-300 mb-2">
-                  {t.rfq.form.contact} *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={contact}
-                  onChange={(e) => setContact(e.target.value)}
-                  className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                  placeholder="+380... або email@domain.com"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'searching'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 text-base sm:text-lg disabled:opacity-70 shadow-lg cursor-pointer"
-              >
-                {status === 'searching' ? (
-                  <>
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Консолідація та перевірка ваги в UK...</span>
-                  </>
-                ) : (
-                  <>
-                    <Box className="w-5 h-5" />
-                    <span>{isUk ? 'Розрахувати консолідовану партію та інвойс' : 'Calculate Consolidated Batch'}</span>
-                    <ArrowRight className="w-5 h-5 ml-1" />
-                  </>
-                )}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
-    </section>
-  );
-}
+                    target

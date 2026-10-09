@@ -13,7 +13,7 @@ export default function RFQSection() {
     partNumber: '',
     machineModel: '',
     quantity: '1',
-    country: '',
+    country: 'Україна',
     contact: '',
   });
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
@@ -64,8 +64,8 @@ export default function RFQSection() {
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/380501400245';
-    const text = 'Доброго дня! Хочу замовити деталь ' + calculation.part + ' (' + calculation.qty + ' шт). Розрахунок: ~£' + calculation.total + ' (≈ ' + getUahTotal() + ' грн).';
-    return 'https://wa.me/380501400245?text=' + encodeURIComponent(text);
+    const text = `Доброго дня! Хочу замовити деталь ${calculation.part} (${calculation.qty} шт). Орієнтовний розрахунок: ~£${calculation.total} (≈ ${getUahTotal()} грн).`;
+    return `https://wa.me/380501400245?text=${encodeURIComponent(text)}`;
   };
 
   return (
@@ -85,7 +85,7 @@ export default function RFQSection() {
             {t.rfq.title}
           </h2>
           <p className="text-xl text-white/90 max-w-2xl mx-auto">
-            Get instant AI price estimation & order your parts directly from UK
+            Миттєвий онлайн-розрахунок вартості та пряме постачання запчастин з Британії та Європи
           </p>
         </motion.div>
 
@@ -101,15 +101,15 @@ export default function RFQSection() {
                 <CheckCircle className="w-8 h-8" />
               </div>
               <h3 className="text-2xl font-bold text-slate-900 mb-2">
-                Estimated Price Calculated!
+                Орієнтовну вартість розраховано!
               </h3>
               <p className="text-slate-600 mb-6">
-                Online market estimation for part <strong>{calculation.part}</strong>
+                Орієнтовна ринкова вартість для деталі <strong>{calculation.part}</strong>
               </p>
 
               <div className="bg-slate-50 border-2 border-red-100 rounded-xl p-6 max-w-md mx-auto mb-8 shadow-sm">
-                <div className="text-sm font-semibold text-slate-500 uppercase tracking-wide mb-1">
-                  Total Estimated Price (incl. delivery)
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-1">
+                  Загальна орієнтовна вартість (з доставкою)
                 </div>
 
                 <div className="text-4xl font-black text-red-600 tracking-tight my-1">
@@ -121,7 +121,7 @@ export default function RFQSection() {
                 </div>
 
                 <div className="text-sm font-medium text-slate-600 pt-2 border-t border-slate-200">
-                  Approx. £{calculation.unitPrice} (≈ {getUahUnit()} грн) / item ({calculation.qty} pcs)
+                  Близько £{calculation.unitPrice} (≈ {getUahUnit()} грн) / шт ({calculation.qty} шт)
                 </div>
 
                 <div className="inline-block mt-3 px-3 py-1 bg-amber-50 border border-amber-200 rounded-md text-xs text-amber-800 font-medium">
@@ -129,7 +129,7 @@ export default function RFQSection() {
                 </div>
 
                 <p className="text-xs text-slate-400 mt-2">
-                  * Final invoice verified by procurement manager before payment.
+                  * Фінальний рахунок узгоджується та перевіряється менеджером перед оплатою.
                 </p>
               </div>
 
@@ -148,11 +148,11 @@ export default function RFQSection() {
                   onClick={() => {
                     setStatus('idle');
                     setCalculation(null);
-                    setFormData({ partNumber: '', machineModel: '', quantity: '1', country: '', contact: '' });
+                    setFormData({ partNumber: '', machineModel: '', quantity: '1', country: 'Україна', contact: '' });
                   }}
-                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3.5 px-6 rounded-lg transition-colors"
+                  className="w-full sm:w-auto bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-3.5 px-6 rounded-lg transition-colors cursor-pointer"
                 >
-                  Calculate Another Part
+                  Розрахувати іншу деталь
                 </button>
               </div>
             </div>
@@ -161,7 +161,7 @@ export default function RFQSection() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Part Number *
+                    Каталожний номер деталі (Part Number) *
                   </label>
                   <input
                     type="text"
@@ -169,90 +169,16 @@ export default function RFQSection() {
                     value={formData.partNumber}
                     onChange={(e) => setFormData({ ...formData, partNumber: e.target.value })}
                     className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. P553004 or 32/925950"
+                    placeholder="наприклад: P553004 або 32/925950"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Machine Model / Brand *
+                    Модель техніки або Бренд *
                   </label>
                   <input
                     type="text"
                     required
                     value={formData.machineModel}
                     onChange={(e) => setFormData({ ...formData, machineModel: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. JCB 3CX / Donaldson"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Quantity *
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    required
-                    value={formData.quantity}
-                    onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="1"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-700 mb-2">
-                    Delivery Country *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.country}
-                    onChange={(e) => setFormData({ ...formData, country: e.target.value })}
-                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                    placeholder="e.g. Ukraine / Poland / UK"
-                  />
-                </div>
-              </div>
-
-              <div className="mb-6">
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Contact (WhatsApp or Email) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.contact}
-                  onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
-                  className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-colors"
-                  placeholder="+380... or email@domain.com"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={status === 'sending'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 flex items-center justify-center gap-3 text-lg disabled:opacity-70 shadow-lg cursor-pointer"
-              >
-                {status === 'sending' ? (
-                  <span>Calculating Price...</span>
-                ) : (
-                  <>
-                    <Send className="w-5 h-5" />
-                    <span>Get Instant Price Estimation</span>
-                    <ArrowRight className="w-5 h-5 ml-1" />
-                  </>
-                )}
-              </button>
-
-              {status === 'error' && (
-                <p className="mt-4 text-red-600 text-center font-semibold">
-                  Something went wrong. Please check your data or contact us directly via WhatsApp.
-                </p>
-              )}
-            </form>
-          )}
-        </motion.div>
-      </div>
-    </section>
-  );
-}
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-

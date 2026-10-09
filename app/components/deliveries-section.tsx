@@ -14,7 +14,6 @@ export default function DeliveriesSection() {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Заголовок */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs sm:text-sm font-semibold mb-4">
             <ShieldCheck className="w-4 h-4 text-emerald-400" />
@@ -29,28 +28,27 @@ export default function DeliveriesSection() {
           </h2>
           <p className="text-slate-400 text-base max-w-2xl mx-auto">
             {isUk
-              ? 'Безпечна логістика без посередників. Дивіться, як наші клієнти отримують оригінальні палети та запчастини, відправлені з хабу NoLimitGoods.'
+              ? 'Безпечна логістика без посередників. Розвантаження палет фільтрів Donaldson на базі клієнта.'
               : 'Direct freight chain from Coventry stock to Ukrainian farms and service centers.'}
           </p>
         </div>
 
-        {/* Відео Shorts + Опис */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-slate-900/70 border border-slate-800 rounded-3xl p-6 sm:p-8 backdrop-blur-md shadow-2xl">
           
-          {/* Вертикальний Shorts плеєр з вашим відео */}
+          {/* Робочий плеєр Shorts без блокувань */}
           <div className="lg:col-span-5 flex justify-center">
-            <div className="relative w-full max-w-[320px] aspect-[9/16] rounded-2xl overflow-hidden border-2 border-red-500/30 shadow-2xl bg-black">
+            <div className="relative w-full max-w-[320px] aspect-[9/16] rounded-2xl overflow-hidden border-2 border-red-500/40 shadow-2xl bg-black">
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube-nocookie.com/embed/69tvX5AiLz8?autoplay=0&rel=0&modestbranding=1"
+                src="https://www.youtube.com/embed/69tvX5AiLz8?playsinline=1&rel=0&modestbranding=1"
                 title="Поставка фільтрів Donaldson в Україну | NoLimitGoods LTD"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
+                loading="lazy"
               />
             </div>
           </div>
 
-          {/* Інформація про рейс */}
           <div className="lg:col-span-7 space-y-6">
             <div>
               <span className="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-1">
@@ -61,12 +59,11 @@ export default function DeliveriesSection() {
               </h3>
               <p className="text-sm text-slate-300 leading-relaxed">
                 {isUk
-                  ? 'Кожна палета маркується митними наліпками DOUANE, проходить контроль у Ковентрі (374 Hipsell Highway), страхується на повну інвойсну вартість та доставляється на базу клієнта цілою й неушкодженою.'
+                  ? 'Кожна палета маркується наліпками DOUANE, комплектується на складі в Ковентрі (374 Hipsell Highway), страхується на повну інвойсну вартість та доставляється клієнтам у цілості.'
                   : 'Palletized consignments with T1 transit documentation. Dispatched from Coventry and received directly at Ukrainian equipment terminals.'}
               </p>
             </div>
 
-            {/* Пункти надійності */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
@@ -75,7 +72,7 @@ export default function DeliveriesSection() {
                     {isUk ? 'Оригінальні пломби OEM' : 'OEM Factory Seals'}
                   </h4>
                   <p className="text-xs text-slate-400">
-                    {isUk ? 'Заводські фільтри P535114, P535115' : 'Verified batch and part numbers'}
+                    {isUk ? 'Заводські палети P535114, P535115' : 'Verified batch and part numbers'}
                   </p>
                 </div>
               </div>
@@ -87,7 +84,7 @@ export default function DeliveriesSection() {
                     {isUk ? 'Палетна та експрес-доставка' : 'Pallet Freight Corridor'}
                   </h4>
                   <p className="text-xs text-slate-400">
-                    {isUk ? 'Щотижневі рейси з Великобританії' : 'Weekly UK ➔ UA Freight'}
+                    {isUk ? 'Щотижневі прямі рейси UK ➔ UA' : 'Weekly UK ➔ UA Freight'}
                   </p>
                 </div>
               </div>
@@ -104,7 +101,7 @@ export default function DeliveriesSection() {
                 </div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-850 flex items-start gap-3">
+              <div className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-sky-400 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-white mb-0.5">
@@ -117,7 +114,6 @@ export default function DeliveriesSection() {
               </div>
             </div>
 
-            {/* Дія */}
             <div className="pt-2">
               <a
                 href="#rfq"

@@ -3,10 +3,10 @@
 import { LanguageProvider } from '@/lib/language-context';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
-import PartsSection from './components/parts-section';
 import RFQSection from './components/rfq-section';
-import DeliveriesSection from './components/deliveries-section';
+import PartsSection from './components/parts-section';
 import BrandsSection from './components/brands-section';
+import DeliveriesSection from './components/deliveries-section';
 import FeaturesSection from './components/features-section';
 import ContactSection from './components/contact-section';
 import Footer from './components/footer';
@@ -17,22 +17,23 @@ export default function Home() {
     <LanguageProvider>
       <main className="min-h-screen bg-slate-950 text-white">
         <Header />
-        {/* 1. Головний екран із живим пошуком деталі по номеру */}
+        
+        {/* 1. Головний екран Hero: рядок пошуку деталі, переваги */}
         <HeroSection />
 
-        {/* 2. Живий каталог з фотографіями деталей і цінами */}
-        <PartsSection />
-
-        {/* 3. Форма швидкого прорахунку (куди залітає вибрана деталь) */}
+        {/* 2. Калькулятор / Форма RFQ, куди автоматично вставляються деталі */}
         <RFQSection />
 
-        {/* 4. Відеозвіт відвантажень із Ковентрі */}
-        <DeliveriesSection />
+        {/* 3. Живий каталог ходових запчастин із цінами в £ та грн */}
+        <PartsSection />
 
-        {/* 5. Бренди виробників */}
+        {/* 4. Бренди OEM */}
         <BrandsSection />
 
-        {/* 6. Офіційні реквізити та доставка */}
+        {/* 5. Відеозвіт відвантажень зі складу */}
+        <DeliveriesSection />
+
+        {/* 6. Офіційні реквізити NoLimitGoods Limited та логістика */}
         <FeaturesSection />
 
         {/* 7. Контакти та футер */}

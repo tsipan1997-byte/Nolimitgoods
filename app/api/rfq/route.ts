@@ -9,10 +9,11 @@ export async function POST(request: NextRequest) {
     const { partNumber, machineModel, quantity, country, contact } = body ?? {};
 
     if (!partNumber || !machineModel || !quantity || !country || !contact) {
-      return NextResponse.json({ error: 'Все поля обязательны' }, { status: 400 });
+      return NextResponse.json({ error: 'Всі поля обов’язкові' }, { status: 400 });
     }
 
     const cleanPart = String(partNumber).replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+    const rawInput = `${partNumber} ${machineModel}`.toLowerCase();
     const qty = Math.max(1, parseInt(String(quantity), 10) || 1);
 
     const token = process.env.TELEGRAM_BOT_TOKEN;
@@ -23,15 +24,30 @@ export async function POST(request: NextRequest) {
     let basePrice = 0;
     let note = '';
 
-    // Запрос к AI для онлайн-поиска цены
+    // Перевірка на категорію товару (фільтри, розхідники, дрібні деталі)
+    const isFilterOrConsumable =
+      cleanPart.startsWith('P55') || // Donaldson класичні фільтри P55...
+      cleanPart.startsWith('P50') ||
+      cleanPart.startsWith('P77') ||
+      cleanPart.startsWith('HF') ||
+      cleanPart.startsWith('LF') ||
+      cleanPart.startsWith('FF') ||
+      rawInput.includes('filter') ||
+      rawInput.includes('фільтр') ||
+      rawInput.includes('фильтр') ||
+      rawInput.includes('donaldson') ||
+      rawInput.includes('mann') ||
+      rawInput.includes('fleetguard') ||
+      rawInput.includes('baldwin');
+
+    // Запит до AI для пошуку реальної британської ціни
     if (apiKey) {
       try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 18000);
 
-        const promptText = `Find current retail price in GBP (£) for spare part "${cleanPart}" (model: "${machineModel}"). What is the exact or average retail price in GBP? Return price number and currency clearly.`;
+        const promptText = `Find current retail price in GBP (£) for spare part "${cleanPart}" (model/brand: "${machineModel}"). What is the exact price in the UK? Return price number and currency GBP clearly.`;
 
-        // Универсальный вызов Perplexity Chat API
         const res = await fetch('https://api.perplexity.ai/chat/completions', {
           method: 'POST',
           headers: {
@@ -44,7 +60,8 @@ export async function POST(request: NextRequest) {
             messages: [
               {
                 role: 'system',
-                content: 'You are a parts pricing engine. Find the UK market retail price in GBP for the spare part. Mention the numeric price clearly with GBP or £ symbol.',
+                content:
+                  'You are a machinery spare parts pricing engine. Find the UK market retail price in GBP for the exact part. Return numeric price clearly with £ or GBP.',
               },
               { role: 'user', content: promptText },
             ],
@@ -57,72 +74,86 @@ export async function POST(request: NextRequest) {
         if (res.ok) {
           const aiJson = await res.json();
           const content: string = aiJson?.choices?.[0]?.message?.content || '';
-          
-          const gbpMatch = content.match(/(?:£|GBP\s*)(\d+(?:\.\d{1,2})?)/i) || content.match(/(\d+(?:\.\d{1,2})?)\s*(?:£|GBP)/i);
+
+          const gbpMatch =
+            content.match(/(?:£|GBP\s*)(\d+(?:\.\d{1,2})?)/i) ||
+            content.match(/(\d+(?:\.\d{1,2})?)\s*(?:£|GBP)/i);
           const eurMatch = content.match(/(?:€|EUR\s*)(\d+(?:\.\d{1,2})?)/i);
           const usdMatch = content.match(/(?:\$|USD\s*)(\d+(?:\.\d{1,2})?)/i);
 
           if (gbpMatch) {
             basePrice = Math.round(parseFloat(gbpMatch[1]));
-            note = `Online AI: ${content.slice(0, 120)}`;
+            note = `AI UK: £${basePrice}`;
           } else if (eurMatch) {
             basePrice = Math.round(parseFloat(eurMatch[1]) * 0.86);
-            note = `EUR конвертация: ${content.slice(0, 100)}`;
+            note = `AI EUR: ~£${basePrice}`;
           } else if (usdMatch) {
             basePrice = Math.round(parseFloat(usdMatch[1]) * 0.79);
-            note = `USD конвертация: ${content.slice(0, 100)}`;
+            note = `AI USD: ~£${basePrice}`;
           } else {
-            note = 'Цена не найдена в строгом формате';
+            note = 'AI не повернув чіткого формату ціни';
           }
         } else {
-          // Если чат вернул ошибку, пробуем альтернативный вызов
-          const errText = await res.text();
-          note = `AI status ${res.status}: ${errText.slice(0, 60)}`;
+          note = `AI відповідь зі статусом ${res.status}`;
         }
       } catch (err: any) {
-        note = `AI таймаут: ${err?.message || 'ошибка сети'}`;
+        note = `AI таймаут: ${err?.message || 'мережа'}`;
       }
     }
 
-    // Резервная оценка, если парсер не вытянул цену сразу, чтобы клиент не видел нули
+    // Розумний дефолт, якщо парсер не зміг знайти ціну онлайн
     if (basePrice <= 0) {
-      basePrice = 45; // Базовый индикатив для стандартных расходников/фильтров
-      note += ' (применен базовый расчет по каталогу)';
+      if (isFilterOrConsumable) {
+        basePrice = 9; // Реальна оптова/роздрібна база для Donaldson/фільтрів у UK (~£7-£12)
+        note += ' (застосовано базовий тариф для фільтрів/розхідників: £9)';
+      } else {
+        basePrice = 35; // Середня база для типових вузлів техніки
+        note += ' (застосовано стандартний базовий каталог)';
+      }
     }
 
-    // Финансовая модель: доставка £30 + наценка (25% до £500, 20% свыше £500)
-    const delivery = 30;
-    const marginPercent = basePrice > 500 ? 20 : 25;
-    const marginAmount = Math.round((basePrice * marginPercent) / 100);
-    const unitPrice = basePrice + marginAmount + delivery;
-    const totalEstimate = unitPrice * qty;
+    // КОМЕРЦІЙНИЙ РОЗРАХУНОК:
+    // Доставка рахується НА ПАРТІЮ, а не за кожну штуку окремо!
+    const baseShipment = isFilterOrConsumable ? 15 : 25; // Базова посилка з UK в UA
+    const extraShipmentPerItem = isFilterOrConsumable ? 1.5 : 4; // Доплата за додаткову вагу/об'єм кожної наступної штуки
+    const totalDelivery = Math.round(baseShipment + (qty - 1) * extraShipmentPerItem);
 
-    // Отправка в Telegram
+    // Маржа (25% на обсяг до £400, 18% вище)
+    const totalPartsCost = basePrice * qty;
+    const marginPercent = totalPartsCost > 400 ? 18 : 25;
+    const marginAmount = Math.round((totalPartsCost * marginPercent) / 100);
+
+    // Підсумкова ціна
+    const totalEstimate = totalPartsCost + marginAmount + totalDelivery;
+    const unitPrice = Math.round((totalEstimate / qty) * 10) / 10;
+
+    // Відправка в Telegram
     if (token && chatId) {
-      const text = `🔧 Новий запит деталі (RFQ) + AI Розрахунок\n\n` +
+      const text =
+        `🔧 Новий запит деталі (RFQ) + Розрахунок\n\n` +
         `⚙️ Артикул: ${cleanPart} (${partNumber})\n` +
         `🚜 Модель: ${machineModel}\n` +
         `🔢 Кількість: ${qty} шт\n` +
         `🌍 Країна: ${country}\n` +
         `📱 Контакт: ${contact}\n\n` +
-        `ℹ️ Джерело: ${note}\n\n` +
-        `💰 Собівартість: ~£${basePrice} / шт\n` +
-        `📦 Доставка: £${delivery}\n` +
-        `📈 Націнка: ${marginPercent}% (+£${marginAmount})\n` +
-        `🏷 Фінально клієнту: ~£${unitPrice} / шт (Разом: ~£${totalEstimate})`;
+        `ℹ️ Аналіз: ${note}\n\n` +
+        `💰 Собівартість деталей: £${basePrice} / шт (Разом: £${totalPartsCost})\n` +
+        `📦 Доставка замовлення: £${totalDelivery}\n` +
+        `📈 Націнка компанії: ${marginPercent}% (+£${marginAmount})\n` +
+        `🏷 ДО СПЛАТИ КЛІЄНТУ: ~£${unitPrice} / шт (Всього: ~£${totalEstimate} / ≈ ${Math.round(totalEstimate * 56)} грн)`;
 
       const cleanPhone = String(contact).replace(/[^0-9]/g, '');
       const inlineKeyboard: any[] = [];
 
       if (cleanPhone.length >= 9) {
-        const msg = encodeURIComponent(`Вітаю! Щодо деталі ${cleanPart}: орієнтовна вартість із доставкою становить ~£${totalEstimate}. Готові оформити?`);
+        const msg = encodeURIComponent(
+          `Вітаю! Щодо деталі ${cleanPart}: орієнтовна вартість ${qty} шт з доставкою становить ~£${totalEstimate} (≈ ${Math.round(totalEstimate * 56)} грн). Готові оформити?`
+        );
         inlineKeyboard.push([
-          { text: '💬 WhatsApp клієнту', url: `https://wa.me/${cleanPhone}?text=${msg}` }
+          { text: '💬 WhatsApp клієнту', url: `https://wa.me/${cleanPhone}?text=${msg}` },
         ]);
       } else if (String(contact).includes('@')) {
-        inlineKeyboard.push([
-          { text: '✉️ Email клієнту', url: `mailto:${contact}` }
-        ]);
+        inlineKeyboard.push([{ text: '✉️ Email клієнту', url: `mailto:${contact}` }]);
       }
 
       await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
@@ -136,13 +167,13 @@ export async function POST(request: NextRequest) {
       }).catch((err) => console.error('Telegram error:', err));
     }
 
-    // Запись в Google Таблицу
+    // Запис у Google Таблицю
     if (sheetUrl) {
       await fetch(sheetUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          type: 'RFQ (AI Розрахунок)',
+          type: 'RFQ (Онлайн Розрахунок)',
           name: '-',
           contact: contact,
           partOrService: `${cleanPart} (£${totalEstimate})`,
@@ -152,13 +183,15 @@ export async function POST(request: NextRequest) {
       }).catch((err) => console.error('Google Sheets error:', err));
     }
 
-    return NextResponse.json({
-      success: true,
-      estimatedPrice: unitPrice,
-      totalEstimate: totalEstimate,
-      basePrice: basePrice,
-    }, { status: 200 });
-
+    return NextResponse.json(
+      {
+        success: true,
+        estimatedPrice: unitPrice,
+        totalEstimate: totalEstimate,
+        basePrice: basePrice,
+      },
+      { status: 200 }
+    );
   } catch (error) {
     console.error('Fatal route error:', error);
     return NextResponse.json({ error: 'Помилка сервера' }, { status: 500 });

@@ -382,8 +382,8 @@ export default function RFQSection() {
                         <th className="py-2">Найменування вузла</th>
                         <th className="py-2">Артикул OEM</th>
                         <th className="py-2 text-center">К-сть</th>
-                        <th className="py-2 text-right">Ціна (+20%)</th>
-                        <th className="py-2 text-right">Сума (£)</th>
+                        <th className="py-2 text-right">{isUk ? 'Ціна (£)' : 'Unit Price (£)'}</th>
+                        <th className="py-2 text-right">{isUk ? 'Сума (£)' : 'Total (£)'}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">

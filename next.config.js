@@ -1,14 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: { 
-    unoptimized: true 
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // Дозволяє завантаження картинок з будь-яких зовнішніх каталогів
+      },
+    ],
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

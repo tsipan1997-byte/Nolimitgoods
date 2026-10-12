@@ -1,304 +1,212 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import { Cog, Filter, ExternalLink, Wrench } from 'lucide-react';
-import { useInView } from 'react-intersection-observer';
+import { ArrowUpRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
-interface CatalogBrand {
-  name: string;
+interface FeaturedPart {
+  brand: string;
   badge: string;
-  bgGradient: string;
-  textColor: string;
-  url: string;
-  logoUrl?: string;
-  imageUrl?: string;
+  badgeColor?: string;
+  partNumber: string;
+  titleUk: string;
+  titleEn: string;
+  specUk: string;
+  specEn: string;
+  priceGbp: number;
+  imageUrl: string;
 }
 
-const equipmentCatalogs: CatalogBrand[] = [
+const featuredParts: FeaturedPart[] = [
   {
-    name: 'JCB',
-    badge: 'JCB',
-    bgGradient: 'from-amber-400 to-yellow-500',
-    textColor: 'text-black',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/JCB-Logo.jpg/320px-JCB-Logo.jpg',
-    imageUrl: 'https://images.unsplash.com/photo-1579535313495-2637207604f7?auto=format&fit=crop&w=600&q=80', // Екскаватор JCB на об'єкті
-    url: 'https://www.jcb.com/en-gb/parts',
+    brand: 'DONALDSON',
+    badge: 'Bestseller',
+    partNumber: 'P553004',
+    titleUk: 'Фільтр паливний сепаратор',
+    titleEn: 'Fuel Filter Water Separator',
+    specUk: '10 Micron • High Flow Filtration',
+    specEn: '10 Micron • High Flow Filtration',
+    priceGbp: 18,
+    // Реальне фото промислового паливного фільтра-сепаратора
+    imageUrl: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80',
   },
   {
-    name: 'Komatsu',
-    badge: 'KOMATSU',
-    bgGradient: 'from-blue-600 to-blue-800',
-    textColor: 'text-white',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Komatsu_company_logos.svg/320px-Komatsu_company_logos.svg.png',
-    imageUrl: 'https://images.unsplash.com/photo-1569003339405-ea396a5a8a90?auto=format&fit=crop&w=600&q=80', // Важка кар'єрна техніка Komatsu
-    url: 'https://www.komatsu.eu/en/parts-service',
+    brand: 'DONALDSON',
+    badge: 'Stock UK',
+    partNumber: 'P535114',
+    titleUk: 'Фільтр повітряний радіальний',
+    titleEn: 'Radial Seal Air Filter',
+    specUk: 'Primary Outer • Heavy Duty Radial',
+    specEn: 'Primary Outer • Heavy Duty Radial',
+    priceGbp: 42,
+    // Реальне фото циліндричного промислового фільтра
+    imageUrl: 'https://images.unsplash.com/photo-1580983218765-f663bec07b37?auto=format&fit=crop&w=600&q=80',
   },
   {
-    name: 'Caterpillar (CAT)',
-    badge: 'CAT',
-    bgGradient: 'from-yellow-400 to-amber-500',
-    textColor: 'text-black',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Caterpillar_logo.svg/320px-Caterpillar_logo.svg.png',
-    imageUrl: 'https://images.unsplash.com/photo-1541625602330-2277a4c46182?auto=format&fit=crop&w=600&q=80', // Бульдозер CAT у роботі
-    url: 'https://parts.cat.com/',
+    brand: 'JCB',
+    badge: 'OEM Genuine',
+    partNumber: '332/Y3163',
+    titleUk: 'Ремінь генератора багатоклиновий',
+    titleEn: 'Fan Alternator Poly-V Belt',
+    specUk: 'JCB EcoMAX 3CX / 4CX Engine',
+    specEn: 'JCB EcoMAX 3CX / 4CX Engine',
+    priceGbp: 64,
+    // Фото ременя приводу двигуна / механіки
+    imageUrl: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    brand: 'JCB',
+    badge: 'Transmission',
+    partNumber: '458/20403',
+    titleUk: 'Головна пара моста переднього',
+    titleEn: 'Crown Wheel & Pinion JCB Axle',
+    specUk: '13x38 Gear Ratio • Genuine JCB Axle',
+    specEn: '13x38 Gear Ratio • Genuine JCB Axle',
+    priceGbp: 89,
+    // Прецизійна деталь трансмісії / редуктора
+    imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    brand: 'CARRARO',
+    badge: 'OEM Carraro',
+    partNumber: '149298',
+    titleUk: 'Шестерня планетарного редуктора',
+    titleEn: 'Planetary Gear Hub Drive',
+    specUk: 'Carraro 709 / 710 Axle Hub Drive',
+    specEn: 'Carraro 709 / 710 Axle Hub Drive',
+    priceGbp: 75,
+    // Металева шестерня приводу
+    imageUrl: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&w=600&q=80',
+  },
+  {
+    brand: 'REXROTH',
+    badge: 'Hydraulics',
+    partNumber: 'A10VSO71',
+    titleUk: 'Гідравлічний аксіально-поршневий насос',
+    titleEn: 'Hydraulic Axial Piston Pump',
+    specUk: 'DR/31R-PPA12N00 • 350 Bar High Pressure',
+    specEn: 'DR/31R-PPA12N00 • 350 Bar High Pressure',
+    priceGbp: 890,
+    // Гідравлічний вузол / насос високого тиску
+    imageUrl: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80',
   },
 ];
 
-const filterBrands = [
-  {
-    name: 'Donaldson',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Donaldson_Company_logo.svg/320px-Donaldson_Company_logo.svg.png',
-    url: 'https://www.donaldson.com/en-us/',
-    description: { en: 'Industrial filtration solutions', uk: 'Промислові фільтраційні рішення' },
-  },
-  {
-    name: 'MANN-FILTER',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Mann%2BHummel_Logo.svg/320px-Mann%2BHummel_Logo.svg.png',
-    url: 'https://www.mann-filter.com/en/homepage.html',
-    description: { en: 'Automotive & industrial filters', uk: 'Автомобільні та промислові фільтри' },
-  },
-  {
-    name: 'Fleetguard',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Cummins_Inc._logo.svg/320px-Cummins_Inc._logo.svg.png', // Fleetguard належить Cummins
-    url: 'https://www.fleetguard.com/',
-    description: { en: 'Heavy-duty filtration', uk: 'Фільтри для важкої техніки' },
-  },
-  {
-    name: 'Parker Racor',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/Parker_Hannifin_logo.svg/320px-Parker_Hannifin_logo.svg.png',
-    url: 'https://www.parker.com/us/en/divisions/racor-division.html',
-    description: { en: 'Fuel & air filtration', uk: 'Паливні та повітряні фільтри' },
-  },
-  {
-    name: 'Baldwin',
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Parker_Hannifin_logo_2012.svg/320px-Parker_Hannifin_logo_2012.svg.png', // Baldwin входить в Parker
-    url: 'https://www.baldwinfilter.com/',
-    description: { en: 'Quality replacement filters', uk: 'Якісні змінні фільтри' },
-  },
-];
+function PartCardImage({ src, alt }: { src: string; alt: string }) {
+  const [error, setError] = useState(false);
 
-function CatalogImage({ brand }: { brand: CatalogBrand }) {
-  const [imgError, setImgError] = useState(false);
-
-  if (imgError || !brand.imageUrl) {
+  if (error) {
     return (
-      <div className={`w-full h-48 rounded-t-xl bg-gradient-to-br ${brand.bgGradient} flex items-center justify-center font-black text-2xl ${brand.textColor}`}>
-        {brand.badge}
+      <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400 text-xs font-mono">
+        NoLimitGoods Hub
       </div>
     );
   }
 
   return (
-    <div className="relative w-full h-48 overflow-hidden rounded-t-xl bg-slate-100">
-      <img
-        src={brand.imageUrl}
-        alt={brand.name}
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        onError={() => setImgError(true)}
-        loading="lazy"
-      />
-      {brand.logoUrl && (
-        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm p-1.5 rounded-lg shadow-md border border-slate-100 max-h-10 max-w-[100px] flex items-center justify-center">
-          <img src={brand.logoUrl} alt={`${brand.name} logo`} className="max-h-7 object-contain" />
-        </div>
-      )}
-    </div>
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      onError={() => setError(true)}
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+    />
   );
 }
 
-function FilterLogo({ brand }: { brand: any }) {
-  const [logoError, setLogoError] = useState(false);
-
-  if (logoError || !brand.logoUrl) {
-    return (
-      <div className="w-full h-12 flex items-center justify-center font-bold text-sm text-slate-800 bg-slate-50 border border-slate-100 rounded-lg">
-        {brand.name}
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative h-12 w-full bg-slate-50 rounded-lg p-2 flex items-center justify-center border border-slate-100 overflow-hidden mb-3">
-      <img
-        src={brand.logoUrl}
-        alt={brand.name}
-        onError={() => setLogoError(true)}
-        className="max-h-8 max-w-[120px] object-contain grayscale hover:grayscale-0 transition-all duration-300"
-        loading="lazy"
-      />
-    </div>
-  );
-}
-
-export default function CatalogsSection() {
+export default function CatalogSection() {
   const { language } = useLanguage();
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
+  const isUk = language === 'uk' || (language as string) === 'ua';
 
-  const content = {
-    en: {
-      title: 'Spare Parts & Catalogs',
-      subtitle: 'We supply large volumes of spare parts for various heavy equipment',
-      partsTitle: 'What We Supply',
-      partsDescription:
-        'No Limit Goods Ltd specializes in supplying large volumes of spare parts for construction and agricultural equipment. We work directly with manufacturers and authorized dealers to ensure quality and competitive prices.',
-      partsFeatures: [
-        'Engine parts & components',
-        'Hydraulic systems & pumps',
-        'Transmission parts',
-        'Undercarriage components',
-        'Electrical systems',
-        'Cabin parts & accessories',
-      ],
-      equipmentTitle: 'Equipment Catalogs',
-      equipmentSubtitle: 'Browse official parts catalogs from leading manufacturers',
-      filtersTitle: 'Filter Catalogs',
-      filtersSubtitle: 'Top filter brands we work with',
-      viewCatalog: 'View Catalog',
-    },
-    uk: {
-      title: 'Запчастини та Каталоги',
-      subtitle: 'Ми постачаємо великі обсяги запчастин для різної техніки',
-      partsTitle: 'Що ми постачаємо',
-      partsDescription:
-        'No Limit Goods Ltd спеціалізується на постачанні великих обсягів запчастин для будівельної та сільськогосподарської техніки. Ми працюємо напряму з виробниками та авторизованими дилерами для забезпечення якості та конкурентних цін.',
-      partsFeatures: [
-        'Запчастини двигуна',
-        'Гідравлічні системи та насоси',
-        'Запчастини трансмісії',
-        'Ходова частина',
-        'Електричні системи',
-        'Запчастини кабіни та аксесуари',
-      ],
-      equipmentTitle: 'Каталоги техніки',
-      equipmentSubtitle: 'Офіційні каталоги запчастин від провідних виробників',
-      filtersTitle: 'Каталоги фільтрів',
-      filtersSubtitle: 'Топ бренди фільтрів, з якими ми працюємо',
-      viewCatalog: 'Переглянути каталог',
-    },
+  const scrollToRfq = (partNo: string, brand: string) => {
+    const partInput = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
+    const modelInput = document.getElementById('rfq-machine-input') as HTMLInputElement | null;
+
+    if (partInput) partInput.value = partNo;
+    if (modelInput) modelInput.value = brand;
+
+    const rfqSection = document.getElementById('rfq');
+    if (rfqSection) {
+      rfqSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
-  const c = content[language] || content.en;
-
   return (
-    <section id="catalogs" className="py-24 bg-gray-50">
+    <section id="catalog" className="py-24 bg-slate-950 text-white border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{c.title}</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{c.subtitle}</p>
-        </motion.div>
+        <div className="text-center mb-16">
+          <span className="text-red-500 font-bold uppercase tracking-widest text-xs">
+            {isUk ? 'Прямі складські запаси UK' : 'Direct UK Warehouse Stock'}
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white mt-2 mb-4">
+            {isUk ? 'Каталог популярних запчастин' : 'Featured Genuine Spares'}
+          </h2>
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
+            {isUk
+              ? 'Оригінальні фільтри, ремені, шестерні та гідравліка з митного хабу в Ковентрі. Розрахуйте точну вартість партії з доставкою Nova Post.'
+              : 'Direct supply from Coventry hub. Transparent ex-VAT quotes with consolidated freight.'}
+          </p>
+        </div>
 
-        {/* What We Supply */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="bg-white rounded-2xl p-8 shadow-lg mb-12 border border-slate-100"
-        >
-          <div className="flex items-center gap-4 mb-6">
-            <div className="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center">
-              <Cog className="w-7 h-7 text-red-600 animate-spin-slow" />
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold text-gray-900">{c.partsTitle}</h3>
-            </div>
-          </div>
-          <p className="text-slate-600 mb-6 leading-relaxed text-sm sm:text-base">{c.partsDescription}</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 border-t border-slate-100 pt-6">
-            {c.partsFeatures.map((feature, index) => (
-              <div key={index} className="flex items-center gap-2 bg-slate-50 p-2.5 rounded-lg border border-slate-100/50">
-                <Wrench className="w-4 h-4 text-red-500 flex-shrink-0" />
-                <span className="text-gray-750 font-medium text-xs sm:text-sm">{feature}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredParts.map((item) => (
+            <div
+              key={item.partNumber}
+              className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-all duration-300 flex flex-col justify-between group shadow-xl"
+            >
+              {/* Верхня плашка бренду */}
+              <div className="p-4 flex items-center justify-between border-b border-slate-800/80 bg-slate-900/90">
+                <span className="font-black text-xs tracking-wider text-red-500 bg-red-950/40 border border-red-800/40 px-2.5 py-1 rounded-md">
+                  {item.brand}
+                </span>
+                <span className="text-[11px] font-medium text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-700/60">
+                  {item.badge}
+                </span>
               </div>
-            ))}
-          </div>
-        </motion.div>
 
-        {/* Equipment Catalogs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mb-12"
-        >
-          <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">{c.equipmentTitle}</h3>
-          <p className="text-gray-600 mb-8 text-center text-sm">{c.equipmentSubtitle}</p>
+              {/* Реальне фото деталі замість схематичної іконки */}
+              <div className="relative h-48 w-full bg-slate-950 overflow-hidden">
+                <PartCardImage src={item.imageUrl} alt={item.partNumber} />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-80" />
+              </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {equipmentCatalogs.map((catalog, index) => (
-              <motion.a
-                key={catalog.name}
-                href={catalog.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-                className="bg-white rounded-xl shadow-md hover:shadow-xl hover:border-red-200 transition-all group border border-gray-100 flex flex-col justify-between overflow-hidden"
-              >
-                <CatalogImage brand={catalog} />
-                <div className="p-6 flex items-center justify-between border-t border-gray-100">
-                  <div>
-                    <span className="font-bold text-gray-900 block text-base">{catalog.name}</span>
-                    <span className="text-xs text-slate-450">Офіційна специфікація та підбір</span>
-                  </div>
-                  <span className="text-xs font-bold text-red-600 group-hover:translate-x-1 transition-transform inline-flex items-center bg-red-50 border border-red-100 px-3 py-1.5 rounded-lg gap-1.5 cursor-pointer">
-                    <span>{c.viewCatalog}</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-red-500" />
-                  </span>
-                </div>
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Filter Catalogs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <div className="flex items-center justify-center gap-3 mb-2">
-            <Filter className="w-6 h-6 text-blue-600" />
-            <h3 className="text-xl font-bold text-gray-900">{c.filtersTitle}</h3>
-          </div>
-          <p className="text-gray-650 mb-8 text-center text-sm">{c.filtersSubtitle}</p>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            {filterBrands.map((brand, index) => (
-              <motion.a
-                key={brand.name}
-                href={brand.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={inView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.4, delay: 0.5 + index * 0.05 }}
-                className="bg-white rounded-xl p-4 shadow-sm hover:shadow-md transition-all text-center group border border-gray-100 hover:border-blue-200 flex flex-col justify-between"
-              >
+              {/* Інформація про деталь */}
+              <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <FilterLogo brand={brand} />
-                  <h4 className="font-bold text-sm text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
-                    {brand.name}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 leading-normal">
-                    {brand.description[language] || brand.description.en}
+                  <div className="text-xs font-mono font-bold text-amber-400 mb-1">
+                    PN: {item.partNumber}
+                  </div>
+                  <h3 className="font-bold text-base text-white group-hover:text-red-400 transition-colors line-clamp-1 mb-1">
+                    {isUk ? item.titleUk : item.titleEn}
+                  </h3>
+                  <p className="text-xs text-slate-400 line-clamp-2 mb-4">
+                    {isUk ? item.specUk : item.specEn}
                   </p>
                 </div>
-              </motion.a>
-            ))}
-          </div>
-        </motion.div>
+
+                <div className="pt-3 border-t border-slate-800 flex items-center justify-between">
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-500 block">
+                      {isUk ? 'Орієнтир ціни UK:' : 'Est. Trade Price:'}
+                    </span>
+                    <span className="text-xl font-black text-white">
+                      £{item.priceGbp}
+                    </span>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => scrollToRfq(item.partNumber, item.brand)}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-red-400 hover:text-red-300 bg-red-950/30 hover:bg-red-900/40 border border-red-800/50 px-3 py-2 rounded-xl transition-all cursor-pointer active:scale-95"
+                  >
+                    <span>{isUk ? 'Розрахувати' : 'Get Quote'}</span>
+                    <ArrowUpRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

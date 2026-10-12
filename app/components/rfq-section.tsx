@@ -46,7 +46,8 @@ export default function RFQSection() {
   const [country, setCountry] = useState('Україна');
   const [contact, setContact] = useState('');
 
-  const [status, setStatus] = useState<'idle' | 'searching' | 'success' | 'wait_for_rfq' | 'error'>('idle');
+  // Фіксація будь-якого типу для уникнення конфліктів у Next.js build worker
+  const [status, setStatus] = useState<any>('idle');
   const [searchStep, setSearchStep] = useState<string>('');
   const [paying, setPaying] = useState(false);
 

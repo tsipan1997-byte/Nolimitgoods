@@ -43,10 +43,9 @@ export default function RFQSection() {
   const [items, setItems] = useState<RFQItemInput[]>([
     { id: '1', partNumber: '', machineModel: '', quantity: '1' },
   ]);
-  const [country, setCountry] = useState('Україна');
+  const [country, setCountry] = useState(isUk ? 'Україна' : 'Ukraine');
   const [contact, setContact] = useState('');
 
-  // Фіксація будь-якого типу для уникнення конфліктів у Next.js build worker
   const [status, setStatus] = useState<any>('idle');
   const [searchStep, setSearchStep] = useState<string>('');
   const [paying, setPaying] = useState(false);
@@ -86,9 +85,13 @@ export default function RFQSection() {
     setStatus('searching');
 
     const invNum = `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
-    const today = new Date().toLocaleDateString('uk-UA');
+    const today = new Date().toLocaleDateString(isUk ? 'uk-UA' : 'en-GB');
 
-    setSearchStep('1/3 Перевірка наявності деталей на складах UK та Європи...');
+    setSearchStep(
+      isUk
+        ? '1/3 Перевірка наявності деталей на складах UK та Європи...'
+        : '1/3 Checking live inventory across UK & EU distributor stocks...'
+    );
 
     try {
       const res = await fetch('/api/rfq', {
@@ -106,14 +109,20 @@ export default function RFQSection() {
         }),
       });
 
-      setSearchStep('2/3 Розрахунок цін та консолідація доставки Nova Post...');
+      setSearchStep(
+        isUk
+          ? '2/3 Розрахунок цін та консолідація доставки Nova Post...'
+          : '2/3 Calculating pricing & consolidating freight route...'
+      );
 
       if (!res.ok) {
         throw new Error(`HTTP error ${res.status}`);
       }
 
       const data = await res.json();
-      setSearchStep('3/3 Формування рахунку-фактури...');
+      setSearchStep(
+        isUk ? '3/3 Формування рахунку-фактури...' : '3/3 Generating Proforma Invoice...'
+      );
 
       if (!data.found || data.status === 'wait_for_rfq') {
         setStatus('wait_for_rfq');
@@ -152,7 +161,9 @@ export default function RFQSection() {
         body: JSON.stringify({
           invoiceNumber: calculation.invoiceNumber,
           partNumber: summaryText,
-          categoryLabel: `Специфікація (${calculation.items.length} поз.)`,
+          categoryLabel: isUk
+            ? `Специфікація (${calculation.items.length} поз.)`
+            : `Specification (${calculation.items.length} items)`,
           totalAmount: calculation.total,
           contact,
         }),
@@ -162,11 +173,20 @@ export default function RFQSection() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        alert(data.error || 'Помилка платіжного шлюзу. Зв’яжіться з офісом NoLimitGoods.');
+        alert(
+          data.error ||
+            (isUk
+              ? 'Помилка платіжного шлюзу. Зв’яжіться з офісом NoLimitGoods.'
+              : 'Payment gateway error. Please contact NoLimitGoods office.')
+        );
       }
     } catch (err) {
       console.error('Payment error:', err);
-      alert('Не вдалося з’єднатися з сервером оплати.');
+      alert(
+        isUk
+          ? 'Не вдалося з’єднатися з сервером оплати.'
+          : 'Unable to connect to payment gateway.'
+      );
     } finally {
       setPaying(false);
     }
@@ -174,20 +194,23 @@ export default function RFQSection() {
 
   const getUahTotal = () => {
     if (!calculation) return '0';
-    return Math.round(Number(calculation.total) * 56).toLocaleString('uk-UA');
+    return Math.round(Number(calculation.total) * 56).toLocaleString(isUk ? 'uk-UA' : 'en-US');
   };
 
   const getWaitWhatsAppLink = () => {
     const list = items
-      .map((it, idx) => `${idx + 1}. ${it.partNumber} (${it.machineModel || 'Спецтехніка'}) — ${it.quantity} шт`)
+      .map(
+        (it, idx) =>
+          `${idx + 1}. ${it.partNumber} (${it.machineModel || 'Equipment'}) — ${it.quantity} pcs`
+      )
       .join('\n');
-    const msg = `Доброго дня! Запит (WAIT FOR RFQ) на специфікацію:\n${list}\n\nКонтакт: ${contact}`;
+    const msg = `Hello! Request (WAIT FOR RFQ) for specification:\n${list}\n\nContact: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/447426826595';
-    const msg = `Доброго дня! Підтверджую замовлення ${calculation.invoiceNumber} на ${calculation.items.length} поз. Разом: £${calculation.total} (≈ ${getUahTotal()} грн). Мій контакт: ${contact}`;
+    const msg = `Hello! Confirming order ${calculation.invoiceNumber} for ${calculation.items.length} items. Total: £${calculation.total}. Contact: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
@@ -195,7 +218,7 @@ export default function RFQSection() {
     setStatus('idle');
     setCalculation(null);
     setItems([{ id: '1', partNumber: '', machineModel: '', quantity: '1' }]);
-    setCountry('Україна');
+    setCountry(isUk ? 'Україна' : 'Ukraine');
     setContact('');
   };
 
@@ -207,7 +230,7 @@ export default function RFQSection() {
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 text-red-400 text-xs sm:text-sm font-semibold mb-4 border border-red-500/30">
             <Calculator className="w-4 h-4" />
-            <span>{isUk ? 'B2B Калькулятор специфікацій (до 10 позицій)' : 'Multi-Item B2B Procurement Portal'}</span>
+            <span>{isUk ? 'B2B Калькулятор специфікацій (до 10 позицій)' : 'Multi-Item B2B Procurement Portal (up to 10 parts)'}</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             {t.rfq.title}
@@ -267,15 +290,21 @@ export default function RFQSection() {
               </div>
 
               <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 max-w-md mx-auto text-left text-xs space-y-2">
-                <div className="text-slate-400 font-bold mb-2">Запитані деталі ({items.length} поз.):</div>
+                <div className="text-slate-400 font-bold mb-2">
+                  {isUk ? `Запитані деталі (${items.length} поз.):` : `Requested Parts (${items.length} items):`}
+                </div>
                 {items.map((it, idx) => (
                   <div key={it.id} className="flex justify-between text-slate-300 border-b border-slate-800/60 pb-1">
-                    <span>{idx + 1}. {it.partNumber || '—'} ({it.machineModel || 'Спецтехніка'})</span>
-                    <span className="font-mono text-white">{it.quantity} шт</span>
+                    <span>
+                      {idx + 1}. {it.partNumber || '—'} ({it.machineModel || (isUk ? 'Спецтехніка' : 'Machinery')})
+                    </span>
+                    <span className="font-mono text-white">
+                      {it.quantity} {isUk ? 'шт' : 'pcs'}
+                    </span>
                   </div>
                 ))}
                 <div className="flex justify-between text-slate-400 pt-2">
-                  <span>Контакт:</span>
+                  <span>{isUk ? 'Контакт:' : 'Contact:'}</span>
                   <span className="text-white">{contact}</span>
                 </div>
               </div>
@@ -288,7 +317,9 @@ export default function RFQSection() {
                   className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  <span>Узгодити специфікацію (WhatsApp UK)</span>
+                  <span>
+                    {isUk ? 'Узгодити специфікацію (WhatsApp UK)' : 'Confirm Specification (WhatsApp UK)'}
+                  </span>
                 </a>
 
                 <button
@@ -309,7 +340,9 @@ export default function RFQSection() {
                   </div>
                   <div>
                     <h3 className="text-lg sm:text-xl font-bold text-white">
-                      {isUk ? `Рахунок сформовано (${calculation.items.length} позицій)` : `Invoice Ready (${calculation.items.length} Items)`}
+                      {isUk
+                        ? `Рахунок сформовано (${calculation.items.length} позицій)`
+                        : `Proforma Invoice Ready (${calculation.items.length} items)`}
                     </h3>
                     <p className="text-xs text-slate-400 font-mono">
                       Ref: {calculation.invoiceNumber} • {calculation.invoiceDate}
@@ -356,22 +389,38 @@ export default function RFQSection() {
                     </span>
                   </div>
                   <div className="text-right text-xs">
-                    <span className="text-slate-400 block text-[10px] uppercase font-bold">Рахунок №:</span>
+                    <span className="text-slate-400 block text-[10px] uppercase font-bold">
+                      {isUk ? 'Рахунок №:' : 'Invoice Ref:'}
+                    </span>
                     <strong className="text-slate-900 font-mono">{calculation.invoiceNumber}</strong>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100 text-xs">
                   <div>
-                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">Покупець / Consignee:</span>
-                    <p className="font-semibold text-slate-900">{contact || 'Приватний замовник'}</p>
-                    <p className="text-slate-600">Країна доставки: {country}</p>
+                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">
+                      {isUk ? 'Покупець / Consignee:' : 'Customer / Consignee:'}
+                    </span>
+                    <p className="font-semibold text-slate-900">
+                      {contact || (isUk ? 'Приватний замовник' : 'Direct Customer')}
+                    </p>
+                    <p className="text-slate-600">
+                      {isUk ? 'Країна доставки:' : 'Destination Country:'} {country}
+                    </p>
                   </div>
                   <div className="sm:text-right">
-                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">Логістична консолідація:</span>
-                    <p className="text-slate-600">Маршрут: <strong>Coventry Hub ➔ Україна</strong></p>
-                    <p className="text-slate-600">Формат: <strong>{calculation.parcelTypeLabel}</strong></p>
-                    <p className="text-slate-600">Митне декларування: <strong>T1 Transit Cleared</strong></p>
+                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">
+                      {isUk ? 'Логістична консолідація:' : 'Freight Consolidation:'}
+                    </span>
+                    <p className="text-slate-600">
+                      {isUk ? 'Маршрут:' : 'Route:'} <strong>Coventry Hub ➔ {country}</strong>
+                    </p>
+                    <p className="text-slate-600">
+                      {isUk ? 'Формат:' : 'Package:'} <strong>{calculation.parcelTypeLabel}</strong>
+                    </p>
+                    <p className="text-slate-600">
+                      {isUk ? 'Митне декларування:' : 'Customs Transit:'} <strong>T1 Transit Cleared</strong>
+                    </p>
                   </div>
                 </div>
 
@@ -379,10 +428,10 @@ export default function RFQSection() {
                   <table className="w-full text-left text-xs border-collapse">
                     <thead>
                       <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px]">
-                        <th className="py-2">№</th>
-                        <th className="py-2">Найменування вузла</th>
-                        <th className="py-2">Артикул OEM</th>
-                        <th className="py-2 text-center">К-сть</th>
+                        <th className="py-2">#</th>
+                        <th className="py-2">{isUk ? 'Найменування вузла' : 'Description / Part Title'}</th>
+                        <th className="py-2">{isUk ? 'Артикул OEM' : 'OEM Part Number'}</th>
+                        <th className="py-2 text-center">{isUk ? 'К-сть' : 'Qty'}</th>
                         <th className="py-2 text-right">{isUk ? 'Ціна (£)' : 'Unit Price (£)'}</th>
                         <th className="py-2 text-right">{isUk ? 'Сума (£)' : 'Total (£)'}</th>
                       </tr>
@@ -393,14 +442,18 @@ export default function RFQSection() {
                           <td className="py-3 text-slate-400">{idx + 1}</td>
                           <td className="py-3 font-semibold text-slate-800">{it.partTitle}</td>
                           <td className="py-3 font-mono font-bold text-red-600">{it.partNumber}</td>
-                          <td className="py-3 text-center">{it.quantity} шт</td>
+                          <td className="py-3 text-center">
+                            {it.quantity} {isUk ? 'шт' : 'pcs'}
+                          </td>
                           <td className="py-3 text-right">£{it.clientUnitPriceGbp.toFixed(2)}</td>
                           <td className="py-3 text-right font-semibold">£{it.itemTotalGbp.toFixed(2)}</td>
                         </tr>
                       ))}
                       <tr className="bg-slate-50/70">
                         <td colSpan={4} className="py-3 px-2 font-medium text-slate-700">
-                          Консолідована доставка Nova Post (загальна вага {calculation.totalWeightKg} кг)
+                          {isUk
+                            ? `Консолідована доставка Nova Post (загальна вага ${calculation.totalWeightKg} кг)`
+                            : `Consolidated Nova Post Freight (Total Weight ${calculation.totalWeightKg} kg)`}
                         </td>
                         <td className="py-3 text-right font-mono text-slate-500">FREIGHT</td>
                         <td className="py-3 text-right font-semibold text-slate-900">
@@ -413,15 +466,19 @@ export default function RFQSection() {
 
                 <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div className="text-[11px] text-slate-500 max-w-sm">
-                    Рахунок дійсний 5 банківських днів. 0% UK VAT. Оплата за безготівковим розрахунком (IBAN/SWIFT) або онлайн карткою.
+                    {isUk
+                      ? 'Рахунок дійсний 5 банківських днів. 0% UK VAT. Оплата за безготівковим розрахунком (IBAN/SWIFT) або онлайн карткою.'
+                      : 'Valid for 5 banking days. Zero-rated 0% UK Export VAT. Payable via IBAN/SWIFT BACS or online card.'}
                   </div>
                   <div className="text-right">
-                    <span className="text-[11px] text-slate-500 uppercase font-bold block">Разом до сплати:</span>
+                    <span className="text-[11px] text-slate-500 uppercase font-bold block">
+                      {isUk ? 'Разом до сплати:' : 'Total Amount Due:'}
+                    </span>
                     <div className="text-2xl sm:text-3xl font-black text-red-600">
                       £{calculation.total.toFixed(2)}
                     </div>
                     <div className="text-xs font-bold text-slate-700">
-                      ≈ {getUahTotal()} грн
+                      ≈ {getUahTotal()} {isUk ? 'грн' : 'UAH'}
                     </div>
                   </div>
                 </div>
@@ -438,19 +495,27 @@ export default function RFQSection() {
                   {paying ? (
                     <>
                       <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>Відкриття захищеного шлюзу...</span>
+                      <span>{isUk ? 'Відкриття захищеного шлюзу...' : 'Connecting to Stripe Checkout...'}</span>
                     </>
                   ) : (
                     <>
                       <CreditCard className="w-5 h-5" />
-                      <span>Оплатити онлайн усю специфікацію: £{calculation.total.toFixed(2)}</span>
+                      <span>
+                        {isUk
+                          ? `Оплатити онлайн усю специфікацію: £${calculation.total.toFixed(2)}`
+                          : `Pay Full Specification Online: £${calculation.total.toFixed(2)}`}
+                      </span>
                     </>
                   )}
                 </button>
 
                 <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>Захищений платіж UK 3D-Secure • Apple Pay • Google Pay • Visa / MC</span>
+                  <span>
+                    {isUk
+                      ? 'Захищений платіж UK 3D-Secure • Apple Pay • Google Pay • Visa / MC'
+                      : 'Protected UK 3D-Secure Payment • Apple Pay • Google Pay • Visa / MC'}
+                  </span>
                 </div>
 
                 <button
@@ -459,14 +524,18 @@ export default function RFQSection() {
                   className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs transition-all cursor-pointer"
                 >
                   <FileText className="w-4 h-4 text-red-500" />
-                  <span>Зберегти офіційний інвойс (PDF)</span>
+                  <span>
+                    {isUk ? 'Зберегти офіційний інвойс (PDF)' : 'Download Proforma Invoice (PDF)'}
+                  </span>
                 </button>
               </div>
 
               {/* Месенджери */}
               <div className="space-y-4 max-w-md mx-auto text-center border-t border-slate-800 pt-6">
                 <p className="text-xs text-slate-400">
-                  Або підтвердіть замовлення через офіс у Ковентрі:
+                  {isUk
+                    ? 'Або підтвердіть замовлення через офіс у Ковентрі:'
+                    : 'Or confirm this order directly with our Coventry hub:'}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -504,7 +573,9 @@ export default function RFQSection() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs uppercase font-bold tracking-wider text-slate-400">
-                    Перелік запчастин (Позиції 1–{items.length} з 10):
+                    {isUk
+                      ? `Перелік запчастин (Позиції 1–${items.length} з 10):`
+                      : `Part Numbers List (Items 1–${items.length} of 10):`}
                   </span>
                   {items.length < 10 && (
                     <button
@@ -513,7 +584,7 @@ export default function RFQSection() {
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-red-400 hover:text-red-300 bg-red-950/40 border border-red-800/50 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5" />
-                      <span>Додати позицію</span>
+                      <span>{isUk ? 'Додати позицію' : 'Add Item'}</span>
                     </button>
                   )}
                 </div>
@@ -524,13 +595,13 @@ export default function RFQSection() {
                     className="p-4 bg-slate-950/70 border border-slate-800 rounded-2xl relative space-y-3"
                   >
                     <div className="flex justify-between items-center text-xs font-semibold text-slate-400">
-                      <span>Позиція #{index + 1}</span>
+                      <span>{isUk ? `Позиція #${index + 1}` : `Item #${index + 1}`}</span>
                       {items.length > 1 && (
                         <button
                           type="button"
                           onClick={() => removeItem(item.id)}
                           className="text-slate-500 hover:text-red-400 p-1 transition-colors cursor-pointer"
-                          title="Видалити"
+                          title={isUk ? 'Видалити' : 'Remove'}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -539,29 +610,35 @@ export default function RFQSection() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div className="sm:col-span-1">
-                        <label className="block text-[11px] text-slate-400 mb-1">Каталожний номер OEM *</label>
+                        <label className="block text-[11px] text-slate-400 mb-1">
+                          {isUk ? 'Каталожний номер OEM *' : 'OEM Part Number *'}
+                        </label>
                         <input
                           type="text"
                           required
                           value={item.partNumber}
                           onChange={(e) => updateItem(item.id, 'partNumber', e.target.value)}
                           className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-red-500 outline-none"
-                          placeholder="напр. P535114"
+                          placeholder={isUk ? 'напр. P535114' : 'e.g. P535114'}
                         />
                       </div>
                       <div className="sm:col-span-1">
-                        <label className="block text-[11px] text-slate-400 mb-1">Техніка / Бренд *</label>
+                        <label className="block text-[11px] text-slate-400 mb-1">
+                          {isUk ? 'Техніка / Бренд *' : 'Equipment / Brand *'}
+                        </label>
                         <input
                           type="text"
                           required
                           value={item.machineModel}
                           onChange={(e) => updateItem(item.id, 'machineModel', e.target.value)}
                           className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-red-500 outline-none"
-                          placeholder="напр. Donaldson / JCB"
+                          placeholder={isUk ? 'напр. Donaldson / JCB' : 'e.g. Donaldson / JCB'}
                         />
                       </div>
                       <div className="sm:col-span-1">
-                        <label className="block text-[11px] text-slate-400 mb-1">Кількість (шт) *</label>
+                        <label className="block text-[11px] text-slate-400 mb-1">
+                          {isUk ? 'Кількість (шт) *' : 'Quantity (pcs) *'}
+                        </label>
                         <input
                           type="number"
                           min="1"
@@ -588,7 +665,7 @@ export default function RFQSection() {
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm"
-                    placeholder="Україна"
+                    placeholder={isUk ? 'Україна' : 'Ukraine'}
                   />
                 </div>
                 <div>
@@ -601,7 +678,7 @@ export default function RFQSection() {
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
                     className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm"
-                    placeholder="+380... або email@domain.com"
+                    placeholder="+380... / email@domain.com"
                   />
                 </div>
               </div>
@@ -614,7 +691,11 @@ export default function RFQSection() {
                 {status === 'searching' ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>Сканування та консолідація специфікації...</span>
+                    <span>
+                      {isUk
+                        ? 'Сканування та консолідація специфікації...'
+                        : 'Scanning & Consolidating Specification...'}
+                    </span>
                   </>
                 ) : (
                   <>

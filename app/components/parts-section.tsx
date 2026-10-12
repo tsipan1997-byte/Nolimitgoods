@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 interface PartItem {
-  brand: string;
+  brand: 'DONALDSON' | 'JCB' | 'CARRARO' | 'REXROTH';
   badge: string;
   partNumber: string;
   titleUk: string;
@@ -13,8 +13,6 @@ interface PartItem {
   specUk: string;
   specEn: string;
   priceGbp: number;
-  logoUrl: string;
-  logoBg: string;
 }
 
 const partsList: PartItem[] = [
@@ -27,8 +25,6 @@ const partsList: PartItem[] = [
     specUk: '10 Micron • High Flow',
     specEn: '10 Micron • High Flow',
     priceGbp: 18,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Donaldson_Company_logo.svg/320px-Donaldson_Company_logo.svg.png',
-    logoBg: 'bg-white',
   },
   {
     brand: 'DONALDSON',
@@ -39,8 +35,6 @@ const partsList: PartItem[] = [
     specUk: 'Primary Outer • Heavy Duty',
     specEn: 'Primary Outer • Heavy Duty',
     priceGbp: 42,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Donaldson_Company_logo.svg/320px-Donaldson_Company_logo.svg.png',
-    logoBg: 'bg-white',
   },
   {
     brand: 'JCB',
@@ -51,8 +45,6 @@ const partsList: PartItem[] = [
     specUk: 'JCB EcoMAX 3CX / 4CX',
     specEn: 'JCB EcoMAX 3CX / 4CX',
     priceGbp: 64,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/JCB-Logo.jpg/320px-JCB-Logo.jpg',
-    logoBg: 'bg-[#ffb800]',
   },
   {
     brand: 'JCB',
@@ -63,8 +55,6 @@ const partsList: PartItem[] = [
     specUk: '13x38 Gear Ratio • JCB Axle',
     specEn: '13x38 Gear Ratio • JCB Axle',
     priceGbp: 89,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/JCB-Logo.jpg/320px-JCB-Logo.jpg',
-    logoBg: 'bg-[#ffb800]',
   },
   {
     brand: 'CARRARO',
@@ -75,8 +65,6 @@ const partsList: PartItem[] = [
     specUk: 'Carraro 709 / 710 Axle Hub',
     specEn: 'Carraro 709 / 710 Axle Hub',
     priceGbp: 75,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Carraro_logo.svg/320px-Carraro_logo.svg.png',
-    logoBg: 'bg-white',
   },
   {
     brand: 'REXROTH',
@@ -87,35 +75,76 @@ const partsList: PartItem[] = [
     specUk: 'DR/31R-PPA12N00 • 350 Bar',
     specEn: 'DR/31R-PPA12N00 • 350 Bar',
     priceGbp: 890,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Bosch_Rexroth_Logo.svg/320px-Bosch_Rexroth_Logo.svg.png',
-    logoBg: 'bg-white',
   },
 ];
 
-function BrandDisplay({ item }: { item: PartItem }) {
-  const [error, setError] = useState(false);
+// Векторні логотипи світових брендів без залежності від сторонніх сайтів
+function BrandLogoSvg({ brand }: { brand: PartItem['brand'] }) {
+  switch (brand) {
+    case 'JCB':
+      return (
+        <div className="w-full h-full bg-[#FFB800] flex items-center justify-center p-6 transition-transform duration-300 group-hover:scale-105">
+          <div className="bg-black text-[#FFB800] font-black tracking-tighter text-4xl px-6 py-2.5 rounded-lg border-2 border-black flex items-center justify-center shadow-lg transform -skew-x-6">
+            JCB
+          </div>
+        </div>
+      );
 
-  if (error) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-slate-900 border-b border-slate-800">
-        <span className="font-black text-2xl tracking-widest text-slate-200 uppercase">
-          {item.brand}
-        </span>
-      </div>
-    );
+    case 'DONALDSON':
+      return (
+        <div className="w-full h-full bg-white flex flex-col items-center justify-center p-6 transition-transform duration-300 group-hover:scale-105">
+          <div className="flex items-center gap-2">
+            <svg className="w-9 h-9 text-[#00488D]" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
+            <span className="text-[#00488D] font-black text-2xl tracking-tight uppercase font-sans">
+              Donaldson<span className="text-red-600 font-extrabold text-xl">.</span>
+            </span>
+          </div>
+          <span className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mt-1">
+            FILTRATION SOLUTIONS
+          </span>
+        </div>
+      );
+
+    case 'CARRARO':
+      return (
+        <div className="w-full h-full bg-slate-900 border-b border-slate-800 flex flex-col items-center justify-center p-6 transition-transform duration-300 group-hover:scale-105">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full border-2 border-emerald-500 flex items-center justify-center">
+              <div className="w-3.5 h-3.5 bg-emerald-500 rounded-sm transform rotate-45" />
+            </div>
+            <span className="text-white font-black text-2xl tracking-widest uppercase">
+              CARRARO
+            </span>
+          </div>
+          <span className="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase mt-1">
+            DRIVELINE SYSTEMS
+          </span>
+        </div>
+      );
+
+    case 'REXROTH':
+      return (
+        <div className="w-full h-full bg-white flex flex-col items-center justify-center p-6 transition-transform duration-300 group-hover:scale-105">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[#002B49] font-black text-xl tracking-tight uppercase">
+              BOSCH
+            </span>
+            <div className="h-4 w-[2px] bg-red-600 mx-1" />
+            <span className="text-red-600 font-black text-xl tracking-tight uppercase">
+              REXROTH
+            </span>
+          </div>
+          <span className="text-[10px] text-slate-500 font-bold tracking-widest uppercase mt-1">
+            A BOSCH COMPANY • HYDRAULICS
+          </span>
+        </div>
+      );
+
+    default:
+      return null;
   }
-
-  return (
-    <div className={`w-full h-full ${item.logoBg} flex items-center justify-center p-6 border-b border-slate-800 group-hover:scale-[1.02] transition-transform duration-300`}>
-      <img
-        src={item.logoUrl}
-        alt={item.brand}
-        loading="lazy"
-        onError={() => setError(true)}
-        className="max-h-16 max-w-[180px] object-contain filter drop-shadow-sm"
-      />
-    </div>
-  );
 }
 
 export default function PartsSection() {
@@ -162,13 +191,13 @@ export default function PartsSection() {
                 </span>
               </div>
 
-              {/* Логотип бренду */}
-              <div className="relative h-44 w-full overflow-hidden">
-                <BrandDisplay item={item} />
+              {/* Вбудований векторний блок бренду (гарантовано працює завжди) */}
+              <div className="relative h-44 w-full overflow-hidden flex items-center justify-center">
+                <BrandLogoSvg brand={item.brand} />
               </div>
 
               {/* Інформація про деталь */}
-              <div className="p-5 flex-1 flex flex-col justify-between bg-slate-900">
+              <div className="p-5 flex-1 flex flex-col justify-between bg-slate-900 border-t border-slate-800/60">
                 <div>
                   <div className="text-xs font-mono font-bold text-amber-400 mb-1">
                     PN: {item.partNumber}

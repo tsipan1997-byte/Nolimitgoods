@@ -1,101 +1,218 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Award } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Factory } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+
+interface BrandItem {
+  id: string;
+  name: string;
+  hubLocationUk: string;
+  categoryUk: string;
+  categoryEn: string;
+  badgeBg: string;
+  badgeTextColor: string;
+  symbol: React.ReactNode;
+}
+
+const brandsData: BrandItem[] = [
+  {
+    id: 'donaldson',
+    name: 'Donaldson',
+    hubLocationUk: 'USA / UK Hub',
+    categoryUk: 'Фільтрація OEM',
+    categoryEn: 'OEM Filtration',
+    badgeBg: 'bg-sky-500/10 border-sky-500/30 text-sky-400',
+    badgeTextColor: 'text-sky-400',
+    symbol: (
+      <span className="font-black text-xs tracking-tighter text-sky-400 border border-sky-400/40 rounded px-1.5 py-0.5">
+        D•F
+      </span>
+    ),
+  },
+  {
+    id: 'jcb',
+    name: 'JCB',
+    hubLocationUk: 'Rochester, UK',
+    categoryUk: 'Спецтехніка',
+    categoryEn: 'Heavy Equipment',
+    badgeBg: 'bg-[#FFB800]/10 border-[#FFB800]/30 text-[#FFB800]',
+    badgeTextColor: 'text-[#FFB800]',
+    symbol: (
+      <span className="bg-[#FFB800] text-black font-black text-[11px] px-1.5 py-0.5 rounded font-mono shadow-sm">
+        JCB
+      </span>
+    ),
+  },
+  {
+    id: 'caterpillar',
+    name: 'Caterpillar',
+    hubLocationUk: 'Global OEM',
+    categoryUk: 'Будівельна техніка',
+    categoryEn: 'Construction OEM',
+    badgeBg: 'bg-amber-500/10 border-amber-500/30 text-amber-400',
+    badgeTextColor: 'text-amber-400',
+    symbol: (
+      <div className="flex items-center gap-1 bg-neutral-900 border border-amber-400/50 px-1.5 py-0.5 rounded">
+        <span className="text-amber-400 font-black text-xs tracking-tight">CAT</span>
+        <span className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
+      </div>
+    ),
+  },
+  {
+    id: 'perkins',
+    name: 'Perkins',
+    hubLocationUk: 'Peterborough, UK',
+    categoryUk: 'Дизельні двигуни',
+    categoryEn: 'Diesel Engines',
+    badgeBg: 'bg-blue-500/10 border-blue-500/30 text-blue-400',
+    badgeTextColor: 'text-blue-400',
+    symbol: (
+      <span className="font-serif font-black text-xs text-blue-400 border border-blue-400/40 rounded px-1.5 py-0.5">
+        P
+      </span>
+    ),
+  },
+  {
+    id: 'cummins',
+    name: 'Cummins',
+    hubLocationUk: 'Daventry, UK',
+    categoryUk: 'Паливні системи',
+    categoryEn: 'Fuel Systems',
+    badgeBg: 'bg-rose-500/10 border-rose-500/30 text-rose-400',
+    badgeTextColor: 'text-rose-400',
+    symbol: (
+      <span className="bg-rose-600 text-white font-black text-[11px] px-1.5 py-0.5 rounded shadow-sm">
+        C
+      </span>
+    ),
+  },
+  {
+    id: 'bosch-rexroth',
+    name: 'Bosch Rexroth',
+    hubLocationUk: 'Germany / UK',
+    categoryUk: 'Гідравліка 350 Bar',
+    categoryEn: 'High Pressure Hydraulics',
+    badgeBg: 'bg-red-500/10 border-red-500/30 text-red-400',
+    badgeTextColor: 'text-red-400',
+    symbol: (
+      <div className="flex items-center gap-1 border border-red-500/40 rounded px-1.5 py-0.5">
+        <span className="text-[10px] font-black text-slate-300">BOSCH</span>
+        <span className="text-[10px] font-black text-red-500">REX</span>
+      </div>
+    ),
+  },
+  {
+    id: 'carraro',
+    name: 'Carraro',
+    hubLocationUk: 'Italy / UK',
+    categoryUk: 'Мости та редуктори',
+    categoryEn: 'Axles & Transmissions',
+    badgeBg: 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400',
+    badgeTextColor: 'text-emerald-400',
+    symbol: (
+      <div className="flex items-center gap-1 border border-emerald-400/40 px-1.5 py-0.5 rounded">
+        <span className="w-2 h-2 rounded-full border border-emerald-400 bg-emerald-400/20" />
+        <span className="text-[10px] font-bold text-emerald-300 tracking-wider">CAR</span>
+      </div>
+    ),
+  },
+  {
+    id: 'fleetguard',
+    name: 'Fleetguard',
+    hubLocationUk: 'Global Hub',
+    categoryUk: 'Фільтри важкої серії',
+    categoryEn: 'Heavy Duty Filtration',
+    badgeBg: 'bg-cyan-500/10 border-cyan-500/30 text-cyan-400',
+    badgeTextColor: 'text-cyan-400',
+    symbol: (
+      <span className="font-mono font-black text-xs text-cyan-400 border border-cyan-400/40 rounded px-1.5 py-0.5">
+        FG
+      </span>
+    ),
+  },
+];
 
 export default function BrandsSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
-  const brands = [
-    { name: 'Donaldson', category: isUk ? 'Фільтрація OEM' : 'OEM Filtration', country: 'USA / UK Hub' },
-    { name: 'JCB', category: isUk ? 'Спецтехніка' : 'Heavy Equipment', country: 'Rochester, UK' },
-    { name: 'Caterpillar', category: isUk ? 'Будівельна техніка' : 'Construction Fleet', country: 'Global OEM' },
-    { name: 'Perkins', category: isUk ? 'Дизельні двигуни' : 'Diesel Engines', country: 'Peterborough, UK' },
-    { name: 'Cummins', category: isUk ? 'Паливні системи' : 'Power Systems', country: 'Daventry, UK' },
-    { name: 'Bosch Rexroth', category: isUk ? 'Гідравліка' : 'Hydraulics', country: 'Germany' },
-    { name: 'Carraro', category: isUk ? 'Мости та редуктори' : 'Axles & Drives', country: 'Italy' },
-    { name: 'Fleetguard', category: isUk ? 'Фільтрація' : 'Filtration', country: 'Global' },
-  ];
-
-  const handleBrandSelect = (brandName: string) => {
-    // 1. Записуємо бренд у поле "Модель машини"
-    const modelInput = document.getElementById('rfq-machine-input') as HTMLInputElement | null;
-    if (modelInput) {
-      modelInput.value = brandName;
-      modelInput.dispatchEvent(new Event('input', { bubbles: true }));
-      modelInput.dispatchEvent(new Event('change', { bubbles: true }));
+  const selectBrand = (brandName: string) => {
+    const rfqSection = document.getElementById('rfq');
+    if (rfqSection) {
+      rfqSection.scrollIntoView({ behavior: 'smooth' });
     }
-
-    // 2. Очищаємо поле "Номер запчастини", щоб клієнт вписав свій артикул
-    const partInput = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
-    if (partInput) {
-      partInput.value = '';
-      partInput.dispatchEvent(new Event('input', { bubbles: true }));
-      partInput.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    // 3. Плавно скролимо до форми та ставимо фокус на введення номера
-    const rfq = document.getElementById('rfq');
-    if (rfq) {
-      rfq.scrollIntoView({ behavior: 'smooth' });
-    }
-    setTimeout(() => {
-      if (partInput) {
-        partInput.focus();
-      }
-    }, 400);
   };
 
   return (
-    <section id="brands" className="py-20 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800">
+    <section id="brands" className="py-24 bg-slate-950 text-white relative border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Заголовок */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs sm:text-sm font-semibold mb-4">
-            <Award className="w-4 h-4 text-amber-400" />
-            <span>{isUk ? 'Прямі постачальники та заводи' : 'Direct Manufacturers Network'}</span>
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 border border-slate-800 text-slate-300 text-xs font-semibold mb-4">
+            <Factory className="w-3.5 h-3.5 text-red-500" />
+            <span>{isUk ? 'Прямі постачальники та заводи' : 'Direct UK & Global Hubs'}</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-black tracking-tight mb-4 text-white">
+
+          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             {isUk ? (
-              <>Бренди, з якими ми <span className="text-red-500">працюємо щодня</span></>
+              <>
+                Бренди, з якими ми <span className="text-red-500">працюємо щодня</span>
+              </>
             ) : (
-              <>Core Brands <span className="text-red-500">Supplied Weekly</span></>
+              <>
+                OEM Brands We <span className="text-red-500">Supply Daily</span>
+              </>
             )}
           </h2>
-          <p className="text-slate-400 text-base max-w-2xl mx-auto">
+
+          <p className="text-slate-400 max-w-2xl mx-auto text-sm sm:text-base">
             {isUk
-              ? 'Прямі контракти з дистриб’юторами в Англії. Натисніть на бренд для автоматичного підбору в формі розрахунку.'
-              : 'Direct supply lines across the UK distribution network. Click any manufacturer to request component matching.'}
+              ? 'Прямі контракти з дистриб\'юторами в Англії. Натисніть на бренд для автоматичного підбору в формі розрахунку.'
+              : 'Direct procurement channels with UK and European distributors. Select any brand to request a quote.'}
           </p>
         </div>
 
-        {/* Галерея брендів */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {brands.map((b) => (
-            <div
-              key={b.name}
-              onClick={() => handleBrandSelect(b.name)}
-              className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-red-500/60 transition-all duration-200 flex flex-col justify-between cursor-pointer group shadow-lg hover:-translate-y-0.5"
+        {/* Сітка брендів 4x2 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {brandsData.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => selectBrand(item.name)}
+              className="w-full text-left p-5 rounded-2xl bg-slate-900/80 hover:bg-slate-900 border border-slate-800/80 hover:border-slate-700 transition-all duration-300 group shadow-lg flex flex-col justify-between hover:shadow-red-500/5 cursor-pointer active:scale-[0.98]"
             >
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono text-slate-500 group-hover:text-amber-400 transition-colors">
-                    {b.country}
+                {/* Верхній рядок: Локація + Емблема бренду */}
+                <div className="flex items-center justify-between gap-2 mb-4">
+                  <span className="text-[11px] font-mono text-slate-400 truncate">
+                    {item.hubLocationUk}
                   </span>
-                  <ShieldCheck className="w-4 h-4 text-slate-600 group-hover:text-emerald-400 transition-colors" />
+                  
+                  {/* Стильна мікро-емблема бренду */}
+                  <div className="flex-shrink-0">
+                    {item.symbol}
+                  </div>
                 </div>
-                <h3 className="text-xl font-black text-white group-hover:text-red-400 transition-colors">
-                  {b.name}
+
+                {/* Назва бренду */}
+                <h3 className="text-lg sm:text-xl font-black text-white group-hover:text-red-400 transition-colors tracking-tight mb-3">
+                  {item.name}
                 </h3>
               </div>
-              <div className="mt-4 pt-3 border-t border-slate-850 flex items-center justify-between text-xs text-slate-400">
-                <span>{b.category}</span>
-                <span className="text-red-500 font-bold group-hover:translate-x-1 transition-transform">→</span>
+
+              {/* Роздільна лінія */}
+              <div className="w-full h-[1px] bg-slate-800/80 group-hover:bg-slate-700 transition-colors my-2" />
+
+              {/* Нижній рядок: Категорія + Стрілка */}
+              <div className="flex items-center justify-between pt-1">
+                <span className="text-xs text-slate-400 font-medium">
+                  {isUk ? item.categoryUk : item.categoryEn}
+                </span>
+                <ArrowRight className="w-4 h-4 text-slate-600 group-hover:text-red-400 group-hover:translate-x-1 transition-all" />
               </div>
-            </div>
+            </button>
           ))}
         </div>
 

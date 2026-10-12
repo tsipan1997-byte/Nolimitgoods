@@ -6,7 +6,7 @@ function cleanString(str: string): string {
   return str.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
 }
 
-// 50 найбільших постачальників, каталогів та дистриб'юторів UK та Європи
+// 50 найбільших B2B постачальників і каталогів UK та Європи
 const TOP_50_EUROPEAN_DISTRIBUTORS = [
   // Фільтрація та витратні матеріали
   'filterfinder.co.uk',
@@ -19,8 +19,8 @@ const TOP_50_EUROPEAN_DISTRIBUTORS = [
   'hifi-filter.com',
   'filtrationgroup.com',
   'hengst.com',
-  
-  // Спецтехніка, землерийні машини, OEM запчастини (JCB, CAT, Komatsu, Volvo)
+
+  // Спецтехніка та будівельні машини (JCB, CAT, Komatsu, Volvo)
   'vicaryplant.com',
   'shop.holtjcb.co.uk',
   'plantsparesonline.com',
@@ -40,7 +40,7 @@ const TOP_50_EUROPEAN_DISTRIBUTORS = [
   'granit-parts.co.uk',
   'vapormatic.com',
 
-  // Двигуни, турбіни та паливна апаратура (Perkins, Cummins, Deutz)
+  // Двигуни та паливні системи (Perkins, Cummins, Deutz)
   'diperk.co.uk',
   'mitchells.co.uk',
   'ipu.co.uk',
@@ -50,7 +50,7 @@ const TOP_50_EUROPEAN_DISTRIBUTORS = [
   'parts.cummins.com',
   'agcopartsbooks.com',
 
-  // Мости, коробки передач, редуктори (Carraro, Dana Spicer, ZF)
+  // Трансмісія, мости та редуктори (Carraro, Dana Spicer, ZF)
   'carraro.com',
   'intatracuk.com',
   'spicerparts.com',
@@ -68,12 +68,6 @@ const TOP_50_EUROPEAN_DISTRIBUTORS = [
   'hydrokit.com',
   'hydrapac.eu',
 ];
-
-interface RequestItem {
-  partNumber: string;
-  machineModel: string;
-  quantity: number;
-}
 
 interface ProcessedItem {
   partNumber: string;
@@ -100,18 +94,20 @@ export async function POST(request: Request) {
       invoiceNumber = '',
     } = body;
 
-    const rawItems: RequestItem[] = Array.isArray(items) && items.length > 0
+    // Підтримка одиночного запиту або масиву до 10 позицій
+    const rawItems: any[] = Array.isArray(items) && items.length > 0
       ? items
       : [{
-          partNumber: String(body.partNumber || ''),
-          machineModel: String(body.machineModel || ''),
-          quantity: Math.max(1, parseInt(String(body.quantity), 10) || 1),
+          partNumber: body.partNumber || '',
+          machineModel: body.machineModel || '',
+          quantity: body.quantity || 1,
         }];
 
+    // Обмеження до 10 позицій із безпечним числовим перетворенням
     const validItems = rawItems.slice(0, 10).map((it) => ({
       partNumber: String(it.partNumber || '').trim(),
       machineModel: String(it.machineModel || '').trim(),
-      quantity: Math.max(1, parseInt(it.quantity, 10) || 1),
+      quantity: Math.max(1, Number(it.quantity) || 1),
     }));
 
     if (validItems.length === 0 || !validItems[0].partNumber) {
@@ -123,7 +119,7 @@ export async function POST(request: Request) {
     const tgChatId = process.env.TELEGRAM_CHAT_ID;
     const xeroWebhook = process.env.XERO_WEBHOOK_URL;
 
-    // Паралельний пошук по 50 сайтах для кожної позиції
+    // Паралельний пошук по складах для кожної позиції
     const processedItems: ProcessedItem[] = await Promise.all(
       validItems.map(async (item) => {
         const cleaned = cleanString(item.partNumber);
@@ -138,7 +134,7 @@ export async function POST(request: Request) {
         if (pplxKey) {
           try {
             const domainFilter = TOP_50_EUROPEAN_DISTRIBUTORS.slice(0, 25).join(' OR site:');
-            
+
             const prompt = `Search live machinery & parts distributors across Europe and the UK (such as site:${domainFilter} or other major European supplier stocks like TVH, Kramp, Bepco, FilterFinder, Vicary Plant, DiPerk, Hydraulic Megastore) for:
 Part Number: "${item.partNumber}"
 Equipment / Brand: "${item.machineModel}"
@@ -194,7 +190,7 @@ Instructions:
           }
         }
 
-        // Локальний резервний кеш для базових перевірених номерів
+        // Локальний резервний кеш для швидкого проходження базових деталей
         if (!found || supplierBuyPriceGbp <= 0) {
           if (cleaned.includes('45820403')) {
             partTitle = 'JCB Axle Hub Seal Cover Plate';
@@ -256,7 +252,7 @@ Instructions:
       })
     );
 
-    // Перевірка на невідомі артикули
+    // Якщо якусь деталь не знайдено на відкритих майданчиках
     const hasUnverified = processedItems.some((it) => !it.found || it.supplierBuyPriceGbp <= 0);
 
     if (hasUnverified) {
@@ -287,7 +283,7 @@ ${unverifiedList}
       });
     }
 
-    // Розрахунок доставки Nova Post Global за консолідованою вагою партії
+    // Розрахунок вартості доставки Nova Post Global за консолідованою вагою
     const totalOrderWeightKg = Math.round(
       processedItems.reduce((acc, curr) => acc + curr.totalWeightKg, 0) * 10
     ) / 10;
@@ -365,7 +361,7 @@ ${lines}
       }).catch(() => {});
     }
 
-    // Синхронізація з Xero через Webhook Make.com
+    // Синхронізація з Xero через Make.com
     if (xeroWebhook) {
       fetch(xeroWebhook, {
         method: 'POST',

@@ -1,29 +1,44 @@
 'use client';
 
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Cog, Filter, ExternalLink, Truck, Wrench, Settings } from 'lucide-react';
-import Image from 'next/image';
+import { Cog, Filter, ExternalLink, Wrench } from 'lucide-react';
 import { useInView } from 'react-intersection-observer';
 import { useLanguage } from '@/lib/language-context';
 
-const equipmentCatalogs = [
+interface CatalogBrand {
+  name: string;
+  badge: string;
+  bgGradient: string;
+  textColor: string;
+  url: string;
+  logoUrl?: string;
+}
+
+const equipmentCatalogs: CatalogBrand[] = [
   {
     name: 'JCB',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/5/5e/JCB-Logo.jpg',
+    badge: 'JCB',
+    bgGradient: 'from-amber-400 to-yellow-500',
+    textColor: 'text-black',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/JCB-Logo.jpg/320px-JCB-Logo.jpg',
     url: 'https://www.jcb.com/en-gb/parts',
-    color: 'bg-yellow-500',
   },
   {
     name: 'Komatsu',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Komatsu_company_logos.svg/1280px-Komatsu_company_logos.svg.png',
+    badge: 'KOMATSU',
+    bgGradient: 'from-blue-600 to-blue-800',
+    textColor: 'text-white',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Komatsu_company_logos.svg/320px-Komatsu_company_logos.svg.png',
     url: 'https://www.komatsu.eu/en/parts-service',
-    color: 'bg-blue-600',
   },
   {
-    name: 'Caterpillar',
-    logo: 'https://i.pinimg.com/474x/da/e8/fb/dae8fb82aa3b9772f29c9be2c4fdcbd1.jpg',
+    name: 'Caterpillar (CAT)',
+    badge: 'CAT',
+    bgGradient: 'from-yellow-400 to-amber-500',
+    textColor: 'text-black',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Caterpillar_logo.svg/320px-Caterpillar_logo.svg.png',
     url: 'https://parts.cat.com/',
-    color: 'bg-yellow-400',
   },
 ];
 
@@ -55,8 +70,32 @@ const filterBrands = [
   },
 ];
 
+function BrandLogo({ brand }: { brand: CatalogBrand }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError || !brand.logoUrl) {
+    return (
+      <div
+        className={`w-full h-full flex items-center justify-center font-black tracking-wider text-base rounded-lg bg-gradient-to-r ${brand.bgGradient} ${brand.textColor}`}
+      >
+        {brand.badge}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={brand.logoUrl}
+      alt={brand.name}
+      loading="lazy"
+      onError={() => setHasError(true)}
+      className="w-full h-full object-contain filter contrast-125"
+    />
+  );
+}
+
 export default function CatalogsSection() {
-  const { language, t } = useLanguage();
+  const { language } = useLanguage();
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
@@ -67,7 +106,8 @@ export default function CatalogsSection() {
       title: 'Spare Parts & Catalogs',
       subtitle: 'We supply large volumes of spare parts for various heavy equipment',
       partsTitle: 'What We Supply',
-      partsDescription: 'No Limit Goods Ltd specializes in supplying large volumes of spare parts for construction and agricultural equipment. We work directly with manufacturers and authorized dealers to ensure quality and competitive prices.',
+      partsDescription:
+        'No Limit Goods Ltd specializes in supplying large volumes of spare parts for construction and agricultural equipment. We work directly with manufacturers and authorized dealers to ensure quality and competitive prices.',
       partsFeatures: [
         'Engine parts & components',
         'Hydraulic systems & pumps',
@@ -86,7 +126,8 @@ export default function CatalogsSection() {
       title: 'Запчастини та Каталоги',
       subtitle: 'Ми постачаємо великі обсяги запчастин для різної техніки',
       partsTitle: 'Що ми постачаємо',
-      partsDescription: 'No Limit Goods Ltd спеціалізується на постачанні великих обсягів запчастин для будівельної та сільськогосподарської техніки. Ми працюємо напряму з виробниками та авторизованими дилерами для забезпечення якості та конкурентних цін.',
+      partsDescription:
+        'No Limit Goods Ltd спеціалізується на постачанні великих обсягів запчастин для будівельної та сільськогосподарської техніки. Ми працюємо напряму з виробниками та авторизованими дилерами для забезпечення якості та конкурентних цін.',
       partsFeatures: [
         'Запчастини двигуна',
         'Гідравлічні системи та насоси',
@@ -115,12 +156,8 @@ export default function CatalogsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            {c.title}
-          </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {c.subtitle}
-          </p>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{c.title}</h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">{c.subtitle}</p>
         </motion.div>
 
         {/* What We Supply */}
@@ -138,9 +175,7 @@ export default function CatalogsSection() {
               <h3 className="text-2xl font-bold text-gray-900">{c.partsTitle}</h3>
             </div>
           </div>
-          <p className="text-gray-600 mb-6 leading-relaxed">
-            {c.partsDescription}
-          </p>
+          <p className="text-gray-600 mb-6 leading-relaxed">{c.partsDescription}</p>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             {c.partsFeatures.map((feature, index) => (
               <div key={index} className="flex items-center gap-2">
@@ -160,7 +195,7 @@ export default function CatalogsSection() {
         >
           <h3 className="text-xl font-bold text-gray-900 mb-2 text-center">{c.equipmentTitle}</h3>
           <p className="text-gray-600 mb-8 text-center">{c.equipmentSubtitle}</p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {equipmentCatalogs.map((catalog, index) => (
               <motion.a
@@ -171,22 +206,19 @@ export default function CatalogsSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={inView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: 0.3 + index * 0.1 }}
-                className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all group border border-gray-100"
+                className="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all group border border-gray-100 flex flex-col justify-between"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="relative h-12 w-32 bg-gray-50 rounded-lg p-2">
-                    <Image
-                      src={catalog.logo}
-                      alt={catalog.name}
-                      fill
-                      className="object-contain"
-                    />
+                <div className="flex items-center justify-between mb-6">
+                  <div className="relative h-14 w-36 bg-gray-50/80 rounded-xl p-2 border border-gray-100 flex items-center justify-center overflow-hidden">
+                    <BrandLogo brand={catalog} />
                   </div>
                   <ExternalLink className="w-5 h-5 text-gray-400 group-hover:text-red-500 transition-colors" />
                 </div>
-                <div className="flex items-center justify-between">
+                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
                   <span className="font-semibold text-gray-900">{catalog.name}</span>
-                  <span className="text-sm text-red-600 group-hover:underline">{c.viewCatalog} →</span>
+                  <span className="text-sm font-semibold text-red-600 group-hover:translate-x-1 transition-transform inline-flex items-center">
+                    {c.viewCatalog} →
+                  </span>
                 </div>
               </motion.a>
             ))}
@@ -204,7 +236,7 @@ export default function CatalogsSection() {
             <h3 className="text-xl font-bold text-gray-900">{c.filtersTitle}</h3>
           </div>
           <p className="text-gray-600 mb-8 text-center">{c.filtersSubtitle}</p>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             {filterBrands.map((brand, index) => (
               <motion.a

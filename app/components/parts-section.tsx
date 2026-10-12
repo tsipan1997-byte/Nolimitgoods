@@ -13,7 +13,8 @@ interface PartItem {
   specUk: string;
   specEn: string;
   priceGbp: number;
-  imageUrl: string;
+  logoUrl: string;
+  logoBg: string;
 }
 
 const partsList: PartItem[] = [
@@ -26,8 +27,8 @@ const partsList: PartItem[] = [
     specUk: '10 Micron • High Flow',
     specEn: '10 Micron • High Flow',
     priceGbp: 18,
-    // Реальне фото паливного фільтра-сепаратора
-    imageUrl: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Donaldson_Company_logo.svg/320px-Donaldson_Company_logo.svg.png',
+    logoBg: 'bg-white',
   },
   {
     brand: 'DONALDSON',
@@ -38,8 +39,8 @@ const partsList: PartItem[] = [
     specUk: 'Primary Outer • Heavy Duty',
     specEn: 'Primary Outer • Heavy Duty',
     priceGbp: 42,
-    // Фото циліндричного повітряного фільтра спецтехніки
-    imageUrl: 'https://images.unsplash.com/photo-1580983218765-f663bec07b37?auto=format&fit=crop&w=600&q=80',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Donaldson_Company_logo.svg/320px-Donaldson_Company_logo.svg.png',
+    logoBg: 'bg-white',
   },
   {
     brand: 'JCB',
@@ -50,8 +51,8 @@ const partsList: PartItem[] = [
     specUk: 'JCB EcoMAX 3CX / 4CX',
     specEn: 'JCB EcoMAX 3CX / 4CX',
     priceGbp: 64,
-    // Фото приводного ременя / агрегатів
-    imageUrl: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/JCB-Logo.jpg/320px-JCB-Logo.jpg',
+    logoBg: 'bg-[#ffb800]',
   },
   {
     brand: 'JCB',
@@ -62,8 +63,8 @@ const partsList: PartItem[] = [
     specUk: '13x38 Gear Ratio • JCB Axle',
     specEn: '13x38 Gear Ratio • JCB Axle',
     priceGbp: 89,
-    // Фото шестерень головної передачі / моста
-    imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/JCB-Logo.jpg/320px-JCB-Logo.jpg',
+    logoBg: 'bg-[#ffb800]',
   },
   {
     brand: 'CARRARO',
@@ -74,8 +75,8 @@ const partsList: PartItem[] = [
     specUk: 'Carraro 709 / 710 Axle Hub',
     specEn: 'Carraro 709 / 710 Axle Hub',
     priceGbp: 75,
-    // Фото планетарної шестерні приводу
-    imageUrl: 'https://images.unsplash.com/photo-1537462715879-360eeb61a0ad?auto=format&fit=crop&w=600&q=80',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a4/Carraro_logo.svg/320px-Carraro_logo.svg.png',
+    logoBg: 'bg-white',
   },
   {
     brand: 'REXROTH',
@@ -86,30 +87,34 @@ const partsList: PartItem[] = [
     specUk: 'DR/31R-PPA12N00 • 350 Bar',
     specEn: 'DR/31R-PPA12N00 • 350 Bar',
     priceGbp: 890,
-    // Фото гідравлічного насоса високого тиску
-    imageUrl: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=600&q=80',
+    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Bosch_Rexroth_Logo.svg/320px-Bosch_Rexroth_Logo.svg.png',
+    logoBg: 'bg-white',
   },
 ];
 
-function PartImageWithFallback({ src, alt }: { src: string; alt: string }) {
+function BrandDisplay({ item }: { item: PartItem }) {
   const [error, setError] = useState(false);
 
   if (error) {
     return (
-      <div className="w-full h-full bg-slate-900 flex items-center justify-center text-slate-500 font-mono text-xs">
-        NoLimitGoods Coventry Hub
+      <div className="w-full h-full flex items-center justify-center bg-slate-900 border-b border-slate-800">
+        <span className="font-black text-2xl tracking-widest text-slate-200 uppercase">
+          {item.brand}
+        </span>
       </div>
     );
   }
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      onError={() => setError(true)}
-      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-    />
+    <div className={`w-full h-full ${item.logoBg} flex items-center justify-center p-6 border-b border-slate-800 group-hover:scale-[1.02] transition-transform duration-300`}>
+      <img
+        src={item.logoUrl}
+        alt={item.brand}
+        loading="lazy"
+        onError={() => setError(true)}
+        className="max-h-16 max-w-[180px] object-contain filter drop-shadow-sm"
+      />
+    </div>
   );
 }
 
@@ -145,7 +150,7 @@ export default function PartsSection() {
           {partsList.map((item) => (
             <div
               key={item.partNumber}
-              className="bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-all duration-300 flex flex-col justify-between group shadow-xl"
+              className="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden hover:border-slate-700 transition-all duration-300 flex flex-col justify-between group shadow-xl"
             >
               {/* Шапка картки */}
               <div className="p-4 flex items-center justify-between border-b border-slate-800/80 bg-slate-900">
@@ -157,14 +162,13 @@ export default function PartsSection() {
                 </span>
               </div>
 
-              {/* Блок з фотографією деталі */}
-              <div className="relative h-48 w-full bg-slate-950 overflow-hidden">
-                <PartImageWithFallback src={item.imageUrl} alt={item.partNumber} />
-                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-transparent to-transparent pointer-events-none" />
+              {/* Логотип бренду */}
+              <div className="relative h-44 w-full overflow-hidden">
+                <BrandDisplay item={item} />
               </div>
 
               {/* Інформація про деталь */}
-              <div className="p-5 flex-1 flex flex-col justify-between">
+              <div className="p-5 flex-1 flex flex-col justify-between bg-slate-900">
                 <div>
                   <div className="text-xs font-mono font-bold text-amber-400 mb-1">
                     PN: {item.partNumber}

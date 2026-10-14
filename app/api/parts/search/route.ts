@@ -15,13 +15,53 @@ interface SupplierOffer {
   link: string;
 }
 
-// Курси валют для автоматичної конвертації у фунти (GBP)
 const RATES_TO_GBP: Record<string, number> = {
   GBP: 1.0,
   EUR: 0.85,
   PLN: 0.20,
   USD: 0.78,
 };
+
+// --- ФУНКЦІЯ МИТТЄВОГО СПОВІЩЕННЯ В TELEGRAM ---
+async function sendTelegramAlert(data: {
+  oem: string;
+  title: string;
+  supplier: string;
+  supplierPriceGbp: number;
+  finalPriceGbp: number;
+  fromCache: boolean;
+}) {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+
+  if (!token || !chatId) {
+    console.warn('Telegram credentials not configured in Vercel environment');
+    return;
+  }
+
+  const message = `🔔 <b>Новий пошук на NoLimitGoods!</b>\n\n` +
+    `⚙️ <b>OEM:</b> <code>${data.oem}</code>\n` +
+    `📦 <b>Деталь:</b> ${data.title}\n` +
+    `🏢 <b>Склад:</b> ${data.supplier} ${data.fromCache ? '(з бази)' : '(живий парсинг)'}\n` +
+    `📥 <b>Собівартість:</b> £${data.supplierPriceGbp.toFixed(2)}\n` +
+    `💰 <b>Ціна для клієнта:</b> £${data.finalPriceGbp.toFixed(2)}\n` +
+    `📈 <b>Ваш заробіток:</b> £${(data.finalPriceGbp - data.supplierPriceGbp - 6.5).toFixed(2)}\n` +
+    `📍 <b>Хаб:</b> Coventry, UK`;
+
+  try {
+    await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: message,
+        parse_mode: 'HTML',
+      }),
+    });
+  } catch (err) {
+    console.error('Failed to send Telegram alert:', err);
+  }
+}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -34,10 +74,9 @@ export async function GET(request: Request) {
     );
   }
 
-  // Очищення артикула від зайвих знаків
   const cleanOem = rawOem.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
-  // 1. ПЕРЕВІРКА КЕШУ В БАЗІ ДАНИХ (Prisma / PostgreSQL)
+  // 1. ПЕРЕВІРКА КЕШУ В БАЗІ ДАНИХ PRISMA
   try {
     const cached = await prisma.cachedPart.findUnique({
       where: { oem: cleanOem },
@@ -48,8 +87,17 @@ export async function GET(request: Request) {
       const cachedTime = new Date(cached.updatedAt).getTime();
       const diffHours = (now - cachedTime) / (1000 * 60 * 60);
 
-      // Якщо деталь знайдена менше 24 годин тому — віддаємо миттєво з бази
       if (diffHours < 24) {
+        // Шлемо сповіщення в Telegram при запиті з кешу
+        await sendTelegramAlert({
+          oem: cached.oem,
+          title: cached.title,
+          supplier: cached.supplierName,
+          supplierPriceGbp: cached.supplierPriceGbp,
+          finalPriceGbp: cached.finalPriceGbp,
+          fromCache: true,
+        });
+
         return new NextResponse(
           JSON.stringify({
             found: true,
@@ -74,7 +122,7 @@ export async function GET(request: Request) {
     console.warn('DB lookup skipped:', dbErr);
   }
 
-  // 2. ПАРАЛЕЛЬНИЙ ПОШУК ПО 10 ТОП-ХАБАХ ЄВРОПИ ТА ВЕЛИКОБРИТАНІЇ
+  // 2. ПАРАЛЕЛЬНИЙ ПОШУК ПО 10 ХАБАХ ЄВРОПИ ТА ВЕЛИКОБРИТАНІЇ
   const searchHeaders = {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -83,7 +131,7 @@ export async function GET(request: Request) {
   };
 
   const fetchTasks = [
-    // 1. InlineFilters (UK/EU) - Фільтри Donaldson, Fleetguard, Baldwin
+    // 1. InlineFilters UK/EU
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -113,7 +161,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 2. MalpasOnline (UK/EU) - Спецтехніка та агро-деталі
+    // 2. MalpasOnline UK/EU
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.malpasonline.co.uk/search?q=${cleanOem}`, {
@@ -143,7 +191,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 3. Wismet Filter Hub (Німеччина) - Гуртовий хаб фільтрів ЄС
+    // 3. Wismet Filter Hub DE
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.wismet.de/?suchbegriff=${cleanOem}`, {
@@ -173,7 +221,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 4. Digger Parts (UK) - Екскаватори, ходова, пальці, ковші JCB/CAT
+    // 4. Digger Parts UK
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://diggerpartsuk.co.uk/search?q=${cleanOem}`, {
@@ -203,7 +251,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 5. Allegro Heavy Machinery (Польща) - Швидкі відвантаження деталей з Польщі
+    // 5. Allegro Heavy Machinery PL
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -233,7 +281,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 6. UrParts (Європа) - B2B мережа складів спецтехніки
+    // 6. UrParts EU
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.urparts.com/index.cfm/page/parts?search=${cleanOem}`, {
@@ -260,7 +308,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 7. Bepco / TVH (Європа/UK) - Дизельні двигуни, трактори, навантажувачі
+    // 7. Bepco Parts
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.bepcoparts.com/en-gb/search?query=${cleanOem}`, {
@@ -278,7 +326,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'Bepco Heavy Tractor Parts',
             country: 'EU/UK',
-            title: title || `Компонент двигуна/трансмісії ${cleanOem}`,
+            title: title || `Компонент двигуна ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -290,7 +338,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 8. Hydraulic Parts Direct (EU/UK) - Гідромотори, клапани, розподільники
+    // 8. Hydraulic Parts Direct
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://hydraulicpartsuk.com/?s=${cleanOem}&post_type=product`, {
@@ -320,7 +368,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 9. Vicary Plant (UK) - Склад деталей JCB
+    // 9. Vicary Plant JCB
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://vicaryplant.co.uk/search?q=${cleanOem}`, {
@@ -350,7 +398,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 10. Kramp Parts Network (Нідерланди/Німеччина) - Гігант постачання в Європі
+    // 10. Kramp Parts
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.kramp.com/shop-gb/en/search?text=${cleanOem}`, {
@@ -381,7 +429,6 @@ export async function GET(request: Request) {
     },
   ];
 
-  // Одночасний запуск усіх 10 запитів
   const settled = await Promise.allSettled(fetchTasks.map((fn) => fn()));
   const validOffers: SupplierOffer[] = [];
 
@@ -391,7 +438,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // Якщо на сайтах нічого не знайшли
   if (validOffers.length === 0) {
     return new NextResponse(
       JSON.stringify({
@@ -403,16 +449,15 @@ export async function GET(request: Request) {
     );
   }
 
-  // Сортування: знаходимо найнижчу ціну
+  // Обираємо мінімальну ціну
   validOffers.sort((a, b) => a.priceGbp - b.priceGbp);
   const bestOffer = validOffers[0];
 
-  // Формула ціни: (собівартість + логістика до хабу) * націнка
   const transitFee = 6.5;
   const marginRatio = 1.25;
   const finalPriceGbp = Number(((bestOffer.priceGbp + transitFee) * marginRatio).toFixed(2));
 
-  // 3. ЗБЕРЕЖЕННЯ В БАЗУ ДАНИХ (UPSERT)
+  // 3. ЗБЕРЕЖЕННЯ В БАЗУ ДАНИХ
   try {
     await prisma.cachedPart.upsert({
       where: { oem: cleanOem },
@@ -439,6 +484,16 @@ export async function GET(request: Request) {
   } catch (saveErr) {
     console.error('Помилка збереження в базу:', saveErr);
   }
+
+  // 4. ВІДПРАВКА СПОВІЩЕННЯ В TELEGRAM
+  await sendTelegramAlert({
+    oem: cleanOem,
+    title: bestOffer.title,
+    supplier: bestOffer.vendor,
+    supplierPriceGbp: bestOffer.priceGbp,
+    finalPriceGbp: finalPriceGbp,
+    fromCache: false,
+  });
 
   return new NextResponse(
     JSON.stringify({

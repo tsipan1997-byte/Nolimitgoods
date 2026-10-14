@@ -1,12 +1,11 @@
 generator client {
-    provider = "prisma-client-js"
-    binaryTargets = ["native", "linux-musl-arm64-openssl-3.0.x"]
-    output = "/home/ubuntu/logistics_landing_page/nextjs_space/node_modules/.prisma/client"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
 }
 
 datasource db {
-    provider = "postgresql"
-    url      = env("DATABASE_URL")
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model ContactSubmission {
@@ -23,19 +22,16 @@ model ContactSubmission {
 model RFQSubmission {
   id           String   @id @default(cuid())
   partNumber   String
-  machineModel String
-  quantity     String
-  country      String
-  contact      String
+  machineModel String?
+  quantity     Int      @default(1)
+  name         String
+  email        String
+  phone        String
+  country      String?
+  notes        String?
   createdAt    DateTime @default(now())
 }
-model PartSearchLog {
-  id           String   @id @default(uuid())
-  oem          String
-  found        Boolean
-  priceGbp     Float?
-  searchedAt   DateTime @default(now())
-}
+
 model CachedPart {
   id               String   @id @default(cuid())
   oem              String   @unique

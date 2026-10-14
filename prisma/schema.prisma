@@ -29,3 +29,10 @@ model RFQSubmission {
   contact      String
   createdAt    DateTime @default(now())
 }
+model PartSearchLog {
+  id           String   @id @default(uuid())
+  oem          String
+  found        Boolean
+  priceGbp     Float?
+  searchedAt   DateTime @default(now())
+}

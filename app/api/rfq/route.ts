@@ -40,7 +40,7 @@ const VERIFIED_OEM_CACHE: Record<
   a10vso71: { title: 'Bosch Rexroth A10VSO71 Hydraulic Pump', buyGbp: 890.0, weightKg: 33.0, supplier: 'Hydraulic Megastore UK' },
 };
 
-// 2. ЗАПИТ ДО PERPLEXITY SONAR ДЛЯ НЕВІДОМИХ ДЕТАЛЕЙ
+// 2. ЗАПИТ ДО PERPLEXITY SONAR
 async function queryPerplexityForPart(
   partNumber: string,
   brandOrModel: string,
@@ -50,10 +50,9 @@ async function queryPerplexityForPart(
 Part Number: "${partNumber}"
 Brand/Equipment: "${brandOrModel}"
 
-Find current live European or UK trade supplier price EXCLUDING VAT.
+Find current live European or UK trade supplier price.
 Suppliers to search: FilterFinder, Inline Filters, TVH, Kramp, Vicary Plant, Holt JCB, DiPerk, Plant Spares Online, Cummins dealers.
 If the price is in EUR (€), convert to GBP using 1 EUR = 0.85 GBP.
-If price includes 20% VAT, divide by 1.2.
 Estimate parcel shipping weight in kg.
 
 Respond ONLY with valid JSON:
@@ -187,7 +186,12 @@ export async function POST(request: Request) {
           storeName = 'Coventry OEM Hub';
         }
 
-        const clientUnitPriceGbp = Math.round(buyPriceGbp * 1.20 * 100) / 100;
+        // РОЗРАХУНОК ЦІНИ: +5% НАЦІНКА ТА -20% ПОВЕРНЕННЯ VAT
+        // Клієнт платить: ціна сайту з ПДВ (100) + 5% націнки = 105
+        const clientUnitPriceGbp = Math.round(buyPriceGbp * 1.05 * 100) / 100;
+        // Реальна собівартість після повернення 20% VAT = 80
+        const effectiveBuyCostGbp = Math.round(buyPriceGbp * 0.80 * 100) / 100;
+
         const totalWeightKg = Math.round(unitWeightKg * item.quantity * 10) / 10;
         const itemTotalGbp = Math.round(clientUnitPriceGbp * item.quantity * 100) / 100;
 
@@ -196,7 +200,8 @@ export async function POST(request: Request) {
           machineModel: item.machineModel,
           quantity: item.quantity,
           partTitle,
-          supplierBuyPriceGbp: buyPriceGbp,
+          supplierBuyPriceGbp: effectiveBuyCostGbp,
+          displayGrossPriceGbp: buyPriceGbp,
           clientUnitPriceGbp,
           unitWeightKg,
           totalWeightKg,
@@ -206,7 +211,7 @@ export async function POST(request: Request) {
       })
     );
 
-    // Розрахунок доставки Nova Post Global
+    // Розрахунок доставки Nova Post Global за консолідованою вагою
     const totalOrderWeightKg = Math.round(
       processedItems.reduce((acc, curr) => acc + curr.totalWeightKg, 0) * 10
     ) / 10;
@@ -239,18 +244,23 @@ export async function POST(request: Request) {
       processedItems.reduce((acc, curr) => acc + curr.itemTotalGbp, 0) * 100
     ) / 100;
     const finalTotalGbp = Math.round((itemsSubtotalGbp + shippingCost) * 100) / 100;
+
+    // Сумарний заробіток: різниця між тим, що сплатив клієнт, і реальною собівартістю (80%)
     const totalProfitGbp = Math.round(
-      processedItems.reduce((acc, curr) => acc + (curr.clientUnitPriceGbp - curr.supplierBuyPriceGbp) * curr.quantity, 0) * 100
+      processedItems.reduce(
+        (acc, curr) => acc + (curr.clientUnitPriceGbp - curr.supplierBuyPriceGbp) * curr.quantity,
+        0
+      ) * 100
     ) / 100;
 
     const invNum = invoiceNumber || `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // ВИПРАВЛЕНА ВІДПРАВКА В TELEGRAM (без зайвого знака $)
+    // ВІДПРАВКА В TELEGRAM
     if (tgToken && tgChatId) {
       const lines = processedItems
         .map(
           (it, idx) =>
-            `${idx + 1}. <b>${it.partTitle}</b> [<code>${it.partNumber}</code>]\n   • ${it.quantity} шт × £${it.clientUnitPriceGbp.toFixed(2)} (Закупка: £${it.supplierBuyPriceGbp.toFixed(2)} / <i>${it.storeName}</i>)`
+            `${idx + 1}. <b>${it.partTitle}</b> [<code>${it.partNumber}</code>]\n   • ${it.quantity} шт × £${it.clientUnitPriceGbp.toFixed(2)} (Закупка без VAT: £${it.supplierBuyPriceGbp.toFixed(2)} / <i>${it.storeName}</i>)`
         )
         .join('\n\n');
 
@@ -266,11 +276,12 @@ ${lines}
 👤 <b>Клієнт:</b> ${contact || 'Не вказано'}
 📍 <b>Країна:</b> ${country}
 
-💰 <b>ФІНАНСИ (+20% маржі):</b>
-- Запчастини: <b>£${itemsSubtotalGbp.toFixed(2)}</b>
-- Доставка: <b>£${shippingCost.toFixed(2)}</b>
+💰 <b>ФІНАНСИ (+25% СУМАРНО: 5% націнка + 20% VAT):</b>
+- Запчастини (клієнт сплачує): <b>£${itemsSubtotalGbp.toFixed(2)}</b>
+- Собівартість після повернення VAT (80%): <b>£${(processedItems.reduce((acc, curr) => acc + curr.supplierBuyPriceGbp * curr.quantity, 0)).toFixed(2)}</b>
+- Доставка Nova Post: <b>£${shippingCost.toFixed(2)}</b>
 - <b>РАЗОМ ДО СПЛАТИ:</b> <b>£${finalTotalGbp.toFixed(2)}</b>
-- <b>ЧИСТИЙ ПРИБУТОК:</b> <b>£${totalProfitGbp.toFixed(2)}</b> 🔥`;
+- <b>ВАШ СУМАРНИЙ ПРИБУТОК:</b> <b>£${totalProfitGbp.toFixed(2)}</b> 🔥`;
 
       try {
         await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
@@ -281,8 +292,6 @@ ${lines}
       } catch (tgErr) {
         console.error('Помилка відправки в Telegram:', tgErr);
       }
-    } else {
-      console.warn('TELEGRAM_BOT_TOKEN або TELEGRAM_CHAT_ID не налаштовані у Vercel!');
     }
 
     // СИНХРОНІЗАЦІЯ З XERO (через Make.com)

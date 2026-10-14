@@ -1,7 +1,13 @@
-// Заглушка клієнта, щоб Next.js не падав під час збірки на Vercel
-const dummyProxy: any = new Proxy({}, {
-  get: () => () => Promise.resolve({ id: 'dummy-id', success: true }),
-});
+import { PrismaClient } from '@prisma/client';
 
-export const prisma: any = dummyProxy;
+const globalForPrisma = global as unknown as { prisma: PrismaClient };
+
+export const prisma =
+  globalForPrisma.prisma ||
+  new PrismaClient({
+    log: ['error'],
+  });
+
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+
 export default prisma;

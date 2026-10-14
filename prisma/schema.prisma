@@ -36,3 +36,17 @@ model PartSearchLog {
   priceGbp     Float?
   searchedAt   DateTime @default(now())
 }
+model CachedPart {
+  id               String   @id @default(cuid())
+  oem              String   @unique
+  title            String
+  supplierName     String
+  supplierCountry  String
+  supplierPriceGbp Float
+  finalPriceGbp    Float
+  hubLocation      String   @default("Coventry, UK / EU Transit")
+  deliveryTransit  String   @default("5-8 робочих днів до України")
+  inStock          Boolean  @default(true)
+  updatedAt        DateTime @updatedAt
+  createdAt        DateTime @default(now())
+}

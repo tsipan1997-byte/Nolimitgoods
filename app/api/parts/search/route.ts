@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
+import prisma from '@/lib/prisma';
 
 interface SupplierOffer {
   vendor: string;
@@ -12,7 +13,6 @@ interface SupplierOffer {
   link: string;
 }
 
-// Приблизні курси для автоматичної конвертації в фунти (GBP)
 const RATES_TO_GBP: Record<string, number> = {
   GBP: 1.0,
   EUR: 0.85,
@@ -31,17 +31,51 @@ export async function GET(request: Request) {
     );
   }
 
-  // Очищення артикула від слешів, тире та пробілів (наприклад, "458/20403" -> "45820403")
   const cleanOem = rawOem.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+
+  // --- 1. ПЕРЕВІРКА КЕШУ В БАЗІ ДАНИХ (0.05 сек) ---
+  try {
+    const cached = await prisma.cachedPart.findUnique({
+      where: { oem: cleanOem },
+    });
+
+    if (cached) {
+      const now = new Date().getTime();
+      const cachedTime = new Date(cached.updatedAt).getTime();
+      const diffHours = (now - cachedTime) / (1000 * 60 * 60);
+
+      // Якщо ціна збережена менше 24 годин тому — віддаємо миттєво
+      if (diffHours < 24) {
+        return NextResponse.json({
+          found: true,
+          fromCache: true,
+          oem: cached.oem,
+          title: cached.title,
+          cheapestSupplier: cached.supplierName,
+          supplierCountry: cached.supplierCountry,
+          supplierPriceGbp: cached.supplierPriceGbp,
+          finalPriceGbp: cached.finalPriceGbp,
+          currency: 'GBP',
+          hubLocation: cached.hubLocation,
+          deliveryTransit: cached.deliveryTransit,
+          inStock: cached.inStock,
+          updatedAt: cached.updatedAt,
+        });
+      }
+    }
+  } catch (dbErr) {
+    console.warn('DB cache lookup skipped:', dbErr);
+  }
+
+  // --- 2. ЖИВИЙ ПОШУК ПО ТОП-10 ХАБАХ ЄВРОПИ ТА UK ---
   const searchHeaders = {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Accept-Language': 'en-GB,en;q=0.9,pl;q=0.8,de;q=0.7',
   };
 
-  // Конфігурація 10 найбільших джерел Європи та UK
   const fetchTasks = [
-    // 1. InlineFilters (UK/EU) - Фільтри Donaldson, Fleetguard
+    // 1. InlineFilters (UK/EU)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -71,7 +105,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 2. MalpasOnline (UK/EU) - Спецтехніка та агро-деталі
+    // 2. MalpasOnline (UK/EU)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.malpasonline.co.uk/search?q=${cleanOem}`, {
@@ -101,7 +135,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 3. Wismet Filter Hub (Німеччина) - Один із найдешевших оптових складів фільтрів у ЄС
+    // 3. Wismet Filter Hub (Німеччина)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.wismet.de/?suchbegriff=${cleanOem}`, {
@@ -131,7 +165,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 4. Digger Parts (UK/ЄС) - Екскаватори, ходова JCB/CAT
+    // 4. Digger Parts (UK/ЄС)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://diggerpartsuk.co.uk/search?q=${cleanOem}`, {
@@ -161,7 +195,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 5. Allegro Heavy Machinery (Польща) - Швидкі відвантаження нових деталей
+    // 5. Allegro Heavy Machinery (Польща)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -191,7 +225,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 6. UrParts (EU Machinery Parts Network)
+    // 6. UrParts EU
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.urparts.com/index.cfm/page/parts?search=${cleanOem}`, {
@@ -207,7 +241,7 @@ export async function GET(request: Request) {
             vendor: 'UrParts EU Network',
             country: 'Europe',
             title: title || `Machinery Spares ${cleanOem}`,
-            originalPrice: 45.0, // Базовий тариф запиту під розрахунок
+            originalPrice: 45.0,
             originalCurrency: 'EUR',
             priceGbp: Number((45.0 * RATES_TO_GBP.EUR).toFixed(2)),
             stock: true,
@@ -218,7 +252,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 7. Bepco / Sparex Hub (Європа) - Запчастини тракторів та дизелів
+    // 7. Bepco / Sparex Hub
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.bepcoparts.com/en-gb/search?query=${cleanOem}`, {
@@ -248,7 +282,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 8. Hydraulic Parts Direct (EU) - Гідромотори, плунжери, розподільники
+    // 8. Hydraulic Parts Direct
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://hydraulicpartsuk.com/?s=${cleanOem}&post_type=product`, {
@@ -278,7 +312,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 9. Vicary Plant JCB Spares (UK/EU) - Складські залишки деталей JCB
+    // 9. Vicary Plant JCB Spares
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://vicaryplant.co.uk/search?q=${cleanOem}`, {
@@ -308,7 +342,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 10. Kramp Parts Network (Нідерланди / Німеччина) - Гігант європейського агро-постачання
+    // 10. Kramp Parts Network
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.kramp.com/shop-gb/en/search?text=${cleanOem}`, {
@@ -339,7 +373,6 @@ export async function GET(request: Request) {
     },
   ];
 
-  // Запускаємо всі 10 запитів ОДНОЧАСНО
   const settled = await Promise.allSettled(fetchTasks.map((fn) => fn()));
   const validOffers: SupplierOffer[] = [];
 
@@ -349,7 +382,6 @@ export async function GET(request: Request) {
     }
   }
 
-  // Якщо жоден донор не відповів або позиція дуже специфічна
   if (validOffers.length === 0) {
     return NextResponse.json({
       found: false,
@@ -358,30 +390,56 @@ export async function GET(request: Request) {
     });
   }
 
-  // Зворотний фільтр: знаходимо сайт із НАЙНИЖЧОЮ собівартістю в GBP
+  // Зворотний фільтр: вибираємо найдешевшу пропозицію
   validOffers.sort((a, b) => a.priceGbp - b.priceGbp);
   const bestOffer = validOffers[0];
 
-  // Формула розрахунку ціни під клієнта:
-  // (Найнижча ціна постачальника в GBP + £6.50 консолідація/транзит) * 25% ваша маржа
   const transitFee = 6.5;
   const marginRatio = 1.25;
   const finalPriceGbp = Number(((bestOffer.priceGbp + transitFee) * marginRatio).toFixed(2));
 
+  // --- 3. ЗБЕРЕЖЕННЯ / ОНОВЛЕННЯ В БАЗІ ДАНИХ (UPSERT) ---
+  try {
+    await prisma.cachedPart.upsert({
+      where: { oem: cleanOem },
+      update: {
+        title: bestOffer.title,
+        supplierName: bestOffer.vendor,
+        supplierCountry: bestOffer.country,
+        supplierPriceGbp: bestOffer.priceGbp,
+        finalPriceGbp: finalPriceGbp,
+        inStock: true,
+      },
+      create: {
+        oem: cleanOem,
+        title: bestOffer.title,
+        supplierName: bestOffer.vendor,
+        supplierCountry: bestOffer.country,
+        supplierPriceGbp: bestOffer.priceGbp,
+        finalPriceGbp: finalPriceGbp,
+        hubLocation: 'Coventry, UK / EU Transit',
+        deliveryTransit: '5-8 робочих днів до України',
+        inStock: true,
+      },
+    });
+  } catch (saveErr) {
+    console.error('Failed to cache part in DB:', saveErr);
+  }
+
   return NextResponse.json({
     found: true,
+    fromCache: false,
     oem: cleanOem,
     title: bestOffer.title,
     cheapestSupplier: bestOffer.vendor,
     supplierCountry: bestOffer.country,
     supplierPriceGbp: bestOffer.priceGbp,
     finalPriceGbp: finalPriceGbp,
-    totalHubsScanned: 10,
-    activeOffersFound: validOffers.length,
-    allOffers: validOffers,
+    currency: 'GBP',
     hubLocation: 'Coventry, UK / EU Transit',
     deliveryTransit: '5-8 робочих днів до України',
     inStock: true,
+    totalHubsScanned: 10,
     updatedAt: new Date().toISOString(),
   });
 }

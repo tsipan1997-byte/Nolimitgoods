@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 import prisma from '@/lib/prisma';
@@ -33,7 +35,7 @@ export async function GET(request: Request) {
 
   const cleanOem = rawOem.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
-  // --- 1. ПЕРЕВІРКА КЕШУ В БАЗІ ДАНИХ (0.05 сек) ---
+  // 1. ПЕРЕВІРКА КЕШУ В БАЗІ
   try {
     const cached = await prisma.cachedPart.findUnique({
       where: { oem: cleanOem },
@@ -44,7 +46,6 @@ export async function GET(request: Request) {
       const cachedTime = new Date(cached.updatedAt).getTime();
       const diffHours = (now - cachedTime) / (1000 * 60 * 60);
 
-      // Якщо ціна збережена менше 24 годин тому — віддаємо миттєво
       if (diffHours < 24) {
         return NextResponse.json({
           found: true,
@@ -64,10 +65,10 @@ export async function GET(request: Request) {
       }
     }
   } catch (dbErr) {
-    console.warn('DB cache lookup skipped:', dbErr);
+    console.warn('DB lookup skipped:', dbErr);
   }
 
-  // --- 2. ЖИВИЙ ПОШУК ПО ТОП-10 ХАБАХ ЄВРОПИ ТА UK ---
+  // 2. ПАРАЛЕЛЬНИЙ ПОШУК ПО 10 ХАБАХ
   const searchHeaders = {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -135,7 +136,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 3. Wismet Filter Hub (Німеччина)
+    // 3. Wismet Filter Hub (DE)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.wismet.de/?suchbegriff=${cleanOem}`, {
@@ -165,7 +166,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 4. Digger Parts (UK/ЄС)
+    // 4. Digger Parts (UK)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://diggerpartsuk.co.uk/search?q=${cleanOem}`, {
@@ -195,7 +196,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 5. Allegro Heavy Machinery (Польща)
+    // 5. Allegro Heavy Machinery (PL)
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -252,7 +253,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 7. Bepco / Sparex Hub
+    // 7. Bepco Parts
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.bepcoparts.com/en-gb/search?query=${cleanOem}`, {
@@ -312,7 +313,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 9. Vicary Plant JCB Spares
+    // 9. Vicary Plant JCB
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://vicaryplant.co.uk/search?q=${cleanOem}`, {
@@ -342,7 +343,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 10. Kramp Parts Network
+    // 10. Kramp Parts
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.kramp.com/shop-gb/en/search?text=${cleanOem}`, {
@@ -386,11 +387,10 @@ export async function GET(request: Request) {
     return NextResponse.json({
       found: false,
       oem: cleanOem,
-      message: 'Позицію не знайдено на 10 європейських складах. Оформіть запит менеджеру на індивідуальний прорахунок.',
+      message: 'Позицію не знайдено на 10 європейських складах. Оформіть запит менеджеру.',
     });
   }
 
-  // Зворотний фільтр: вибираємо найдешевшу пропозицію
   validOffers.sort((a, b) => a.priceGbp - b.priceGbp);
   const bestOffer = validOffers[0];
 
@@ -398,7 +398,7 @@ export async function GET(request: Request) {
   const marginRatio = 1.25;
   const finalPriceGbp = Number(((bestOffer.priceGbp + transitFee) * marginRatio).toFixed(2));
 
-  // --- 3. ЗБЕРЕЖЕННЯ / ОНОВЛЕННЯ В БАЗІ ДАНИХ (UPSERT) ---
+  // 3. ЗБЕРЕЖЕННЯ В БАЗУ
   try {
     await prisma.cachedPart.upsert({
       where: { oem: cleanOem },
@@ -423,7 +423,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (saveErr) {
-    console.error('Failed to cache part in DB:', saveErr);
+    console.error('Failed to cache in DB:', saveErr);
   }
 
   return NextResponse.json({

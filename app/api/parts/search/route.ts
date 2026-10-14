@@ -15,7 +15,7 @@ interface SupplierOffer {
   link: string;
 }
 
-// Gengi fyrir sjálfvirka umreikninga í GBP
+// Курси валют для автоматичної конвертації у фунти (GBP)
 const RATES_TO_GBP: Record<string, number> = {
   GBP: 1.0,
   EUR: 0.85,
@@ -29,14 +29,15 @@ export async function GET(request: Request) {
 
   if (!rawOem) {
     return new NextResponse(
-      JSON.stringify({ error: 'Vinsamlegast tilgreinið varahlutanúmer: ?oem=NUMER' }),
+      JSON.stringify({ error: 'Вкажіть каталожний номер: ?oem=НОМЕР' }),
       { status: 400, headers: { 'content-type': 'application/json; charset=utf-8' } }
     );
   }
 
+  // Очищення артикула від зайвих знаків
   const cleanOem = rawOem.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
-  // 1. ATHUGA SKYNDIMINNI Í GAGNAGRUNNI (Prisma PostgreSQL)
+  // 1. ПЕРЕВІРКА КЕШУ В БАЗІ ДАНИХ (Prisma / PostgreSQL)
   try {
     const cached = await prisma.cachedPart.findUnique({
       where: { oem: cleanOem },
@@ -47,7 +48,7 @@ export async function GET(request: Request) {
       const cachedTime = new Date(cached.updatedAt).getTime();
       const diffHours = (now - cachedTime) / (1000 * 60 * 60);
 
-      // Ef niðurstaðan er yngri en 24 klst er hún send strax
+      // Якщо деталь знайдена менше 24 годин тому — віддаємо миттєво з бази
       if (diffHours < 24) {
         return new NextResponse(
           JSON.stringify({
@@ -73,7 +74,7 @@ export async function GET(request: Request) {
     console.warn('DB lookup skipped:', dbErr);
   }
 
-  // 2. SAMHLIÐA LEIT Í GEGNUM 10 HELSTU BIRGÐASTÖÐVAR Í EVRÓPU OG BRETLANDI
+  // 2. ПАРАЛЕЛЬНИЙ ПОШУК ПО 10 ТОП-ХАБАХ ЄВРОПИ ТА ВЕЛИКОБРИТАНІЇ
   const searchHeaders = {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -82,7 +83,7 @@ export async function GET(request: Request) {
   };
 
   const fetchTasks = [
-    // 1. InlineFilters (UK/EU) - Donaldson, Fleetguard, Baldwin síur
+    // 1. InlineFilters (UK/EU) - Фільтри Donaldson, Fleetguard, Baldwin
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -100,7 +101,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'InlineFilters UK/EU',
             country: 'UK/EU',
-            title: title || `Filter OEM ${cleanOem}`,
+            title: title || `Фільтр OEM ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -112,7 +113,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 2. MalpasOnline (UK/EU) - Vinnuvélar og landbúnaðartæki
+    // 2. MalpasOnline (UK/EU) - Спецтехніка та агро-деталі
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.malpasonline.co.uk/search?q=${cleanOem}`, {
@@ -130,7 +131,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'MalpasOnline Heavy Parts',
             country: 'UK/EU',
-            title: title || `Part ${cleanOem}`,
+            title: title || `Деталь спецтехніки ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -142,7 +143,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 3. Wismet Filter Hub (Þýskaland) - Síur á heildsöluverði
+    // 3. Wismet Filter Hub (Німеччина) - Гуртовий хаб фільтрів ЄС
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.wismet.de/?suchbegriff=${cleanOem}`, {
@@ -172,7 +173,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 4. Digger Parts (UK) - Gröfur, undirvagnar, JCB og CAT
+    // 4. Digger Parts (UK) - Екскаватори, ходова, пальці, ковші JCB/CAT
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://diggerpartsuk.co.uk/search?q=${cleanOem}`, {
@@ -190,7 +191,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'DiggerParts Plant Direct',
             country: 'UK',
-            title: title || `Excavator Part ${cleanOem}`,
+            title: title || `Вузол екскаватора ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -202,7 +203,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 5. Allegro Heavy Machinery (Pólland) - Varahlutir í stórvirkar vélar
+    // 5. Allegro Heavy Machinery (Польща) - Швидкі відвантаження деталей з Польщі
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -220,7 +221,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'Allegro Machinery PL',
             country: 'Poland',
-            title: title || `Część OEM ${cleanOem}`,
+            title: title || `Запчастина OEM ${cleanOem}`,
             originalPrice: pricePln,
             originalCurrency: 'PLN',
             priceGbp: Number((pricePln * RATES_TO_GBP.PLN).toFixed(2)),
@@ -232,7 +233,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 6. UrParts (Evrópa) - B2B tengslanet fyrir þungavinnuvélar
+    // 6. UrParts (Європа) - B2B мережа складів спецтехніки
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.urparts.com/index.cfm/page/parts?search=${cleanOem}`, {
@@ -259,7 +260,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 7. Bepco / TVH (Evrópa/UK) - Dráttarvélar og dísilvélar
+    // 7. Bepco / TVH (Європа/UK) - Дизельні двигуни, трактори, навантажувачі
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.bepcoparts.com/en-gb/search?query=${cleanOem}`, {
@@ -277,7 +278,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'Bepco Heavy Tractor Parts',
             country: 'EU/UK',
-            title: title || `Engine/Transmission Part ${cleanOem}`,
+            title: title || `Компонент двигуна/трансмісії ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -289,7 +290,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 8. Hydraulic Parts Direct (EU/UK) - Vökvaíhlutir og dælur
+    // 8. Hydraulic Parts Direct (EU/UK) - Гідромотори, клапани, розподільники
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://hydraulicpartsuk.com/?s=${cleanOem}&post_type=product`, {
@@ -307,7 +308,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'Hydraulic Spares Hub',
             country: 'EU/UK',
-            title: title || `Hydraulic Valve/Pump ${cleanOem}`,
+            title: title || `Гідравлічний клапан/насос ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -319,7 +320,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 9. Vicary Plant (UK/EU) - Sérhæfðir JCB varahlutir
+    // 9. Vicary Plant (UK) - Склад деталей JCB
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://vicaryplant.co.uk/search?q=${cleanOem}`, {
@@ -337,7 +338,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'Vicary JCB Specialist',
             country: 'UK',
-            title: title || `JCB Spares OEM ${cleanOem}`,
+            title: title || `Запчастина JCB OEM ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -349,7 +350,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 10. Kramp Parts Network (Holland/Þýskaland) - Stærsti landbúnaðarbirgir Evrópu
+    // 10. Kramp Parts Network (Нідерланди/Німеччина) - Гігант постачання в Європі
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.kramp.com/shop-gb/en/search?text=${cleanOem}`, {
@@ -367,7 +368,7 @@ export async function GET(request: Request) {
           return {
             vendor: 'Kramp Agro/Plant EU',
             country: 'Netherlands',
-            title: title || `Kramp Component ${cleanOem}`,
+            title: title || `Компонент Kramp ${cleanOem}`,
             originalPrice: price,
             originalCurrency: 'GBP',
             priceGbp: price,
@@ -380,7 +381,7 @@ export async function GET(request: Request) {
     },
   ];
 
-  // Keyrum allar fyrirspurnir í einu
+  // Одночасний запуск усіх 10 запитів
   const settled = await Promise.allSettled(fetchTasks.map((fn) => fn()));
   const validOffers: SupplierOffer[] = [];
 
@@ -390,28 +391,28 @@ export async function GET(request: Request) {
     }
   }
 
-  // Ef ekkert finnst á vefsíðunum
+  // Якщо на сайтах нічого не знайшли
   if (validOffers.length === 0) {
     return new NextResponse(
       JSON.stringify({
         found: false,
         oem: cleanOem,
-        message: 'Hlutur fannst ekki sjálfkrafa á 10 evrópskum vöruhúsum. Hafið samband við þjónustufulltrúa.',
+        message: 'Позицію не знайдено на 10 європейських складах. Оформіть запит менеджеру для індивідуального прорахунку.',
       }),
       { status: 200, headers: { 'content-type': 'application/json; charset=utf-8' } }
     );
   }
 
-  // Finnum lægsta verðið
+  // Сортування: знаходимо найнижчу ціну
   validOffers.sort((a, b) => a.priceGbp - b.priceGbp);
   const bestOffer = validOffers[0];
 
-  // Verðútreikningur: (Heildsöluverð + flutningur) * álagning
+  // Формула ціни: (собівартість + логістика до хабу) * націнка
   const transitFee = 6.5;
   const marginRatio = 1.25;
   const finalPriceGbp = Number(((bestOffer.priceGbp + transitFee) * marginRatio).toFixed(2));
 
-  // 3. VISTA / UPPFÆRA Í PRISMA GAGNAGRUNNI (UPSERT)
+  // 3. ЗБЕРЕЖЕННЯ В БАЗУ ДАНИХ (UPSERT)
   try {
     await prisma.cachedPart.upsert({
       where: { oem: cleanOem },
@@ -431,12 +432,12 @@ export async function GET(request: Request) {
         supplierPriceGbp: bestOffer.priceGbp,
         finalPriceGbp: finalPriceGbp,
         hubLocation: 'Coventry, UK / EU Transit',
-        deliveryTransit: '5-8 virkir dagar til Úkraínu',
+        deliveryTransit: '5-8 робочих днів до України',
         inStock: true,
       },
     });
   } catch (saveErr) {
-    console.error('Ekki tókst að vista í gagnagrunn:', saveErr);
+    console.error('Помилка збереження в базу:', saveErr);
   }
 
   return new NextResponse(
@@ -451,7 +452,7 @@ export async function GET(request: Request) {
       finalPriceGbp: finalPriceGbp,
       currency: 'GBP',
       hubLocation: 'Coventry, UK / EU Transit',
-      deliveryTransit: '5-8 virkir dagar til Úkraínu',
+      deliveryTransit: '5-8 робочих днів до України',
       inStock: true,
       totalHubsScanned: 10,
       activeOffersFound: validOffers.length,

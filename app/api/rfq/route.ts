@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 
 export const maxDuration = 60;
+export const dynamic = 'force-dynamic';
 
 function cleanPartNumber(pn: string): string {
   return pn.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
@@ -28,15 +29,18 @@ const VERIFIED_OEM_CACHE: Record<
   '332y3163': { title: 'JCB 332/Y3163 Fan Alternator Poly-V Belt', buyGbp: 53.3, weightKg: 0.4, supplier: 'Holt JCB Parts' },
   '45820403': { title: 'JCB 458/20403 Axle Hub Seal Cover Plate', buyGbp: 4.87, weightKg: 0.15, supplier: 'Vicary Plant UK' },
   '32925682': { title: 'JCB 32/925682 Fuel Filter Element', buyGbp: 18.9, weightKg: 0.5, supplier: 'Vicary Plant UK' },
+  '32925346': { title: 'JCB 32/925346 Hydraulic Filter High Pressure', buyGbp: 22.5, weightKg: 0.85, supplier: 'Vicary Plant UK' },
   '02100073': { title: 'JCB 02/100073 Oil Filter Element', buyGbp: 9.4, weightKg: 0.6, supplier: 'Vicary Plant UK' },
 
   // Perkins & Carraro
   '26561117': { title: 'Perkins 26561117 Secondary Fuel Filter Element', buyGbp: 21.0, weightKg: 0.65, supplier: 'DiPerk Power Solutions UK' },
+  '26560201': { title: 'Perkins 26560201 Fuel Filter Water Separator', buyGbp: 26.5, weightKg: 0.75, supplier: 'DiPerk Power Solutions UK' },
   '149298': { title: 'Carraro 149298 Planetary Gear Hub', buyGbp: 75.0, weightKg: 2.3, supplier: 'IntaTrac UK' },
+  '047702': { title: 'Carraro 047702 Oil Seal Cassette Hub', buyGbp: 18.2, weightKg: 0.25, supplier: 'IntaTrac UK' },
   a10vso71: { title: 'Bosch Rexroth A10VSO71 Hydraulic Pump', buyGbp: 890.0, weightKg: 33.0, supplier: 'Hydraulic Megastore UK' },
 };
 
-// 2. ФУНКЦІЯ ПРЯМОГО ЗАПИТУ ДО PERPLEXITY SONAR З БЕЗВІДМОВНИМ ПАРСИНГОМ
+// 2. ЗАПИТ ДО PERPLEXITY SONAR ДЛЯ НЕВІДОМИХ ДЕТАЛЕЙ
 async function queryPerplexityForPart(
   partNumber: string,
   brandOrModel: string,
@@ -60,7 +64,7 @@ Respond ONLY with valid JSON:
   "supplier": "Store/Distributor Name"
 }`;
 
-  const res = await fetch('[https://api.perplexity.ai/chat/completions](https://api.perplexity.ai/chat/completions)', {
+  const res = await fetch('https://api.perplexity.ai/chat/completions', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${apiKey}`,
@@ -86,18 +90,14 @@ Respond ONLY with valid JSON:
   const json = await res.json();
   const rawText: string = json.choices?.[0]?.message?.content || '';
 
-  // Стійке вилучення JSON
   let parsed: any = null;
   const jsonMatch = rawText.match(/\{[\s\S]*?\}/);
   if (jsonMatch) {
     try {
       parsed = JSON.parse(jsonMatch[0]);
-    } catch {
-      // fallback на regex якщо JSON пошкоджений
-    }
+    } catch {}
   }
 
-  // Якщо стандартний парсер не спрацював, витягуємо ціну регуляркою
   let price = Number(parsed?.priceGbp);
   if (isNaN(price) || price <= 0) {
     const priceRegex = /(?:£|GBP|\bprice\b[^\d]*)\s*([0-9]+(?:\.[0-9]{1,2})?)/i;
@@ -107,7 +107,6 @@ Respond ONLY with valid JSON:
     }
   }
 
-  // Витягуємо вагу регуляркою якщо немає
   let weight = Number(parsed?.weightKg);
   if (isNaN(weight) || weight <= 0) {
     const weightMatch = /([0-9]+(?:\.[0-9]+)?)\s*kg/i.exec(rawText);
@@ -131,9 +130,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { items = [], country = 'Україна', contact = '', invoiceNumber = '' } = body;
 
-    const rawItems: any[] = Array.isArray(items) && items.length > 0
-      ? items
-      : [{ partNumber: body.partNumber || '', machineModel: body.machineModel || '', quantity: body.quantity || 1 }];
+    const rawItems: any[] =
+      Array.isArray(items) && items.length > 0
+        ? items
+        : [{ partNumber: body.partNumber || '', machineModel: body.machineModel || '', quantity: body.quantity || 1 }];
 
     const validItems = rawItems
       .slice(0, 10)
@@ -153,7 +153,7 @@ export async function POST(request: Request) {
     const tgChatId = process.env.TELEGRAM_CHAT_ID;
     const xeroWebhook = process.env.XERO_WEBHOOK_URL;
 
-    // Паралельний пошук по кожній деталі (спочатку кеш, потім Perplexity)
+    // Обробка кожної деталі в специфікації
     const processedItems = await Promise.all(
       validItems.map(async (item) => {
         const cleaned = cleanPartNumber(item.partNumber);
@@ -163,7 +163,6 @@ export async function POST(request: Request) {
         let partTitle = `${item.machineModel} ${item.partNumber}`.trim();
         let storeName = 'UK Distribution Hub';
 
-        // Крок 1: Перевірка швидкого локального каталогу
         if (VERIFIED_OEM_CACHE[cleaned]) {
           const cached = VERIFIED_OEM_CACHE[cleaned];
           buyPriceGbp = cached.buyGbp;
@@ -171,7 +170,6 @@ export async function POST(request: Request) {
           partTitle = cached.title;
           storeName = cached.supplier;
         } else if (pplxKey) {
-          // Крок 2: Живий запит до Perplexity Sonar
           try {
             const found = await queryPerplexityForPart(item.partNumber, item.machineModel, pplxKey);
             buyPriceGbp = found.priceGbp;
@@ -183,15 +181,12 @@ export async function POST(request: Request) {
           }
         }
 
-        // Крок 3: Якщо артикул надзвичайно рідкісний і онлайн прайсів немає,
-        // ставимо розумну індустріальну оцінку, щоб клієнт НЕ вилітав з кошика
         if (buyPriceGbp <= 0) {
-          buyPriceGbp = 32.0; // базова безпечна закупівля
+          buyPriceGbp = 32.0;
           unitWeightKg = 1.5;
           storeName = 'Coventry OEM Hub';
         }
 
-        // Маржа +20% для клієнта
         const clientUnitPriceGbp = Math.round(buyPriceGbp * 1.20 * 100) / 100;
         const totalWeightKg = Math.round(unitWeightKg * item.quantity * 10) / 10;
         const itemTotalGbp = Math.round(clientUnitPriceGbp * item.quantity * 100) / 100;
@@ -211,7 +206,7 @@ export async function POST(request: Request) {
       })
     );
 
-    // Розрахунок доставки Nova Post Global за консолідованою вагою
+    // Розрахунок доставки Nova Post Global
     const totalOrderWeightKg = Math.round(
       processedItems.reduce((acc, curr) => acc + curr.totalWeightKg, 0) * 10
     ) / 10;
@@ -250,7 +245,7 @@ export async function POST(request: Request) {
 
     const invNum = invoiceNumber || `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // Відправка повної структури в Telegram
+    // ВИПРАВЛЕНА ВІДПРАВКА В TELEGRAM (без зайвого знака $)
     if (tgToken && tgChatId) {
       const lines = processedItems
         .map(
@@ -268,41 +263,52 @@ ${lines}
 📦 <b>Загальна вага:</b> <b>${totalOrderWeightKg} кг</b>
 🚚 <b>Доставка Nova Post:</b> ${parcelType} — <b>£${shippingCost}</b>
 
-👤 <b>Клієнт:</b> ${contact}
+👤 <b>Клієнт:</b> ${contact || 'Не вказано'}
 📍 <b>Країна:</b> ${country}
 
 💰 <b>ФІНАНСИ (+20% маржі):</b>
-• Запчастини: <b>£${itemsSubtotalGbp.toFixed(2)}</b>
-• Доставка: <b>£${shippingCost.toFixed(2)}</b>
-• <b>РАЗОМ ДО СПЛАТИ:</b> <b>£${finalTotalGbp.toFixed(2)}</b>
-• <b>ЧИСТИЙ ПРИБУТОК:</b> <b>£${totalProfitGbp.toFixed(2)}</b> 🔥`;
+- Запчастини: <b>£${itemsSubtotalGbp.toFixed(2)}</b>
+- Доставка: <b>£${shippingCost.toFixed(2)}</b>
+- <b>РАЗОМ ДО СПЛАТИ:</b> <b>£${finalTotalGbp.toFixed(2)}</b>
+- <b>ЧИСТИЙ ПРИБУТОК:</b> <b>£${totalProfitGbp.toFixed(2)}</b> 🔥`;
 
-      fetch(`[https://api.telegram.org/bot$](https://api.telegram.org/bot$){tgToken}/sendMessage`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ chat_id: tgChatId, text: tgMsg, parse_mode: 'HTML' }),
-      }).catch(() => {});
+      try {
+        await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: tgChatId, text: tgMsg, parse_mode: 'HTML' }),
+        });
+      } catch (tgErr) {
+        console.error('Помилка відправки в Telegram:', tgErr);
+      }
+    } else {
+      console.warn('TELEGRAM_BOT_TOKEN або TELEGRAM_CHAT_ID не налаштовані у Vercel!');
     }
 
-    // Синхронізація з Xero через Make.com
+    // СИНХРОНІЗАЦІЯ З XERO (через Make.com)
     if (xeroWebhook) {
-      fetch(xeroWebhook, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          invoiceNumber: invNum,
-          contactName: contact || 'B2B Client',
-          items: processedItems.map((it) => ({
-            description: `${it.partTitle} [${it.partNumber}]`,
-            quantity: it.quantity,
-            unitAmount: it.clientUnitPriceGbp,
-          })),
-          shippingAmount: shippingCost,
-          totalAmount: finalTotalGbp,
-          currencyCode: 'GBP',
-          date: new Date().toISOString().split('T')[0],
-        }),
-      }).catch(() => {});
+      try {
+        await fetch(xeroWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            invoiceNumber: invNum,
+            contactName: contact || 'B2B Client',
+            country,
+            items: processedItems.map((it) => ({
+              description: `${it.partTitle} [${it.partNumber}]`,
+              quantity: it.quantity,
+              unitAmount: it.clientUnitPriceGbp,
+            })),
+            shippingAmount: shippingCost,
+            totalAmount: finalTotalGbp,
+            currencyCode: 'GBP',
+            date: new Date().toISOString().split('T')[0],
+          }),
+        });
+      } catch (xeroErr) {
+        console.error('Помилка відправки в Xero Webhook:', xeroErr);
+      }
     }
 
     return NextResponse.json({

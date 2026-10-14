@@ -1,84 +1,126 @@
 import { NextResponse } from 'next/server';
 import * as cheerio from 'cheerio';
 
+interface SupplierResult {
+  supplier: string;
+  title: string;
+  price: number;
+  currency: string;
+  url: string;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const rawOem = searchParams.get('oem');
 
   if (!rawOem) {
     return NextResponse.json(
-      { error: 'Вкажіть артикул: ?oem=НОМЕР' },
+      { error: 'Вкажіть каталожний номер: ?oem=НОМЕР' },
       { status: 400 }
     );
   }
 
-  // Очистка артикула от лишних знаков
   const cleanOem = rawOem.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+  const results: SupplierResult[] = [];
 
+  // 1. Джерело: Inline Filters UK (Фільтри Donaldson, Fleetguard, Baldwin)
   try {
-    // Реальный запрос к каталогу запчастей / фильтров в Великобритании
-    const targetUrl = `https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&search_in_description=1&keyword=${encodeURIComponent(cleanOem)}`;
+    const res = await fetch(
+      `https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&search_in_description=1&keyword=${encodeURIComponent(cleanOem)}`,
+      {
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+        next: { revalidate: 1800 },
+      }
+    );
 
-    const response = await fetch(targetUrl, {
-      headers: {
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      },
-      next: { revalidate: 3600 } // Кэшируем на 1 час
-    });
+    if (res.ok) {
+      const html = await res.text();
+      const $ = cheerio.load(html);
+      const title = $('.productListing-heading, .productName, h1').first().text().trim();
+      const priceText = $('.productSpecialPrice, .productBasePrice, .normalprice').first().text().trim();
+      const match = priceText.match(/[\d,.]+/);
 
-    if (!response.ok) {
-      return NextResponse.json(
-        { error: 'Сайт-донор тимчасово недоступний' },
-        { status: 502 }
-      );
+      if (match) {
+        results.push({
+          supplier: 'InlineFilters UK',
+          title: title || `Part OEM ${cleanOem}`,
+          price: parseFloat(match[0].replace(',', '')),
+          currency: 'GBP',
+          url: `https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=${encodeURIComponent(cleanOem)}`,
+        });
+      }
     }
-
-    const html = await response.text();
-    const $ = cheerio.load(html);
-
-    // Парсим название и цену
-    const productTitle = $('.productListing-heading, .productName, h1')
-      .first()
-      .text()
-      .trim();
-
-    const priceText = $('.productSpecialPrice, .productBasePrice, .normalprice')
-      .first()
-      .text()
-      .trim();
-
-    const rawPriceMatch = priceText.match(/[\d,.]+/);
-    const supplierPrice = rawPriceMatch
-      ? parseFloat(rawPriceMatch[0].replace(',', ''))
-      : null;
-
-    if (!supplierPrice) {
-      return NextResponse.json({
-        found: false,
-        oem: cleanOem,
-        message: 'Позицію за цим номером не знайдено',
-      });
-    }
-
-    // Расчет финальной цены для покупателя:
-    // (Цена поставщика + £6.00 доставка по UK) * наценка 25%
-    const ukDeliveryFee = 6.0;
-    const margin = 1.25;
-    const finalPriceGbp = Number(((supplierPrice + ukDeliveryFee) * margin).toFixed(2));
-
-    return NextResponse.json({
-      found: true,
-      oem: cleanOem,
-      title: productTitle || `Запчастина ${cleanOem}`,
-      supplierPriceGbp: supplierPrice,
-      finalPriceGbp: finalPriceGbp,
-      currency: 'GBP',
-      hubLocation: 'Coventry, UK',
-      inStock: true,
-      updatedAt: new Date().toISOString()
-    });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  } catch (err) {
+    console.error('Error fetching from InlineFilters:', err);
   }
+
+  // 2. Джерело: MalpasOnline UK (Запчастини до спец- та агротехніки)
+  try {
+    const res = await fetch(
+      `https://www.malpasonline.co.uk/search?q=${encodeURIComponent(cleanOem)}`,
+      {
+        headers: {
+          'User-Agent':
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        },
+        next: { revalidate: 1800 },
+      }
+    );
+
+    if (res.ok) {
+      const html = await res.text();
+      const $ = cheerio.load(html);
+      const title = $('.product-title, .title, h1').first().text().trim();
+      const priceText = $('.price, .money, .product-price').first().text().trim();
+      const match = priceText.match(/[\d,.]+/);
+
+      if (match) {
+        results.push({
+          supplier: 'MalpasOnline UK',
+          title: title || `Machinery Part ${cleanOem}`,
+          price: parseFloat(match[0].replace(',', '')),
+          currency: 'GBP',
+          url: `https://www.malpasonline.co.uk/search?q=${encodeURIComponent(cleanOem)}`,
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Error fetching from MalpasOnline:', err);
+  }
+
+  // Якщо жоден донор не повернув інформації
+  if (results.length === 0) {
+    return NextResponse.json({
+      found: false,
+      oem: cleanOem,
+      message: 'За даним артикулом деталі на партнерських складах не знайдено',
+    });
+  }
+
+  // Зворотний фільтр: обираємо пропозицію з найнижчою собівартістю
+  results.sort((a, b) => a.price - b.price);
+  const bestOffer = results[0];
+
+  // Формула розрахунку ціни під клієнта:
+  const localUkShipping = 6.0; // Внутрішня доставка до складу в Ковентрі
+  const marginMultiplier = 1.25; // 25% націнка
+  const finalPriceGbp = Number(((bestOffer.price + localUkShipping) * marginMultiplier).toFixed(2));
+
+  return NextResponse.json({
+    found: true,
+    oem: cleanOem,
+    title: bestOffer.title,
+    bestSupplier: bestOffer.supplier,
+    supplierPriceGbp: bestOffer.price,
+    finalPriceGbp: finalPriceGbp,
+    currency: 'GBP',
+    hub: 'Coventry, UK',
+    deliveryTime: '5-8 робочих днів до України',
+    inStock: true,
+    totalSourcesChecked: 2,
+    updatedAt: new Date().toISOString(),
+  });
 }

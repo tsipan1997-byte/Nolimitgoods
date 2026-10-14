@@ -15,6 +15,7 @@ interface SupplierOffer {
   link: string;
 }
 
+// Gengi fyrir sjálfvirka umreikninga í GBP
 const RATES_TO_GBP: Record<string, number> = {
   GBP: 1.0,
   EUR: 0.85,
@@ -27,15 +28,15 @@ export async function GET(request: Request) {
   const rawOem = searchParams.get('oem');
 
   if (!rawOem) {
-    return NextResponse.json(
-      { error: 'Вкажіть каталожний номер: ?oem=НОМЕР' },
-      { status: 400 }
+    return new NextResponse(
+      JSON.stringify({ error: 'Vinsamlegast tilgreinið varahlutanúmer: ?oem=NUMER' }),
+      { status: 400, headers: { 'content-type': 'application/json; charset=utf-8' } }
     );
   }
 
   const cleanOem = rawOem.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
 
-  // 1. ПЕРЕВІРКА КЕШУ В БАЗІ
+  // 1. ATHUGA SKYNDIMINNI Í GAGNAGRUNNI (Prisma PostgreSQL)
   try {
     const cached = await prisma.cachedPart.findUnique({
       where: { oem: cleanOem },
@@ -46,37 +47,42 @@ export async function GET(request: Request) {
       const cachedTime = new Date(cached.updatedAt).getTime();
       const diffHours = (now - cachedTime) / (1000 * 60 * 60);
 
+      // Ef niðurstaðan er yngri en 24 klst er hún send strax
       if (diffHours < 24) {
-        return NextResponse.json({
-          found: true,
-          fromCache: true,
-          oem: cached.oem,
-          title: cached.title,
-          cheapestSupplier: cached.supplierName,
-          supplierCountry: cached.supplierCountry,
-          supplierPriceGbp: cached.supplierPriceGbp,
-          finalPriceGbp: cached.finalPriceGbp,
-          currency: 'GBP',
-          hubLocation: cached.hubLocation,
-          deliveryTransit: cached.deliveryTransit,
-          inStock: cached.inStock,
-          updatedAt: cached.updatedAt,
-        });
+        return new NextResponse(
+          JSON.stringify({
+            found: true,
+            fromCache: true,
+            oem: cached.oem,
+            title: cached.title,
+            cheapestSupplier: cached.supplierName,
+            supplierCountry: cached.supplierCountry,
+            supplierPriceGbp: cached.supplierPriceGbp,
+            finalPriceGbp: cached.finalPriceGbp,
+            currency: 'GBP',
+            hubLocation: cached.hubLocation,
+            deliveryTransit: cached.deliveryTransit,
+            inStock: cached.inStock,
+            updatedAt: cached.updatedAt,
+          }),
+          { status: 200, headers: { 'content-type': 'application/json; charset=utf-8' } }
+        );
       }
     }
   } catch (dbErr) {
     console.warn('DB lookup skipped:', dbErr);
   }
 
-  // 2. ПАРАЛЕЛЬНИЙ ПОШУК ПО 10 ХАБАХ
+  // 2. SAMHLIÐA LEIT Í GEGNUM 10 HELSTU BIRGÐASTÖÐVAR Í EVRÓPU OG BRETLANDI
   const searchHeaders = {
     'User-Agent':
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
     'Accept-Language': 'en-GB,en;q=0.9,pl;q=0.8,de;q=0.7',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
   };
 
   const fetchTasks = [
-    // 1. InlineFilters (UK/EU)
+    // 1. InlineFilters (UK/EU) - Donaldson, Fleetguard, Baldwin síur
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -106,7 +112,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 2. MalpasOnline (UK/EU)
+    // 2. MalpasOnline (UK/EU) - Vinnuvélar og landbúnaðartæki
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.malpasonline.co.uk/search?q=${cleanOem}`, {
@@ -136,7 +142,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 3. Wismet Filter Hub (DE)
+    // 3. Wismet Filter Hub (Þýskaland) - Síur á heildsöluverði
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.wismet.de/?suchbegriff=${cleanOem}`, {
@@ -166,7 +172,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 4. Digger Parts (UK)
+    // 4. Digger Parts (UK) - Gröfur, undirvagnar, JCB og CAT
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://diggerpartsuk.co.uk/search?q=${cleanOem}`, {
@@ -196,7 +202,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 5. Allegro Heavy Machinery (PL)
+    // 5. Allegro Heavy Machinery (Pólland) - Varahlutir í stórvirkar vélar
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(
@@ -226,7 +232,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 6. UrParts EU
+    // 6. UrParts (Evrópa) - B2B tengslanet fyrir þungavinnuvélar
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.urparts.com/index.cfm/page/parts?search=${cleanOem}`, {
@@ -253,7 +259,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 7. Bepco Parts
+    // 7. Bepco / TVH (Evrópa/UK) - Dráttarvélar og dísilvélar
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.bepcoparts.com/en-gb/search?query=${cleanOem}`, {
@@ -283,7 +289,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 8. Hydraulic Parts Direct
+    // 8. Hydraulic Parts Direct (EU/UK) - Vökvaíhlutir og dælur
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://hydraulicpartsuk.com/?s=${cleanOem}&post_type=product`, {
@@ -313,7 +319,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 9. Vicary Plant JCB
+    // 9. Vicary Plant (UK/EU) - Sérhæfðir JCB varahlutir
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://vicaryplant.co.uk/search?q=${cleanOem}`, {
@@ -343,7 +349,7 @@ export async function GET(request: Request) {
       return null;
     },
 
-    // 10. Kramp Parts
+    // 10. Kramp Parts Network (Holland/Þýskaland) - Stærsti landbúnaðarbirgir Evrópu
     async (): Promise<SupplierOffer | null> => {
       try {
         const res = await fetch(`https://www.kramp.com/shop-gb/en/search?text=${cleanOem}`, {
@@ -374,6 +380,7 @@ export async function GET(request: Request) {
     },
   ];
 
+  // Keyrum allar fyrirspurnir í einu
   const settled = await Promise.allSettled(fetchTasks.map((fn) => fn()));
   const validOffers: SupplierOffer[] = [];
 
@@ -383,22 +390,28 @@ export async function GET(request: Request) {
     }
   }
 
+  // Ef ekkert finnst á vefsíðunum
   if (validOffers.length === 0) {
-    return NextResponse.json({
-      found: false,
-      oem: cleanOem,
-      message: 'Позицію не знайдено на 10 європейських складах. Оформіть запит менеджеру.',
-    });
+    return new NextResponse(
+      JSON.stringify({
+        found: false,
+        oem: cleanOem,
+        message: 'Hlutur fannst ekki sjálfkrafa á 10 evrópskum vöruhúsum. Hafið samband við þjónustufulltrúa.',
+      }),
+      { status: 200, headers: { 'content-type': 'application/json; charset=utf-8' } }
+    );
   }
 
+  // Finnum lægsta verðið
   validOffers.sort((a, b) => a.priceGbp - b.priceGbp);
   const bestOffer = validOffers[0];
 
+  // Verðútreikningur: (Heildsöluverð + flutningur) * álagning
   const transitFee = 6.5;
   const marginRatio = 1.25;
   const finalPriceGbp = Number(((bestOffer.priceGbp + transitFee) * marginRatio).toFixed(2));
 
-  // 3. ЗБЕРЕЖЕННЯ В БАЗУ
+  // 3. VISTA / UPPFÆRA Í PRISMA GAGNAGRUNNI (UPSERT)
   try {
     await prisma.cachedPart.upsert({
       where: { oem: cleanOem },
@@ -418,28 +431,33 @@ export async function GET(request: Request) {
         supplierPriceGbp: bestOffer.priceGbp,
         finalPriceGbp: finalPriceGbp,
         hubLocation: 'Coventry, UK / EU Transit',
-        deliveryTransit: '5-8 робочих днів до України',
+        deliveryTransit: '5-8 virkir dagar til Úkraínu',
         inStock: true,
       },
     });
   } catch (saveErr) {
-    console.error('Failed to cache in DB:', saveErr);
+    console.error('Ekki tókst að vista í gagnagrunn:', saveErr);
   }
 
-  return NextResponse.json({
-    found: true,
-    fromCache: false,
-    oem: cleanOem,
-    title: bestOffer.title,
-    cheapestSupplier: bestOffer.vendor,
-    supplierCountry: bestOffer.country,
-    supplierPriceGbp: bestOffer.priceGbp,
-    finalPriceGbp: finalPriceGbp,
-    currency: 'GBP',
-    hubLocation: 'Coventry, UK / EU Transit',
-    deliveryTransit: '5-8 робочих днів до України',
-    inStock: true,
-    totalHubsScanned: 10,
-    updatedAt: new Date().toISOString(),
-  });
+  return new NextResponse(
+    JSON.stringify({
+      found: true,
+      fromCache: false,
+      oem: cleanOem,
+      title: bestOffer.title,
+      cheapestSupplier: bestOffer.vendor,
+      supplierCountry: bestOffer.country,
+      supplierPriceGbp: bestOffer.priceGbp,
+      finalPriceGbp: finalPriceGbp,
+      currency: 'GBP',
+      hubLocation: 'Coventry, UK / EU Transit',
+      deliveryTransit: '5-8 virkir dagar til Úkraínu',
+      inStock: true,
+      totalHubsScanned: 10,
+      activeOffersFound: validOffers.length,
+      allOffers: validOffers,
+      updatedAt: new Date().toISOString(),
+    }),
+    { status: 200, headers: { 'content-type': 'application/json; charset=utf-8' } }
+  );
 }

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
+import PartsSearchWidget from './components/parts-search-widget';
 import RFQSection from './components/rfq-section';
 import DeliveriesSection from './components/deliveries-section';
 import PartsSection from './components/parts-section';
@@ -117,6 +118,12 @@ export default function Home() {
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-red-500 selection:text-white">
       <Header />
       <HeroSection />
+      
+      {/* Блок живого поиска запчастей с британских складов */}
+      <section className="px-4 sm:px-6 lg:px-8 -mt-6 mb-12 relative z-10">
+        <PartsSearchWidget />
+      </section>
+
       <RFQSection />
       <DeliveriesSection />
       <PartsSection />

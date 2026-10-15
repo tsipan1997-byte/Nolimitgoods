@@ -3,7 +3,7 @@
 import React from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
-import TrustBanner from './components/trust-banner'; // <--- Додали імпорт траст-баннера
+import TrustBanner from './components/trust-banner'; // 1. Імпортуємо наш траст-баннер
 import RFQSection from './components/rfq-section';
 import BrandsCatalog from './components/BrandsCatalog';
 import DeliveriesSection from './components/deliveries-section';

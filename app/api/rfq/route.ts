@@ -535,6 +535,12 @@ Respond ONLY with valid JSON:
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+
+    // 🛡️ Honeypot захист від спам-ботів
+    if (body.website_hp) {
+      return NextResponse.json({ success: true, status: 'filtered' });
+    }
+
     const { items = [], country = 'Україна', contact = '', invoiceNumber = '' } = body;
 
     const rawItems: any[] =
@@ -560,7 +566,6 @@ export async function POST(request: Request) {
     const tgChatId = process.env.TELEGRAM_CHAT_ID;
     const xeroWebhook = process.env.XERO_WEBHOOK_URL;
     
-    // Підхоплюємо саме вашу змінну з Vercel
     const googleSheetUrl =
       process.env.GOOGLE_SHEET_URL ||
       process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
@@ -571,7 +576,6 @@ export async function POST(request: Request) {
       validItems.map(async (item) => {
         let bestOffer: SourcedOffer | null = null;
 
-        // КРОК 1: 20 основних сайтів першого ешелону
         const tier1Tasks = getTier1Tasks(item.partNumber);
         const settled = await Promise.allSettled(tier1Tasks.map((fn) => fn()));
         const validOffers: SourcedOffer[] = [];
@@ -587,7 +591,6 @@ export async function POST(request: Request) {
           bestOffer = validOffers[0];
         }
 
-        // КРОК 2: 30 хабів другого ешелону через AI
         if (!bestOffer && pplxKey) {
           try {
             bestOffer = await queryTier2Hubs(item.partNumber, item.machineModel, pplxKey);
@@ -596,7 +599,6 @@ export async function POST(request: Request) {
           }
         }
 
-        // КРОК 3: Fallback у разі рідкісного артикула
         if (!bestOffer) {
           const fallbackNet = 32.0;
           bestOffer = {
@@ -676,9 +678,7 @@ export async function POST(request: Request) {
     const invNum = invoiceNumber || `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
     const dateNow = new Date().toISOString();
 
-    // ==========================================
     // 1. АВТОМАТИЧНИЙ ЗАПИС У GOOGLE SHEETS
-    // ==========================================
     if (googleSheetUrl) {
       try {
         const payload = {
@@ -719,9 +719,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // ==========================================
     // 2. СПОВІЩЕННЯ В TELEGRAM
-    // ==========================================
     if (tgToken && tgChatId) {
       const lines = processedItems
         .map(
@@ -730,7 +728,7 @@ export async function POST(request: Request) {
             `   • Артикул: <code>${it.partNumber}</code> | Бренд: <b>${it.machineModel}</b>\n` +
             `   • ${it.quantity} шт × £${it.clientUnitPriceGbp.toFixed(2)}\n` +
             `   • Собівартість Ex. VAT: £${it.supplierBuyPriceGbp.toFixed(2)}\n` +
-            `   🏪 <b>Постачальник:</b> <a href="${it.storeUrl}"><b>${it.storeName}</b> 🔗</a>`
+            `   • 🏪 <b>Постачальник:</b> <a href="${it.storeUrl}"><b>${it.storeName}</b> 🔗</a>`
         )
         .join('\n\n');
 
@@ -766,9 +764,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // ==========================================
     // 3. СИНХРОНІЗАЦІЯ З XERO
-    // ==========================================
     if (xeroWebhook) {
       try {
         await fetch(xeroWebhook, {

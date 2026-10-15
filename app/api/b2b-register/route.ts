@@ -30,7 +30,7 @@ export async function POST(request: Request) {
 
     const dateNow = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/London' });
 
-    // 1. ЗАПИС У GOOGLE ТАБЛИЦЮ (ЛИСТ B2B КЛІЄНТИ)
+    // 1. Відправка на скрипт Google Таблиці
     if (googleSheetUrl) {
       try {
         await fetch(googleSheetUrl, {
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       }
     }
 
-    // 2. МИТТЄВЕ СПОВІЩЕННЯ В TELEGRAM
+    // 2. Сповіщення в робочий Telegram-бот
     if (tgToken && tgChatId) {
       const tgMsg =
         `🏢 <b>НОВА РЕЄСТРАЦІЯ B2B-КЛІЄНТА (0% VAT)</b>\n` +

@@ -3,6 +3,7 @@
 import React from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
+import TrustBanner from './components/trust-banner'; // <--- Додали імпорт траст-баннера
 import RFQSection from './components/rfq-section';
 import BrandsCatalog from './components/BrandsCatalog';
 import DeliveriesSection from './components/deliveries-section';
@@ -34,6 +35,9 @@ export default function HomePage() {
 
       {/* 2. Головний банер (Hero) */}
       <HeroSection />
+
+      {/* 2.1. Траст-баннер із правдивими цифрами та європейськими гарантіями */}
+      <TrustBanner />
 
       {/* 3. Блок калькулятора та специфікацій */}
       <div id="parts-calculator">

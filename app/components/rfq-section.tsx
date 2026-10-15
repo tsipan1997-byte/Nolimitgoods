@@ -61,7 +61,6 @@ export default function RFQSection() {
     invoiceDate: string;
   } | null>(null);
 
-  // Слухач подій з каталогу деталей: підставляє номер та бренд у першу позицію
   useEffect(() => {
     const handleSelectPartEvent = (e: any) => {
       const { oem, brand } = e.detail || {};
@@ -250,10 +249,10 @@ export default function RFQSection() {
 
   return (
     <section id="parts-calculator" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800 scroll-mt-20">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none no-print" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center mb-10">
+        <div className="text-center mb-10 no-print">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-slate-300 text-xs sm:text-sm font-semibold mb-4 border border-slate-800">
             <Calculator className="w-4 h-4 text-emerald-400" />
             <span>{isUk ? 'B2B Розрахунок специфікацій (до 10 позицій)' : 'Multi-Item B2B Procurement Portal (up to 10 parts)'}</span>
@@ -270,7 +269,7 @@ export default function RFQSection() {
 
         <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-md">
           {status === 'searching' ? (
-            <div className="py-16 text-center space-y-6">
+            <div className="py-16 text-center space-y-6 no-print">
               <div className="relative w-20 h-20 mx-auto">
                 <div className="absolute inset-0 rounded-full border-4 border-slate-700 border-t-white animate-spin" />
                 <div className="absolute inset-0 flex items-center justify-center">
@@ -292,7 +291,7 @@ export default function RFQSection() {
               </div>
             </div>
           ) : status === 'wait_for_rfq' ? (
-            <div className="py-8 text-center space-y-6">
+            <div className="py-8 text-center space-y-6 no-print">
               <div className="w-16 h-16 rounded-full bg-slate-800 border border-slate-700 text-amber-400 flex items-center justify-center mx-auto">
                 <Clock className="w-8 h-8 animate-pulse" />
               </div>
@@ -331,7 +330,6 @@ export default function RFQSection() {
                 </div>
               </div>
 
-              {/* 3 МЕСЕНДЖЕРИ (WHATSAPP, TELEGRAM, VIBER) */}
               <div className="space-y-3 max-w-md mx-auto">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <a
@@ -376,7 +374,7 @@ export default function RFQSection() {
             </div>
           ) : status === 'success' && calculation ? (
             <div className="py-2">
-              <div className="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
+              <div className="flex items-center justify-between pb-6 border-b border-slate-800 mb-6 no-print">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
                     <CheckCircle className="w-6 h-6" />
@@ -403,8 +401,8 @@ export default function RFQSection() {
                 </button>
               </div>
 
-              {/* Бланк інвойсу */}
-              <div className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 mb-8 font-sans">
+              {/* БЛАНК ІНВОЙСУ ДЛЯ ДРУКУ (ОТРИМАВ id="printable-invoice") */}
+              <div id="printable-invoice" className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 mb-8 font-sans">
                 <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-5 gap-4">
                   <div>
                     <div className="text-2xl font-black tracking-tight text-slate-950">
@@ -529,8 +527,8 @@ export default function RFQSection() {
                 </div>
               </div>
 
-              {/* Оплата карткою онлайн */}
-              <div className="max-w-md mx-auto space-y-3 mb-6">
+              {/* КНОПКИ ДІЙ (no-print) */}
+              <div className="max-w-md mx-auto space-y-3 mb-6 no-print">
                 <button
                   type="button"
                   onClick={handleOnlinePayment}
@@ -575,8 +573,8 @@ export default function RFQSection() {
                 </button>
               </div>
 
-              {/* 3 МЕСЕНДЖЕРИ (WHATSAPP, TELEGRAM, VIBER) ПІСЛЯ УСПІШНОГО РОЗРАХУНКУ */}
-              <div className="space-y-4 max-w-md mx-auto text-center border-t border-slate-800 pt-6">
+              {/* МЕСЕНДЖЕРИ (no-print) */}
+              <div className="space-y-4 max-w-md mx-auto text-center border-t border-slate-800 pt-6 no-print">
                 <p className="text-xs text-slate-400">
                   {isUk
                     ? 'Або підтвердіть замовлення через офіс у Ковентрі:'
@@ -625,7 +623,7 @@ export default function RFQSection() {
               </div>
             </div>
           ) : (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="no-print">
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-xs uppercase font-bold tracking-wider text-slate-400">

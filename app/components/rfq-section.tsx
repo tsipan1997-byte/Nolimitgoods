@@ -165,13 +165,21 @@ export default function RFQSection() {
         invoiceDate: today,
       });
       setStatus('success');
+
+      // ВІДПРАВКА КОНВЕРСІЇ В GOOGLE ADS
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', 'conversion', {
+          send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C',
+          value: Number(data.total),
+          currency: 'GBP',
+        });
+      }
     } catch (err) {
       console.error('Calculation error:', err);
       setStatus('wait_for_rfq');
     }
   };
 
-  // ФУНКЦІЯ ІЗОЛЬОВАНОГО ДРУКУ — ВІДКРИВАЄ ЧИСТИЙ АРКУШ БЕЗ САЙТУ
   const handlePrintIsolated = () => {
     const invoiceEl = document.getElementById('printable-invoice');
     if (!invoiceEl) {
@@ -331,7 +339,7 @@ export default function RFQSection() {
           <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             {t?.rfq?.title || (isUk ? 'Розрахунок вартості замовлення' : 'Instant Order Calculation')}
           </h2>
-          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-base sm:lg text-slate-400 max-w-2xl mx-auto">
             {isUk
               ? 'Додавайте до 10 артикулів в одну заявку. Агент сканує склади в реальному часі та об’єднує доставку Nova Post в один збірний вантаж.'
               : 'Add up to 10 OEM parts to a single proforma invoice with consolidated UK airfreight.'}

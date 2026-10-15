@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
+import RFQSection from './components/rfq-section';
 import BrandsCatalog from './components/BrandsCatalog';
 import DeliveriesSection from './components/deliveries-section';
 import ContactSection from './components/contact-section';
@@ -10,7 +11,7 @@ import Footer from './components/footer';
 import FloatingContact from './components/floating-contact';
 
 export default function HomePage() {
-  // Функція для автоматичного підхоплення артикула з каталогу в інпут калькулятора
+  // Функція для автоматичної підстановки артикула з каталогу в інпут калькулятора
   const handleSelectOem = (oem: string, brand: string) => {
     const calcSection = document.getElementById('parts-calculator');
     const input = document.querySelector('input[type="text"]') as HTMLInputElement | null;
@@ -28,31 +29,34 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-red-500 selection:text-white">
-      {/* 1. Верхня фіксована навігація з B2B-порталом та логотипом */}
+      {/* 1. Хедер сайту */}
       <Header />
 
-      {/* 2. Hero-секція з відеофоном та розрахунком */}
+      {/* 2. Головний банер (Hero) */}
+      <HeroSection />
+
+      {/* 3. БЛОК КАЛЬКУЛЯТОРА ТА ПРОРАХУНКУ ВАРТОСТІ */}
       <div id="parts-calculator">
-        <HeroSection />
+        <RFQSection />
       </div>
 
-      {/* 3. ЄДИНИЙ світлий преміальний каталог запчастин (8 карток у 2 ряди + робочі підгрупи) */}
+      {/* 4. Світлий каталог вузлів (8 карток + підгрупи) */}
       <BrandsCatalog onSelectOem={handleSelectOem} />
 
-      {/* 4. Відео відвантажень запчастин із хабу у Ковентрі */}
+      {/* 5. Відео відвантажень */}
       <div id="deliveries">
         <DeliveriesSection />
       </div>
 
-      {/* 5. Юридичні реквізити NoLimitGoods Ltd та контакти */}
+      {/* 6. Юридичні реквізити та контакти */}
       <div id="contacts">
         <ContactSection />
       </div>
 
-      {/* 6. Футер сайту */}
+      {/* 7. Футер */}
       <Footer />
 
-      {/* 7. Плаваюча кнопка зв'язку (WhatsApp / дзвінок) */}
+      {/* 8. Плаваюча кнопка зв'язку */}
       <FloatingContact />
     </div>
   );

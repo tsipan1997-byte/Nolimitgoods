@@ -29,39 +29,39 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-slate-800 selection:text-white">
-      {/* 1. Верхнє меню навігації */}
+      {/* 1. Меню навігації */}
       <Header />
 
-      {/* 2. Головний банер (Hero) */}
+      {/* 2. Головний екран */}
       <HeroSection />
 
-      {/* 2.1. Траст-баннер із правдивими цифрами */}
+      {/* 3. Блок довіри з чесними цифрами (Понад 200 замовлень) */}
       <TrustBanner />
 
-      {/* 3. Блок калькулятора та специфікацій */}
+      {/* 4. Блок калькулятора та підбору */}
       <div id="parts-calculator">
         <RFQSection />
       </div>
 
-      {/* 4. Світлий каталог вузлів OEM з реальними фото */}
+      {/* 5. Каталог вузлів та брендів */}
       <div id="catalog">
         <BrandsCatalog onSelectOem={handleSelectOem} />
       </div>
 
-      {/* 5. Відео відвантажень з хабу */}
+      {/* 6. Відео відвантажень */}
       <div id="deliveries">
         <DeliveriesSection />
       </div>
 
-      {/* 6. Юридичні реквізити та контакти NoLimitGoods Ltd */}
+      {/* 7. Офіційні реквізити та контакти NoLimitGoods Ltd */}
       <div id="contacts">
         <ContactSection />
       </div>
 
-      {/* 7. Підвал сайту */}
+      {/* 8. Підвал сайту */}
       <Footer />
 
-      {/* 8. Плаваюча кнопка швидкого зв'язку */}
+      {/* 9. Швидкий зв'язок */}
       <FloatingContact />
     </div>
   );

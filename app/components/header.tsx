@@ -16,9 +16,9 @@ export default function Header() {
     setLanguage(isUk ? 'en' : 'uk');
   };
 
-  // Чітке меню без дублювання
+  // Чітке меню з точним якорем #catalog для вибору деталей
   const navLinks = [
-    { href: '#oem-brands', labelUk: 'Каталог вузлів OEM', labelEn: 'OEM Assemblies' },
+    { href: '#catalog', labelUk: 'Каталог вузлів OEM', labelEn: 'OEM Assemblies' },
     { href: '#parts-calculator', labelUk: 'Розрахунок вартості', labelEn: 'Quote Calculator' },
     { href: '#deliveries', labelUk: 'Відео відвантажень', labelEn: 'Live Dispatch' },
     { href: '#contacts', labelUk: 'Юридичні реквізити', labelEn: 'Legal & Contacts' },
@@ -39,35 +39,28 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 gap-4">
             
-            {/* БЛОК ЛОГОТИПУ НА БІЛОМУ ФОНІ */}
+            {/* БЛОК ЛОГОТИПУ НА БІЛОМУ ФОНІ (ЯК У ФУТЕРІ) */}
             <Link href="/" className="flex items-center gap-3 group shrink-0 mr-4">
               <div className="flex items-center justify-center bg-white px-3.5 py-1.5 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.15)] border border-slate-200 transition-all duration-300 group-hover:scale-105">
-                <img 
-                  src="/logo.png" 
-                  alt="NoLimitGoods" 
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                    const fallback = e.currentTarget.nextElementSibling;
-                    if (fallback) fallback.classList.remove('hidden');
-                  }}
-                  className="h-8 sm:h-9 w-auto object-contain"
-                />
-                <span className="hidden text-slate-950 font-black text-xl tracking-tighter flex items-center gap-0.5">
-                  <span className="text-red-600">n</span>lg
+                <span className="bg-red-600 text-white font-black text-xs px-2 py-0.5 rounded-md mr-1.5">
+                  NLG
+                </span>
+                <span className="text-slate-950 font-black text-lg tracking-tight">
+                  NoLimitGoods
                 </span>
               </div>
               
               <div className="hidden sm:flex flex-col">
                 <span className="text-base font-black tracking-tight text-white group-hover:text-slate-300 transition-colors whitespace-nowrap">
-                  NoLimitGoods
+                  NoLimitGoods Ltd
                 </span>
-                <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase -mt-0.5 whitespace-nowrap">
+                <span className="text-[10px] text-red-500 font-bold tracking-wider uppercase -mt-0.5 whitespace-nowrap">
                   Coventry, UK Hub
                 </span>
               </div>
             </Link>
 
-            {/* НАВІГАЦІЯ БЕЗ ЗАЙВИХ КНОПОК */}
+            {/* НАВІГАЦІЯ ДЕСКТОП */}
             <nav className="hidden lg:flex items-center gap-6 xl:gap-8 ml-4 flex-1">
               {navLinks.map((link) => (
                 <a
@@ -100,7 +93,6 @@ export default function Header() {
                 <span>{isUk ? '🇺🇦 UA' : '🇬🇧 EN'}</span>
               </button>
 
-              {/* Стриманий монохромний стиль кнопки розрахунку */}
               <button
                 type="button"
                 onClick={scrollToCalculator}
@@ -140,7 +132,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* ВИПАДНИЙ БЛОК НА ТЕЛЕФОНІ */}
+        {/* ВИПАДНИЙ СПИСОК НА МОБІЛЬНОМУ */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-slate-950 border-b border-slate-800 px-4 pt-3 pb-6 space-y-3">
             <nav className="flex flex-col space-y-2">

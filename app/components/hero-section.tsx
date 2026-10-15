@@ -19,8 +19,10 @@ export default function HeroSection() {
   };
 
   const scrollToCatalog = () => {
-    const catalogSection = document.querySelector('section:has(h2)');
-    catalogSection?.scrollIntoView({ behavior: 'smooth' });
+    const catalogSection = document.getElementById('catalog');
+    if (catalogSection) {
+      catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (

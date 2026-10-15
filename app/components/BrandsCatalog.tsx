@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, CheckCircle2, MapPin, Layers, Gauge, Cpu, Wrench, Filter } from 'lucide-react';
+import { Sparkles, ArrowRight, CheckCircle2, MapPin, Layers, Gauge, Cpu, Wrench, Filter, Cog, Disc, Zap } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
 
@@ -14,22 +14,23 @@ interface PartShowcaseItem {
   originUk: string;
   originEn: string;
   category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration';
-  image: string;
+  brandColor: string;
+  accentBg: string;
   popularOems: string[];
 }
 
-// 1. Головна вітрина (6 топових вузлів)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
     nameUk: 'Головний аксіально-поршневий насос JCB',
     nameEn: 'JCB Parker Main Hydraulic Pump',
     oem: '332/Y3163',
-    brand: 'JCB Genuine',
+    brand: 'JCB GENUINE',
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-amber-500',
+    accentBg: 'from-amber-500/10 to-amber-500/5',
     popularOems: ['332/Y3163', '20/925327', '320/04186', '04/600786'],
   },
   {
@@ -37,11 +38,12 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     nameUk: 'Тяжкий передній міст у зборі Carraro',
     nameEn: 'Carraro Heavy Duty Axle Assembly',
     oem: '149298',
-    brand: 'Carraro Drivetech',
+    brand: 'CARRARO DRIVETECH',
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-red-500',
+    accentBg: 'from-red-500/10 to-red-500/5',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -49,11 +51,12 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     nameUk: 'Регульований гідронасос Bosch Rexroth A10VSO',
     nameEn: 'Bosch Rexroth Variable Pump A10VSO',
     oem: 'A10VSO71DFR1',
-    brand: 'Bosch Rexroth',
+    brand: 'BOSCH REXROTH',
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-blue-500',
+    accentBg: 'from-blue-500/10 to-blue-500/5',
     popularOems: ['A10VSO71DFR1', 'A10VSO45DFR1', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
   {
@@ -61,11 +64,12 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     nameUk: 'Паливні форсунки Perkins Common Rail Delphi',
     nameEn: 'Perkins Delphi Common Rail Injectors',
     oem: '2645A747',
-    brand: 'Perkins Engines',
+    brand: 'PERKINS ENGINES',
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-emerald-500',
+    accentBg: 'from-emerald-500/10 to-emerald-500/5',
     popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
   {
@@ -73,11 +77,12 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     nameUk: 'Турбокомпресор Caterpillar Garrett C7/C9',
     nameEn: 'Caterpillar Garrett Turbocharger C7/C9',
     oem: '10R-7675',
-    brand: 'Caterpillar (CAT)',
+    brand: 'CATERPILLAR (CAT)',
     originUk: 'Європейський хаб поставок',
     originEn: 'European Hub',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-yellow-600',
+    accentBg: 'from-yellow-500/10 to-yellow-500/5',
     popularOems: ['10R-7675', '326-1644', '224-3238', '1R-0716'],
   },
   {
@@ -85,28 +90,29 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     nameUk: 'Промислові сепаратори палива Donaldson',
     nameEn: 'Donaldson Fuel Filtration System',
     oem: 'P553004',
-    brand: 'Donaldson Filtration',
+    brand: 'DONALDSON FILTRATION',
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-sky-500',
+    accentBg: 'from-sky-500/10 to-sky-500/5',
     popularOems: ['P553004', 'P535114', 'P550388', 'DBA5024'],
   },
 ];
 
-// 2. Підгрупи (рівно по 4 представники на кожну сферу)
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
-  // ФІЛЬТРАЦІЯ (4 бренди)
+  // ФІЛЬТРАЦІЯ
   {
     id: 'filt-donaldson',
     nameUk: 'Donaldson: Повітряні блоки PowerCore & Spin-On',
     nameEn: 'Donaldson: PowerCore & Spin-On Filtration',
     oem: 'P535114',
-    brand: 'Donaldson Filtration',
+    brand: 'DONALDSON FILTRATION',
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-sky-500',
+    accentBg: 'from-sky-500/10 to-sky-500/5',
     popularOems: ['P553004', 'P535114', 'P550388', 'P550425'],
   },
   {
@@ -114,11 +120,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Fleetguard: NanoNet фільтри високого тиску Cummins',
     nameEn: 'Fleetguard Cummins: NanoNet Stage V Filtration',
     oem: 'FS19732',
-    brand: 'Fleetguard Cummins',
+    brand: 'FLEETGUARD CUMMINS',
     originUk: 'Склади UK та Європи',
     originEn: 'UK & European Hubs',
     category: 'filtration',
-    image: 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-rose-500',
+    accentBg: 'from-rose-500/10 to-rose-500/5',
     popularOems: ['FS19732', 'FK11008NN', 'LF16015', 'AF25627NF'],
   },
   {
@@ -126,11 +133,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Mann-Filter: Промислова гідравліка та масляна очистка',
     nameEn: 'Mann-Filter: Industrial Lube & Hydraulic Media',
     oem: 'WD13145',
-    brand: 'Mann-Filter Hummel',
+    brand: 'MANN-FILTER HUMMEL',
     originUk: 'Людвігсбург, Німеччина',
     originEn: 'Ludwigsburg, Germany',
     category: 'filtration',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-emerald-600',
+    accentBg: 'from-emerald-500/10 to-emerald-500/5',
     popularOems: ['WD13145', 'WK950/21', 'HD1047', 'C25710'],
   },
   {
@@ -138,25 +146,27 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Pall Corporation: Надвисока прецизійна фільтрація',
     nameEn: 'Pall Corporation: Ultra-Precision Core Filters',
     oem: 'HC9600FKS16H',
-    brand: 'Pall Industrial',
+    brand: 'PALL INDUSTRIAL',
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'filtration',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-indigo-500',
+    accentBg: 'from-indigo-500/10 to-indigo-500/5',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
 
-  // ДВИГУНИ (4 бренди)
+  // ДВИГУНИ
   {
     id: 'eng-perkins',
     nameUk: 'Perkins Engines: Поршнекомплекти, форсунки, помпи',
     nameEn: 'Perkins: Pistons, Delphi Injectors & Pumps',
     oem: 'U5MK8267',
-    brand: 'Perkins UK',
+    brand: 'PERKINS ENGINES',
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-emerald-500',
+    accentBg: 'from-emerald-500/10 to-emerald-500/5',
     popularOems: ['2645A747', 'U5MK8267', 'T413847', 'U5PR0062'],
   },
   {
@@ -164,11 +174,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Caterpillar (CAT): Плунжерні ТНВД, турбіни та ГРМ',
     nameEn: 'Caterpillar: High-Pressure Fuel Pumps & Turbos',
     oem: '224-3238',
-    brand: 'CAT Heavy Power',
+    brand: 'CATERPILLAR (CAT)',
     originUk: 'Дистрибуція ЄС та UK',
     originEn: 'EU & UK Distribution',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-yellow-600',
+    accentBg: 'from-yellow-500/10 to-yellow-500/5',
     popularOems: ['10R-7675', '326-1644', '224-3238', '387-9427'],
   },
   {
@@ -176,11 +187,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Cummins: Паливні модулі ISB/QSB, датчики тиску',
     nameEn: 'Cummins: ISB/QSB Fuel Injection & Electronics',
     oem: '5263262',
-    brand: 'Cummins Genuine',
+    brand: 'CUMMINS POWER',
     originUk: 'Дарлінгтон, Велика Британія',
     originEn: 'Darlington, UK',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-red-600',
+    accentBg: 'from-red-500/10 to-red-500/5',
     popularOems: ['5263262', '4937766', '4089744', '2872277'],
   },
   {
@@ -188,25 +200,27 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Deutz AG: Гільзо-поршнева група 2011/2012/1013',
     nameEn: 'Deutz AG: Engine Liner Kits & Cylinder Heads',
     oem: '04284142',
-    brand: 'Deutz AG',
+    brand: 'DEUTZ AG',
     originUk: 'Кельн, Німеччина',
     originEn: 'Cologne, Germany',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-blue-600',
+    accentBg: 'from-blue-500/10 to-blue-500/5',
     popularOems: ['04284142', '04287047', '02937441', '04207588'],
   },
 
-  // ГІДРАВЛІКА (4 бренди)
+  // ГІДРАВЛІКА
   {
     id: 'hyd-rexroth',
     nameUk: 'Bosch Rexroth: Головні поршневі насоси та клапани',
     nameEn: 'Bosch Rexroth: Axial Piston Pumps & Valves',
     oem: 'A10VSO71DFR1',
-    brand: 'Bosch Rexroth',
+    brand: 'BOSCH REXROTH',
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-blue-500',
+    accentBg: 'from-blue-500/10 to-blue-500/5',
     popularOems: ['A10VSO71DFR1', 'A10VSO45DFR1', 'A4VG90EP4D1', '4WE6D6X/EG24'],
   },
   {
@@ -214,11 +228,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Danfoss: Рульові орбітроли OSPB та секції PVG 32',
     nameEn: 'Danfoss: Steering OSPB Units & Proportional PVG',
     oem: 'OSPB 160 ON',
-    brand: 'Danfoss Mobile',
+    brand: 'DANFOSS MOBILE',
     originUk: 'Норборг, Данія',
     originEn: 'Nordborg, Denmark',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-red-500',
+    accentBg: 'from-red-500/10 to-red-500/5',
     popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
   },
   {
@@ -226,11 +241,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Parker Hannifin: Шестеренні та тандемні гідронасоси',
     nameEn: 'Parker Hannifin: Tandem Gear Pumps & Motors',
     oem: 'PGP511A0190',
-    brand: 'Parker UK / US',
+    brand: 'PARKER HANNIFIN',
     originUk: 'Ворік, Велика Британія',
     originEn: 'Warwick, UK',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-amber-500',
+    accentBg: 'from-amber-500/10 to-amber-500/5',
     popularOems: ['PGP511A0190', 'F12-060-MF-IV-D', 'PV046R1K1T1', 'D1VW001CNJW'],
   },
   {
@@ -238,25 +254,27 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Eaton Vickers: Лопатеві насоси та гідророзподільники',
     nameEn: 'Eaton Vickers: Vane Pumps & Heavy Motors',
     oem: '25V21A1A22R',
-    brand: 'Eaton Vickers',
-    originUk: 'Хавенберг, Велика Британія',
+    brand: 'EATON VICKERS',
+    originUk: 'Хавант, Велика Британія',
     originEn: 'Havant, UK',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-teal-600',
+    accentBg: 'from-teal-500/10 to-teal-500/5',
     popularOems: ['25V21A1A22R', '35V38A1A22R', 'DG4V-3-2A-M-U-H7-60', 'PVH098R'],
   },
 
-  // МОСТИ ТА ХОДОВА (4 бренди)
+  // МОСТИ ТА ХОДОВА
   {
     id: 'und-carraro',
     nameUk: 'Carraro Drivetech: Головні пари, сателіти, шворні',
     nameEn: 'Carraro: Crown Wheel Pinions & Planetaries',
     oem: '149298',
-    brand: 'Carraro Drivetech',
+    brand: 'CARRARO DRIVETECH',
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-red-500',
+    accentBg: 'from-red-500/10 to-red-500/5',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -264,11 +282,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'ZF Friedrichshafen: Редуктори мостів та фрикціони КПП',
     nameEn: 'ZF: Axle Planetary Reducers & Clutch Packs',
     oem: '0501.216.002',
-    brand: 'ZF Friedrichshafen',
+    brand: 'ZF FRIEDRICHSHAFEN',
     originUk: 'Фрідріхсгафен, Німеччина',
     originEn: 'Friedrichshafen, Germany',
     category: 'undercarriage',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-blue-500',
+    accentBg: 'from-blue-500/10 to-blue-500/5',
     popularOems: ['0501.216.002', '0501.322.845', '4143.040.001', '0734.319.418'],
   },
   {
@@ -276,11 +295,12 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'Dana Spicer: Карданні хрестовини, диференціали',
     nameEn: 'Dana Spicer: Cardan Joints & Limited Slip Diffs',
     oem: '213.12.012.01',
-    brand: 'Dana Spicer',
+    brand: 'DANA SPICER',
     originUk: 'Монселіче, Італія',
     originEn: 'Monselice, Italy',
     category: 'undercarriage',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-orange-500',
+    accentBg: 'from-orange-500/10 to-orange-500/5',
     popularOems: ['213.12.012.01', '012.052.02', '212.09.045', '311.08.019'],
   },
   {
@@ -288,14 +308,30 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     nameUk: 'JCB Heavy Undercarriage: Поворотні кулаки, редуктори 3CX',
     nameEn: 'JCB Undercarriage: Steering Knuckles & 3CX Planetary',
     oem: '458/20403',
-    brand: 'JCB Parts UK',
+    brand: 'JCB PARTS UK',
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=700&q=80',
+    brandColor: 'text-amber-500',
+    accentBg: 'from-amber-500/10 to-amber-500/5',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
+
+function CategoryIcon({ category, className }: { category: string; className?: string }) {
+  switch (category) {
+    case 'hydraulics':
+      return <Gauge className={className} />;
+    case 'undercarriage':
+      return <Disc className={className} />;
+    case 'engines':
+      return <Zap className={className} />;
+    case 'filtration':
+      return <Filter className={className} />;
+    default:
+      return <Cog className={className} />;
+  }
+}
 
 export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: string, brandName: string) => void }) {
   const { language } = useLanguage();
@@ -318,7 +354,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     <section className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200">
       <div className="max-w-7xl mx-auto space-y-12">
         
-        {/* Шапка шоуруму */}
+        {/* Шапка */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
@@ -334,7 +370,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </p>
         </div>
 
-        {/* Навігація по категоріях та підгрупах */}
+        {/* Навігація */}
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           {tabs.map(tab => {
             const Icon = tab.icon;
@@ -356,7 +392,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* Біла вітрина карток у стилі Apple */}
+        {/* Світла сітка карток */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
             {displayedList.map((item) => (
@@ -368,21 +404,21 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
               >
-                {/* Фотографія агрегата */}
-                <div className="relative w-full h-48 bg-slate-100 p-2 flex items-center justify-center overflow-hidden border-b border-slate-100">
-                  <img
-                    src={item.image}
-                    alt={item.nameEn}
-                    className="w-full h-full object-cover object-center rounded-xl group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=700&q=80';
-                    }}
-                  />
+                {/* Інженерний візуальний блок вузла (SVG Blueprint замість битих фото) */}
+                <div className={`relative w-full h-44 bg-gradient-to-br ${item.accentBg} p-4 flex flex-col items-center justify-center border-b border-slate-100`}>
+                  <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <CategoryIcon category={item.category} className={`w-8 h-8 ${item.brandColor}`} />
+                  </div>
+                  
+                  <span className="mt-2.5 font-mono text-[11px] font-bold text-slate-500 bg-white/80 px-2 py-0.5 rounded-md border border-slate-200/60">
+                    OEM: {item.oem}
+                  </span>
+
                   <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
                     <CheckCircle2 className="w-3 h-3 text-emerald-500" />
                     <span>{isUk ? 'В наявності UK' : 'In Stock UK'}</span>
                   </div>
-                  <div className="absolute top-2.5 right-2.5 bg-slate-900/90 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
+                  <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
                     0% VAT
                   </div>
                 </div>
@@ -395,7 +431,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                       <span className="truncate">{isUk ? item.originUk : item.originEn}</span>
                     </div>
 
-                    <div className="text-[11px] font-bold text-red-600 uppercase tracking-wider mb-0.5">
+                    <div className={`text-[11px] font-bold ${item.brandColor} uppercase tracking-wider mb-0.5`}>
                       {item.brand}
                     </div>
 

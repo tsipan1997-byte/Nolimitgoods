@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, CheckCircle2, ShieldCheck, MapPin } from 'lucide-react';
+import { Sparkles, ArrowRight, CheckCircle2, MapPin } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
 
@@ -28,7 +28,8 @@ const SHOWCASE_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=600&q=80',
+    // Студійне фото гідравлічного шестеренного насоса
+    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=700&q=80',
     popularOems: ['332/Y3163', '20/925327', '320/04186'],
   },
   {
@@ -40,7 +41,8 @@ const SHOWCASE_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=600&q=80',
+    // Студійний важкий міст / трансмісійний вузол
+    image: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=700&q=80',
     popularOems: ['149298', '047702', '125196'],
   },
   {
@@ -52,7 +54,8 @@ const SHOWCASE_PARTS: PartShowcaseItem[] = [
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    image: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80',
+    // Високоточний аксіально-поршневий промисловий насос
+    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=700&q=80',
     popularOems: ['A10VSO71DFR1', 'A10VSO45DFR1', 'A4VG90EP4D1'],
   },
   {
@@ -64,7 +67,8 @@ const SHOWCASE_PARTS: PartShowcaseItem[] = [
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=600&q=80',
+    // Дизельний блок / високоточна форсунка
+    image: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=700&q=80',
     popularOems: ['2645A747', 'U5MK8267', 'T413847'],
   },
   {
@@ -76,7 +80,8 @@ const SHOWCASE_PARTS: PartShowcaseItem[] = [
     originUk: 'Європейський дистрибʼютор',
     originEn: 'European Hub',
     category: 'engines',
-    image: 'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=600&q=80',
+    // Турбіна / металевий компресор
+    image: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=700&q=80',
     popularOems: ['10R-7675', '326-1644', '224-3238'],
   },
   {
@@ -88,7 +93,8 @@ const SHOWCASE_PARTS: PartShowcaseItem[] = [
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    image: 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=600&q=80',
+    // Промисловий фільтр / сепаратор
+    image: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=700&q=80',
     popularOems: ['P553004', 'P535114', 'P550388'],
   },
 ];
@@ -145,7 +151,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           ))}
         </div>
 
-        {/* Світла сітка карток із фотографіями (Стиль Apple-Showroom) */}
+        {/* Світла сітка карток із фото деталей */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <AnimatePresence mode="popLayout">
             {filteredParts.map((item) => (
@@ -155,14 +161,18 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
               >
-                {/* Фотографія на білому фоні */}
-                <div className="relative w-full h-52 bg-slate-100/60 p-4 flex items-center justify-center overflow-hidden border-b border-slate-100">
+                {/* Фотографія агрегата */}
+                <div className="relative w-full h-56 bg-slate-100 p-2 flex items-center justify-center overflow-hidden border-b border-slate-100">
                   <img
                     src={item.image}
                     alt={item.nameEn}
                     className="w-full h-full object-cover object-center rounded-xl group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      // Якщо фото не завантажилось, підставляємо надійний технічний бекап
+                      (e.currentTarget as HTMLImageElement).src = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=700&q=80';
+                    }}
                   />
                   <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-2.5 py-1 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[11px] font-bold text-slate-800">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
@@ -173,14 +183,14 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   </div>
                 </div>
 
-                {/* Інформаційна частина картки */}
+                {/* Інформація */}
                 <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
                   <div>
-                    <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-1">
+                    <div className="flex items-center gap-1.5 text-slate-500 text-xs mb-1.5">
                       <MapPin className="w-3.5 h-3.5 text-slate-400" />
                       <span>{isUk ? item.originUk : item.originEn}</span>
                       <span>•</span>
-                      <strong className="text-slate-700">{item.brand}</strong>
+                      <strong className="text-slate-800">{item.brand}</strong>
                     </div>
 
                     <h3 className="font-bold text-slate-900 text-base leading-snug group-hover:text-red-600 transition-colors">
@@ -188,7 +198,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </h3>
                   </div>
 
-                  {/* Ходові OEM-артикули у вигляді клікабельних таблеток */}
+                  {/* Кнопки ходових номерів */}
                   <div className="space-y-1.5 pt-2 border-t border-slate-100">
                     <span className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">
                       {isUk ? 'Ходові коди вузла:' : 'Popular OEM codes:'}
@@ -207,10 +217,10 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </div>
                   </div>
 
-                  {/* Кнопка виклику ціни */}
+                  {/* Кнопка швидкого підбору */}
                   <button
                     onClick={() => onSelectOem(item.oem, item.brand)}
-                    className="w-full mt-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-red-600 text-white font-bold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+                    className="w-full mt-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-red-600 text-white font-bold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-sm active:scale-98"
                   >
                     <span>{isUk ? 'Розрахувати цей вузол' : 'Get Quote for Part'}</span>
                     <ArrowRight className="w-4 h-4" />

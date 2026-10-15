@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Sparkles, ArrowRight, CheckCircle2, MapPin, Layers, Gauge, Cpu, Wrench, Filter } from 'lucide-react';
+import { ShieldCheck, ArrowRight, CheckCircle2, MapPin, Layers, Gauge, Cpu, Wrench, Filter } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
 
@@ -14,7 +14,6 @@ interface PartShowcaseItem {
   originUk: string;
   originEn: string;
   category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration';
-  brandColor: string;
   image: string;
   popularOems: string[];
 }
@@ -30,7 +29,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    brandColor: 'text-amber-500',
     image: '/parts/JCB-PArker.jpg',
     popularOems: ['332/Y3163', '20/925327', '320/04186', '04/600786'],
   },
@@ -43,7 +41,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    brandColor: 'text-red-500',
     image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
@@ -56,7 +53,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    brandColor: 'text-blue-500',
     image: '/parts/Rexroth.jpg',
     popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
@@ -69,7 +65,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    brandColor: 'text-emerald-500',
     image: '/parts/Perkins.jpg',
     popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
@@ -82,7 +77,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Distribution / UK Hub',
     category: 'engines',
-    brandColor: 'text-yellow-600',
     image: '/parts/CAT.jpeg',
     popularOems: ['10R-7675', '326-1644', '224-3238', '1R-0716'],
   },
@@ -95,7 +89,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    brandColor: 'text-sky-500',
     image: '/parts/Donaldson.jpeg',
     popularOems: ['P558000', 'P553004', 'P535114', 'DBA5024'],
   },
@@ -108,7 +101,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Норборг, Данія',
     originEn: 'Nordborg, Denmark',
     category: 'hydraulics',
-    brandColor: 'text-rose-600',
     image: '/parts/Danfoss.jpg',
     popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
   },
@@ -121,13 +113,12 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Склади UK та Європи',
     originEn: 'UK & European Stocks',
     category: 'filtration',
-    brandColor: 'text-red-500',
     image: '/parts/Fleetguard.jpeg',
     popularOems: ['FS1280', '3930942', 'FS19732', 'LF16015'],
   },
 ];
 
-// 2. Підгрупи брендів (по 4 представники з точними назвами файлів)
+// 2. Підгрупи брендів (по 4 представники з вашими фото)
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
   // ФІЛЬТРАЦІЯ
   {
@@ -139,7 +130,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    brandColor: 'text-sky-500',
     image: '/parts/Donaldson.jpeg',
     popularOems: ['P558000', 'P553004', 'P535114', 'P550425'],
   },
@@ -152,7 +142,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Склади UK та Європи',
     originEn: 'UK & European Hubs',
     category: 'filtration',
-    brandColor: 'text-red-500',
     image: '/parts/Fleetguard.jpeg',
     popularOems: ['FS1280', '3930942', 'FS19732', 'LF16015'],
   },
@@ -165,7 +154,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Людвігсбург, Німеччина',
     originEn: 'Ludwigsburg, Germany',
     category: 'filtration',
-    brandColor: 'text-emerald-600',
     image: '/parts/Mann-Filter.jpeg',
     popularOems: ['WD13145', 'WK950/21', 'HD1047', 'C25710'],
   },
@@ -178,7 +166,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'filtration',
-    brandColor: 'text-indigo-500',
     image: '/parts/Pall.jpeg',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
@@ -193,7 +180,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    brandColor: 'text-emerald-500',
     image: '/parts/Perkins.jpg',
     popularOems: ['2645A747', 'U5MK8267', 'T413847', 'U5PR0062'],
   },
@@ -206,7 +192,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС та UK',
     originEn: 'EU & UK Distribution',
     category: 'engines',
-    brandColor: 'text-yellow-600',
     image: '/parts/CAT.jpeg',
     popularOems: ['10R-7675', '326-1644', '224-3238', '387-9427'],
   },
@@ -219,7 +204,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дарлінгтон, Велика Британія',
     originEn: 'Darlington, UK',
     category: 'engines',
-    brandColor: 'text-red-600',
     image: '/parts/Cummins.jpeg',
     popularOems: ['5263262', '4937766', '4089744', '2872277'],
   },
@@ -232,7 +216,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Кельн, Німеччина',
     originEn: 'Cologne, Germany',
     category: 'engines',
-    brandColor: 'text-blue-600',
     image: '/parts/Deutz.jpeg',
     popularOems: ['04284142', '04287047', '02937441', '04207588'],
   },
@@ -247,7 +230,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    brandColor: 'text-amber-500',
     image: '/parts/JCB-PArker.jpg',
     popularOems: ['332/Y3163', '20/925327', '320/04186', '04/600786'],
   },
@@ -260,7 +242,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    brandColor: 'text-blue-500',
     image: '/parts/Rexroth.jpg',
     popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', '4WE6D6X'],
   },
@@ -273,7 +254,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Норборг, Данія',
     originEn: 'Nordborg, Denmark',
     category: 'hydraulics',
-    brandColor: 'text-rose-600',
     image: '/parts/Danfoss.jpg',
     popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
   },
@@ -286,7 +266,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Хавант, Велика Британія',
     originEn: 'Havant, UK',
     category: 'hydraulics',
-    brandColor: 'text-teal-600',
     image: '/parts/Eaton%20Vickers.jpeg',
     popularOems: ['25V21A1A22R', '35V38A1A22R', 'DG4V-3-2A', 'PVH098R'],
   },
@@ -301,7 +280,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    brandColor: 'text-red-500',
     image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
@@ -314,7 +292,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Фрідріхсгафен, Німеччина',
     originEn: 'Friedrichshafen, Germany',
     category: 'undercarriage',
-    brandColor: 'text-blue-500',
     image: '/parts/ZF.jpeg',
     popularOems: ['0501.216.002', '0501.322.845', '4143.040.001', '0734.319.418'],
   },
@@ -327,7 +304,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Монселіче, Італія',
     originEn: 'Monselice, Italy',
     category: 'undercarriage',
-    brandColor: 'text-orange-500',
     image: '/parts/Dana%20Spicer.jpeg',
     popularOems: ['213.12.012.01', '012.052.02', '212.09.045', '311.08.019'],
   },
@@ -340,7 +316,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    brandColor: 'text-amber-500',
     image: '/parts/JCB-PArker.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
@@ -352,18 +327,17 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const [activeTab, setActiveTab] = useState<string>('all');
 
   const tabs = [
-    { id: 'all', labelUk: 'Всі вузли (Топ-8)', labelEn: 'Featured (Top 8)', icon: Layers },
-    { id: 'filtration', labelUk: 'Фільтрація (4 лідери)', labelEn: 'Filtration (4 Hubs)', icon: Filter },
-    { id: 'engines', labelUk: 'Двигуни та CR (4 заводи)', labelEn: 'Engines & CR (4 Hubs)', icon: Cpu },
-    { id: 'hydraulics', labelUk: 'Гідравліка (4 бренди)', labelEn: 'Hydraulics (4 Hubs)', icon: Gauge },
-    { id: 'undercarriage', labelUk: 'Мости та КПП (4 бренди)', labelEn: 'Axles & Gears (4 Hubs)', icon: Wrench },
+    { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
+    { id: 'filtration', labelUk: 'Фільтрація', labelEn: 'Filtration', icon: Filter },
+    { id: 'engines', labelUk: 'Двигуни та CR', labelEn: 'Engines & CR', icon: Cpu },
+    { id: 'hydraulics', labelUk: 'Гідравліка', labelEn: 'Hydraulics', icon: Gauge },
+    { id: 'undercarriage', labelUk: 'Мости та редуктори', labelEn: 'Axles & Transmission', icon: Wrench },
   ];
 
   const displayedList = activeTab === 'all'
     ? SHOWCASE_FEATURED
     : SUBGROUP_PARTS.filter(p => p.category === activeTab);
 
-  // Хендлер шляхів: шукає як у /parts, так і у /app/public/parts
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, originalPath: string) => {
     const target = e.currentTarget;
     const currentSrc = target.getAttribute('src') || '';
@@ -377,26 +351,26 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
 
   return (
     <section id="oem-brands" className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200 scroll-mt-24">
-      <div className="max-w-7xl mx-auto space-y-12">
+      <div className="max-w-7xl mx-auto space-y-10">
         
-        {/* Шапка каталогу */}
+        {/* Заголовок блоку: чистий B2B стиль без слова «Шоурум» */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-bold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            {isUk ? 'Прямі склади Великобританії та ЄС • 0% VAT' : 'Direct UK & European Stocks • 0% VAT'}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-slate-200 text-xs font-bold uppercase tracking-wider">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+            {isUk ? 'Прямі відвантаження з Великобританії • 0% UK VAT' : 'Direct UK Dispatches • 0% UK VAT'}
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            {isUk ? 'Шоурум оригінальних вузлів та брендів' : 'Showroom & OEM Parts Catalog'}
+            {isUk ? 'Оригінальні вузли та агрегати в наявності' : 'Genuine OEM Assemblies & Components'}
           </h2>
           <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
             {isUk 
-              ? 'Оберіть групу або клікніть на каталожний номер: деталь підставиться у форму калькулятора зі спеціальною ціною експорту.'
-              : 'Select any category or click an OEM code to instantly calculate dispatch costs from Coventry.'}
+              ? 'Оберіть категорію або натисніть на номер деталі для швидкого розрахунку вартості поставки.'
+              : 'Select a category or click an OEM part number for direct supply calculation.'}
           </p>
         </div>
 
-        {/* Таби перемикання категорій */}
-        <div className="flex flex-wrap items-center justify-center gap-2.5">
+        {/* Стримані мінімалістичні таби (темно-графітовий активний стиль) */}
+        <div className="flex flex-wrap items-center justify-center gap-2">
           {tabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -406,18 +380,18 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                   isActive
-                    ? 'bg-red-600 text-white shadow-md shadow-red-500/20 scale-102'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                    ? 'bg-slate-900 text-white shadow-sm'
+                    : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-500'}`} />
+                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                 {isUk ? tab.labelUk : tab.labelEn}
               </button>
             );
           })}
         </div>
 
-        {/* Світла сітка: рівно по 4 картки в ряд */}
+        {/* Сітка 4 колонки (2 ряди по 4) */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
             {displayedList.map((item) => (
@@ -427,7 +401,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
               >
                 {/* Фотографія агрегата */}
                 <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
@@ -438,7 +412,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     onError={(e) => handleImageError(e, item.image)}
                   />
                   <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                     <span>{isUk ? 'В наявності UK' : 'In Stock UK'}</span>
                   </div>
                   <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
@@ -446,19 +420,19 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   </div>
                 </div>
 
-                {/* Інформація */}
+                {/* Інформація про деталь */}
                 <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
-                      <MapPin className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                      <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                       <span className="truncate">{isUk ? item.originUk : item.originEn}</span>
                     </div>
 
-                    <div className={`text-[11px] font-bold ${item.brandColor} uppercase tracking-wider mb-0.5`}>
+                    <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-0.5">
                       {item.brand}
                     </div>
 
-                    <h3 className="font-bold text-slate-900 text-sm leading-snug group-hover:text-red-600 transition-colors line-clamp-2">
+                    <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-slate-950 transition-colors line-clamp-2">
                       {isUk ? item.nameUk : item.nameEn}
                     </h3>
                   </div>
@@ -473,7 +447,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                         <button
                           key={code}
                           onClick={() => onSelectOem(code, item.brand)}
-                          className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-red-50 text-slate-800 hover:text-red-600 font-mono text-[11px] font-bold transition-colors border border-slate-200/80 cursor-pointer"
+                          className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
                           title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
                         >
                           {code}
@@ -482,10 +456,10 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </div>
                   </div>
 
-                  {/* Кнопка розрахунку */}
+                  {/* Кнопка розрахунку: стильний монохром */}
                   <button
                     onClick={() => onSelectOem(item.oem, item.brand)}
-                    className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-red-600 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+                    className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
                   >
                     <span>{isUk ? 'Розрахувати вартість' : 'Get Quote'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />

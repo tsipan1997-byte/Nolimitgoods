@@ -56,3 +56,36 @@ html {
 .animation-delay-600 {
   animation-delay: 600ms;
 }
+@media print {
+  /* Ховаємо весь сайт при виклику друку */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Показуємо виключно контейнер інвойсу та його вміст */
+  #printable-invoice,
+  #printable-invoice * {
+    visibility: visible;
+  }
+
+  /* Розміщуємо інвойс чітко на першому аркуші без зайвих сторінок */
+  #printable-invoice {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    background: white !important;
+    color: black !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Вимикаємо розриви сторінок */
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+  }
+}

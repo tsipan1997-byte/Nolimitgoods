@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Truck, Clock, Award, Star, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Truck, Clock, Award, CheckCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function TrustBanner() {
@@ -11,13 +11,13 @@ export default function TrustBanner() {
   const metrics = [
     {
       icon: ShieldCheck,
-      title: isUk ? '0% UK Export VAT' : '0% UK Export VAT',
-      desc: isUk ? 'Офіційний нульовий експортний статус' : 'Zero-rated UK tax invoicing',
+      title: '0% UK Export VAT',
+      desc: isUk ? 'Офіційний нульовий експортний інвойс' : 'Zero-rated UK tax invoicing',
     },
     {
       icon: Truck,
-      title: isUk ? 'Nova Post Global' : 'Nova Post Global',
-      desc: isUk ? 'Прямі щотижневі рейси Ковентрі ➔ Україна' : 'Weekly UK ➔ UA dispatch corridor',
+      title: 'Nova Post Global',
+      desc: isUk ? 'Міжнародна доставка вантажів в Україну' : 'International freight delivery to Ukraine',
     },
     {
       icon: Award,
@@ -26,8 +26,8 @@ export default function TrustBanner() {
     },
     {
       icon: Clock,
-      title: isUk ? 'Швидкий розрахунок' : 'Instant RFQ Sourcing',
-      desc: isUk ? 'Сканування 50+ хабів за лічені секунди' : 'Scanning 50+ hubs live',
+      title: isUk ? 'Швидкий підбір' : 'Instant RFQ Sourcing',
+      desc: isUk ? 'Пошук по базі OEM-артикулів' : 'OEM part number direct matching',
     },
   ];
 
@@ -57,7 +57,7 @@ export default function TrustBanner() {
           })}
         </div>
 
-        {/* Безпечний блок відгуків клієнтів та гарантій */}
+        {/* Блок перевіреного постачальника */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-6 p-6 rounded-2xl bg-slate-950/70 border border-slate-800/80 shadow-lg">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-2xl bg-red-600/10 border border-red-500/30 flex items-center justify-center shrink-0 text-red-500">
@@ -73,18 +73,18 @@ export default function TrustBanner() {
                 </span>
               </div>
               <p className="text-xs text-slate-400">
-                {isUk ? 'Прямі контракти, митна документація Т1, повне страхування.' : 'Direct contracts, T1 customs, full insurance.'}
+                {isUk ? 'Прямі зовнішньоекономічні контракти, оформлення T1, повний супровід.' : 'Direct trade contracts, T1 customs transit, complete logistics.'}
               </p>
             </div>
           </div>
 
           <div className="text-center md:text-right text-xs text-slate-400 max-w-xl">
-            <p className="italic text-slate-300">
+            <p className="text-slate-300">
               {isUk 
-                ? '«Замовляємо оригінальні фільтри та гідравліку безпосередньо на склад. Доставка через хаб у Ковентрі чітко за графіком, інвойси нульові.»'
-                : '«Direct supply of OEM filters and hydraulic spares. Execution on schedule with zero-rated invoices.»'}
+                ? 'Прямі поставки оригінальних фільтрів, гідравліки та вузлів спецтехніки зі складу у Великобританії.'
+                : 'Direct supply of OEM filters, hydraulic components and machinery parts from UK warehouse.'}
             </p>
-            <span className="block mt-1 text-[11px] font-mono text-slate-500">— Agro & Plant Equipment Logistics, Ukraine</span>
+            <span className="block mt-1 text-[11px] font-mono text-slate-500">NoLimitGoods Limited • Company No: 13146899</span>
           </div>
         </div>
 

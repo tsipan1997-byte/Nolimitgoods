@@ -7,10 +7,13 @@ import { LanguageProvider } from '@/lib/language-context';
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
-  title: 'NoLimitGoods Ltd',
-  description: 'Direct supply of genuine JCB, Donaldson, CAT, Perkins parts from Coventry, UK to Ukraine. T1 transit, 0% UK export VAT, express delivery.',
-  icons: {
-    icon: '/favicon.ico',
+  title: 'NoLimitGoods Ltd | UK Hub & Machinery Parts Export',
+  description: 'Офіційний експортний хаб Великобританії (Ковентрі). Поставки оригінальних фільтрів та вузлів спецтехніки JCB, Perkins, CAT, Donaldson. Прямий нульовий експортний ПДВ (0% UK VAT) та доставка вантажів.',
+  keywords: 'NoLimitGoods, запчастини Великобританія, JCB Україна, експорт UK, 0% VAT, фільтри Donaldson, Perkins запчастини',
+  openGraph: {
+    title: 'NoLimitGoods Ltd | Поставки запчастин з Великобританії',
+    description: 'Прямий експорт оригінальних вузлів та фільтрів з хабу в Ковентрі. 0% UK Export VAT, доставка вантажів.',
+    type: 'website',
   },
 };
 
@@ -19,56 +22,25 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'AutoPartsStore',
-    'name': 'NoLimitGoods Limited',
-    'legalName': 'NoLimitGoods Limited',
-    'description': 'Direct UK exporter of heavy machinery and automotive spare parts to Ukraine.',
-    'telephone': '+447426826595',
-    'email': 'nolimitgoods@gmail.com',
-    'address': {
-      '@type': 'PostalAddress',
-      'streetAddress': '374 Hipsell Highway',
-      'addressLocality': 'Coventry',
-      'postalCode': 'CV2 5FR',
-      'addressCountry': 'GB',
-    },
-    'vatID': 'GB372654187',
-    'taxID': '13146899',
-    'hasMerchantReturnPolicy': {
-      '@type': 'MerchantReturnPolicy',
-      'applicableCountry': 'UA',
-    },
-    'priceRange': '££',
-  };
-
   return (
-    <html lang="uk" className="scroll-smooth">
+    <html lang="uk" className="scroll-smooth dark">
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-        {/* Google Tag (gtag.js) */}
+        {/* Реальний Google Ads Tag */}
         <Script
+          src="https://www.googletagmanager.com/gtag/js?id=AW-670192610"
           strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=AW-CONVERSION_ID"
         />
-        <Script
-          id="google-analytics"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'AW-CONVERSION_ID');
-            `,
-          }}
-        />
+        <Script id="google-ads-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'AW-670192610');
+          `}
+        </Script>
       </head>
-      <body className={`${inter.className} bg-slate-950 text-slate-100 antialiased`}>
+      <body className={`${inter.className} bg-slate-950 text-slate-100 antialiased selection:bg-red-600 selection:text-white`}>
         <LanguageProvider>
           {children}
         </LanguageProvider>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Header from './components/header';
+import BrandsCatalog from '@/components/BrandsCatalog';
 import HeroSection from './components/hero-section';
 import PartsSearchWidget from './components/parts-search-widget';
 import RFQSection from './components/rfq-section';

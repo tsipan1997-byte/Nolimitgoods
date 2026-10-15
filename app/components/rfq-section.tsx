@@ -61,6 +61,22 @@ export default function RFQSection() {
     invoiceDate: string;
   } | null>(null);
 
+  // Функція виклику Google Ads конверсії з офіційного сніпету
+  const triggerGoogleConversion = (url?: string) => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'conversion', {
+        send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C',
+        event_callback: function () {
+          if (url) {
+            window.location.href = url;
+          }
+        },
+      });
+    } else if (url) {
+      window.location.href = url;
+    }
+  };
+
   useEffect(() => {
     const handleSelectPartEvent = (e: any) => {
       const { oem, brand } = e.detail || {};
@@ -151,6 +167,7 @@ export default function RFQSection() {
 
       if (!data.found || data.status === 'wait_for_rfq') {
         setStatus('wait_for_rfq');
+        triggerGoogleConversion();
         return;
       }
 
@@ -166,17 +183,12 @@ export default function RFQSection() {
       });
       setStatus('success');
 
-      // ВІДПРАВКА КОНВЕРСІЇ В GOOGLE ADS
-      if (typeof window !== 'undefined' && (window as any).gtag) {
-        (window as any).gtag('event', 'conversion', {
-          send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C',
-          value: Number(data.total),
-          currency: 'GBP',
-        });
-      }
+      // Реєстрація успішної конверсії в Google Ads
+      triggerGoogleConversion();
     } catch (err) {
       console.error('Calculation error:', err);
       setStatus('wait_for_rfq');
+      triggerGoogleConversion();
     }
   };
 
@@ -339,7 +351,7 @@ export default function RFQSection() {
           <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             {t?.rfq?.title || (isUk ? 'Розрахунок вартості замовлення' : 'Instant Order Calculation')}
           </h2>
-          <p className="text-base sm:lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {isUk
               ? 'Додавайте до 10 артикулів в одну заявку. Агент сканує склади в реальному часі та об’єднує доставку Nova Post в один збірний вантаж.'
               : 'Add up to 10 OEM parts to a single proforma invoice with consolidated UK airfreight.'}
@@ -415,6 +427,7 @@ export default function RFQSection() {
                     href={getWaitWhatsAppLink()}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => triggerGoogleConversion()}
                     className="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
@@ -425,6 +438,7 @@ export default function RFQSection() {
                     href="https://t.me/+447426826595"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => triggerGoogleConversion()}
                     className="flex items-center justify-center gap-1.5 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
@@ -435,6 +449,7 @@ export default function RFQSection() {
                     href="viber://chat?number=%2B447426826595"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => triggerGoogleConversion()}
                     className="flex items-center justify-center gap-1.5 bg-[#7360F2] hover:bg-[#6350e0] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
@@ -665,6 +680,7 @@ export default function RFQSection() {
                     href={getWhatsAppLink()}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => triggerGoogleConversion()}
                     className="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
@@ -675,6 +691,7 @@ export default function RFQSection() {
                     href="https://t.me/+447426826595"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => triggerGoogleConversion()}
                     className="flex items-center justify-center gap-1.5 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />
@@ -685,6 +702,7 @@ export default function RFQSection() {
                     href="viber://chat?number=%2B447426826595"
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => triggerGoogleConversion()}
                     className="flex items-center justify-center gap-1.5 bg-[#7360F2] hover:bg-[#6350e0] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
                     <MessageSquare className="w-3.5 h-3.5" />

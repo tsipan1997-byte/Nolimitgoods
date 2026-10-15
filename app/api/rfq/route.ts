@@ -559,17 +559,19 @@ export async function POST(request: Request) {
     const tgToken = process.env.TELEGRAM_BOT_TOKEN;
     const tgChatId = process.env.TELEGRAM_CHAT_ID;
     const xeroWebhook = process.env.XERO_WEBHOOK_URL;
-    const googleSheetWebhook =
+    
+    // Підхоплюємо саме вашу змінну з Vercel
+    const googleSheetUrl =
+      process.env.GOOGLE_SHEET_URL ||
       process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
-      process.env.MAKE_WEBHOOK_URL ||
-      process.env.GOOGLE_SCRIPT_URL;
+      process.env.MAKE_WEBHOOK_URL;
 
     // ОБРОБКА ДЕТАЛЕЙ ЧЕРЕЗ 50 ХАБІВ (ЕШЕЛОН 1 -> ЕШЕЛОН 2)
     const processedItems = await Promise.all(
       validItems.map(async (item) => {
         let bestOffer: SourcedOffer | null = null;
 
-        // КРОК 1: 20 основних сайтів
+        // КРОК 1: 20 основних сайтів першого ешелону
         const tier1Tasks = getTier1Tasks(item.partNumber);
         const settled = await Promise.allSettled(tier1Tasks.map((fn) => fn()));
         const validOffers: SourcedOffer[] = [];
@@ -594,7 +596,7 @@ export async function POST(request: Request) {
           }
         }
 
-        // КРОК 3: Fallback
+        // КРОК 3: Fallback у разі рідкісного артикула
         if (!bestOffer) {
           const fallbackNet = 32.0;
           bestOffer = {
@@ -675,44 +677,45 @@ export async function POST(request: Request) {
     const dateNow = new Date().toISOString();
 
     // ==========================================
-    // 1. АВТОМАТИЧНИЙ ЗАПИС У GOOGLE SHEETS / MAKE.COM
+    // 1. АВТОМАТИЧНИЙ ЗАПИС У GOOGLE SHEETS
     // ==========================================
-    if (googleSheetWebhook) {
+    if (googleSheetUrl) {
       try {
-        await fetch(googleSheetWebhook, {
+        const payload = {
+          event: 'new_rfq_quote',
+          invoiceNumber: invNum,
+          date: dateNow,
+          contact,
+          country,
+          totalItems: processedItems.length,
+          totalWeightKg: totalOrderWeightKg,
+          shippingCostGbp: shippingCost,
+          itemsSubtotalGbp,
+          totalAmountGbp: finalTotalGbp,
+          estimatedProfitGbp: totalProfitGbp,
+          items: processedItems.map((it) => ({
+            partNumber: it.partNumber,
+            brand: it.machineModel,
+            title: it.partTitle,
+            quantity: it.quantity,
+            unitPriceGbp: it.clientUnitPriceGbp,
+            itemTotalGbp: it.itemTotalGbp,
+            supplierName: it.storeName,
+            supplierUrl: it.storeUrl,
+          })),
+          specificationSummary: processedItems
+            .map((it) => `${it.partNumber} [${it.machineModel}] x${it.quantity} (£${it.itemTotalGbp.toFixed(2)})`)
+            .join('; '),
+        };
+
+        await fetch(googleSheetUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            event: 'new_rfq_quote',
-            invoiceNumber: invNum,
-            date: dateNow,
-            contact,
-            country,
-            totalItems: processedItems.length,
-            totalWeightKg: totalOrderWeightKg,
-            shippingCostGbp: shippingCost,
-            itemsSubtotalGbp,
-            totalAmountGbp: finalTotalGbp,
-            estimatedProfitGbp: totalProfitGbp,
-            items: processedItems.map((it) => ({
-              partNumber: it.partNumber,
-              brand: it.machineModel,
-              title: it.partTitle,
-              quantity: it.quantity,
-              unitPriceGbp: it.clientUnitPriceGbp,
-              itemTotalGbp: it.itemTotalGbp,
-              supplierName: it.storeName,
-              supplierUrl: it.storeUrl,
-              supplierCostGbp: it.supplierBuyPriceGbp,
-            })),
-            // Зручний зведений рядок для вставки прямо в одну клітинку таблиці
-            specificationSummary: processedItems
-              .map((it) => `${it.partNumber} [${it.machineModel}] x${it.quantity} (£${it.itemTotalGbp.toFixed(2)})`)
-              .join('; '),
-          }),
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload),
+          redirect: 'follow',
         });
       } catch (sheetErr) {
-        console.error('Google Sheets Webhook Dispatch Error:', sheetErr);
+        console.error('Google Sheets Dispatch Error:', sheetErr);
       }
     }
 

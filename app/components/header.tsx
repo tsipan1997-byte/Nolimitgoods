@@ -16,7 +16,6 @@ export default function Header() {
     setLanguage(isUk ? 'en' : 'uk');
   };
 
-  // Чітке меню з точним якорем #catalog для вибору деталей
   const navLinks = [
     { href: '#catalog', labelUk: 'Каталог вузлів OEM', labelEn: 'OEM Assemblies' },
     { href: '#parts-calculator', labelUk: 'Розрахунок вартості', labelEn: 'Quote Calculator' },
@@ -39,23 +38,22 @@ export default function Header() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 gap-4">
             
-            {/* БЛОК ЛОГОТИПУ НА БІЛОМУ ФОНІ (ЯК У ФУТЕРІ) */}
+            {/* ОРИГІНАЛЬНИЙ ЛОГОТИП НА БІЛІЙ ПІДКЛАДЦІ */}
             <Link href="/" className="flex items-center gap-3 group shrink-0 mr-4">
               <div className="flex items-center justify-center bg-white px-3.5 py-1.5 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.15)] border border-slate-200 transition-all duration-300 group-hover:scale-105">
-                <span className="bg-red-600 text-white font-black text-xs px-2 py-0.5 rounded-md mr-1.5">
-                  NLG
-                </span>
-                <span className="text-slate-950 font-black text-lg tracking-tight">
-                  NoLimitGoods
-                </span>
+                <img 
+                  src="/logo.png" 
+                  alt="NoLimitGoods" 
+                  className="h-8 sm:h-9 w-auto object-contain"
+                />
               </div>
               
               <div className="hidden sm:flex flex-col">
                 <span className="text-base font-black tracking-tight text-white group-hover:text-slate-300 transition-colors whitespace-nowrap">
-                  NoLimitGoods Ltd
+                  NoLimitGoods
                 </span>
-                <span className="text-[10px] text-red-500 font-bold tracking-wider uppercase -mt-0.5 whitespace-nowrap">
-                  Coventry, UK Hub
+                <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase -mt-0.5 whitespace-nowrap">
+                  COVENTRY, UK HUB
                 </span>
               </div>
             </Link>

@@ -61,7 +61,7 @@ export default function RFQSection() {
     invoiceDate: string;
   } | null>(null);
 
-  // СЛУХАЧ КЛІКІВ З КАТАЛОГУ ДЕТАЛЕЙ (ОДРАЗУ ВПИСУЄ І OEM, І БРЕНД У ПЕРШУ ПОЗИЦІЮ)
+  // Слухач подій з каталогу деталей: підставляє номер та бренд у першу позицію
   useEffect(() => {
     const handleSelectPartEvent = (e: any) => {
       const { oem, brand } = e.detail || {};
@@ -331,23 +331,44 @@ export default function RFQSection() {
                 </div>
               </div>
 
+              {/* 3 МЕСЕНДЖЕРИ (WHATSAPP, TELEGRAM, VIBER) */}
               <div className="space-y-3 max-w-md mx-auto">
-                <a
-                  href={getWaitWhatsAppLink()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg transition-all text-xs cursor-pointer"
-                >
-                  <MessageSquare className="w-4 h-4" />
-                  <span>
-                    {isUk ? 'Узгодити специфікацію (WhatsApp UK)' : 'Confirm Specification (WhatsApp UK)'}
-                  </span>
-                </a>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                  <a
+                    href={getWaitWhatsAppLink()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  <a
+                    href="https://t.me/+447426826595"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Telegram</span>
+                  </a>
+
+                  <a
+                    href="viber://chat?number=%2B447426826595"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-[#7360F2] hover:bg-[#6350e0] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Viber</span>
+                  </a>
+                </div>
 
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-medium py-2.5 px-4 rounded-xl transition-colors cursor-pointer text-xs"
+                  className="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-medium py-2 px-4 rounded-xl transition-colors cursor-pointer text-xs"
                 >
                   {isUk ? 'Новий розрахунок' : 'New Calculation'}
                 </button>
@@ -554,7 +575,7 @@ export default function RFQSection() {
                 </button>
               </div>
 
-              {/* Месенджери */}
+              {/* 3 МЕСЕНДЖЕРИ (WHATSAPP, TELEGRAM, VIBER) ПІСЛЯ УСПІШНОГО РОЗРАХУНКУ */}
               <div className="space-y-4 max-w-md mx-auto text-center border-t border-slate-800 pt-6">
                 <p className="text-xs text-slate-400">
                   {isUk
@@ -562,24 +583,35 @@ export default function RFQSection() {
                     : 'Or confirm this order directly with our Coventry hub:'}
                 </p>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <a
                     href={getWhatsAppLink()}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all text-xs cursor-pointer"
+                    className="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
-                    <MessageSquare className="w-4 h-4" />
-                    <span>WhatsApp UK</span>
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WhatsApp</span>
                   </a>
 
                   <a
                     href="https://t.me/+447426826595"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3 px-4 rounded-xl shadow-md transition-all text-xs cursor-pointer"
+                    className="flex items-center justify-center gap-1.5 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
                   >
+                    <MessageSquare className="w-3.5 h-3.5" />
                     <span>Telegram</span>
+                  </a>
+
+                  <a
+                    href="viber://chat?number=%2B447426826595"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center gap-1.5 bg-[#7360F2] hover:bg-[#6350e0] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>Viber</span>
                   </a>
                 </div>
 

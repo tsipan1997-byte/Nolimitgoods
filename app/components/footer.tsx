@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { MapPin, Phone, Mail, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function Footer() {
@@ -9,54 +9,87 @@ export default function Footer() {
   const isUk = language === 'uk' || (language as string) === 'ua';
 
   return (
-    <footer className="bg-slate-950 text-slate-400 border-t border-slate-800/80 py-10 font-sans">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800/60">
+    <footer className="bg-slate-950 border-t border-slate-800/80 text-slate-400 text-xs font-sans">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           
-          {/* Лого та назва */}
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-white flex items-center justify-center font-black text-slate-950 tracking-tighter text-sm shadow-md">
-              NLG
-            </div>
-            <div>
-              <div className="text-base font-black tracking-tight text-white">
-                NoLimitGoods <span className="text-red-600">LTD</span>
+          {/* Колонка 1: Оригінальний логотип та інфо */}
+          <div className="space-y-4 md:col-span-1">
+            <div className="flex items-center gap-3 bg-white px-3.5 py-2 rounded-xl shadow-sm w-fit">
+              <span className="bg-red-600 text-white font-black text-xs px-2 py-1 rounded-lg">
+                NLG
+              </span>
+              <div>
+                <span className="block font-black text-slate-900 text-sm tracking-tight leading-none">
+                  NoLimitGoods
+                </span>
+                <span className="block text-[9px] font-bold text-red-600 uppercase tracking-widest mt-0.5">
+                  Coventry, UK Hub
+                </span>
               </div>
-              <div className="text-[11px] text-slate-500 font-mono">
-                Coventry UK Hub • 0% UK Export VAT
-              </div>
             </div>
+            <p className="text-slate-400 text-[11px] leading-relaxed">
+              {isUk 
+                ? 'Прямий європейський хаб та постачальник оригінальних запчастин для спецтехніки та агропромисловості.' 
+                : 'Direct European trade hub & supplier of genuine OEM machinery spares.'}
+            </p>
           </div>
 
-          {/* Реквізити в рядок */}
-          <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-slate-300 font-mono">
-            <span className="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-md">UK Company No: 13146899</span>
-            <span className="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-md">VAT: GB 372 6541 87</span>
-            <span className="bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-md">EORI: GB079878335000</span>
+          {/* Колонка 2: Навігація */}
+          <div className="space-y-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider">
+              {isUk ? 'Навігація' : 'Navigation'}
+            </h4>
+            <ul className="space-y-2 text-[11px]">
+              <li><a href="#parts-calculator" className="hover:text-white transition-colors">{isUk ? 'Калькулятор запчастин' : 'Parts Calculator'}</a></li>
+              <li><a href="#deliveries" className="hover:text-white transition-colors">{isUk ? 'Логістика Nova Post' : 'Nova Post Logistics'}</a></li>
+              <li><a href="#contacts" className="hover:text-white transition-colors">{isUk ? 'Юридичні реквізити' : 'Company Details'}</a></li>
+            </ul>
           </div>
 
-          {/* Короткі контакти */}
-          <div className="flex items-center gap-4 text-xs text-slate-300">
-            <a href="tel:+447426826595" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Phone className="w-3.5 h-3.5 text-emerald-400" />
-              <span className="font-mono">+44 7426 826595</span>
-            </a>
-            <a href="mailto:sales@nolimitgoods.co.uk" className="flex items-center gap-1.5 hover:text-white transition-colors">
-              <Mail className="w-3.5 h-3.5 text-slate-400" />
-              <span className="font-mono">sales@nolimitgoods.co.uk</span>
-            </a>
+          {/* Колонка 3: Контакти UK */}
+          <div className="space-y-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider">
+              {isUk ? 'Хаб у Великобританії' : 'UK Hub Contacts'}
+            </h4>
+            <ul className="space-y-2 text-[11px]">
+              <li className="flex items-center gap-2">
+                <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <span>374 Hipsell Highway, Coventry, CV2 5FR</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <span>+44 7426 826595</span>
+              </li>
+              <li className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <span>sales@nolimitgoods.co.uk</span>
+              </li>
+            </ul>
+          </div>
+
+          {/* Колонка 4: Юридичний статус */}
+          <div className="space-y-3">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider">
+              {isUk ? 'Юридична гарантія' : 'Legal Compliance'}
+            </h4>
+            <div className="p-3 rounded-xl bg-slate-900 border border-slate-800/80 space-y-1 text-[11px]">
+              <div className="text-white font-bold flex items-center gap-1.5">
+                <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                <span>NoLimitGoods Limited</span>
+              </div>
+              <div>Company No: <span className="font-mono text-slate-300">13146899</span></div>
+              <div>VAT: <span className="font-mono text-slate-300">GB 372 6541 87</span></div>
+              <div>EORI: <span className="font-mono text-slate-300">GB079878335000</span></div>
+            </div>
           </div>
 
         </div>
 
-        {/* Нижній рядок */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <div>
-            © 2026 NoLimitGoods Limited. {isUk ? 'Всі права захищені.' : 'All rights reserved.'}
-          </div>
-          <div className="flex items-center gap-2 text-emerald-400 font-semibold">
-            <ShieldCheck className="w-4 h-4" />
-            <span>{isUk ? 'Прямий експортер запчастин з UK' : 'Direct UK Parts Exporter'}</span>
+        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
+          <p>© 2026 NoLimitGoods Limited. {isUk ? 'Всі права захищені.' : 'All rights reserved.'}</p>
+          <div className="flex items-center gap-4">
+            <span className="text-emerald-400 font-mono font-bold">0% UK Export VAT Status</span>
           </div>
         </div>
       </div>

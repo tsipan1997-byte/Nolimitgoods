@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   CheckCircle,
   MessageSquare,
@@ -60,6 +60,32 @@ export default function RFQSection() {
     invoiceNumber: string;
     invoiceDate: string;
   } | null>(null);
+
+  // СЛУХАЧ КЛІКІВ З КАТАЛОГУ ДЕТАЛЕЙ (ОДРАЗУ ВПИСУЄ І OEM, І БРЕНД У ПЕРШУ ПОЗИЦІЮ)
+  useEffect(() => {
+    const handleSelectPartEvent = (e: any) => {
+      const { oem, brand } = e.detail || {};
+      if (!oem) return;
+
+      setItems((prev) => {
+        const next = [...prev];
+        next[0] = {
+          ...next[0],
+          partNumber: oem,
+          machineModel: brand || next[0].machineModel || '',
+        };
+        return next;
+      });
+
+      const section = document.getElementById('parts-calculator');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    };
+
+    window.addEventListener('nlg:select-part', handleSelectPartEvent);
+    return () => window.removeEventListener('nlg:select-part', handleSelectPartEvent);
+  }, []);
 
   const addItem = () => {
     if (items.length >= 10) return;
@@ -152,7 +178,7 @@ export default function RFQSection() {
 
     try {
       const summaryText = calculation.items
-        .map((it) => `${it.partNumber} (x${it.quantity})`)
+        .map((it) => `${it.partNumber} [${it.machineModel || 'OEM'}] (x${it.quantity})`)
         .join(', ');
 
       const res = await fetch('/api/checkout', {
@@ -201,7 +227,7 @@ export default function RFQSection() {
     const list = items
       .map(
         (it, idx) =>
-          `${idx + 1}. ${it.partNumber} (${it.machineModel || 'Equipment'}) — ${it.quantity} pcs`
+          `${idx + 1}. ${it.partNumber} [${it.machineModel || 'OEM'}] — ${it.quantity} pcs`
       )
       .join('\n');
     const msg = `Hello! Request (WAIT FOR RFQ) for specification:\n${list}\n\nContact: ${contact}`;
@@ -223,17 +249,17 @@ export default function RFQSection() {
   };
 
   return (
-    <section id="rfq" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800">
+    <section id="parts-calculator" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800 scroll-mt-20">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-600/20 text-red-400 text-xs sm:text-sm font-semibold mb-4 border border-red-500/30">
-            <Calculator className="w-4 h-4" />
-            <span>{isUk ? 'B2B Калькулятор специфікацій (до 10 позицій)' : 'Multi-Item B2B Procurement Portal (up to 10 parts)'}</span>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-slate-300 text-xs sm:text-sm font-semibold mb-4 border border-slate-800">
+            <Calculator className="w-4 h-4 text-emerald-400" />
+            <span>{isUk ? 'B2B Розрахунок специфікацій (до 10 позицій)' : 'Multi-Item B2B Procurement Portal (up to 10 parts)'}</span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
-            {t.rfq.title}
+            {t?.rfq?.title || (isUk ? 'Розрахунок вартості замовлення' : 'Instant Order Calculation')}
           </h2>
           <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {isUk
@@ -246,11 +272,7 @@ export default function RFQSection() {
           {status === 'searching' ? (
             <div className="py-16 text-center space-y-6">
               <div className="relative w-20 h-20 mx-auto">
-                <div className="absolute inset-0 rounded-full border-4 border-red-600/20 border-t-red-600 animate-spin" />
-                <div
-                  className="absolute inset-2 rounded-full border-4 border-amber-500/20 border-b-amber-500 animate-spin"
-                  style={{ animationDirection: 'reverse', animationDuration: '1.5s' }}
-                />
+                <div className="absolute inset-0 rounded-full border-4 border-slate-700 border-t-white animate-spin" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Search className="w-7 h-7 text-white animate-pulse" />
                 </div>
@@ -260,23 +282,23 @@ export default function RFQSection() {
                 <h3 className="text-xl font-bold text-white mb-2">
                   {isUk ? 'Перевірка специфікації по складах UK та Європи...' : 'Querying Stocks for Multiple Items...'}
                 </h3>
-                <p className="text-sm font-mono text-amber-400 max-w-md mx-auto transition-all">
+                <p className="text-sm font-mono text-emerald-400 max-w-md mx-auto transition-all">
                   {searchStep}
                 </p>
               </div>
 
               <div className="max-w-xs mx-auto bg-slate-950 rounded-full h-1.5 overflow-hidden border border-slate-800">
-                <div className="bg-gradient-to-r from-red-600 to-amber-500 h-full w-full animate-pulse" />
+                <div className="bg-white h-full w-full animate-pulse" />
               </div>
             </div>
           ) : status === 'wait_for_rfq' ? (
             <div className="py-8 text-center space-y-6">
-              <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mx-auto">
+              <div className="w-16 h-16 rounded-full bg-slate-800 border border-slate-700 text-amber-400 flex items-center justify-center mx-auto">
                 <Clock className="w-8 h-8 animate-pulse" />
               </div>
 
               <div>
-                <span className="inline-block bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
+                <span className="inline-block bg-slate-800 border border-slate-700 text-amber-400 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
                   STATUS: WAIT FOR RFQ
                 </span>
                 <h3 className="text-2xl font-black text-white mb-2">
@@ -296,7 +318,7 @@ export default function RFQSection() {
                 {items.map((it, idx) => (
                   <div key={it.id} className="flex justify-between text-slate-300 border-b border-slate-800/60 pb-1">
                     <span>
-                      {idx + 1}. {it.partNumber || '—'} ({it.machineModel || (isUk ? 'Спецтехніка' : 'Machinery')})
+                      {idx + 1}. <strong>{it.partNumber || '—'}</strong> ({it.machineModel || 'OEM'})
                     </span>
                     <span className="font-mono text-white">
                       {it.quantity} {isUk ? 'шт' : 'pcs'}
@@ -355,14 +377,14 @@ export default function RFQSection() {
                   onClick={() => window.print()}
                   className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 cursor-pointer active:scale-95"
                 >
-                  <Printer className="w-4 h-4 text-red-500" />
+                  <Printer className="w-4 h-4 text-slate-300" />
                   <span>{isUk ? 'Друкувати / PDF' : 'Print / PDF'}</span>
                 </button>
               </div>
 
               {/* Бланк інвойсу */}
               <div className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 mb-8 font-sans">
-                <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-red-600 pb-5 mb-5 gap-4">
+                <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-5 gap-4">
                   <div>
                     <div className="text-2xl font-black tracking-tight text-slate-950">
                       NoLimitGoods <span className="text-red-600">LTD</span>
@@ -418,9 +440,6 @@ export default function RFQSection() {
                     <p className="text-slate-600">
                       {isUk ? 'Формат:' : 'Package:'} <strong>{calculation.parcelTypeLabel}</strong>
                     </p>
-                    <p className="text-slate-600">
-                      {isUk ? 'Митне декларування:' : 'Customs Transit:'} <strong>T1 Transit Cleared</strong>
-                    </p>
                   </div>
                 </div>
 
@@ -429,7 +448,7 @@ export default function RFQSection() {
                     <thead>
                       <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px]">
                         <th className="py-2">#</th>
-                        <th className="py-2">{isUk ? 'Найменування вузла' : 'Description / Part Title'}</th>
+                        <th className="py-2">{isUk ? 'Найменування та Бренд' : 'Description / Brand'}</th>
                         <th className="py-2">{isUk ? 'Артикул OEM' : 'OEM Part Number'}</th>
                         <th className="py-2 text-center">{isUk ? 'К-сть' : 'Qty'}</th>
                         <th className="py-2 text-right">{isUk ? 'Ціна (£)' : 'Unit Price (£)'}</th>
@@ -440,8 +459,13 @@ export default function RFQSection() {
                       {calculation.items.map((it, idx) => (
                         <tr key={idx}>
                           <td className="py-3 text-slate-400">{idx + 1}</td>
-                          <td className="py-3 font-semibold text-slate-800">{it.partTitle}</td>
-                          <td className="py-3 font-mono font-bold text-red-600">{it.partNumber}</td>
+                          <td className="py-3">
+                            <div className="font-semibold text-slate-800">{it.partTitle}</div>
+                            {it.machineModel && (
+                              <div className="text-[10px] text-slate-500 font-mono uppercase">{it.machineModel}</div>
+                            )}
+                          </td>
+                          <td className="py-3 font-mono font-bold text-slate-900">{it.partNumber}</td>
                           <td className="py-3 text-center">
                             {it.quantity} {isUk ? 'шт' : 'pcs'}
                           </td>
@@ -474,10 +498,10 @@ export default function RFQSection() {
                     <span className="text-[11px] text-slate-500 uppercase font-bold block">
                       {isUk ? 'Разом до сплати:' : 'Total Amount Due:'}
                     </span>
-                    <div className="text-2xl sm:text-3xl font-black text-red-600">
+                    <div className="text-2xl sm:text-3xl font-black text-slate-950">
                       £{calculation.total.toFixed(2)}
                     </div>
-                    <div className="text-xs font-bold text-slate-700">
+                    <div className="text-xs font-bold text-slate-600">
                       ≈ {getUahTotal()} {isUk ? 'грн' : 'UAH'}
                     </div>
                   </div>
@@ -490,7 +514,7 @@ export default function RFQSection() {
                   type="button"
                   onClick={handleOnlinePayment}
                   disabled={paying}
-                  className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-extrabold text-sm sm:text-base transition-all shadow-xl hover:shadow-red-600/25 active:scale-95 cursor-pointer disabled:opacity-70"
+                  className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-sm sm:text-base transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-70"
                 >
                   {paying ? (
                     <>
@@ -521,9 +545,9 @@ export default function RFQSection() {
                 <button
                   type="button"
                   onClick={() => window.print()}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold text-xs transition-all cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs transition-all cursor-pointer"
                 >
-                  <FileText className="w-4 h-4 text-red-500" />
+                  <FileText className="w-4 h-4 text-slate-400" />
                   <span>
                     {isUk ? 'Зберегти офіційний інвойс (PDF)' : 'Download Proforma Invoice (PDF)'}
                   </span>
@@ -581,9 +605,9 @@ export default function RFQSection() {
                     <button
                       type="button"
                       onClick={addItem}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-red-400 hover:text-red-300 bg-red-950/40 border border-red-800/50 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-3.5 h-3.5 text-emerald-400" />
                       <span>{isUk ? 'Додати позицію' : 'Add Item'}</span>
                     </button>
                   )}
@@ -618,7 +642,7 @@ export default function RFQSection() {
                           required
                           value={item.partNumber}
                           onChange={(e) => updateItem(item.id, 'partNumber', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-red-500 outline-none"
+                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono"
                           placeholder={isUk ? 'напр. P535114' : 'e.g. P535114'}
                         />
                       </div>
@@ -631,7 +655,7 @@ export default function RFQSection() {
                           required
                           value={item.machineModel}
                           onChange={(e) => updateItem(item.id, 'machineModel', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-red-500 outline-none"
+                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-white outline-none"
                           placeholder={isUk ? 'напр. Donaldson / JCB' : 'e.g. Donaldson / JCB'}
                         />
                       </div>
@@ -645,7 +669,7 @@ export default function RFQSection() {
                           required
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white border border-slate-700 rounded-lg text-sm focus:border-red-500 outline-none"
+                          className="w-full px-3 py-2 bg-slate-900 text-white border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono"
                           placeholder="1"
                         />
                       </div>
@@ -657,27 +681,27 @@ export default function RFQSection() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t.rfq.form.country} *
+                    {t?.rfq?.form?.country || (isUk ? 'Країна призначення' : 'Country')} *
                   </label>
                   <input
                     type="text"
                     required
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm"
+                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-sm"
                     placeholder={isUk ? 'Україна' : 'Ukraine'}
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t.rfq.form.contact} *
+                    {t?.rfq?.form?.contact || (isUk ? 'Email або WhatsApp' : 'Contact')} *
                   </label>
                   <input
                     type="text"
                     required
                     value={contact}
                     onChange={(e) => setContact(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-2 focus:ring-red-500 outline-none text-sm"
+                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-sm"
                     placeholder="+380... / email@domain.com"
                   />
                 </div>
@@ -686,7 +710,7 @@ export default function RFQSection() {
               <button
                 type="submit"
                 disabled={status === 'searching'}
-                className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 text-base sm:text-lg disabled:opacity-70 shadow-lg cursor-pointer"
+                className="w-full bg-white hover:bg-slate-100 text-slate-950 font-bold py-4 px-8 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 text-base sm:text-lg disabled:opacity-70 shadow-lg cursor-pointer"
               >
                 {status === 'searching' ? (
                   <>

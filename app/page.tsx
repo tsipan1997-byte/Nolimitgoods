@@ -8,7 +8,6 @@ import PartsSearchWidget from './components/parts-search-widget';
 import RFQSection from './components/rfq-section';
 import DeliveriesSection from './components/deliveries-section';
 import PartsSection from './components/parts-section';
-import BrandsSection from './components/brands-section';
 import Footer from './components/footer';
 import FloatingContact from './components/floating-contact';
 import { ShieldCheck, Building2, MapPin, Copy, Check, FileCheck, Phone, Mail } from 'lucide-react';
@@ -115,20 +114,32 @@ Email: nolimitgoods@gmail.com`;
 }
 
 export default function Home() {
+  const handleBrandOemSelect = (oem: string) => {
+    const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.value = oem;
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      searchInput.focus();
+      window.scrollTo({ top: searchInput.offsetTop - 120, behavior: 'smooth' });
+    }
+  };
+
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-red-500 selection:text-white">
       <Header />
       <HeroSection />
       
-      {/* Блок живого поиска запчастей с британских складов */}
+      {/* Блок живого пошуку запчастин з британських складів */}
       <section className="px-4 sm:px-6 lg:px-8 -mt-6 mb-12 relative z-10">
         <PartsSearchWidget />
       </section>
 
+      {/* Новий інтерактивний каталог брендів з ходовими OEM */}
+      <BrandsCatalog onSelectOem={handleBrandOemSelect} />
+
       <RFQSection />
       <DeliveriesSection />
       <PartsSection />
-      <BrandsSection />
       <InlineLegalSection />
       <Footer />
       <FloatingContact />

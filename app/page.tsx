@@ -30,7 +30,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
 
 /* =========================================================================
-   БЛОК КАТАЛОГУ БРЕНДІВ (ВБУДОВАНИЙ МОНОЛІТНИЙ КОМПОНЕНТ)
+   МОДЕРНІЗОВАНИЙ КАТАЛОГ OEM БРЕНДІВ
    ========================================================================= */
 
 interface BrandCategory {
@@ -141,7 +141,7 @@ const BRANDS: BrandItem[] = [
   },
 ];
 
-function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string) => void }) {
+function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string, brandName: string) => void }) {
   const [activeCategory, setActiveCategory] = useState<string>('all');
 
   const filteredBrands = activeCategory === 'all' 
@@ -164,7 +164,7 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string) => vo
           </h2>
           
           <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base leading-relaxed">
-            Швидкий підбір за каталожними артикулами без посередників з хабу в Ковентрі (UK) з поверненням 20% UK VAT.
+            Швидкий підбір за каталожними артикулами безпосередньо з хабу в Ковентрі (UK) з поверненням 20% UK VAT.
           </p>
         </div>
 
@@ -176,7 +176,7 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string) => vo
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer ${
                   isActive
                     ? 'text-white bg-gradient-to-r from-red-600 to-red-700 shadow-[0_0_20px_rgba(239,68,68,0.35)] border border-red-400/40'
                     : 'text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800'
@@ -234,8 +234,8 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string) => vo
                     {brand.popularOems.map((oem) => (
                       <button
                         key={oem}
-                        onClick={() => onSelectOem(oem)}
-                        className="px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium bg-slate-950 text-slate-300 hover:text-white hover:bg-red-600 hover:border-red-500 border border-slate-800 transition-all duration-150 cursor-pointer"
+                        onClick={() => onSelectOem(oem, brand.name)}
+                        className="px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium bg-slate-950 text-slate-300 hover:text-white hover:bg-red-600 hover:border-red-500 border border-slate-800 transition-all duration-150 cursor-pointer active:scale-95"
                       >
                         {oem}
                       </button>
@@ -276,7 +276,7 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string) => vo
 }
 
 /* =========================================================================
-   ЮРИДИЧНА СЕКЦІЯ
+   ЮРИДИЧНІ ДАНІ КОМПАНІЇ
    ========================================================================= */
 
 function InlineLegalSection() {
@@ -380,17 +380,35 @@ Email: nolimitgoods@gmail.com`;
 }
 
 /* =========================================================================
-   ГОЛОВНА СТОРІНКА
+   ГОЛОВНИЙ КОМПОНЕНТ СТОРІНКИ
    ========================================================================= */
 
 export default function Home() {
-  const handleBrandOemSelect = (oem: string) => {
-    const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-    if (searchInput) {
-      searchInput.value = oem;
-      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
-      searchInput.focus();
-      window.scrollTo({ top: searchInput.offsetTop - 120, behavior: 'smooth' });
+  const handleBrandOemSelect = (oem: string, brandName: string) => {
+    // 1. Пошук поля для номера OEM
+    const oemInput = (document.querySelector('input[placeholder*="P535114"], input[name*="oem"], input[name*="partNumber"]') as HTMLInputElement) 
+      || (document.querySelectorAll('input[type="text"]')[0] as HTMLInputElement);
+
+    if (oemInput) {
+      const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
+      nativeSetter?.call(oemInput, oem);
+      oemInput.dispatchEvent(new Event('input', { bubbles: true }));
+      oemInput.dispatchEvent(new Event('change', { bubbles: true }));
+
+      // 2. Пошук поля бренду/техніки
+      const brandInput = (document.querySelector('input[placeholder*="Donaldson"], input[name*="brand"]') as HTMLInputElement)
+        || (document.querySelectorAll('input[type="text"]')[1] as HTMLInputElement);
+
+      if (brandInput && brandName) {
+        nativeSetter?.call(brandInput, brandName);
+        brandInput.dispatchEvent(new Event('input', { bubbles: true }));
+        brandInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      // 3. Плавний фокус та скрол
+      oemInput.focus();
+      const formSection = oemInput.closest('section') || oemInput;
+      formSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
 
@@ -399,12 +417,12 @@ export default function Home() {
       <Header />
       <HeroSection />
       
-      {/* Віджет живого пошуку деталей */}
+      {/* Калькулятор специфікацій та пошук */}
       <section className="px-4 sm:px-6 lg:px-8 -mt-6 mb-12 relative z-10">
         <PartsSearchWidget />
       </section>
 
-      {/* Інтерактивний каталог провідних OEM виробників */}
+      {/* Каталог провідних OEM брендів */}
       <BrandsCatalogInline onSelectOem={handleBrandOemSelect} />
 
       <RFQSection />

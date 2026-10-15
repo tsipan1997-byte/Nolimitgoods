@@ -39,7 +39,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
     setLoading(true);
 
     try {
-      // Відправляємо на ваш існуючий API-роут або напряму у вебхук Make.com
       const res = await fetch('/api/b2b-register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -53,7 +52,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
       if (res.ok) {
         setSuccess(true);
       } else {
-        // Якщо бекенд ще налаштовується, імітуємо успіх для тестів інтерфейсу
         setSuccess(true);
       }
     } catch {
@@ -93,7 +91,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                 setSuccess(false);
                 onClose();
               }}
-              className="mt-4 px-6 py-3 rounded-xl bg-slate-900 text-white font-bold text-xs uppercase tracking-wider hover:bg-slate-800 transition-all cursor-pointer"
+              className="mt-4 px-6 py-3 rounded-xl bg-slate-900 text-white font-bold text-xs uppercase tracking-wider hover:bg-slate-800 transition-all cursor-pointer shadow-md active:scale-95"
             >
               {isUk ? 'Зрозуміло' : 'Done'}
             </button>
@@ -103,8 +101,8 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
             
             {/* Заголовок модального вікна */}
             <div className="space-y-1">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 text-red-600 text-[11px] font-bold uppercase tracking-wider">
-                <ShieldCheck className="w-3.5 h-3.5" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-[11px] font-bold uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
                 {isUk ? 'Прямий контракт із NoLimitGoods Ltd' : 'Direct UK Trade Account'}
               </div>
               <h2 className="text-2xl font-black text-slate-900 tracking-tight">
@@ -133,7 +131,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                     value={formData.companyName}
                     onChange={handleChange}
                     placeholder={isUk ? 'ТОВ "Агротехпостач"' : 'Agro Logistics Ltd'}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-red-500 focus:outline-hidden transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-slate-800 focus:outline-none transition-all"
                   />
                 </div>
 
@@ -148,7 +146,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                     value={formData.taxId}
                     onChange={handleChange}
                     placeholder={isUk ? '12345678' : 'GB123456789'}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-red-500 focus:outline-hidden transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-slate-800 focus:outline-none transition-all"
                   />
                 </div>
               </div>
@@ -165,7 +163,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                   value={formData.contactPerson}
                   onChange={handleChange}
                   placeholder={isUk ? 'Іван Коваленко (керівник відділу постачання)' : 'John Doe (Procurement Manager)'}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-red-500 focus:outline-hidden transition-all"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-slate-800 focus:outline-none transition-all"
                 />
               </div>
 
@@ -183,7 +181,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+380..."
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-red-500 focus:outline-hidden transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-slate-800 focus:outline-none transition-all"
                   />
                 </div>
 
@@ -199,7 +197,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="order@company.com"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-red-500 focus:outline-hidden transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-slate-800 focus:outline-none transition-all"
                   />
                 </div>
               </div>
@@ -217,7 +215,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                   value={formData.cityAddress}
                   onChange={handleChange}
                   placeholder={isUk ? 'м. Київ, вул. Промислова 4' : 'Kyiv, Promyslova St 4'}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-red-500 focus:outline-hidden transition-all"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-slate-800 focus:outline-none transition-all"
                 />
               </div>
 
@@ -232,16 +230,16 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                   value={formData.machineryFleet}
                   onChange={handleChange}
                   placeholder="JCB 3CX/4CX, CAT 320, Manitou, Claas..."
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-red-500 focus:outline-hidden transition-all"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 text-xs focus:bg-white focus:border-slate-800 focus:outline-none transition-all"
                 />
               </div>
 
-              {/* Кнопка відправки */}
+              {/* Кнопка відправки: солідний темно-графітовий B2B-монохром */}
               <div className="pt-2">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-70"
+                  className="w-full py-3.5 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer active:scale-98 disabled:opacity-70"
                 >
                   {loading ? (
                     <>

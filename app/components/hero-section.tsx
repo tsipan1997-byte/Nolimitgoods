@@ -1,229 +1,176 @@
 'use client';
 
-import React, { useState } from 'react';
-import { ArrowRight, Search, ShieldCheck, Truck, CheckCircle2 } from 'lucide-react';
+import React from 'react';
+import { motion } from 'framer-motion';
+import { ShieldCheck, Truck, ArrowRight, Layers, Sparkles, Activity } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function HeroSection() {
-  const { t, language } = useLanguage();
+  const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
-  const [partInput, setPartInput] = useState('');
 
-  // Разделение на бренд и чистый номер детали
-  const handleQuickSearch = (brandName: string, partCode: string) => {
-    setPartInput(`${brandName ? brandName + ' ' : ''}${partCode}`);
-
-    // 1. Заполняем поле номера детали
-    const rfqPartInput = document.getElementById('rfq-parts-input') as HTMLInputElement | null;
-    if (rfqPartInput) {
-      rfqPartInput.value = partCode;
-      rfqPartInput.dispatchEvent(new Event('input', { bubbles: true }));
-      rfqPartInput.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    // 2. Заполняем поле модели/производителя
-    const rfqMachineInput = document.getElementById('rfq-machine-input') as HTMLInputElement | null;
-    if (rfqMachineInput) {
-      rfqMachineInput.value = brandName;
-      rfqMachineInput.dispatchEvent(new Event('input', { bubbles: true }));
-      rfqMachineInput.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-
-    // 3. Плавный скролл к форме калькулятора
-    const rfq = document.getElementById('rfq');
-    if (rfq) {
-      rfq.scrollIntoView({ behavior: 'smooth' });
+  const scrollToCalculator = () => {
+    const el = document.getElementById('parts-calculator') || document.querySelector('input[type="text"]');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const input = el.tagName === 'INPUT' ? (el as HTMLInputElement) : el.querySelector('input');
+      input?.focus();
     }
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const raw = partInput.trim();
-    if (!raw) {
-      const rfq = document.getElementById('rfq');
-      if (rfq) rfq.scrollIntoView({ behavior: 'smooth' });
-      return;
-    }
-
-    // Автоматический парсинг строки поиска (если пользователь ввел "Perkins 26561117" или "JCB 458/20403")
-    const knownBrands = ['PERKINS', 'JCB', 'CARRARO', 'DONALDSON', 'CAT', 'CATERPILLAR', 'REXROTH', 'CUMMINS'];
-    const parts = raw.split(/\s+/);
-    let detectedBrand = '';
-    let detectedCode = raw;
-
-    if (parts.length > 1 && knownBrands.includes(parts[0].toUpperCase())) {
-      detectedBrand = parts[0];
-      detectedCode = parts.slice(1).join(' ');
-    } else if (raw.toUpperCase().startsWith('P55') || raw.toUpperCase().startsWith('P53')) {
-      detectedBrand = 'Donaldson';
-      detectedCode = raw;
-    }
-
-    handleQuickSearch(detectedBrand, detectedCode);
+  const scrollToCatalog = () => {
+    const catalogSection = document.querySelector('section:has(h2)');
+    catalogSection?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  // Список популярных кнопок с разделением на бренд и артикул
-  const popularTags = [
-    { label: 'P553004', brand: 'Donaldson', code: 'P553004' },
-    { label: 'P535114', brand: 'Donaldson', code: 'P535114' },
-    { label: 'JCB 458/20403', brand: 'JCB', code: '458/20403' },
-    { label: 'Perkins 26561117', brand: 'Perkins', code: '26561117' },
-    { label: 'Carraro 149298', brand: 'Carraro', code: '149298' },
-  ];
 
   return (
-    <section className="relative min-h-[90vh] flex items-center justify-center bg-slate-950 text-white pt-24 pb-16 overflow-hidden border-b border-slate-800">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-red-950/25 via-slate-950/80 to-slate-950 pointer-events-none" />
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-red-600/10 blur-[120px] pointer-events-none" />
+    <div className="relative min-h-[640px] lg:min-h-[720px] flex items-center justify-center overflow-hidden bg-[#06090E] pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      {/* 1. ФОНОВИЙ ВІДЕО-БЛОК ІЗ КІНЕМАТОГРАФІЧНИМ ОВЕРЛЕЄМ */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover object-center opacity-30 filter brightness-75 contrast-125 scale-105"
+        >
+          {/* Якісний оптимізований фоновий стрім важкої техніки / логістичного хабу */}
+          <source
+            src="https://assets.mixkit.co/videos/preview/mixkit-heavy-industrial-machinery-operating-in-a-quarry-41551-large.mp4"
+            type="video/mp4"
+          />
+        </video>
+        {/* Градієнтне затемнення: безшовний плавний перехід у темну тему сайту */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#06090E]/80 via-[#06090E]/60 to-[#06090E]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-red-600/15 blur-[160px] rounded-full" />
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full text-center py-10">
+      {/* 2. ГОЛОВНИЙ КОНТЕНТ */}
+      <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
         
-        {/* Статус */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-700/80 text-slate-200 text-xs sm:text-sm font-semibold mb-6 shadow-xl backdrop-blur-md">
-          <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-          <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          <span>
-            {isUk 
-              ? 'NoLimitGoods Ltd • Прямий експорт з Великобританії (Coventry Hub)' 
-              : 'NoLimitGoods Ltd • Official UK Export Hub & Logistics Solutions'}
+        {/* Статус-бейдж UK хабу з пульсацією */}
+        <motion.div
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-slate-900/90 border border-slate-700/80 backdrop-blur-md shadow-[0_0_20px_rgba(239,68,68,0.25)]"
+        >
+          <span className="relative flex h-2.5 w-2.5">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
           </span>
-        </div>
+          <span className="text-xs sm:text-sm font-semibold text-slate-200 tracking-wide">
+            {isUk
+              ? 'NoLimitGoods Ltd • Прямий експорт з Великобританії (Coventry Hub)'
+              : 'NoLimitGoods Ltd • Direct Export from United Kingdom (Coventry Hub)'}
+          </span>
+        </motion.div>
 
-        {/* Главный заголовок */}
-        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight mb-6 max-w-5xl mx-auto">
+        {/* Головний заголовок */}
+        <motion.h1
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight"
+        >
           {isUk ? (
             <>
-              Запчастини до спецтехніки та авто{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-400 to-amber-500">
+              Запчастини до спецтехніки та авто <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-amber-200">
                 напряму з Великобританії
               </span>
             </>
           ) : (
             <>
-              Heavy Machinery & Automotive Spare Parts{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-orange-400 to-amber-500">
-                Directly from the UK
+              Heavy Machinery & Commercial Parts <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-amber-200">
+                Direct from the United Kingdom
               </span>
             </>
           )}
-        </h1>
+        </motion.h1>
 
-        {/* Подзаголовок */}
-        <p className="text-slate-300 text-base sm:text-xl max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
+        {/* Опис */}
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="max-w-3xl mx-auto text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-normal"
+        >
           {isUk
-            ? 'Повний цикл логістики та прямі поставки деталей Donaldson, JCB, CAT, Perkins без посередницьких націнок. Офіційний інвойс, митне очищення DOUANE та експрес-доставка в Україну.'
-            : 'End-to-end logistics solutions, T1 transit customs clearance, and direct supply of genuine Donaldson, JCB, CAT, and Perkins components to your doorstep.'}
-        </p>
+            ? 'Повний цикл логістики, офіційний статус експорту 0% UK VAT, консолідація вантажів у Ковентрі та прямі контракти без посередницьких націнок.'
+            : 'End-to-end logistics solutions, T1 transit customs clearance, and zero-rated 0% UK export status directly to your enterprise.'}
+        </motion.p>
 
-        {/* Поисковая строка */}
-        <div className="max-w-2xl mx-auto mb-8">
-          <form onSubmit={handleSearchSubmit} className="relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-red-600 to-amber-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-300" />
-            <div className="relative flex items-center bg-slate-900 border border-slate-700 rounded-2xl p-2 shadow-2xl focus-within:border-red-500">
-              <Search className="w-5 h-5 text-slate-400 ml-3 shrink-0" />
-              <input
-                type="text"
-                value={partInput}
-                onChange={(e) => setPartInput(e.target.value)}
-                placeholder={
-                  isUk 
-                    ? 'Введіть номер деталі або модель (P553004, 332/Y3163, Perkins)...' 
-                    : 'Search part number or equipment model (e.g. P553004, 332/Y3163)...'
-                }
-                className="w-full bg-transparent px-3 py-2 text-white placeholder-slate-400 focus:outline-none text-sm sm:text-base font-medium"
-              />
-              <button
-                type="submit"
-                className="px-5 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs sm:text-sm flex items-center gap-2 shrink-0 transition-colors shadow-lg cursor-pointer"
-              >
-                <span>{isUk ? 'Знайти ціну' : 'Get Quote'}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </form>
-
-          {/* Кнопки быстрого выбора */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-3 text-xs text-slate-400">
-            <span className="text-slate-500 font-semibold">{isUk ? 'Ходові коди:' : 'Popular:'}</span>
-            {popularTags.map((tag) => (
-              <button
-                key={tag.label}
-                type="button"
-                onClick={() => handleQuickSearch(tag.brand, tag.code)}
-                className="px-2.5 py-1 rounded-lg bg-slate-900/90 border border-slate-800 hover:border-red-500 hover:text-white transition-colors cursor-pointer"
-              >
-                {tag.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* CTA-кнопки */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
+        {/* Кнопки виклику дій замість дублюючого рядка пошуку */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
+        >
           <button
-            onClick={() => scrollTo('rfq')}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm tracking-wide transition-all shadow-xl shadow-red-600/25 flex items-center justify-center gap-2 cursor-pointer"
+            onClick={scrollToCalculator}
+            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm tracking-wider uppercase transition-all shadow-[0_0_30px_rgba(239,68,68,0.4)] flex items-center justify-center gap-2 cursor-pointer active:scale-95"
           >
-            <span>{isUk ? 'Розрахувати вартість замовлення' : 'Request Instant Quotation'}</span>
+            <span>{isUk ? 'Розрахувати вартість замовлення' : 'Calculate Order Quote'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
-          <button
-            onClick={() => scrollTo('parts')}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-700 text-slate-200 font-bold text-sm tracking-wide transition-colors cursor-pointer"
-          >
-            {isUk ? 'Переглянути каталог деталей' : 'Explore Parts Catalog'}
-          </button>
-        </div>
 
-        {/* 4 плашки */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto text-left">
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-            <div className="flex items-center gap-2 text-red-500 font-black text-xl mb-1">
-              <span>100%</span>
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+          <button
+            onClick={scrollToCatalog}
+            className="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white font-bold text-sm tracking-wider uppercase border border-slate-700/80 transition-all flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer active:scale-95"
+          >
+            <Layers className="w-4 h-4 text-amber-400" />
+            <span>{isUk ? 'Переглянути каталог деталей' : 'Explore OEM Catalog'}</span>
+          </button>
+        </motion.div>
+
+        {/* 3. ПЕРЕВАГИ (4 ПЛАШКИ) */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-8"
+        >
+          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
+            <div className="text-lg sm:text-xl font-black text-white flex items-center gap-1.5">
+              100% <ShieldCheck className="w-4 h-4 text-emerald-400 inline" />
             </div>
-            <div className="text-xs text-slate-300 font-medium">
+            <div className="text-xs text-slate-400 mt-1">
               {isUk ? 'Оригінальні деталі OEM' : 'Genuine OEM Equipment'}
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-            <div className="flex items-center gap-2 text-amber-500 font-black text-xl mb-1">
-              <span>5–8 {isUk ? 'днів' : 'days'}</span>
-              <Truck className="w-4 h-4 text-amber-400" />
+          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
+            <div className="text-lg sm:text-xl font-black text-amber-400 flex items-center gap-1.5">
+              5–8 {isUk ? 'днів' : 'days'} <Truck className="w-4 h-4 text-amber-400 inline" />
             </div>
-            <div className="text-xs text-slate-300 font-medium">
-              {isUk ? 'Експрес-рейси щотижня' : 'Weekly UK ➔ UA Freight'}
+            <div className="text-xs text-slate-400 mt-1">
+              {isUk ? 'Експрес-рейси щотижня' : 'Weekly UK Freight'}
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-            <div className="flex items-center gap-2 text-sky-400 font-black text-xl mb-1">
-              <span>DOUANE</span>
-              <ShieldCheck className="w-4 h-4 text-sky-400" />
+          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
+            <div className="text-lg sm:text-xl font-black text-sky-400 flex items-center gap-1.5">
+              DOUANE <Sparkles className="w-4 h-4 text-sky-400 inline" />
             </div>
-            <div className="text-xs text-slate-300 font-medium">
+            <div className="text-xs text-slate-400 mt-1">
               {isUk ? 'Офіційне митне очищення' : 'T1 Transit & Customs'}
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-            <div className="flex items-center gap-2 text-emerald-400 font-black text-xl mb-1">
-              <span>0% VAT</span>
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
+            <div className="text-lg sm:text-xl font-black text-emerald-400 flex items-center gap-1.5">
+              0% VAT <Activity className="w-4 h-4 text-emerald-400 inline" />
             </div>
-            <div className="text-xs text-slate-300 font-medium">
+            <div className="text-xs text-slate-400 mt-1">
               {isUk ? 'UK Ltd експортний інвойс' : 'Official UK Direct Invoice'}
             </div>
           </div>
-        </div>
+        </motion.div>
 
       </div>
-    </section>
+    </div>
   );
 }

@@ -24,13 +24,15 @@ import {
   Cpu, 
   ArrowUpRight, 
   Sparkles,
-  Search
+  Search,
+  Flame,
+  Clock
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
 
 /* =========================================================================
-   МОДЕРНІЗОВАНИЙ КАТАЛОГ OEM БРЕНДІВ
+   РОЗШИРЕНИЙ ДИЗАЙН-КАТАЛОГ З РЕАЛЬНИМИ ФОТО ТА БЕСТСЕЛЕРАМИ
    ========================================================================= */
 
 interface BrandCategory {
@@ -45,17 +47,18 @@ interface BrandItem {
   origin: string;
   tagline: string;
   badge: string;
-  popularOems: string[];
-  gradient: string;
-  accentBorder: string;
+  bgImage: string;
+  glowColor: string;
+  borderHover: string;
+  popularOems: { oem: string; desc: string; hot?: boolean }[];
 }
 
 const CATEGORIES: BrandCategory[] = [
-  { id: 'all', name: 'Всі бренди', icon: Layers },
-  { id: 'hydraulics', name: 'Гідравліка', icon: Gauge },
-  { id: 'engines', name: 'Двигуни та паливна', icon: Cpu },
-  { id: 'filtration', name: 'Фільтрація', icon: Sparkles },
-  { id: 'undercarriage', name: 'Ходова та мости', icon: Wrench },
+  { id: 'all', name: 'Всі напрямки (50 хабів)', icon: Layers },
+  { id: 'hydraulics', name: 'Гідравліка та мотори', icon: Gauge },
+  { id: 'engines', name: 'Двигуни та Common Rail', icon: Cpu },
+  { id: 'undercarriage', name: 'Мости, КПП та ходова', icon: Wrench },
+  { id: 'filtration', name: 'Преміум фільтрація', icon: Sparkles },
 ];
 
 const BRANDS: BrandItem[] = [
@@ -63,81 +66,147 @@ const BRANDS: BrandItem[] = [
     name: 'JCB Genuine Parts',
     category: 'undercarriage',
     origin: 'Rocester, UK',
-    tagline: 'Оригінальні пальці, мости, ремкомплекти супортів, втулки та ремені',
-    badge: 'Хаб Велика Британія',
-    popularOems: ['332/Y3163', '458/20403', '32/925682', '02/100073'],
-    gradient: 'from-amber-500/20 via-yellow-500/5 to-transparent',
-    accentBorder: 'hover:border-amber-500/50',
+    tagline: 'Гідронасоси, бортові передачі, поворотні кулаки, ремкомплекти супортів 3CX / 4CX',
+    badge: 'Прямий склад UK',
+    bgImage: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(234, 179, 8, 0.25)',
+    borderHover: 'group-hover:border-amber-500/70',
+    popularOems: [
+      { oem: '332/Y3163', desc: 'Насос Parker/JCB', hot: true },
+      { oem: '20/925327', desc: 'Насос David Brown', hot: true },
+      { oem: '458/20403', desc: 'Поворотний кулак' },
+      { oem: '320/04186', desc: 'Маслонасос Dieselmax' },
+      { oem: '04/600786', desc: 'Гідротрансформатор' },
+      { oem: '450/10206', desc: 'Сателіт бортової' },
+      { oem: '320/09476', desc: 'Прокладки двигуна' },
+      { oem: '714/40526', desc: 'Стартер 4.2kW' },
+    ],
   },
   {
     name: 'Bosch Rexroth',
     category: 'hydraulics',
     origin: 'Lohr am Main, Germany',
-    tagline: 'Аксіально-поршневі насоси A10VSO, A4VG, гідромотори ходу та клапани',
-    badge: 'Німецька точність',
-    popularOems: ['A10VSO71', 'A10VSO45', 'A4VG90', 'A2FE107'],
-    gradient: 'from-blue-600/20 via-cyan-500/5 to-transparent',
-    accentBorder: 'hover:border-blue-500/50',
+    tagline: 'Аксіально-поршневі регульовані гідронасоси серій A10VSO, мотори ходу A2FE, клапани',
+    badge: 'Висока маржа',
+    bgImage: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(59, 130, 246, 0.3)',
+    borderHover: 'group-hover:border-blue-500/70',
+    popularOems: [
+      { oem: 'A10VSO71DFR1', desc: 'Головний насос 71cc', hot: true },
+      { oem: 'A10VSO45DFR1', desc: 'Насос 45cc екскаватора', hot: true },
+      { oem: 'A4VG90EP4D1', desc: 'Насос замкненого ходу' },
+      { oem: 'A2FE107/61W', desc: 'Гідромотор гусениць' },
+      { oem: 'A10VSO28DR', desc: 'Насос пресів та кранів' },
+      { oem: '4WE6D6X/EG24', desc: 'Гідророзподільник 24V' },
+    ],
   },
   {
     name: 'Danfoss Mobile',
     category: 'hydraulics',
     origin: 'Nordborg, Denmark',
-    tagline: 'Гідростатичні трансмісії, насосні вузли, дозатори рульові OSPB',
+    tagline: 'Гідростатичні трансмісії, рульові дозатори OSPB, секційні блоки PVG 32',
     badge: 'Nordic Quality',
-    popularOems: ['OSPB 160', 'OMT 250', 'PVG 32', 'OMV 500'],
-    gradient: 'from-red-600/20 via-orange-500/5 to-transparent',
-    accentBorder: 'hover:border-red-500/50',
+    bgImage: 'https://images.unsplash.com/photo-1504917599217-d4dc5ebe6122?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(239, 68, 68, 0.3)',
+    borderHover: 'group-hover:border-red-500/70',
+    popularOems: [
+      { oem: 'OSPB 160 ON', desc: 'Орбітрек рульовий', hot: true },
+      { oem: 'OSPB 200 ON', desc: 'Посилений гідроруль', hot: true },
+      { oem: 'OMT 250', desc: 'Планетарний гідромотор' },
+      { oem: 'OMV 500', desc: 'Низькообертовий мотор' },
+      { oem: 'PVG 32 157B', desc: 'Пропорційна секція' },
+      { oem: 'OMS 160', desc: 'Привід каретки бура' },
+    ],
   },
   {
     name: 'Perkins Engines',
     category: 'engines',
     origin: 'Peterborough, UK',
-    tagline: 'Поршнекомплекти, форсунки Delphi, вкладиші та помпи 1104D / 404D',
+    tagline: 'Оригінальна паливна апаратура Common Rail Delphi, гільзо-поршневі групи 1104 / 404',
     badge: 'UK Master Hub',
-    popularOems: ['26561117', '26560201', 'U5MK8267', 'T413847'],
-    gradient: 'from-emerald-600/20 via-teal-500/5 to-transparent',
-    accentBorder: 'hover:border-emerald-500/50',
-  },
-  {
-    name: 'Donaldson Filtration',
-    category: 'filtration',
-    origin: 'Leuven, Belgium',
-    tagline: 'Промислові сепаратори, картриджі очистки палива, блоки PowerCore',
-    badge: 'Європейський склад',
-    popularOems: ['P553004', 'P535114', 'P550388', 'P550425'],
-    gradient: 'from-sky-500/20 via-blue-500/5 to-transparent',
-    accentBorder: 'hover:border-sky-500/50',
+    bgImage: 'https://images.unsplash.com/photo-1486006920555-c77dce18193b?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(16, 185, 129, 0.3)',
+    borderHover: 'group-hover:border-emerald-500/70',
+    popularOems: [
+      { oem: '2645A747', desc: 'Форсунка Common Rail', hot: true },
+      { oem: 'U5MK8267', desc: 'Поршнекомплект STD', hot: true },
+      { oem: '26561117', desc: 'Паливний картридж' },
+      { oem: 'T413847', desc: 'Водяна помпа ГРМ' },
+      { oem: '2641A203', desc: 'Паливна підкачка' },
+      { oem: 'U5PR0062', desc: 'Вкладиші шатунні' },
+    ],
   },
   {
     name: 'Carraro Drivetech',
     category: 'undercarriage',
     origin: 'Campodarsego, Italy',
-    tagline: 'Сателіти бортових передач, головні пари редукторів, поворотні кулаки',
+    tagline: 'Головні пари конічних передач, диференціали, касетні сальники мостів Claas, Manitou, Case',
     badge: 'Трансмісії та Мости',
-    popularOems: ['149298', '047702', '125196', '140643'],
-    gradient: 'from-violet-600/20 via-purple-500/5 to-transparent',
-    accentBorder: 'hover:border-violet-500/50',
+    bgImage: 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(168, 85, 247, 0.3)',
+    borderHover: 'group-hover:border-purple-500/70',
+    popularOems: [
+      { oem: '149298', desc: 'Касетний сальник маточини', hot: true },
+      { oem: '047702', desc: 'Конічна пара моста', hot: true },
+      { oem: '125196', desc: 'Подвійна хрестовина півосі' },
+      { oem: '140643', desc: 'Сателіт бортової передачі' },
+      { oem: '068153', desc: 'Фрикційний диск гальма' },
+      { oem: '149364', desc: 'Шворінь поворотного кулака' },
+    ],
+  },
+  {
+    name: 'Caterpillar (CAT)',
+    category: 'engines',
+    origin: 'Europe Trade Network',
+    tagline: 'Турбіни Garrett CAT, насоси високого тиску HEUI/Common Rail, розпилювачі C7.1 / C9 / C13',
+    badge: 'Heavy Plant',
+    bgImage: 'https://images.unsplash.com/photo-1578328819058-b69f3a3b0f6b?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(245, 158, 11, 0.3)',
+    borderHover: 'group-hover:border-amber-400/70',
+    popularOems: [
+      { oem: '326-1644', desc: 'Паливний сепаратор C9', hot: true },
+      { oem: '10R-7675', desc: 'Турбокомпресор C7 Reman', hot: true },
+      { oem: '224-3238', desc: 'Плунжерний ТНВД CAT' },
+      { oem: '1R-0716', desc: 'Фільтр тонкої очистки' },
+      { oem: '387-9427', desc: 'Форсунка C7.1 Acert' },
+      { oem: '248-5513', desc: 'Термостат важкого дизеля' },
+    ],
+  },
+  {
+    name: 'Donaldson Filtration',
+    category: 'filtration',
+    origin: 'Leuven, Belgium',
+    tagline: 'Оригінальні картриджі фільтрації палива Spin-On, блоки PowerCore для кар’єрної та агротехніки',
+    badge: 'Євросклад 24h',
+    bgImage: 'https://images.unsplash.com/photo-1616401784845-180882ba9ba8?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(14, 165, 233, 0.3)',
+    borderHover: 'group-hover:border-sky-500/70',
+    popularOems: [
+      { oem: 'P553004', desc: 'Паливний фільтр різьбовий', hot: true },
+      { oem: 'P535114', desc: 'Повітряний блок PowerCore', hot: true },
+      { oem: 'P550388', desc: 'Масляний фільтр гідравліки' },
+      { oem: 'P550425', desc: 'Сепаратор води в дизелі' },
+      { oem: 'DBA5024', desc: 'Повітряний фільтр Donaldson Blue' },
+      { oem: 'P550777', desc: 'Картридж системи охолодження' },
+    ],
   },
   {
     name: 'Fleetguard Cummins',
     category: 'filtration',
     origin: 'UK & EU Stocks',
-    tagline: 'Фільтри NanoNet для паливних систем Common Rail під надвисоким тиском',
-    badge: 'OEM Стандарт',
-    popularOems: ['AF25627NF', 'FK11008NN', 'LF16015', 'FS19732'],
-    gradient: 'from-rose-600/20 via-pink-500/5 to-transparent',
-    accentBorder: 'hover:border-rose-500/50',
-  },
-  {
-    name: 'Caterpillar (CAT)',
-    category: 'engines',
-    origin: 'Western Europe Stocks',
-    tagline: 'Турбокомпресори Garrett, датчики тиску, ремкомплекти двигунів C7.1',
-    badge: 'Heavy Plant',
-    popularOems: ['1R-0716', '1R-0749', '326-1644', '224-3238'],
-    gradient: 'from-amber-600/20 via-yellow-500/5 to-transparent',
-    accentBorder: 'hover:border-amber-400/50',
+    tagline: 'Патентовані фільтруючі елементи NanoNet для паливних рамп під надвисоким тиском (Stage V)',
+    badge: 'OEM Специфікація',
+    bgImage: 'https://images.unsplash.com/photo-1517524008697-84bbe3c3fd98?auto=format&fit=crop&w=800&q=80',
+    glowColor: 'rgba(244, 63, 94, 0.3)',
+    borderHover: 'group-hover:border-rose-500/70',
+    popularOems: [
+      { oem: 'FS19732', desc: 'Паливний сепаратор з датчиком', hot: true },
+      { oem: 'FK11008NN', desc: 'Комплект NanoNet ISB', hot: true },
+      { oem: 'LF16015', desc: 'Масляний фільтр Cummins' },
+      { oem: 'AF25627NF', desc: 'Повітряний радіальний фільтр' },
+      { oem: 'WF2075', desc: 'Фільтр охолоджуючої рідини' },
+      { oem: 'FS1000', desc: 'Потужний дизельний водовіддільник' },
+    ],
   },
 ];
 
@@ -149,26 +218,36 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string, brand
     : BRANDS.filter((b) => b.category === activeCategory);
 
   return (
-    <section className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-950 overflow-hidden border-t border-slate-800">
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[650px] h-[300px] bg-red-600/10 blur-[140px] rounded-full pointer-events-none" />
+    <section className="relative w-full py-24 px-4 sm:px-6 lg:px-8 bg-[#06090E] overflow-hidden border-t border-slate-800/80">
+      {/* М'які неонові сфери на фоні */}
+      <div className="absolute top-1/4 left-1/4 w-[700px] h-[350px] bg-red-600/10 blur-[160px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[300px] bg-amber-500/10 blur-[150px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
+        
+        {/* Заголовок секції */}
         <div className="text-center space-y-4 mb-14">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            Прямі склади Великобританії та Європи
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold tracking-widest uppercase shadow-[0_0_15px_rgba(239,68,68,0.2)]"
+          >
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            Прямі європейські склади • -20% UK VAT • Швидкий клік
+          </motion.div>
           
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
-            Каталог провідних <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-amber-200">OEM-виробників</span>
+          <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight">
+            Каталог найбільш ходових <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-amber-400 to-amber-200">OEM-вузлів</span>
           </h2>
           
-          <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base leading-relaxed">
-            Швидкий підбір за каталожними артикулами безпосередньо з хабу в Ковентрі (UK) з поверненням 20% UK VAT.
+          <p className="max-w-3xl mx-auto text-slate-400 text-sm sm:text-base leading-relaxed">
+            Виберіть потрібний артикул зі списку бестселерів нижче: номер і бренд автоматично підставляться у форму розрахунку закупівлі із доставкою з Великобританії.
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
+        {/* Навігаційні таби категорій */}
+        <div className="flex flex-wrap items-center justify-center gap-2.5 mb-14">
           {CATEGORIES.map((cat) => {
             const Icon = cat.icon;
             const isActive = activeCategory === cat.id;
@@ -176,10 +255,10 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string, brand
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer ${
+                className={`flex items-center gap-2 px-5 py-3 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all duration-300 cursor-pointer ${
                   isActive
-                    ? 'text-white bg-gradient-to-r from-red-600 to-red-700 shadow-[0_0_20px_rgba(239,68,68,0.35)] border border-red-400/40'
-                    : 'text-slate-400 hover:text-white bg-slate-900 hover:bg-slate-800 border border-slate-800'
+                    ? 'text-white bg-gradient-to-r from-red-600 to-red-700 shadow-[0_0_25px_rgba(239,68,68,0.4)] border border-red-400/50 scale-105'
+                    : 'text-slate-400 hover:text-white bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800/80'
                 }`}
               >
                 <Icon className={`w-4 h-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
@@ -189,55 +268,84 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string, brand
           })}
         </div>
 
+        {/* Сітка карток з фотографіями та підсвіткою */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
             {filteredBrands.map((brand, idx) => (
               <motion.div
                 key={brand.name}
                 layout
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 25 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3, delay: idx * 0.03 }}
-                className={`group relative rounded-2xl bg-slate-900/90 border border-slate-800 ${brand.accentBorder} p-6 flex flex-col justify-between transition-all duration-300 hover:shadow-2xl overflow-hidden`}
+                transition={{ duration: 0.35, delay: idx * 0.04 }}
+                className={`group relative rounded-2xl bg-slate-900/95 border border-slate-800/80 ${brand.borderHover} p-5 flex flex-col justify-between transition-all duration-500 hover:shadow-2xl overflow-hidden hover:-translate-y-1.5`}
+                style={{
+                  boxShadow: `0 10px 30px -15px ${brand.glowColor}`,
+                }}
               >
-                <div className={`absolute inset-0 bg-gradient-to-b ${brand.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`} />
+                {/* Фонове фото вузла з градієнтним затемненням */}
+                <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                  <img 
+                    src={brand.bgImage} 
+                    alt={brand.name} 
+                    className="w-full h-36 object-cover object-center opacity-20 group-hover:opacity-35 group-hover:scale-110 transition-all duration-700 filter brightness-90"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#0b0f17]/60 via-[#0b0f17]/95 to-[#0b0f17]" />
+                </div>
 
-                <div className="relative z-10 space-y-4">
+                {/* Верхня інформаційна частина */}
+                <div className="relative z-10 space-y-3">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="text-[11px] font-medium text-slate-400 flex items-center gap-1.5">
+                    <span className="text-[11px] font-medium text-slate-300 flex items-center gap-1.5 bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-sm border border-white/5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       {brand.origin}
                     </span>
-                    <span className="px-2 py-0.5 rounded text-[10px] font-bold tracking-wider uppercase bg-slate-800 border border-slate-700 text-slate-300">
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider uppercase bg-red-500/10 border border-red-500/20 text-red-400">
                       {brand.badge}
                     </span>
                   </div>
 
                   <div>
-                    <h3 className="text-xl font-bold text-white group-hover:text-red-400 transition-colors flex items-center justify-between">
+                    <h3 className="text-xl font-black text-white group-hover:text-red-400 transition-colors flex items-center justify-between">
                       {brand.name}
                       <ArrowUpRight className="w-4 h-4 opacity-0 group-hover:opacity-100 transition-all text-red-400 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </h3>
-                    <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                    <p className="text-xs text-slate-400 mt-1 line-clamp-2 leading-relaxed">
                       {brand.tagline}
                     </p>
                   </div>
                 </div>
 
-                <div className="relative z-10 mt-6 pt-4 border-t border-slate-800">
-                  <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
-                    <Search className="w-3 h-3 text-red-400" />
-                    Ходові OEM (клік для розрахунку):
+                {/* Розширені кнопки OEM з описом та бейджами */}
+                <div className="relative z-10 mt-5 pt-3.5 border-t border-slate-800/80">
+                  <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1.5">
+                      <Search className="w-3.5 h-3.5 text-amber-400" />
+                      Ходові позиції:
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-normal">клік для форми</span>
                   </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {brand.popularOems.map((oem) => (
+
+                  <div className="flex flex-col gap-1.5">
+                    {brand.popularOems.map((item) => (
                       <button
-                        key={oem}
-                        onClick={() => onSelectOem(oem, brand.name)}
-                        className="px-2.5 py-1 rounded-lg text-[11px] font-mono font-medium bg-slate-950 text-slate-300 hover:text-white hover:bg-red-600 hover:border-red-500 border border-slate-800 transition-all duration-150 cursor-pointer active:scale-95"
+                        key={item.oem}
+                        onClick={() => onSelectOem(item.oem, brand.name)}
+                        className="group/btn w-full flex items-center justify-between px-2.5 py-1.5 rounded-lg text-left bg-slate-950/70 hover:bg-red-600/20 border border-slate-800 hover:border-red-500/50 transition-all duration-200 cursor-pointer active:scale-98"
+                        title={`Підставити ${item.oem} у розрахунок`}
                       >
-                        {oem}
+                        <div className="flex items-center gap-2 truncate">
+                          {item.hot && (
+                            <Flame className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-bounce" />
+                          )}
+                          <span className="font-mono text-xs font-bold text-slate-200 group-hover/btn:text-white">
+                            {item.oem}
+                          </span>
+                        </div>
+                        <span className="text-[10px] text-slate-400 group-hover/btn:text-slate-300 truncate pl-2">
+                          {item.desc}
+                        </span>
                       </button>
                     ))}
                   </div>
@@ -247,16 +355,25 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string, brand
           </AnimatePresence>
         </motion.div>
 
-        <div className="mt-12 p-6 rounded-2xl bg-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-              <ShieldCheck className="w-5 h-5" />
+        {/* Нижня інформаційна плашка про розмитнення та наявність */}
+        <div className="mt-14 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-900/90 to-slate-950 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl">
+          <div className="flex items-center gap-4 text-center md:text-left">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shrink-0">
+              <ShieldCheck className="w-6 h-6" />
             </div>
             <div>
-              <div className="text-sm font-bold text-white">Шукаєте деталь іншого бренду?</div>
-              <div className="text-xs text-slate-400">Система шукає за каталожними номерами Komatsu, Volvo, Liebherr, Case, New Holland, Yanmar та десятків інших.</div>
+              <div className="text-base font-bold text-white flex items-center gap-2 justify-center md:justify-start">
+                Потрібен інший вузол або крос-номер?
+                <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-400/10 text-amber-400 border border-amber-400/30">
+                  Всі 50 хабів у пошуку
+                </span>
+              </div>
+              <div className="text-xs sm:text-sm text-slate-400 mt-0.5">
+                Система автоматично сканує склади Komatsu, Volvo, Liebherr, Case, New Holland, Yanmar, Dana Spicer та ZF.
+              </div>
             </div>
           </div>
+          
           <button 
             onClick={() => {
               const input = document.querySelector('input[type="text"]') as HTMLInputElement;
@@ -265,18 +382,19 @@ function BrandsCatalogInline({ onSelectOem }: { onSelectOem: (oem: string, brand
                 window.scrollTo({ top: input.offsetTop - 120, behavior: 'smooth' });
               }
             }}
-            className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 text-white font-semibold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(239,68,68,0.3)] shrink-0 cursor-pointer"
+            className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_25px_rgba(239,68,68,0.35)] shrink-0 cursor-pointer active:scale-95"
           >
-            Ввести свій номер
+            Ввести свій артикул
           </button>
         </div>
+
       </div>
     </section>
   );
 }
 
 /* =========================================================================
-   ЮРИДИЧНІ ДАНІ КОМПАНІЇ
+   ЮРИДИЧНА СЕКЦІЯ
    ========================================================================= */
 
 function InlineLegalSection() {
@@ -385,7 +503,7 @@ Email: nolimitgoods@gmail.com`;
 
 export default function Home() {
   const handleBrandOemSelect = (oem: string, brandName: string) => {
-    // 1. Пошук поля для номера OEM
+    // Шукаємо перше поле для каталожного номера OEM
     const oemInput = (document.querySelector('input[placeholder*="P535114"], input[name*="oem"], input[name*="partNumber"]') as HTMLInputElement) 
       || (document.querySelectorAll('input[type="text"]')[0] as HTMLInputElement);
 
@@ -395,7 +513,7 @@ export default function Home() {
       oemInput.dispatchEvent(new Event('input', { bubbles: true }));
       oemInput.dispatchEvent(new Event('change', { bubbles: true }));
 
-      // 2. Пошук поля бренду/техніки
+      // Шукаємо поле бренду
       const brandInput = (document.querySelector('input[placeholder*="Donaldson"], input[name*="brand"]') as HTMLInputElement)
         || (document.querySelectorAll('input[type="text"]')[1] as HTMLInputElement);
 
@@ -405,7 +523,7 @@ export default function Home() {
         brandInput.dispatchEvent(new Event('change', { bubbles: true }));
       }
 
-      // 3. Плавний фокус та скрол
+      // Плавний перехід до форми
       oemInput.focus();
       const formSection = oemInput.closest('section') || oemInput;
       formSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -417,12 +535,12 @@ export default function Home() {
       <Header />
       <HeroSection />
       
-      {/* Калькулятор специфікацій та пошук */}
+      {/* Калькулятор специфікацій */}
       <section className="px-4 sm:px-6 lg:px-8 -mt-6 mb-12 relative z-10">
         <PartsSearchWidget />
       </section>
 
-      {/* Каталог провідних OEM брендів */}
+      {/* Оновлений преміальний каталог з картинками та бестселерами */}
       <BrandsCatalogInline onSelectOem={handleBrandOemSelect} />
 
       <RFQSection />

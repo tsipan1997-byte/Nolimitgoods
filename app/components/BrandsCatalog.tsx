@@ -351,7 +351,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     : SUBGROUP_PARTS.filter(p => p.category === activeTab);
 
   return (
-    <section className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200">
+    <section id="oem-brands" className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200 scroll-mt-24">
       <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Шапка */}

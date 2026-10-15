@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
@@ -13,25 +14,29 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
           
-          {/* Колонка 1: Оригінальний логотип та інфо */}
+          {/* Колонка 1: Оригінальний логотип як у шапці */}
           <div className="space-y-4 md:col-span-1">
-            <div className="flex items-center gap-3 bg-white px-3.5 py-2 rounded-xl shadow-sm w-fit">
-              <span className="bg-red-600 text-white font-black text-xs px-2 py-1 rounded-lg">
-                NLG
-              </span>
-              <div>
-                <span className="block font-black text-slate-900 text-sm tracking-tight leading-none">
+            <Link href="/" className="flex items-center gap-3 group shrink-0">
+              <div className="flex items-center justify-center bg-white px-3.5 py-1.5 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.15)] border border-slate-200">
+                <img 
+                  src="/logo.png" 
+                  alt="NoLimitGoods" 
+                  className="h-8 sm:h-9 w-auto object-contain"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="text-base font-black tracking-tight text-white leading-tight">
                   NoLimitGoods
                 </span>
-                <span className="block text-[9px] font-bold text-red-600 uppercase tracking-widest mt-0.5">
-                  Coventry, UK Hub
+                <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-0.5">
+                  COVENTRY, UK HUB
                 </span>
               </div>
-            </div>
+            </Link>
             <p className="text-slate-400 text-[11px] leading-relaxed">
               {isUk 
-                ? 'Прямий європейський хаб та постачальник оригінальних запчастин для спецтехніки та агропромисловості.' 
-                : 'Direct European trade hub & supplier of genuine OEM machinery spares.'}
+                ? 'Прямий експорт оригінальних запчастин для спецтехніки та комерційного транспорту з Великобританії.' 
+                : 'Direct UK exporter of genuine OEM machinery and commercial vehicle parts.'}
             </p>
           </div>
 
@@ -41,13 +46,30 @@ export default function Footer() {
               {isUk ? 'Навігація' : 'Navigation'}
             </h4>
             <ul className="space-y-2 text-[11px]">
-              <li><a href="#parts-calculator" className="hover:text-white transition-colors">{isUk ? 'Калькулятор запчастин' : 'Parts Calculator'}</a></li>
-              <li><a href="#deliveries" className="hover:text-white transition-colors">{isUk ? 'Логістика Nova Post' : 'Nova Post Logistics'}</a></li>
-              <li><a href="#contacts" className="hover:text-white transition-colors">{isUk ? 'Юридичні реквізити' : 'Company Details'}</a></li>
+              <li>
+                <a href="#parts-calculator" className="hover:text-white transition-colors">
+                  {isUk ? 'Розрахунок вартості' : 'Quote Calculator'}
+                </a>
+              </li>
+              <li>
+                <a href="#catalog" className="hover:text-white transition-colors">
+                  {isUk ? 'Каталог вузлів OEM' : 'OEM Catalog'}
+                </a>
+              </li>
+              <li>
+                <a href="#deliveries" className="hover:text-white transition-colors">
+                  {isUk ? 'Відео відвантажень' : 'Live Dispatch'}
+                </a>
+              </li>
+              <li>
+                <a href="#contacts" className="hover:text-white transition-colors">
+                  {isUk ? 'Юридичні реквізити' : 'Legal & Contacts'}
+                </a>
+              </li>
             </ul>
           </div>
 
-          {/* Колонка 3: Контакти UK */}
+          {/* Колонка 3: Контакти хабу */}
           <div className="space-y-3">
             <h4 className="text-white font-bold text-xs uppercase tracking-wider">
               {isUk ? 'Хаб у Великобританії' : 'UK Hub Contacts'}
@@ -68,10 +90,10 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Колонка 4: Юридичний статус */}
+          {/* Колонка 4: Юридичні реквізити */}
           <div className="space-y-3">
             <h4 className="text-white font-bold text-xs uppercase tracking-wider">
-              {isUk ? 'Юридична гарантія' : 'Legal Compliance'}
+              {isUk ? 'Юридична інформація' : 'Legal Compliance'}
             </h4>
             <div className="p-3 rounded-xl bg-slate-900 border border-slate-800/80 space-y-1 text-[11px]">
               <div className="text-white font-bold flex items-center gap-1.5">

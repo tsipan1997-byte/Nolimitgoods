@@ -1,227 +1,59 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
-import PartsSearchWidget from './components/parts-search-widget';
 import BrandsCatalog from './components/BrandsCatalog';
-import RFQSection from './components/rfq-section';
 import DeliveriesSection from './components/deliveries-section';
-import PartsSection from './components/parts-section';
+import ContactSection from './components/contact-section';
 import Footer from './components/footer';
 import FloatingContact from './components/floating-contact';
-import { ShieldCheck, Building2, MapPin, Copy, Check, FileCheck, Phone, Mail } from 'lucide-react';
-import { useLanguage } from '@/lib/language-context';
 
-function syncAndFillCalculator(partNumber: string, brandName?: string) {
-  if (!partNumber) return;
+export default function HomePage() {
+  // Функція для автоматичного підхоплення артикула з каталогу в інпут калькулятора
+  const handleSelectOem = (oem: string, brand: string) => {
+    const calcSection = document.getElementById('parts-calculator');
+    const input = document.querySelector('input[type="text"]') as HTMLInputElement | null;
 
-  const allInputs = Array.from(document.querySelectorAll('input[type="text"]')) as HTMLInputElement[];
-
-  const targetOemInput = allInputs.find(input => {
-    const ph = input.placeholder.toLowerCase();
-    const nm = (input.name || '').toLowerCase();
-    return ph.includes('p535114') || ph.includes('oem') || nm.includes('oem') || nm.includes('part');
-  }) || allInputs[1] || allInputs[0];
-
-  if (targetOemInput) {
-    const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')?.set;
-    nativeSetter?.call(targetOemInput, partNumber.trim());
-    targetOemInput.dispatchEvent(new Event('input', { bubbles: true }));
-    targetOemInput.dispatchEvent(new Event('change', { bubbles: true }));
-
-    const detectedBrand = brandName || (partNumber.toUpperCase().includes('JCB') ? 'JCB' : '');
-    const brandInput = allInputs.find(input => {
-      const ph = input.placeholder.toLowerCase();
-      const nm = (input.name || '').toLowerCase();
-      return ph.includes('donaldson') || ph.includes('jcb') || nm.includes('brand');
-    });
-
-    if (brandInput && detectedBrand) {
-      nativeSetter?.call(brandInput, detectedBrand.trim());
-      brandInput.dispatchEvent(new Event('input', { bubbles: true }));
-      brandInput.dispatchEvent(new Event('change', { bubbles: true }));
+    if (calcSection) {
+      calcSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    const calcSection = targetOemInput.closest('section') || targetOemInput;
-    calcSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    targetOemInput.focus();
-  }
-}
-
-function InlineLegalSection() {
-  const { language } = useLanguage();
-  const isUk = language === 'uk' || (language as string) === 'ua';
-  const [copied, setCopied] = React.useState(false);
-
-  const copyDetails = () => {
-    const text = `NoLimitGoods Limited
-UK Company No: 13146899
-Director: Ivan Tsipan
-Registered Address: 374 Hipsell Highway, Coventry, CV2 5FR, United Kingdom
-VAT Number: GB 372 6541 87
-EORI Number: GB079878335000
-Phone: +44 7426 826595
-Email: nolimitgoods@gmail.com`;
-
-    navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2500);
+    if (input) {
+      input.value = oem;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    }
   };
 
   return (
-    <section id="contacts" className="py-20 bg-slate-900/60 text-white relative border-b border-slate-800">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-950 border border-slate-800 text-slate-300 text-xs sm:text-sm font-semibold mb-4">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-            <span>{isUk ? 'Офіційні юридичні реквізити Великобританії' : 'Official UK Corporate Credentials'}</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-3">
-            {isUk ? 'Юридична інформація та реквізити' : 'Legal & Corporate Credentials'}
-          </h2>
-          <p className="text-slate-400 text-sm sm:text-base">
-            {isUk
-              ? 'Прямі експортні контракти з Великобританії. 0% UK VAT, офіційний EORI та інвойси.'
-              : 'Direct supply under UK trade law with official zero-rated VAT export status.'}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl">
-            <Building2 className="w-6 h-6 text-red-500 mb-4" />
-            <h3 className="font-bold text-white text-base mb-2">NoLimitGoods Limited</h3>
-            <p className="text-xs text-slate-400 leading-relaxed space-y-1">
-              <span className="block">UK Company No: <strong className="text-white">13146899</strong></span>
-              <span className="block">{isUk ? 'Директор:' : 'Director:'} <strong className="text-white">Ivan Tsipan</strong></span>
-              <span className="block">{isUk ? 'Статус:' : 'Status:'} <strong className="text-emerald-400">Active / Good Standing</strong></span>
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl">
-            <FileCheck className="w-6 h-6 text-amber-400 mb-4" />
-            <h3 className="font-bold text-white text-base mb-2">{isUk ? 'Митниця та податки' : 'Tax & Customs'}</h3>
-            <p className="text-xs text-slate-400 leading-relaxed space-y-1 font-mono">
-              <span className="block">VAT: <strong className="text-white">GB 372 6541 87</strong></span>
-              <span className="block">EORI: <strong className="text-white">GB079878335000</strong></span>
-              <span className="block text-emerald-400">Export VAT: 0% Zero-Rated</span>
-            </p>
-          </div>
-
-          <div className="p-6 rounded-2xl bg-slate-950 border border-slate-800 shadow-xl">
-            <MapPin className="w-6 h-6 text-sky-400 mb-4" />
-            <h3 className="font-bold text-white text-base mb-2">{isUk ? 'Склад і зв’язок' : 'UK Hub & Contacts'}</h3>
-            <p className="text-xs text-slate-400 leading-relaxed space-y-1">
-              <span className="block">374 Hipsell Highway, Coventry, CV2 5FR</span>
-              <span className="block flex items-center gap-1.5 text-slate-300 pt-1">
-                <Phone className="w-3.5 h-3.5 text-red-500" />
-                <a href="tel:+447426826595" className="hover:text-white transition-colors">+44 7426 826595</a>
-              </span>
-              <span className="block flex items-center gap-1.5 text-slate-300">
-                <Mail className="w-3.5 h-3.5 text-amber-500" />
-                <a href="mailto:nolimitgoods@gmail.com" className="hover:text-white transition-colors">nolimitgoods@gmail.com</a>
-              </span>
-            </p>
-          </div>
-        </div>
-
-        <div className="text-center">
-          <button
-            type="button"
-            onClick={copyDetails}
-            className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-750 border border-slate-750 text-slate-200 text-xs sm:text-sm font-semibold transition-all shadow-md active:scale-95 cursor-pointer"
-          >
-            {copied ? (
-              <>
-                <Check className="w-4 h-4 text-emerald-400" />
-                <span className="text-emerald-300">{isUk ? 'Реквізити скопійовано в буфер!' : 'Copied to clipboard!'}</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-4 h-4 text-slate-400" />
-                <span>{isUk ? 'Скопіювати повні реквізити для договору / оплати' : 'Copy Full Credentials for Invoice'}</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-export default function Home() {
-  useEffect(() => {
-    const handleGlobalHeroSearch = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target) return;
-
-      const searchBtn = target.closest('button');
-      if (searchBtn) {
-        const btnText = (searchBtn.textContent || '').toLowerCase();
-        if (btnText.includes('знайти ціну') || btnText.includes('find price') || btnText.includes('розрахувати')) {
-          const heroInput = document.querySelector('input[type="text"]') as HTMLInputElement;
-          if (heroInput && heroInput.value.trim()) {
-            e.preventDefault();
-            syncAndFillCalculator(heroInput.value.trim());
-          }
-        }
-
-        if (searchBtn.closest('[class*="hero"], header, section:first-of-type')) {
-          const text = (searchBtn.textContent || '').trim();
-          if (text.includes('P55') || text.includes('JCB') || text.includes('Perkins') || text.includes('Carraro')) {
-            e.preventDefault();
-            const cleanOem = text.replace(/JCB|Perkins|Carraro/gi, '').trim();
-            syncAndFillCalculator(cleanOem, text.includes('JCB') ? 'JCB' : '');
-          }
-        }
-      }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        const activeElem = document.activeElement as HTMLInputElement;
-        if (activeElem && activeElem.tagName === 'INPUT') {
-          const allInputs = Array.from(document.querySelectorAll('input[type="text"]'));
-          if (allInputs[0] === activeElem && activeElem.value.trim()) {
-            e.preventDefault();
-            syncAndFillCalculator(activeElem.value.trim());
-          }
-        }
-      }
-    };
-
-    document.addEventListener('click', handleGlobalHeroSearch);
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('click', handleGlobalHeroSearch);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
-  const handleCatalogOemSelect = (oem: string, brandName: string) => {
-    syncAndFillCalculator(oem, brandName);
-  };
-
-  return (
-    <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-red-500 selection:text-white">
+      {/* 1. Верхня фіксована навігація з B2B-порталом та логотипом */}
       <Header />
-      <HeroSection />
-      
-      {/* Калькулятор розрахунку */}
-      <section id="parts-calculator" className="px-4 sm:px-6 lg:px-8 -mt-6 mb-12 relative z-10">
-        <PartsSearchWidget />
-      </section>
 
-      {/* Підключення оновленого двомовного каталогу з папки components */}
-      <BrandsCatalog onSelectOem={handleCatalogOemSelect} />
+      {/* 2. Hero-секція з відеофоном та розрахунком */}
+      <div id="parts-calculator">
+        <HeroSection />
+      </div>
 
-      <RFQSection />
-      <DeliveriesSection />
-      <PartsSection />
-      <InlineLegalSection />
+      {/* 3. ЄДИНИЙ світлий преміальний каталог запчастин (8 карток у 2 ряди + робочі підгрупи) */}
+      <BrandsCatalog onSelectOem={handleSelectOem} />
+
+      {/* 4. Відео відвантажень запчастин із хабу у Ковентрі */}
+      <div id="deliveries">
+        <DeliveriesSection />
+      </div>
+
+      {/* 5. Юридичні реквізити NoLimitGoods Ltd та контакти */}
+      <div id="contacts">
+        <ContactSection />
+      </div>
+
+      {/* 6. Футер сайту */}
       <Footer />
+
+      {/* 7. Плаваюча кнопка зв'язку (WhatsApp / дзвінок) */}
       <FloatingContact />
-    </main>
+    </div>
   );
 }

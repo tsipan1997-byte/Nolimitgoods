@@ -19,7 +19,7 @@ interface PartShowcaseItem {
   popularOems: string[];
 }
 
-// 8 карток під ваші точні назви файлів без жодного перейменування
+// 8 завантажених позицій з вашими реальними фото
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -362,6 +362,19 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     ? SHOWCASE_FEATURED
     : SUBGROUP_PARTS.filter(p => p.category === activeTab);
 
+  // Надійний хендлер для підтягування фото, якщо папка лежить у /parts чи /app/public/parts
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, originalPath: string) => {
+    const target = e.currentTarget;
+    const currentSrc = target.getAttribute('src') || '';
+
+    if (!currentSrc.startsWith('/app/public/')) {
+      target.src = '/app/public' + originalPath;
+    } else {
+      // Якщо фото зовсім не знайдено, ставимо надійний фото-бекап агрегата
+      target.src = 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80';
+    }
+  };
+
   return (
     <section id="oem-brands" className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200 scroll-mt-24">
       <div className="max-w-7xl mx-auto space-y-12">
@@ -422,9 +435,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     src={item.image}
                     alt={item.nameEn}
                     className="w-full h-full object-contain p-1 rounded-lg group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => {
-                      (e.currentTarget as HTMLImageElement).src = '/parts/JCB-PArker.jpg';
-                    }}
+                    onError={(e) => handleImageError(e, item.image)}
                   />
                   <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />

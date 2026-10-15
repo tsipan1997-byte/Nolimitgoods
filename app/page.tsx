@@ -3,7 +3,7 @@
 import React from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
-import TrustBanner from './components/trust-banner'; // 1. Імпортуємо наш траст-баннер
+import TrustBanner from './components/trust-banner';
 import RFQSection from './components/rfq-section';
 import BrandsCatalog from './components/BrandsCatalog';
 import DeliveriesSection from './components/deliveries-section';
@@ -12,7 +12,6 @@ import Footer from './components/footer';
 import FloatingContact from './components/floating-contact';
 
 export default function HomePage() {
-  // Функція для одночасного підхоплення артикула та назви бренду з каталогу в калькулятор
   const handleSelectOem = (oem: string, brand: string) => {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(
@@ -36,7 +35,7 @@ export default function HomePage() {
       {/* 2. Головний банер (Hero) */}
       <HeroSection />
 
-      {/* 2.1. Траст-баннер із правдивими цифрами та європейськими гарантіями */}
+      {/* 2.1. Траст-баннер із правдивими цифрами */}
       <TrustBanner />
 
       {/* 3. Блок калькулятора та специфікацій */}
@@ -45,7 +44,9 @@ export default function HomePage() {
       </div>
 
       {/* 4. Світлий каталог вузлів OEM з реальними фото */}
-      <BrandsCatalog onSelectOem={handleSelectOem} />
+      <div id="catalog">
+        <BrandsCatalog onSelectOem={handleSelectOem} />
+      </div>
 
       {/* 5. Відео відвантажень з хабу */}
       <div id="deliveries">

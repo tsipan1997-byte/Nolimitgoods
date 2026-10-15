@@ -7,52 +7,195 @@ function cleanPartNumber(pn: string): string {
   return pn.replace(/[^a-zA-Z0-9]/g, '').toLowerCase().trim();
 }
 
-// 1. БАЗА ШВИДКИХ ПЕРЕВІРЕНИХ ЗАПЧАСТИН (0.01 сек)
-// containsVat: true - ціна постачальника містить VAT (потрібно відняти 20% перед націнкою)
-// containsVat: false - ціна постачальника чиста Ex. VAT
+// 1. БАЗА ШВИДКИХ ПЕРЕВІРЕНИХ ЗАПЧАСТИН З ТОЧНИМИ МАГАЗИНАМИ ТА ПОСИЛАННЯМИ
 const VERIFIED_OEM_CACHE: Record<
   string,
-  { title: string; buyGbp: number; weightKg: number; supplier: string; containsVat: boolean }
+  { title: string; buyGbp: number; weightKg: number; supplier: string; supplierUrl: string; containsVat: boolean }
 > = {
   // Fleetguard
-  af25627nf: { title: 'Fleetguard AF25627NF Air Filter', buyGbp: 28.5, weightKg: 1.1, supplier: 'Fleetguard UK Hub', containsVat: true },
-  fk11008nn: { title: 'Fleetguard FK11008NN NanoNet Fuel Filter Kit', buyGbp: 34.8, weightKg: 0.95, supplier: 'Cummins Power UK', containsVat: true },
-  ab15803: { title: 'Fleetguard AB15803 Air Breather Filter', buyGbp: 16.2, weightKg: 0.45, supplier: 'Inline Filters UK', containsVat: true },
-  lf16015: { title: 'Fleetguard LF16015 Lube Filter', buyGbp: 11.2, weightKg: 0.55, supplier: 'Fleetguard UK Depot', containsVat: true },
-  fs19732: { title: 'Fleetguard FS19732 Fuel Water Separator', buyGbp: 22.4, weightKg: 0.8, supplier: 'Inline Filters UK', containsVat: true },
+  af25627nf: {
+    title: 'Fleetguard AF25627NF Air Filter',
+    buyGbp: 28.5,
+    weightKg: 1.1,
+    supplier: 'Inline Filters UK',
+    supplierUrl: 'https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=AF25627NF',
+    containsVat: true,
+  },
+  fk11008nn: {
+    title: 'Fleetguard FK11008NN NanoNet Fuel Filter Kit',
+    buyGbp: 34.8,
+    weightKg: 0.95,
+    supplier: 'Cummins Parts Direct UK',
+    supplierUrl: 'https://parts.cummins.com/search?keyword=FK11008NN',
+    containsVat: true,
+  },
+  ab15803: {
+    title: 'Fleetguard AB15803 Air Breather Filter',
+    buyGbp: 16.2,
+    weightKg: 0.45,
+    supplier: 'Inline Filters UK',
+    supplierUrl: 'https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=AB15803',
+    containsVat: true,
+  },
+  lf16015: {
+    title: 'Fleetguard LF16015 Lube Filter',
+    buyGbp: 11.2,
+    weightKg: 0.55,
+    supplier: 'FilterFinder UK',
+    supplierUrl: 'https://filterfinder.co.uk/search?q=LF16015',
+    containsVat: true,
+  },
+  fs19732: {
+    title: 'Fleetguard FS19732 Fuel Water Separator',
+    buyGbp: 22.4,
+    weightKg: 0.8,
+    supplier: 'Inline Filters UK',
+    supplierUrl: 'https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=FS19732',
+    containsVat: true,
+  },
 
   // Donaldson
-  p553004: { title: 'Donaldson P553004 Fuel Filter Water Separator', buyGbp: 14.5, weightKg: 0.6, supplier: 'Inline Filters UK', containsVat: true },
-  p535114: { title: 'Donaldson P535114 Air Filter Primary Round', buyGbp: 175.4, weightKg: 8.08, supplier: 'FilterFinder UK', containsVat: true },
-  p550388: { title: 'Donaldson P550388 Lube Filter Spin-On', buyGbp: 12.8, weightKg: 0.65, supplier: 'FilterFinder UK', containsVat: true },
-  p550425: { title: 'Donaldson P550425 Hydraulic Filter', buyGbp: 24.1, weightKg: 0.9, supplier: 'FilterFinder UK', containsVat: true },
+  p553004: {
+    title: 'Donaldson P553004 Fuel Filter Water Separator',
+    buyGbp: 14.5,
+    weightKg: 0.6,
+    supplier: 'Inline Filters UK',
+    supplierUrl: 'https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=P553004',
+    containsVat: true,
+  },
+  p535114: {
+    title: 'Donaldson P535114 Air Filter Primary Round',
+    buyGbp: 175.4,
+    weightKg: 8.08,
+    supplier: 'Inline Filters UK',
+    supplierUrl: 'https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=P535114',
+    containsVat: true,
+  },
+  p550388: {
+    title: 'Donaldson P550388 Lube Filter Spin-On',
+    buyGbp: 12.8,
+    weightKg: 0.65,
+    supplier: 'FilterFinder UK',
+    supplierUrl: 'https://filterfinder.co.uk/search?q=P550388',
+    containsVat: true,
+  },
+  p550425: {
+    title: 'Donaldson P550425 Hydraulic Filter',
+    buyGbp: 24.1,
+    weightKg: 0.9,
+    supplier: 'FilterFinder UK',
+    supplierUrl: 'https://filterfinder.co.uk/search?q=P550425',
+    containsVat: true,
+  },
+
+  // HiFi Filter
+  sh60187: {
+    title: 'HIFI Filter SH 60187 Hydraulic Element',
+    buyGbp: 25.6,
+    weightKg: 1.5,
+    supplier: 'Inline Filters UK',
+    supplierUrl: 'https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=SH60187',
+    containsVat: true,
+  },
 
   // JCB Genuine
-  '332y3163': { title: 'JCB 332/Y3163 Fan Alternator Poly-V Belt', buyGbp: 53.3, weightKg: 0.4, supplier: 'Holt JCB Parts', containsVat: true },
-  '45820403': { title: 'JCB 458/20403 Axle Hub Seal Cover Plate', buyGbp: 4.87, weightKg: 0.15, supplier: 'Vicary Plant UK', containsVat: true },
-  '32925682': { title: 'JCB 32/925682 Fuel Filter Element', buyGbp: 18.9, weightKg: 0.5, supplier: 'Vicary Plant UK', containsVat: true },
-  '32925346': { title: 'JCB 32/925346 Hydraulic Filter High Pressure', buyGbp: 22.5, weightKg: 0.85, supplier: 'Vicary Plant UK', containsVat: true },
-  '02100073': { title: 'JCB 02/100073 Oil Filter Element', buyGbp: 9.4, weightKg: 0.6, supplier: 'Vicary Plant UK', containsVat: true },
+  '332y3163': {
+    title: 'JCB 332/Y3163 Fan Alternator Poly-V Belt',
+    buyGbp: 53.3,
+    weightKg: 0.4,
+    supplier: 'Vicary Plant JCB UK',
+    supplierUrl: 'https://vicaryplant.co.uk/search?q=332Y3163',
+    containsVat: true,
+  },
+  '45820403': {
+    title: 'JCB 458/20403 Axle Hub Seal Cover Plate',
+    buyGbp: 4.87,
+    weightKg: 0.15,
+    supplier: 'Vicary Plant JCB UK',
+    supplierUrl: 'https://vicaryplant.co.uk/search?q=45820403',
+    containsVat: true,
+  },
+  '32925682': {
+    title: 'JCB 32/925682 Fuel Filter Element',
+    buyGbp: 18.9,
+    weightKg: 0.5,
+    supplier: 'Vicary Plant JCB UK',
+    supplierUrl: 'https://vicaryplant.co.uk/search?q=32925682',
+    containsVat: true,
+  },
+  '32925346': {
+    title: 'JCB 32/925346 Hydraulic Filter High Pressure',
+    buyGbp: 22.5,
+    weightKg: 0.85,
+    supplier: 'Vicary Plant JCB UK',
+    supplierUrl: 'https://vicaryplant.co.uk/search?q=32925346',
+    containsVat: true,
+  },
+  '02100073': {
+    title: 'JCB 02/100073 Oil Filter Element',
+    buyGbp: 9.4,
+    weightKg: 0.6,
+    supplier: 'Vicary Plant JCB UK',
+    supplierUrl: 'https://vicaryplant.co.uk/search?q=02100073',
+    containsVat: true,
+  },
 
   // Perkins & Carraro
-  '26561117': { title: 'Perkins 26561117 Secondary Fuel Filter Element', buyGbp: 21.0, weightKg: 0.65, supplier: 'DiPerk Power Solutions UK', containsVat: true },
-  '26560201': { title: 'Perkins 26560201 Fuel Filter Water Separator', buyGbp: 26.5, weightKg: 0.75, supplier: 'DiPerk Power Solutions UK', containsVat: true },
-  '149298': { title: 'Carraro 149298 Planetary Gear Hub', buyGbp: 75.0, weightKg: 2.3, supplier: 'IntaTrac UK', containsVat: true },
-  '047702': { title: 'Carraro 047702 Oil Seal Cassette Hub', buyGbp: 18.2, weightKg: 0.25, supplier: 'IntaTrac UK', containsVat: true },
-  a10vso71: { title: 'Bosch Rexroth A10VSO71 Hydraulic Pump', buyGbp: 890.0, weightKg: 33.0, supplier: 'Hydraulic Megastore UK', containsVat: true },
+  '26561117': {
+    title: 'Perkins 26561117 Secondary Fuel Filter Element',
+    buyGbp: 21.0,
+    weightKg: 0.65,
+    supplier: 'DiPerk Power Solutions UK',
+    supplierUrl: 'https://www.diperk.com/search?keyword=26561117',
+    containsVat: true,
+  },
+  '26560201': {
+    title: 'Perkins 26560201 Fuel Filter Water Separator',
+    buyGbp: 26.5,
+    weightKg: 0.75,
+    supplier: 'DiPerk Power Solutions UK',
+    supplierUrl: 'https://www.diperk.com/search?keyword=26560201',
+    containsVat: true,
+  },
+  '149298': {
+    title: 'Carraro 149298 Planetary Gear Hub',
+    buyGbp: 75.0,
+    weightKg: 2.3,
+    supplier: 'IntaTrac Carraro UK',
+    supplierUrl: 'https://www.intatracuk.com/search?q=149298',
+    containsVat: true,
+  },
+  '047702': {
+    title: 'Carraro 047702 Oil Seal Cassette Hub',
+    buyGbp: 18.2,
+    weightKg: 0.25,
+    supplier: 'IntaTrac Carraro UK',
+    supplierUrl: 'https://www.intatracuk.com/search?q=047702',
+    containsVat: true,
+  },
+  a10vso71: {
+    title: 'Bosch Rexroth A10VSO71 Hydraulic Pump',
+    buyGbp: 890.0,
+    weightKg: 33.0,
+    supplier: 'Hydraulic Megastore UK',
+    supplierUrl: 'https://www.hydraulicmegastore.com/?s=A10VSO71&post_type=product',
+    containsVat: true,
+  },
 };
 
-// 2. ЗАПИТ ДО PERPLEXITY SONAR
+// 2. ЗАПИТ ДО PERPLEXITY SONAR З ОБОВ'ЯЗКОВИМ ПОВЕРНЕННЯМ МАГАЗИНУ І ПОСИЛАННЯ
 async function queryPerplexityForPart(
   partNumber: string,
   brandOrModel: string,
   apiKey: string
-): Promise<{ title: string; priceGbp: number; weightKg: number; supplier: string; containsVat: boolean }> {
+): Promise<{ title: string; priceGbp: number; weightKg: number; supplier: string; supplierUrl: string; containsVat: boolean }> {
   const prompt = `Task: Sourcing heavy machinery OEM spare part.
 Part Number: "${partNumber}"
 Brand/Equipment: "${brandOrModel}"
 
 Find current live European or UK trade supplier price.
+Identify exact store/distributor name (e.g. Inline Filters, Vicary Plant, TVH, Kramp, MalpasOnline, DiPerk, Hydraulic Megastore).
+Provide exact product page URL or store search URL for this part number.
 Determine if the found price INCLUDES VAT (gross) or EXCLUDES VAT (net).
 If the price is in EUR (€), convert to GBP using 1 EUR = 0.85 GBP.
 Estimate parcel shipping weight in kg.
@@ -62,7 +205,8 @@ Respond ONLY with valid JSON:
   "title": "Exact OEM Part Name",
   "priceGbp": 0.00,
   "weightKg": 1.0,
-  "supplier": "Store/Distributor Name",
+  "supplier": "Exact Store Name",
+  "supplierUrl": "https://store-domain.co.uk/product-or-search-link",
   "includesVat": true
 }`;
 
@@ -119,11 +263,19 @@ Respond ONLY with valid JSON:
     throw new Error(`Price not found for ${partNumber}`);
   }
 
+  // Створюємо пряме посилання на пошук, якщо Perplexity повернув порожній URL
+  const supplierName = parsed?.supplier || 'Inline Filters UK';
+  let url = parsed?.supplierUrl || '';
+  if (!url || !url.startsWith('http')) {
+    url = `https://www.google.com/search?q=${encodeURIComponent(supplierName + ' ' + partNumber)}`;
+  }
+
   return {
     title: parsed?.title || `${brandOrModel} ${partNumber}`.trim(),
     priceGbp: Math.round(price * 100) / 100,
     weightKg: Math.round(weight * 10) / 10,
-    supplier: parsed?.supplier || 'UK/EU Machinery Network',
+    supplier: supplierName,
+    supplierUrl: url,
     containsVat: parsed?.includesVat !== undefined ? Boolean(parsed.includesVat) : true,
   };
 }
@@ -163,8 +315,9 @@ export async function POST(request: Request) {
         let supplierPriceGbp = 0;
         let unitWeightKg = 1.0;
         let partTitle = `${item.machineModel} ${item.partNumber}`.trim();
-        let storeName = 'UK Distribution Hub';
-        let hasVat = true; // За замовчуванням для роздрібних цін у UK/ЄС
+        let storeName = 'Inline Filters UK';
+        let storeUrl = `https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=${encodeURIComponent(item.partNumber)}`;
+        let hasVat = true;
 
         if (VERIFIED_OEM_CACHE[cleaned]) {
           const cached = VERIFIED_OEM_CACHE[cleaned];
@@ -172,6 +325,7 @@ export async function POST(request: Request) {
           unitWeightKg = cached.weightKg;
           partTitle = cached.title;
           storeName = cached.supplier;
+          storeUrl = cached.supplierUrl;
           hasVat = cached.containsVat;
         } else if (pplxKey) {
           try {
@@ -180,6 +334,7 @@ export async function POST(request: Request) {
             unitWeightKg = found.weightKg;
             partTitle = found.title;
             storeName = found.supplier;
+            storeUrl = found.supplierUrl;
             hasVat = found.containsVat;
           } catch (e) {
             console.warn(`Perplexity fallback for ${item.partNumber}:`, e);
@@ -189,17 +344,16 @@ export async function POST(request: Request) {
         if (supplierPriceGbp <= 0) {
           supplierPriceGbp = 32.0;
           unitWeightKg = 1.5;
-          storeName = 'Coventry OEM Hub';
+          storeName = 'Inline Filters UK';
+          storeUrl = `https://www.inlinefilters.co.uk/index.php?main_page=advanced_search_result&keyword=${encodeURIComponent(item.partNumber)}`;
           hasVat = true;
         }
 
-        // --- ТОЧНА МАТЕМАТИКА ЦІНИ ---
-        // 1. Очищення від VAT: якщо ціна з ПДВ, ділимо на 1.20 (віднімаємо 20%)
+        // РОЗРАХУНОК: Віднімаємо 20% VAT якщо ціна з ПДВ, потім додаємо +25% націнки
         const netBaseCostGbp = hasVat
           ? Math.round((supplierPriceGbp / 1.20) * 100) / 100
           : Math.round(supplierPriceGbp * 100) / 100;
 
-        // 2. Ціна для клієнта: база без VAT + 25% націнки
         const clientUnitPriceGbp = Math.round(netBaseCostGbp * 1.25 * 100) / 100;
 
         const totalWeightKg = Math.round(unitWeightKg * item.quantity * 10) / 10;
@@ -212,17 +366,18 @@ export async function POST(request: Request) {
           partTitle,
           supplierRawPriceGbp: supplierPriceGbp,
           hasVat,
-          supplierBuyPriceGbp: netBaseCostGbp, // Собівартість без VAT
-          clientUnitPriceGbp,                 // Клієнт платить: база + 25%
+          supplierBuyPriceGbp: netBaseCostGbp,
+          clientUnitPriceGbp,
           unitWeightKg,
           totalWeightKg,
           itemTotalGbp,
           storeName,
+          storeUrl,
         };
       })
     );
 
-    // Розрахунок доставки Nova Post Global за загальною вагою
+    // Розрахунок доставки Nova Post Global
     const totalOrderWeightKg = Math.round(
       processedItems.reduce((acc, curr) => acc + curr.totalWeightKg, 0) * 10
     ) / 10;
@@ -256,7 +411,6 @@ export async function POST(request: Request) {
     ) / 100;
     const finalTotalGbp = Math.round((itemsSubtotalGbp + shippingCost) * 100) / 100;
 
-    // Чистий прибуток компанії (+25% маржа від нетто-вартості)
     const totalProfitGbp = Math.round(
       processedItems.reduce(
         (acc, curr) => acc + (curr.clientUnitPriceGbp - curr.supplierBuyPriceGbp) * curr.quantity,
@@ -266,14 +420,16 @@ export async function POST(request: Request) {
 
     const invNum = invoiceNumber || `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // ВІДПРАВКА В TELEGRAM
+    // ВІДПРАВКА В TELEGRAM З ТОЧНИМ МАГАЗИНОМ ТА ПОСИЛАННЯМ ДЛЯ ЗАКУПКИ
     if (tgToken && tgChatId) {
       const lines = processedItems
         .map(
           (it, idx) =>
             `${idx + 1}. <b>${it.partTitle}</b> [<code>${it.partNumber}</code>]\n` +
-            `   • ${it.quantity} шт × £${it.clientUnitPriceGbp.toFixed(2)} ` +
-            `(Прайс партнера: £${it.supplierRawPriceGbp.toFixed(2)}${it.hasVat ? ' Inc. VAT' : ' Ex. VAT'} ➔ База без VAT: £${it.supplierBuyPriceGbp.toFixed(2)} / <i>${it.storeName}</i>)`
+            `   • ${it.quantity} шт × £${it.clientUnitPriceGbp.toFixed(2)}\n` +
+            `   • Прайс партнера: £${it.supplierRawPriceGbp.toFixed(2)}${it.hasVat ? ' Inc. VAT' : ' Ex. VAT'}\n` +
+            `   • Чиста закупка без VAT: <b>£${it.supplierBuyPriceGbp.toFixed(2)}</b>\n` +
+            `   🏪 <b>Де купити:</b> <a href="${it.storeUrl}"><b>${it.storeName}</b> 🔗 (Відкрити товар)</a>`
         )
         .join('\n\n');
 
@@ -300,7 +456,7 @@ ${lines}
         await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: tgChatId, text: tgMsg, parse_mode: 'HTML' }),
+          body: JSON.stringify({ chat_id: tgChatId, text: tgMsg, parse_mode: 'HTML', disable_web_page_preview: true }),
         });
       } catch (tgErr) {
         console.error('Telegram notification error:', tgErr);
@@ -318,7 +474,7 @@ ${lines}
             contactName: contact || 'B2B Client',
             country,
             items: processedItems.map((it) => ({
-              description: `${it.partTitle} [${it.partNumber}]`,
+              description: `${it.partTitle} [${it.partNumber}] (Постачальник: ${it.storeName})`,
               quantity: it.quantity,
               unitAmount: it.clientUnitPriceGbp,
             })),

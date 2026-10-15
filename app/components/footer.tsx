@@ -1,107 +1,137 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
-import { ShieldCheck } from 'lucide-react';
+import Link from 'next/link';
+import { ShieldCheck, Phone, Mail, MapPin } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function Footer() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <footer className="bg-slate-950 text-slate-400 border-t border-slate-900 py-14">
+    <footer className="w-full bg-[#04060A] text-slate-400 text-xs border-t border-slate-800/80 pt-16 pb-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           
-          {/* Лого і опис */}
-          <div className="md:col-span-2">
-            <div className="flex items-center mb-4">
-              <Image
-                src="/logo.png"
-                alt="No Limit Goods Ltd"
-                width={150}
-                height={45}
-                className="h-10 w-auto brightness-110"
-              />
+          {/* 1. БЛОК ЛОГОТИПУ НА БІЛІЙ ПІДКЛАДЦІ */}
+          <div className="md:col-span-2 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center bg-white px-3 py-1.5 rounded-xl shadow-md border border-slate-200">
+                <img 
+                  src="/logo.png" 
+                  alt="NoLimitGoods Logo" 
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                    const fallback = e.currentTarget.nextElementSibling;
+                    if (fallback) fallback.classList.remove('hidden');
+                  }}
+                  className="h-7 w-auto object-contain"
+                />
+                <span className="hidden text-slate-950 font-black text-lg tracking-tighter">
+                  <span className="text-red-600">n</span>lg
+                </span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-sm font-black text-white tracking-wide">
+                  NoLimitGoods Limited
+                </span>
+                <span className="text-[10px] text-slate-400 uppercase tracking-wider">
+                  Coventry, UK Hub
+                </span>
+              </div>
             </div>
-            <p className="text-xs text-slate-400 max-w-md leading-relaxed mb-4">
+
+            <p className="text-slate-400 text-xs sm:text-sm max-w-md leading-relaxed">
               {isUk
                 ? 'Прямий експортер оригінальних запчастин до сільськогосподарської, будівельної та спеціальної техніки з Великобританії в Україну. Власний хаб у Ковентрі, офіційні інвойси, DOUANE митне оформлення.'
-                : 'Direct UK exporter of genuine heavy machinery and agricultural equipment spare parts. Hub in Coventry, T1 transit declarations and European logistics.'}
+                : 'Direct exporter of genuine spare parts for agricultural, construction, and heavy machinery from the UK. Dedicated Coventry hub, official zero-rated export invoices, T1 customs clearance.'}
             </p>
-            <div className="flex items-center gap-2 text-xs text-slate-500 font-mono">
-              <ShieldCheck className="w-4 h-4 text-emerald-500" />
-              <span>UK Company No. 13146899 • VAT 372654187</span>
+
+            <div className="flex flex-wrap items-center gap-3 text-[11px] text-slate-400 pt-2 font-mono">
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                UK Company No: 13146899
+              </span>
+              <span>•</span>
+              <span>VAT: GB 372 6541 87</span>
+              <span>•</span>
+              <span>EORI: GB079878335000</span>
             </div>
           </div>
 
-          {/* Навігація */}
+          {/* 2. РОЗДІЛИ ТА НАВІГАЦІЯ */}
           <div>
-            <h4 className="text-white text-xs font-bold uppercase tracking-wider mb-4">
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider mb-4">
               {isUk ? 'Розділи' : 'Navigation'}
             </h4>
-            <ul className="space-y-2 text-xs">
+            <ul className="space-y-2.5">
               <li>
-                <button onClick={() => scrollTo('parts')} className="hover:text-white transition-colors cursor-pointer">
-                  {isUk ? 'Каталог деталей з цінами' : 'Parts Catalog'}
-                </button>
+                <a href="#parts-calculator" className="hover:text-white transition-colors">
+                  {isUk ? 'Каталог деталей з цінами' : 'Parts Catalog & Pricing'}
+                </a>
               </li>
               <li>
-                <button onClick={() => scrollTo('rfq')} className="hover:text-white transition-colors cursor-pointer">
-                  {isUk ? 'Калькулятор вартості' : 'Price Calculator'}
-                </button>
+                <a href="#parts-calculator" className="hover:text-white transition-colors">
+                  {isUk ? 'Калькулятор вартості' : 'Quote Calculator'}
+                </a>
               </li>
               <li>
-                <button onClick={() => scrollTo('deliveries')} className="hover:text-white transition-colors cursor-pointer">
-                  {isUk ? 'Відеозвіт відвантажень' : 'Live Dispatch Video'}
-                </button>
+                <a href="#deliveries" className="hover:text-white transition-colors">
+                  {isUk ? 'Відеозвіт відвантажень' : 'Live Dispatch Videos'}
+                </a>
               </li>
               <li>
-                <button onClick={() => scrollTo('brands')} className="hover:text-white transition-colors cursor-pointer">
-                  {isUk ? 'Бренди (Donaldson, JCB, CAT)' : 'OEM Brands'}
-                </button>
+                <a href="#oem-brands" className="hover:text-white transition-colors">
+                  {isUk ? 'Бренди (Donaldson, JCB, CAT)' : 'OEM Brands (Donaldson, JCB)'}
+                </a>
               </li>
               <li>
-                <button onClick={() => scrollTo('contact')} className="hover:text-white transition-colors cursor-pointer">
-                  {isUk ? 'Юридичні реквізити' : 'Legal & Contacts'}
-                </button>
+                <a href="#contacts" className="hover:text-white transition-colors">
+                  {isUk ? 'Юридичні реквізити' : 'Legal & Corporate Details'}
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Склад у Ковентрі */}
+          {/* 3. СКЛАД ТА КОНТАКТИ */}
           <div>
-            <h4 className="text-white text-xs font-bold uppercase tracking-wider mb-4">
-              {isUk ? 'Склад у Великобританії' : 'Coventry Hub'}
+            <h4 className="text-white font-bold text-xs uppercase tracking-wider mb-4">
+              {isUk ? 'Склад у Великобританії' : 'UK Dispatch Hub'}
             </h4>
-            <address className="not-italic text-xs text-slate-400 space-y-2">
-              <p className="text-slate-300 font-medium">374 Hipsell Highway, Coventry</p>
-              <p>West Midlands, CV2 5FR, UK</p>
-              <p className="pt-2 text-slate-300 font-mono">+44 7426 826595</p>
-              <p className="text-amber-400">nolimitgoods@gmail.com</p>
-            </address>
+            <div className="space-y-2.5 text-slate-400">
+              <p className="flex items-start gap-2">
+                <MapPin className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+                <span>374 Hipsell Highway, Coventry, West Midlands, CV2 5FR, UK</span>
+              </p>
+              <p className="flex items-center gap-2">
+                <Phone className="w-4 h-4 text-red-500 shrink-0" />
+                <a href="tel:+447426826595" className="hover:text-white transition-colors">
+                  +44 7426 826595
+                </a>
+              </p>
+              <p className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-amber-500 shrink-0" />
+                <a href="mailto:nolimitgoods@gmail.com" className="hover:text-white transition-colors">
+                  nolimitgoods@gmail.com
+                </a>
+              </p>
+            </div>
           </div>
 
         </div>
 
-        {/* Нижня стрічка копірайту */}
-        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-4">
-          <p>© {new Date().getFullYear()} NoLimitGoods Limited. All rights reserved.</p>
+        {/* НИЖНІЙ БАР */}
+        <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-400">
+          <div>
+            © 2026 NoLimitGoods Limited. {isUk ? 'Всі права захищені.' : 'All rights reserved.'}
+          </div>
           <div className="flex items-center gap-4">
             <span>Coventry, England</span>
             <span>•</span>
-            <span>EORI: GB079878335000</span>
-            <span>•</span>
-            <span className="text-emerald-500 font-semibold">UK Verified Exporter</span>
+            <span className="text-emerald-400 font-semibold">
+              {isUk ? 'Офіційний експортер UK' : 'UK Verified Exporter'}
+            </span>
           </div>
         </div>
 

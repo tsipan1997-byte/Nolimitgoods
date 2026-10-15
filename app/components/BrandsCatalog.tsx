@@ -19,7 +19,7 @@ interface PartShowcaseItem {
   popularOems: string[];
 }
 
-// 8 завантажених позицій з вашими реальними фото
+// 1. Головна вітрина: рівно 8 позицій (2 ряди по 4 картки)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -127,6 +127,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
+// 2. Підгрупи брендів (по 4 представники з точними назвами файлів)
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
   // ФІЛЬТРАЦІЯ
   {
@@ -157,15 +158,15 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
   },
   {
     id: 'filt-mann',
-    nameUk: 'Mann-Filter: Промислова гідравліка та мастило',
-    nameEn: 'Mann-Filter: Industrial Lube & Hydraulic Media',
+    nameUk: 'Mann-Filter: Промислова паливна та масляна очистка',
+    nameEn: 'Mann-Filter: Heavy Fuel & Lube Filtration',
     oem: 'WD13145',
     brand: 'MANN-FILTER HUMMEL',
     originUk: 'Людвігсбург, Німеччина',
     originEn: 'Ludwigsburg, Germany',
     category: 'filtration',
     brandColor: 'text-emerald-600',
-    image: '/parts/Donaldson.jpeg',
+    image: '/parts/Mann-Filter.jpeg',
     popularOems: ['WD13145', 'WK950/21', 'HD1047', 'C25710'],
   },
   {
@@ -178,7 +179,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Portsmouth, UK',
     category: 'filtration',
     brandColor: 'text-indigo-500',
-    image: '/parts/Fleetguard.jpeg',
+    image: '/parts/Pall.jpeg',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
 
@@ -198,8 +199,8 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
   },
   {
     id: 'eng-cat',
-    nameUk: 'Caterpillar (CAT): Турбіни Garrett C7/C9 та паливні помпи',
-    nameEn: 'Caterpillar: C7/C9 Turbochargers & Fuel Injection',
+    nameUk: 'Caterpillar (CAT): Турбіни Garrett C7/C9 та ТНВД',
+    nameEn: 'Caterpillar: C7/C9 Turbochargers & Pumps',
     oem: '10R-7675',
     brand: 'CATERPILLAR (CAT)',
     originUk: 'Дистрибуція ЄС та UK',
@@ -219,20 +220,20 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Darlington, UK',
     category: 'engines',
     brandColor: 'text-red-600',
-    image: '/parts/Perkins.jpg',
+    image: '/parts/Cummins.jpeg',
     popularOems: ['5263262', '4937766', '4089744', '2872277'],
   },
   {
     id: 'eng-deutz',
-    nameUk: 'Deutz AG: Гільзо-поршневі групи 2011/2012',
-    nameEn: 'Deutz AG: Liner Sets & Heads',
+    nameUk: 'Deutz AG: Турбокомпресори та гільзо-поршнева група',
+    nameEn: 'Deutz AG: Turbos & Cylinder Assemblies',
     oem: '04284142',
     brand: 'DEUTZ AG',
     originUk: 'Кельн, Німеччина',
     originEn: 'Cologne, Germany',
     category: 'engines',
     brandColor: 'text-blue-600',
-    image: '/parts/CAT.jpeg',
+    image: '/parts/Deutz.jpeg',
     popularOems: ['04284142', '04287047', '02937441', '04207588'],
   },
 
@@ -252,7 +253,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
   },
   {
     id: 'hyd-rexroth',
-    nameUk: 'Bosch Rexroth: Насоси A10VSO та гідромотори ходу',
+    nameUk: 'Bosch Rexroth: Насоси A10VSO та мотори ходу',
     nameEn: 'Bosch Rexroth: A10VSO Pumps & Travel Motors',
     oem: 'A10VSO18DRG',
     brand: 'BOSCH REXROTH',
@@ -278,15 +279,15 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
   },
   {
     id: 'hyd-eaton',
-    nameUk: 'Eaton Vickers: Лопатеві та поршневі гідронасоси',
-    nameEn: 'Eaton Vickers: Vane & Piston Heavy Pumps',
+    nameUk: 'Eaton Vickers: Промислові гідроагрегати та клапани',
+    nameEn: 'Eaton Vickers: Heavy Hydraulic Pumps & Valves',
     oem: '25V21A1A22R',
     brand: 'EATON VICKERS',
     originUk: 'Хавант, Велика Британія',
     originEn: 'Havant, UK',
     category: 'hydraulics',
     brandColor: 'text-teal-600',
-    image: '/parts/JCB-PArker.jpg',
+    image: '/parts/Eaton%20Vickers.jpeg',
     popularOems: ['25V21A1A22R', '35V38A1A22R', 'DG4V-3-2A', 'PVH098R'],
   },
 
@@ -306,28 +307,28 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
   },
   {
     id: 'und-zf',
-    nameUk: 'ZF Friedrichshafen: Бортові планетарні редуктори',
-    nameEn: 'ZF: Axle Reducers & Transmission Gears',
+    nameUk: 'ZF Friedrichshafen: Бортові редуктори мостів',
+    nameEn: 'ZF: Heavy Axle Reducers & Planetaries',
     oem: '0501.216.002',
     brand: 'ZF FRIEDRICHSHAFEN',
     originUk: 'Фрідріхсгафен, Німеччина',
     originEn: 'Friedrichshafen, Germany',
     category: 'undercarriage',
     brandColor: 'text-blue-500',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/ZF.jpeg',
     popularOems: ['0501.216.002', '0501.322.845', '4143.040.001', '0734.319.418'],
   },
   {
     id: 'und-spicer',
     nameUk: 'Dana Spicer: Кардани, диференціали, хрестовини',
-    nameEn: 'Dana Spicer: Cardan Shafts & Diffs',
+    nameEn: 'Dana Spicer: Cardan Shafts & Heavy Diffs',
     oem: '213.12.012.01',
     brand: 'DANA SPICER',
     originUk: 'Монселіче, Італія',
     originEn: 'Monselice, Italy',
     category: 'undercarriage',
     brandColor: 'text-orange-500',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/Dana%20Spicer.jpeg',
     popularOems: ['213.12.012.01', '012.052.02', '212.09.045', '311.08.019'],
   },
   {
@@ -340,7 +341,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Rocester, UK',
     category: 'undercarriage',
     brandColor: 'text-amber-500',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/JCB-PArker.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -362,7 +363,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     ? SHOWCASE_FEATURED
     : SUBGROUP_PARTS.filter(p => p.category === activeTab);
 
-  // Надійний хендлер для підтягування фото, якщо папка лежить у /parts чи /app/public/parts
+  // Хендлер шляхів: шукає як у /parts, так і у /app/public/parts
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, originalPath: string) => {
     const target = e.currentTarget;
     const currentSrc = target.getAttribute('src') || '';
@@ -370,8 +371,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     if (!currentSrc.startsWith('/app/public/')) {
       target.src = '/app/public' + originalPath;
     } else {
-      // Якщо фото зовсім не знайдено, ставимо надійний фото-бекап агрегата
-      target.src = 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=600&q=80';
+      target.src = '/parts/JCB-PArker.jpg';
     }
   };
 
@@ -395,7 +395,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </p>
         </div>
 
-        {/* Таби */}
+        {/* Таби перемикання категорій */}
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           {tabs.map(tab => {
             const Icon = tab.icon;
@@ -417,7 +417,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* Сітка: рівно 4 колонки (2 ряди по 4) */}
+        {/* Світла сітка: рівно по 4 картки в ряд */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
             {displayedList.map((item) => (
@@ -429,7 +429,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
               >
-                {/* Фотографія */}
+                {/* Фотографія агрегата */}
                 <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
                   <img
                     src={item.image}

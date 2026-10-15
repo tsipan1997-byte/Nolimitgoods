@@ -220,7 +220,7 @@ function getTier1Tasks(oem: string) {
       return null;
     },
 
-    // 11. HydraStore UK (Danfoss / Kawasaki Mobile Hydraulics)
+    // 11. HydraStore UK
     async (): Promise<SourcedOffer | null> => {
       try {
         const url = `https://www.hydrastore.co.uk/catalogsearch/result/?q=${oem}`;
@@ -256,7 +256,7 @@ function getTier1Tasks(oem: string) {
       return null;
     },
 
-    // 13. White House Products UK (Rexroth / Commercial Pumps)
+    // 13. White House Products UK
     async (): Promise<SourcedOffer | null> => {
       try {
         const url = `https://www.whitehouseproductsltd.com/search?keyword=${oem}`;
@@ -406,7 +406,6 @@ function getTier1Tasks(oem: string) {
 // ==========================================
 // ЕШЕЛОН 2: 30 ДРУГОРЯДНИХ СПЕЦІАЛІЗОВАНИХ ХАБІВ
 // ==========================================
-// Перелік 30 провідних європейських B2B порталів:
 const TIER2_HUBS = [
   'TVH Equipment Parts BE/UK',
   'Granit Parts DE',
@@ -440,7 +439,6 @@ const TIER2_HUBS = [
   'ZF Aftermarket Europe Hub',
 ];
 
-// Автоматичний живий B2B-пошук по 30 спеціалізованих хабах через Perplexity
 async function queryTier2Hubs(
   partNumber: string,
   brandOrModel: string,
@@ -511,7 +509,7 @@ Respond ONLY with valid JSON:
   }
 
   if (isNaN(price) || price <= 0) {
-    price = 38.0; // Базова безпечна закупівля
+    price = 38.0;
   }
 
   const hasVat = parsed?.includesVat !== undefined ? Boolean(parsed.includesVat) : true;
@@ -561,13 +559,17 @@ export async function POST(request: Request) {
     const tgToken = process.env.TELEGRAM_BOT_TOKEN;
     const tgChatId = process.env.TELEGRAM_CHAT_ID;
     const xeroWebhook = process.env.XERO_WEBHOOK_URL;
+    const googleSheetWebhook =
+      process.env.GOOGLE_SHEETS_WEBHOOK_URL ||
+      process.env.MAKE_WEBHOOK_URL ||
+      process.env.GOOGLE_SCRIPT_URL;
 
     // ОБРОБКА ДЕТАЛЕЙ ЧЕРЕЗ 50 ХАБІВ (ЕШЕЛОН 1 -> ЕШЕЛОН 2)
     const processedItems = await Promise.all(
       validItems.map(async (item) => {
         let bestOffer: SourcedOffer | null = null;
 
-        // КРОК 1: Опитуємо 20 основних сайтів першого ешелону
+        // КРОК 1: 20 основних сайтів
         const tier1Tasks = getTier1Tasks(item.partNumber);
         const settled = await Promise.allSettled(tier1Tasks.map((fn) => fn()));
         const validOffers: SourcedOffer[] = [];
@@ -583,7 +585,7 @@ export async function POST(request: Request) {
           bestOffer = validOffers[0];
         }
 
-        // КРОК 2: Якщо в 20 основних немає, скануємо 30 другорядних хабів
+        // КРОК 2: 30 хабів другого ешелону через AI
         if (!bestOffer && pplxKey) {
           try {
             bestOffer = await queryTier2Hubs(item.partNumber, item.machineModel, pplxKey);
@@ -592,7 +594,7 @@ export async function POST(request: Request) {
           }
         }
 
-        // КРОК 3: Fallback у разі рідкісного артикула
+        // КРОК 3: Fallback
         if (!bestOffer) {
           const fallbackNet = 32.0;
           bestOffer = {
@@ -617,8 +619,8 @@ export async function POST(request: Request) {
           partTitle: bestOffer.title,
           supplierRawPriceGbp: bestOffer.rawPriceGbp,
           hasVat: bestOffer.hasVat,
-          supplierBuyPriceGbp: bestOffer.netBaseGbp, // Чиста база без VAT
-          clientUnitPriceGbp: bestOffer.clientPriceGbp, // Клієнт платить (+25% націнки)
+          supplierBuyPriceGbp: bestOffer.netBaseGbp,
+          clientUnitPriceGbp: bestOffer.clientPriceGbp,
           unitWeightKg: bestOffer.weightKg,
           totalWeightKg,
           itemTotalGbp,
@@ -670,21 +672,67 @@ export async function POST(request: Request) {
     ) / 100;
 
     const invNum = invoiceNumber || `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
+    const dateNow = new Date().toISOString();
 
-    // СПОВІЩЕННЯ В TELEGRAM (З ТОЧНОЮ НАЗВОЮ ТА ПОСИЛАННЯМ НА МАГАЗИН З 50 ХАБІВ)
+    // ==========================================
+    // 1. АВТОМАТИЧНИЙ ЗАПИС У GOOGLE SHEETS / MAKE.COM
+    // ==========================================
+    if (googleSheetWebhook) {
+      try {
+        await fetch(googleSheetWebhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event: 'new_rfq_quote',
+            invoiceNumber: invNum,
+            date: dateNow,
+            contact,
+            country,
+            totalItems: processedItems.length,
+            totalWeightKg: totalOrderWeightKg,
+            shippingCostGbp: shippingCost,
+            itemsSubtotalGbp,
+            totalAmountGbp: finalTotalGbp,
+            estimatedProfitGbp: totalProfitGbp,
+            items: processedItems.map((it) => ({
+              partNumber: it.partNumber,
+              brand: it.machineModel,
+              title: it.partTitle,
+              quantity: it.quantity,
+              unitPriceGbp: it.clientUnitPriceGbp,
+              itemTotalGbp: it.itemTotalGbp,
+              supplierName: it.storeName,
+              supplierUrl: it.storeUrl,
+              supplierCostGbp: it.supplierBuyPriceGbp,
+            })),
+            // Зручний зведений рядок для вставки прямо в одну клітинку таблиці
+            specificationSummary: processedItems
+              .map((it) => `${it.partNumber} [${it.machineModel}] x${it.quantity} (£${it.itemTotalGbp.toFixed(2)})`)
+              .join('; '),
+          }),
+        });
+      } catch (sheetErr) {
+        console.error('Google Sheets Webhook Dispatch Error:', sheetErr);
+      }
+    }
+
+    // ==========================================
+    // 2. СПОВІЩЕННЯ В TELEGRAM
+    // ==========================================
     if (tgToken && tgChatId) {
       const lines = processedItems
         .map(
           (it, idx) =>
-            `${idx + 1}. <b>${it.partTitle}</b> [<code>${it.partNumber}</code>]\n` +
+            `${idx + 1}. <b>${it.partTitle}</b>\n` +
+            `   • Артикул: <code>${it.partNumber}</code> | Бренд: <b>${it.machineModel}</b>\n` +
             `   • ${it.quantity} шт × £${it.clientUnitPriceGbp.toFixed(2)}\n` +
-            `   • Прайс партнера: £${it.supplierRawPriceGbp.toFixed(2)}${it.hasVat ? ' Inc. VAT' : ' Ex. VAT'}\n` +
-            `   • База без VAT (собівартість): <b>£${it.supplierBuyPriceGbp.toFixed(2)}</b>\n` +
-            `   🏪 <b>Де купити:</b> <a href="${it.storeUrl}"><b>${it.storeName}</b> 🔗 (Відкрити магазин)</a>`
+            `   • Собівартість Ex. VAT: £${it.supplierBuyPriceGbp.toFixed(2)}\n` +
+            `   🏪 <b>Постачальник:</b> <a href="${it.storeUrl}"><b>${it.storeName}</b> 🔗</a>`
         )
         .join('\n\n');
 
-      const tgMsg = `🚀 <b>НОВИЙ B2B РАХУНОК: ${invNum}</b>\n` +
+      const tgMsg =
+        `🚀 <b>НОВИЙ B2B РАХУНОК: ${invNum}</b>\n` +
         `━━━━━━━━━━━━━━━━━━━━━━━━\n` +
         `🌐 <b>Скан мережі: 50 європейських хабів</b>\n` +
         `📋 <b>Специфікація (${processedItems.length} поз.):</b>\n\n` +
@@ -694,25 +742,30 @@ export async function POST(request: Request) {
         `🚚 <b>Доставка Nova Post:</b> ${parcelType} — <b>£${shippingCost}</b>\n\n` +
         `👤 <b>Клієнт:</b> ${contact || 'Не вказано'}\n` +
         `📍 <b>Країна:</b> ${country}\n\n` +
-        `💰 <b>ФІНАНСИ (-VAT + 25% НАЦІНКА):</b>\n` +
-        `- Запчастини (клієнт сплачує): <b>£${itemsSubtotalGbp.toFixed(2)}</b>\n` +
-        `- Базова собівартість Ex. VAT: <b>£${(processedItems.reduce((acc, curr) => acc + curr.supplierBuyPriceGbp * curr.quantity, 0)).toFixed(2)}</b>\n` +
-        `- Доставка Nova Post: <b>£${shippingCost.toFixed(2)}</b>\n` +
-        `- <b>РАЗОМ ДО СПЛАТИ:</b> <b>£${finalTotalGbp.toFixed(2)}</b>\n` +
-        `- <b>ВАШ ЧИСТИЙ ПРИБУТОК (+25%):</b> <b>£${totalProfitGbp.toFixed(2)}</b> 🔥`;
+        `💰 <b>ФІНАНСИ:</b>\n` +
+        `- Разом запчастини: <b>£${itemsSubtotalGbp.toFixed(2)}</b>\n` +
+        `- Разом до сплати: <b>£${finalTotalGbp.toFixed(2)}</b>\n` +
+        `- <b>ВАШ ЧИСТИЙ ПРИБУТОК:</b> <b>£${totalProfitGbp.toFixed(2)}</b> 🔥`;
 
       try {
         await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: tgChatId, text: tgMsg, parse_mode: 'HTML', disable_web_page_preview: true }),
+          body: JSON.stringify({
+            chat_id: tgChatId,
+            text: tgMsg,
+            parse_mode: 'HTML',
+            disable_web_page_preview: true,
+          }),
         });
       } catch (tgErr) {
         console.error('Telegram notification error:', tgErr);
       }
     }
 
-    // СИНХРОНІЗАЦІЯ З XERO
+    // ==========================================
+    // 3. СИНХРОНІЗАЦІЯ З XERO
+    // ==========================================
     if (xeroWebhook) {
       try {
         await fetch(xeroWebhook, {
@@ -723,14 +776,14 @@ export async function POST(request: Request) {
             contactName: contact || 'B2B Client',
             country,
             items: processedItems.map((it) => ({
-              description: `${it.partTitle} [${it.partNumber}] (Постачальник: ${it.storeName})`,
+              description: `${it.partTitle} [${it.partNumber}] — Бренд: ${it.machineModel} (Хаб: ${it.storeName})`,
               quantity: it.quantity,
               unitAmount: it.clientUnitPriceGbp,
             })),
             shippingAmount: shippingCost,
             totalAmount: finalTotalGbp,
             currencyCode: 'GBP',
-            date: new Date().toISOString().split('T')[0],
+            date: dateNow.split('T')[0],
           }),
         });
       } catch (xeroErr) {

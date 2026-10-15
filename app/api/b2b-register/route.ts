@@ -5,6 +5,12 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
   try {
     const data = await request.json();
+
+    // 🛡️ Honeypot захист від спам-ботів
+    if (data.website_hp) {
+      return NextResponse.json({ success: true, status: 'filtered' });
+    }
+
     const {
       companyName = '',
       taxId = '',
@@ -30,7 +36,7 @@ export async function POST(request: Request) {
 
     const dateNow = new Date().toLocaleString('uk-UA', { timeZone: 'Europe/London' });
 
-    // 1. Відправка на скрипт Google Таблиці
+    // 1. Запис у Google Таблицю (лист B2B_Clients)
     if (googleSheetUrl) {
       try {
         await fetch(googleSheetUrl, {
@@ -56,20 +62,20 @@ export async function POST(request: Request) {
       }
     }
 
-    // 2. Сповіщення в робочий Telegram-бот
+    // 2. Сповіщення в Telegram
     if (tgToken && tgChatId) {
       const tgMsg =
         `🏢 <b>НОВА РЕЄСТРАЦІЯ B2B-КЛІЄНТА (0% VAT)</b>\n` +
         `━━━━━━━━━━━━━━━━━━━━━━━━\n` +
         `🏛 <b>Компанія:</b> ${companyName}\n` +
         `📑 <b>ЄДРПОУ / VAT:</b> <code>${taxId || '—'}</code>\n` +
-        `👤 <b>Контактна особа:</b> ${contactPerson}\n` +
-        `📞 <b>Телефон / WhatsApp:</b> <code>${phone}</code>\n` +
+        `👤 <b>Контакт:</b> ${contactPerson}\n` +
+        `📞 <b>Телефон:</b> <code>${phone}</code>\n` +
         `✉️ <b>Email:</b> ${email}\n` +
-        `📍 <b>Адреса доставки:</b> ${country}, ${cityAddress}\n` +
-        `🚜 <b>Парк техніки:</b> ${machineryFleet || 'Не вказано'}\n` +
+        `📍 <b>Адреса:</b> ${country}, ${cityAddress}\n` +
+        `🚜 <b>Парк:</b> ${machineryFleet || 'Не вказано'}\n` +
         `━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-        `🕒 <i>Час заявки (UK Hub): ${dateNow}</i>`;
+        `🕒 <i>Час (UK Hub): ${dateNow}</i>`;
 
       try {
         await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {

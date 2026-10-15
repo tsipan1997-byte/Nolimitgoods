@@ -15,10 +15,11 @@ interface PartShowcaseItem {
   originEn: string;
   category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration';
   brandColor: string;
-  accentBg: string;
+  image: string;
   popularOems: string[];
 }
 
+// Рівно 8 позицій: 2 повні ряди по 4 колонки
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -30,7 +31,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originEn: 'Rocester, UK',
     category: 'hydraulics',
     brandColor: 'text-amber-500',
-    accentBg: 'from-amber-500/10 to-amber-500/5',
+    image: '/parts/jcb-pump.jpg',
     popularOems: ['332/Y3163', '20/925327', '320/04186', '04/600786'],
   },
   {
@@ -43,7 +44,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
     brandColor: 'text-red-500',
-    accentBg: 'from-red-500/10 to-red-500/5',
+    image: '/parts/carraro-axle.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -56,7 +57,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
     brandColor: 'text-blue-500',
-    accentBg: 'from-blue-500/10 to-blue-500/5',
+    image: '/parts/rexroth-pump.jpg',
     popularOems: ['A10VSO71DFR1', 'A10VSO45DFR1', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
   {
@@ -69,7 +70,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originEn: 'Peterborough, UK',
     category: 'engines',
     brandColor: 'text-emerald-500',
-    accentBg: 'from-emerald-500/10 to-emerald-500/5',
+    image: '/parts/perkins-cr.jpg',
     popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
   {
@@ -82,7 +83,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originEn: 'European Hub',
     category: 'engines',
     brandColor: 'text-yellow-600',
-    accentBg: 'from-yellow-500/10 to-yellow-500/5',
+    image: '/parts/cat-turbo.jpg',
     popularOems: ['10R-7675', '326-1644', '224-3238', '1R-0716'],
   },
   {
@@ -95,13 +96,39 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originEn: 'Leuven, Belgium',
     category: 'filtration',
     brandColor: 'text-sky-500',
-    accentBg: 'from-sky-500/10 to-sky-500/5',
+    image: '/parts/donaldson-filter.jpg',
     popularOems: ['P553004', 'P535114', 'P550388', 'DBA5024'],
+  },
+  {
+    id: 'danfoss-motor',
+    nameUk: 'Гідромотори та орбітроли Danfoss OSPB',
+    nameEn: 'Danfoss OSPB Steering Units & Motors',
+    oem: 'OSPB 160 ON',
+    brand: 'DANFOSS MOBILE',
+    originUk: 'Норборг, Данія',
+    originEn: 'Nordborg, Denmark',
+    category: 'hydraulics',
+    brandColor: 'text-red-600',
+    image: '/parts/danfoss-motor.jpg',
+    popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
+  },
+  {
+    id: 'fleetguard-filter',
+    nameUk: 'Модулі фільтрації Fleetguard Cummins Stage V',
+    nameEn: 'Fleetguard Cummins Filtration Units',
+    oem: 'FS19732',
+    brand: 'FLEETGUARD CUMMINS',
+    originUk: 'Склади UK та Європи',
+    originEn: 'UK & European Hubs',
+    category: 'filtration',
+    brandColor: 'text-rose-500',
+    image: '/parts/fleetguard-filter.jpg',
+    popularOems: ['FS19732', 'FK11008NN', 'LF16015', 'AF25627NF'],
   },
 ];
 
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
-  // ФІЛЬТРАЦІЯ
+  // ФІЛЬТРАЦІЯ (4 лідери)
   {
     id: 'filt-donaldson',
     nameUk: 'Donaldson: Повітряні блоки PowerCore & Spin-On',
@@ -112,7 +139,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Leuven, Belgium',
     category: 'filtration',
     brandColor: 'text-sky-500',
-    accentBg: 'from-sky-500/10 to-sky-500/5',
+    image: '/parts/donaldson-filter.jpg',
     popularOems: ['P553004', 'P535114', 'P550388', 'P550425'],
   },
   {
@@ -125,7 +152,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'UK & European Hubs',
     category: 'filtration',
     brandColor: 'text-rose-500',
-    accentBg: 'from-rose-500/10 to-rose-500/5',
+    image: '/parts/fleetguard-filter.jpg',
     popularOems: ['FS19732', 'FK11008NN', 'LF16015', 'AF25627NF'],
   },
   {
@@ -138,7 +165,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Ludwigsburg, Germany',
     category: 'filtration',
     brandColor: 'text-emerald-600',
-    accentBg: 'from-emerald-500/10 to-emerald-500/5',
+    image: '/parts/mann-filter.jpg',
     popularOems: ['WD13145', 'WK950/21', 'HD1047', 'C25710'],
   },
   {
@@ -151,11 +178,11 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Portsmouth, UK',
     category: 'filtration',
     brandColor: 'text-indigo-500',
-    accentBg: 'from-indigo-500/10 to-indigo-500/5',
+    image: '/parts/pall-filter.jpg',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
 
-  // ДВИГУНИ
+  // ДВИГУНИ (4 заводи)
   {
     id: 'eng-perkins',
     nameUk: 'Perkins Engines: Поршнекомплекти, форсунки, помпи',
@@ -166,7 +193,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Peterborough, UK',
     category: 'engines',
     brandColor: 'text-emerald-500',
-    accentBg: 'from-emerald-500/10 to-emerald-500/5',
+    image: '/parts/perkins-cr.jpg',
     popularOems: ['2645A747', 'U5MK8267', 'T413847', 'U5PR0062'],
   },
   {
@@ -179,7 +206,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'EU & UK Distribution',
     category: 'engines',
     brandColor: 'text-yellow-600',
-    accentBg: 'from-yellow-500/10 to-yellow-500/5',
+    image: '/parts/cat-turbo.jpg',
     popularOems: ['10R-7675', '326-1644', '224-3238', '387-9427'],
   },
   {
@@ -192,7 +219,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Darlington, UK',
     category: 'engines',
     brandColor: 'text-red-600',
-    accentBg: 'from-red-500/10 to-red-500/5',
+    image: '/parts/cummins-engine.jpg',
     popularOems: ['5263262', '4937766', '4089744', '2872277'],
   },
   {
@@ -205,11 +232,11 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Cologne, Germany',
     category: 'engines',
     brandColor: 'text-blue-600',
-    accentBg: 'from-blue-500/10 to-blue-500/5',
+    image: '/parts/deutz-engine.jpg',
     popularOems: ['04284142', '04287047', '02937441', '04207588'],
   },
 
-  // ГІДРАВЛІКА
+  // ГІДРАВЛІКА (4 бренди)
   {
     id: 'hyd-rexroth',
     nameUk: 'Bosch Rexroth: Головні поршневі насоси та клапани',
@@ -220,7 +247,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
     brandColor: 'text-blue-500',
-    accentBg: 'from-blue-500/10 to-blue-500/5',
+    image: '/parts/rexroth-pump.jpg',
     popularOems: ['A10VSO71DFR1', 'A10VSO45DFR1', 'A4VG90EP4D1', '4WE6D6X/EG24'],
   },
   {
@@ -233,7 +260,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Nordborg, Denmark',
     category: 'hydraulics',
     brandColor: 'text-red-500',
-    accentBg: 'from-red-500/10 to-red-500/5',
+    image: '/parts/danfoss-motor.jpg',
     popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
   },
   {
@@ -246,7 +273,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Warwick, UK',
     category: 'hydraulics',
     brandColor: 'text-amber-500',
-    accentBg: 'from-amber-500/10 to-amber-500/5',
+    image: '/parts/jcb-pump.jpg',
     popularOems: ['PGP511A0190', 'F12-060-MF-IV-D', 'PV046R1K1T1', 'D1VW001CNJW'],
   },
   {
@@ -259,11 +286,11 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Havant, UK',
     category: 'hydraulics',
     brandColor: 'text-teal-600',
-    accentBg: 'from-teal-500/10 to-teal-500/5',
+    image: '/parts/eaton-pump.jpg',
     popularOems: ['25V21A1A22R', '35V38A1A22R', 'DG4V-3-2A-M-U-H7-60', 'PVH098R'],
   },
 
-  // МОСТИ ТА ХОДОВА
+  // МОСТИ ТА ХОДОВА (4 бренди)
   {
     id: 'und-carraro',
     nameUk: 'Carraro Drivetech: Головні пари, сателіти, шворні',
@@ -274,7 +301,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
     brandColor: 'text-red-500',
-    accentBg: 'from-red-500/10 to-red-500/5',
+    image: '/parts/carraro-axle.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -287,7 +314,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Friedrichshafen, Germany',
     category: 'undercarriage',
     brandColor: 'text-blue-500',
-    accentBg: 'from-blue-500/10 to-blue-500/5',
+    image: '/parts/zf-axle.jpg',
     popularOems: ['0501.216.002', '0501.322.845', '4143.040.001', '0734.319.418'],
   },
   {
@@ -300,7 +327,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Monselice, Italy',
     category: 'undercarriage',
     brandColor: 'text-orange-500',
-    accentBg: 'from-orange-500/10 to-orange-500/5',
+    image: '/parts/dana-spicer.jpg',
     popularOems: ['213.12.012.01', '012.052.02', '212.09.045', '311.08.019'],
   },
   {
@@ -313,7 +340,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Rocester, UK',
     category: 'undercarriage',
     brandColor: 'text-amber-500',
-    accentBg: 'from-amber-500/10 to-amber-500/5',
+    image: '/parts/jcb-knuckle.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -339,7 +366,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const [activeTab, setActiveTab] = useState<string>('all');
 
   const tabs = [
-    { id: 'all', labelUk: 'Всі вузли (Топ-6)', labelEn: 'Featured (Top 6)', icon: Layers },
+    { id: 'all', labelUk: 'Всі вузли (Топ-8)', labelEn: 'Featured (Top 8)', icon: Layers },
     { id: 'filtration', labelUk: 'Фільтрація (4 лідери)', labelEn: 'Filtration (4 Hubs)', icon: Filter },
     { id: 'engines', labelUk: 'Двигуни та CR (4 заводи)', labelEn: 'Engines & CR (4 Hubs)', icon: Cpu },
     { id: 'hydraulics', labelUk: 'Гідравліка (4 бренди)', labelEn: 'Hydraulics (4 Hubs)', icon: Gauge },
@@ -370,7 +397,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </p>
         </div>
 
-        {/* Навігація */}
+        {/* Навігація по табах */}
         <div className="flex flex-wrap items-center justify-center gap-2.5">
           {tabs.map(tab => {
             const Icon = tab.icon;
@@ -392,7 +419,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* Світла сітка карток */}
+        {/* Світла сітка карток (Рівно по 4 в ряд) */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
             {displayedList.map((item) => (
@@ -404,15 +431,25 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
               >
-                {/* Інженерний візуальний блок вузла (SVG Blueprint замість битих фото) */}
-                <div className={`relative w-full h-44 bg-gradient-to-br ${item.accentBg} p-4 flex flex-col items-center justify-center border-b border-slate-100`}>
-                  <div className="w-16 h-16 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <CategoryIcon category={item.category} className={`w-8 h-8 ${item.brandColor}`} />
-                  </div>
+                {/* Блок фотографії з бекапом */}
+                <div className="relative w-full h-48 bg-slate-100/70 p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
+                  <img
+                    src={item.image}
+                    alt={item.nameEn}
+                    className="w-full h-full object-contain p-2 rounded-xl group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      // Якщо фото ще не поклали в папку public/parts/, показуємо акуратну підкладку
+                      e.currentTarget.style.display = 'none';
+                      const fallback = e.currentTarget.nextElementSibling;
+                      if (fallback) fallback.classList.remove('hidden');
+                    }}
+                  />
                   
-                  <span className="mt-2.5 font-mono text-[11px] font-bold text-slate-500 bg-white/80 px-2 py-0.5 rounded-md border border-slate-200/60">
-                    OEM: {item.oem}
-                  </span>
+                  {/* Запасний інженерний значок, якщо картинки тимчасово немає */}
+                  <div className="hidden flex-col items-center justify-center text-center">
+                    <CategoryIcon category={item.category} className={`w-10 h-10 ${item.brandColor} mb-1`} />
+                    <span className="font-mono text-[10px] text-slate-400">OEM: {item.oem}</span>
+                  </div>
 
                   <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
                     <CheckCircle2 className="w-3 h-3 text-emerald-500" />
@@ -423,8 +460,8 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   </div>
                 </div>
 
-                {/* Інформаційна частина картки */}
-                <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
+                {/* Інформація */}
+                <div className="p-4 space-y-3 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
                       <MapPin className="w-3 h-3 text-slate-400 shrink-0" />

@@ -7,7 +7,7 @@ import { LanguageProvider } from '@/lib/language-context';
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
-  title: 'NoLimitGoods Ltd | UK Heavy Machinery Spare Parts & Logistics',
+  title: 'NoLimitGoods Ltd',
   description: 'Direct supply of genuine JCB, Donaldson, CAT, Perkins parts from Coventry, UK to Ukraine. T1 transit, 0% UK export VAT, express delivery.',
   icons: {
     icon: '/favicon.ico',

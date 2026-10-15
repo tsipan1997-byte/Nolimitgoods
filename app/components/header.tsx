@@ -17,7 +17,7 @@ export default function Header() {
   };
 
   const navLinks = [
-    { href: '#parts-calculator', labelUk: 'Каталог деталей', labelEn: 'Parts Catalog' },
+    { href: '#oem-brands', labelUk: 'Каталог деталей', labelEn: 'Parts Catalog' },
     { href: '#parts-calculator', labelUk: 'Розрахунок вартості', labelEn: 'Quote Calculator' },
     { href: '#deliveries', labelUk: 'Відео відвантажень', labelEn: 'Live Dispatch' },
     { href: '#oem-brands', labelUk: 'Бренди OEM', labelEn: 'OEM Brands' },
@@ -35,13 +35,13 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 w-full bg-slate-950/90 backdrop-blur-md border-b border-slate-800/80 transition-all">
+      <header className="sticky top-0 z-50 w-full bg-slate-950/95 backdrop-blur-md border-b border-slate-800/80 transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+          <div className="flex items-center justify-between h-20 gap-4">
             
-            {/* 1. БЛОК ЛОГОТИПУ НА КОНТРАСТНОМУ БІЛОМУ ФОНІ */}
-            <Link href="/" className="flex items-center gap-3 group">
-              <div className="flex items-center justify-center bg-white px-3 py-1.5 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] border border-slate-200 transition-all duration-300 group-hover:scale-105 group-hover:shadow-[0_0_25px_rgba(255,255,255,0.35)]">
+            {/* 1. БЛОК ЛОГОТИПУ НА БІЛОМУ ФОНІ (ФІКСОВАНА ШИРИНА, НЕ СТИСКАЄТЬСЯ) */}
+            <Link href="/" className="flex items-center gap-3 group shrink-0 mr-4">
+              <div className="flex items-center justify-center bg-white px-3.5 py-1.5 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.2)] border border-slate-200 transition-all duration-300 group-hover:scale-105">
                 <img 
                   src="/logo.png" 
                   alt="NoLimitGoods" 
@@ -58,63 +58,59 @@ export default function Header() {
               </div>
               
               <div className="hidden sm:flex flex-col">
-                <span className="text-base font-black tracking-tight text-white group-hover:text-red-400 transition-colors">
+                <span className="text-base font-black tracking-tight text-white group-hover:text-red-400 transition-colors whitespace-nowrap">
                   NoLimitGoods
                 </span>
-                <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase -mt-0.5">
+                <span className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase -mt-0.5 whitespace-nowrap">
                   Coventry, UK Hub
                 </span>
               </div>
             </Link>
 
-            {/* 2. ДЕСКТОПНЕ МЕНЮ НАВІГАЦІЇ */}
-            <nav className="hidden lg:flex items-center gap-7">
+            {/* 2. ДЕСКТОПНА НАВІГАЦІЯ (ЧІТКІ ВІДСТУПИ БЕЗ НАЇЗДІВ) */}
+            <nav className="hidden lg:flex items-center gap-5 xl:gap-7 ml-4 flex-1">
               {navLinks.map((link) => (
                 <a
                   key={link.labelUk}
                   href={link.href}
-                  className="text-xs font-semibold text-slate-300 hover:text-white transition-colors tracking-wide"
+                  className="text-xs font-semibold text-slate-300 hover:text-white transition-colors tracking-wide whitespace-nowrap"
                 >
                   {isUk ? link.labelUk : link.labelEn}
                 </a>
               ))}
             </nav>
 
-            {/* 3. КНОПКИ ДІЇ ТА B2B РЕЄСТРАЦІЯ */}
-            <div className="hidden sm:flex items-center gap-3">
-              {/* Кнопка відкриття B2B форми акредитації */}
+            {/* 3. КНОПКИ ДІЙ: B2B, МОВА ТА ЗАПИТ ЦІНИ */}
+            <div className="hidden sm:flex items-center gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => setIsB2BModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-200 hover:text-white transition-all cursor-pointer shadow-sm active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-200 hover:text-white transition-all cursor-pointer shadow-sm active:scale-95 whitespace-nowrap"
               >
                 <UserCheck className="w-3.5 h-3.5 text-amber-400" />
                 <span>{isUk ? 'B2B Реєстрація' : 'B2B Portal'}</span>
               </button>
 
-              {/* Перемикач мови UA / EN */}
               <button
                 type="button"
                 onClick={toggleLanguage}
                 className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 text-xs font-bold text-slate-200 hover:text-white transition-all cursor-pointer shadow-sm active:scale-95"
-                title={isUk ? 'Змінити мову на English' : 'Switch language to Ukrainian'}
               >
                 <Globe className="w-3.5 h-3.5 text-amber-400" />
                 <span>{isUk ? '🇺🇦 UA' : '🇬🇧 EN'}</span>
               </button>
 
-              {/* Червона кнопка швидкого замовлення розрахунку */}
               <button
                 type="button"
                 onClick={scrollToCalculator}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(239,68,68,0.35)] flex items-center gap-1.5 cursor-pointer active:scale-95"
+                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(239,68,68,0.35)] flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap"
               >
                 <span>{isUk ? 'Запит ціни' : 'Get Quote'}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
 
-            {/* МОБІЛЬНИЙ БАР КНОПОК */}
+            {/* МОБІЛЬНЕ МЕНЮ */}
             <div className="flex sm:hidden items-center gap-2">
               <button
                 type="button"
@@ -143,7 +139,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* 4. ВИПАДАЮЧЕ МЕНЮ ДЛЯ МОБІЛОК */}
+        {/* ВИПАДНИЙ БЛОК НА ТЕЛЕФОНІ */}
         {mobileMenuOpen && (
           <div className="lg:hidden bg-slate-950 border-b border-slate-800 px-4 pt-3 pb-6 space-y-3">
             <nav className="flex flex-col space-y-2">
@@ -188,7 +184,7 @@ export default function Header() {
         )}
       </header>
 
-      {/* МОДАЛЬНЕ ВІКНО B2B АКАУНТА */}
+      {/* МОДАЛЬНЕ ВІКНО B2B */}
       <B2BRegisterModal 
         isOpen={isB2BModalOpen} 
         onClose={() => setIsB2BModalOpen(false)} 

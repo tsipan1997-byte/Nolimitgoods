@@ -18,14 +18,15 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
 
   const [formData, setFormData] = useState({
     companyName: '',
-    taxId: '', // ЄДРПОУ або VAT ID
+    taxId: '',
     contactPerson: '',
     email: '',
     phone: '',
     country: isUk ? 'Україна' : 'Ukraine',
     cityAddress: '',
-    machineryFleet: '', // Яка техніка на балансі (JCB, CAT, Claas...)
+    machineryFleet: '',
     notes: '',
+    website_hp: '', // 🛡️ Прихована пастка для ботів
   });
 
   if (!isOpen) return null;
@@ -65,7 +66,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto">
       <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8">
         
-        {/* Кнопка закриття */}
         <button
           onClick={onClose}
           className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
@@ -99,7 +99,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
         ) : (
           <div className="p-6 sm:p-8 space-y-6">
             
-            {/* Заголовок модального вікна */}
             <div className="space-y-1">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-[11px] font-bold uppercase tracking-wider">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
@@ -117,7 +116,18 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
 
             <form onSubmit={handleSubmit} className="space-y-4">
               
-              {/* Блок підприємства */}
+              {/* 🛡️ Приховане поле-пастка (Honeypot) */}
+              <div style={{ display: 'none' }} aria-hidden="true">
+                <input
+                  type="text"
+                  name="website_hp"
+                  value={formData.website_hp}
+                  onChange={handleChange}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
@@ -151,7 +161,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                 </div>
               </div>
 
-              {/* Контактна особа */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-700">
                   {isUk ? 'Контактна особа (ПІБ та посада) *' : 'Contact Person & Title *'}
@@ -167,7 +176,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                 />
               </div>
 
-              {/* Телефон та Email */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
@@ -202,7 +210,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                 </div>
               </div>
 
-              {/* Адреса та регіон */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-slate-400" />
@@ -219,7 +226,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                 />
               </div>
 
-              {/* Парк техніки */}
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-700">
                   {isUk ? 'Парк техніки (основні бренди)' : 'Machinery Fleet (Brands in Operation)'}
@@ -234,7 +240,6 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
                 />
               </div>
 
-              {/* Кнопка відправки: солідний темно-графітовий B2B-монохром */}
               <div className="pt-2">
                 <button
                   type="submit"

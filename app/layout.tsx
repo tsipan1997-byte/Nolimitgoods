@@ -6,12 +6,11 @@ import { LanguageProvider } from '@/lib/language-context';
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 export const metadata: Metadata = {
-  title: 'NoLimitGoods Ltd | UK Hub & Machinery Parts Export',
-  description: 'Офіційний експортний хаб Великобританії (Ковентрі). Поставки оригінальних фільтрів та вузлів спецтехніки JCB, Perkins, CAT, Donaldson. Прямий нульовий експортний ПДВ (0% UK VAT) та доставка вантажів.',
-  keywords: 'NoLimitGoods, запчастини Великобританія, JCB Україна, експорт UK, 0% VAT, фільтри Donaldson, Perkins запчастини',
+  title: 'NoLimitGoods Ltd',
+  description: 'NoLimitGoods Limited — офіційний хаб з постачання запчастин та фільтрів з Великобританії. 0% UK Export VAT.',
   openGraph: {
-    title: 'NoLimitGoods Ltd | Поставки запчастин з Великобританії',
-    description: 'Прямий експорт оригінальних вузлів та фільтрів з хабу в Ковентрі. 0% UK Export VAT, доставка вантажів.',
+    title: 'NoLimitGoods Ltd',
+    description: 'NoLimitGoods Limited — офіційний хаб з постачання запчастин та фільтрів з Великобританії. 0% UK Export VAT.',
     type: 'website',
   },
 };
@@ -24,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="uk" className="scroll-smooth dark">
       <head>
-        {/* Пряме підключення Google Tag для гарантованого проходження валідації */}
+        {/* Підключення Google Tag AW-670192610 */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=AW-670192610"

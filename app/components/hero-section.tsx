@@ -104,7 +104,7 @@ export default function HeroSection() {
             : 'End-to-end logistics solutions, T1 transit customs clearance, and zero-rated 0% UK export status directly to your enterprise.'}
         </motion.p>
 
-        {/* Кнопки виклику дій замість дублюючого рядка пошуку */}
+        {/* Кнопки виклику дій */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -146,10 +146,12 @@ export default function HeroSection() {
 
           <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
             <div className="text-lg sm:text-xl font-black text-amber-400 flex items-center gap-1.5">
-              5–8 {isUk ? 'днів' : 'days'} <Truck className="w-4 h-4 text-amber-400 inline" />
+              5–14 {isUk ? 'роб. днів' : 'working days'} <Truck className="w-4 h-4 text-amber-400 inline" />
             </div>
             <div className="text-xs text-slate-400 mt-1">
-              {isUk ? 'Експрес-рейси щотижня' : 'Weekly UK Freight'}
+              {isUk
+                ? 'Експрес-замовлення (до 1 міс. для великих партій)'
+                : 'Express orders (up to 1 mo. for bulk)'}
             </div>
           </div>
 

@@ -130,7 +130,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK Hub',
     originEn: 'EU Logistics / Finning UK Hub',
     category: 'cab',
-    image: 'https://parts.cat.com/wcs-image/1191000/1191316.jpg',
+    image: '/parts/images.jpeg',
     popularOems: ['281-1196', '281-1199', '280-7548', '280-7544'],
   },
   {
@@ -142,7 +142,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Finning UK Central Hub',
     originEn: 'Finning UK Central Hub',
     category: 'cab',
-    image: 'https://parts.cat.com/wcs-image/1191000/1191319.jpg',
+    image: '/parts/cronstain.jpeg',
     popularOems: ['281-1199', '281-1200', '281-6262', '281-6263'],
   },
   {
@@ -154,7 +154,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Finning UK Central Hub',
     originEn: 'Finning UK Central Hub',
     category: 'cab',
-    image: 'https://parts.cat.com/wcs-image/1191000/1191315.jpg',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
     popularOems: ['280-7548', '280-7552', '293-3116', '132-7625'],
   },
   {
@@ -166,7 +166,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Finning UK Central Hub',
     originEn: 'Finning UK Central Hub',
     category: 'cab',
-    image: 'https://parts.cat.com/wcs-image/1191000/1191314.jpg',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
     popularOems: ['280-7544', '277-6030', '277-6031', '281-3650'],
   },
 
@@ -442,7 +442,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* Сітка 4 колонки (2 ряди по 4) */}
+        {/* Сітка 4 колонки */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
             {displayedList.map((item) => (

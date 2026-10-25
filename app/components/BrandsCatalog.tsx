@@ -1,7 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShieldCheck, ArrowRight, CheckCircle2, MapPin, Layers, Gauge, Cpu, Wrench, Filter, DoorClosed } from 'lucide-react';
+import { 
+  ShieldCheck, ArrowRight, CheckCircle2, MapPin, Layers, 
+  Gauge, Cpu, Wrench, Filter, DoorClosed, Tractor, ChevronRight 
+} from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
 
@@ -13,7 +16,9 @@ interface PartShowcaseItem {
   brand: string;
   originUk: string;
   originEn: string;
-  category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration' | 'cab';
+  category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration' | 'cab' | 'tractors';
+  tractorBrand?: 'case-ih' | 'massey-ferguson' | 'new-holland' | 'john-deere';
+  tractorSection?: 'cab' | 'engine' | 'transmission' | 'hydraulics' | 'brakes';
   image: string;
   popularOems: string[];
 }
@@ -118,9 +123,125 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи категорій
+// 2. Каталог підгруп, включаючи нову структуру агротехніки Agriline
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
-  // КУЗОВ ТА КАБІНА (CAT CAB & BODY)
+  // ========================================================
+  // ТРАКТОРИ ТА АГРОТЕХНІКА (СТРУКТУРА AGRILINE UK)
+  // ========================================================
+  {
+    id: 'tr-case-door',
+    nameUk: 'Case IH: Замок-клямка та фурнітура дверей кабіни XL',
+    nameEn: 'Case IH XL Cab Door Inner Slam Latch Assembly',
+    oem: '83994207',
+    brand: 'CASE INTERNATIONAL',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'case-ih',
+    tractorSection: 'cab',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
+    popularOems: ['83994207', '15011', '81238', '1535127C1'],
+  },
+  {
+    id: 'tr-case-handle',
+    nameUk: 'Case IH: Тягова зовнішня ручка дверей кабіни 110 мм',
+    nameEn: 'Case IH Cab Door Exterior Pull Handle',
+    oem: '3234209R1',
+    brand: 'CASE INTERNATIONAL',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'case-ih',
+    tractorSection: 'cab',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
+    popularOems: ['3234209R1', '15014', '15049', '15020'],
+  },
+  {
+    id: 'tr-case-clutch',
+    nameUk: 'Case IH: Комплект подвійного зчеплення 310 мм (LUK)',
+    nameEn: 'Case IH Dual Heavy Clutch Kit Assembly',
+    oem: '1964264C1',
+    brand: 'CASE INTERNATIONAL',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'case-ih',
+    tractorSection: 'transmission',
+    image: '/parts/Carraro.jpg',
+    popularOems: ['1964264C1', '71239', '1964265C1', '3228434R91'],
+  },
+  {
+    id: 'tr-case-pump',
+    nameUk: 'Case IH: Головний здвоєний гідравлічний насос tandem',
+    nameEn: 'Case IH Tandem Hydraulic System Pump',
+    oem: '1949354C1',
+    brand: 'CASE INTERNATIONAL',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'case-ih',
+    tractorSection: 'hydraulics',
+    image: '/parts/Danfoss.jpg',
+    popularOems: ['1949354C1', '70914', '1949355C1', 'A184521'],
+  },
+  {
+    id: 'tr-mf-cab',
+    nameUk: 'Massey Ferguson: Газові упори дверей кабіни та скла',
+    nameEn: 'Massey Ferguson Cab Door Gas Strut Set',
+    oem: '3389410M1',
+    brand: 'MASSEY FERGUSON',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'massey-ferguson',
+    tractorSection: 'cab',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
+    popularOems: ['3389410M1', '3782012M1', '3389411M1', '81240'],
+  },
+  {
+    id: 'tr-mf-engine',
+    nameUk: 'Massey Ferguson: Водяна помпа двигуна Perkins 4.236',
+    nameEn: 'Massey Ferguson Perkins Water Pump Heavy Duty',
+    oem: '41312487',
+    brand: 'MASSEY FERGUSON',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'massey-ferguson',
+    tractorSection: 'engine',
+    image: '/parts/Perkins.jpg',
+    popularOems: ['41312487', 'U5MW0010', '3637466M91', '41312167'],
+  },
+  {
+    id: 'tr-nh-trans',
+    nameUk: 'New Holland: Комплект шестерень КПП синхронізатора',
+    nameEn: 'New Holland Synchro Hub Transmission Kit',
+    oem: '82011854',
+    brand: 'NEW HOLLAND AG',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'new-holland',
+    tractorSection: 'transmission',
+    image: '/parts/Carraro.jpg',
+    popularOems: ['82011854', '5165243', '81878051', 'CAR149298'],
+  },
+  {
+    id: 'tr-jd-hyd',
+    nameUk: 'John Deere: Шестеренний насос гідропідсилювача керма',
+    nameEn: 'John Deere Steering & Hydraulic Pump',
+    oem: 'AL67936',
+    brand: 'JOHN DEERE',
+    originUk: 'Agriline UK Depot, Bromsgrove',
+    originEn: 'Agriline UK Depot, Bromsgrove',
+    category: 'tractors',
+    tractorBrand: 'john-deere',
+    tractorSection: 'hydraulics',
+    image: '/parts/Danfoss.jpg',
+    popularOems: ['AL67936', 'AR97872', 'AL39377', '70914'],
+  },
+
+  // КУЗОВ ТА КАБІНА (CAT)
   {
     id: 'cab-cat-door',
     nameUk: 'Двері кабіни оператора CAT у зборі',
@@ -375,9 +496,14 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [activeTab, setActiveTab] = useState<string>('all');
+  
+  // Внутрішні підфільтри для розділу "Трактори"
+  const [selectedTractorBrand, setSelectedTractorBrand] = useState<string>('all');
+  const [selectedTractorSection, setSelectedTractorSection] = useState<string>('all');
 
-  const tabs = [
+  const mainTabs = [
     { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
+    { id: 'tractors', labelUk: 'Трактори та Агро (Agriline)', labelEn: 'Tractors & Agri (Agriline UK)', icon: Tractor },
     { id: 'cab', labelUk: 'Кузов та кабіна', labelEn: 'Cab & Body', icon: DoorClosed },
     { id: 'filtration', labelUk: 'Фільтрація', labelEn: 'Filtration', icon: Filter },
     { id: 'engines', labelUk: 'Двигуни та CR', labelEn: 'Engines & CR', icon: Cpu },
@@ -385,9 +511,32 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     { id: 'undercarriage', labelUk: 'Мости та редуктори', labelEn: 'Axles & Transmission', icon: Wrench },
   ];
 
+  const tractorBrands = [
+    { id: 'all', labelUk: 'Всі марки тракторів', labelEn: 'All Tractor Brands' },
+    { id: 'case-ih', labelUk: 'Case IH / International', labelEn: 'Case IH / International' },
+    { id: 'massey-ferguson', labelUk: 'Massey Ferguson', labelEn: 'Massey Ferguson' },
+    { id: 'new-holland', labelUk: 'New Holland / Ford', labelEn: 'New Holland / Ford' },
+    { id: 'john-deere', labelUk: 'John Deere', labelEn: 'John Deere' },
+  ];
+
+  const tractorSections = [
+    { id: 'all', labelUk: 'Всі вузли трактора', labelEn: 'All Components' },
+    { id: 'cab', labelUk: 'Кабіна, двері та скло', labelEn: 'Cab, Doors & Glass' },
+    { id: 'transmission', labelUk: 'Зчеплення та КПП', labelEn: 'Clutch & Gearbox' },
+    { id: 'hydraulics', labelUk: 'Гідравліка та навіска', labelEn: 'Hydraulics & Linkage' },
+    { id: 'engine', labelUk: 'Двигун та охолодження', labelEn: 'Engine & Cooling' },
+  ];
+
   const displayedList = activeTab === 'all'
     ? SHOWCASE_FEATURED
-    : SUBGROUP_PARTS.filter(p => p.category === activeTab);
+    : activeTab === 'tractors'
+      ? SUBGROUP_PARTS.filter(p => {
+          if (p.category !== 'tractors') return false;
+          if (selectedTractorBrand !== 'all' && p.tractorBrand !== selectedTractorBrand) return false;
+          if (selectedTractorSection !== 'all' && p.tractorSection !== selectedTractorSection) return false;
+          return true;
+        })
+      : SUBGROUP_PARTS.filter(p => p.category === activeTab);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, originalPath: string) => {
     const target = e.currentTarget;
@@ -408,21 +557,21 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-slate-200 text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            {isUk ? 'Прямі відвантаження з Великобританії • 0% UK VAT' : 'Direct UK Dispatches • 0% UK VAT'}
+            {isUk ? 'Прямі поставки з британських складів • 0% UK VAT' : 'Direct UK Dispatches • 0% UK VAT'}
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             {isUk ? 'Оригінальні вузли та агрегати в наявності' : 'Genuine OEM Assemblies & Components'}
           </h2>
           <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
             {isUk 
-              ? 'Оберіть категорію або натисніть на номер деталі для швидкого розрахунку вартості поставки.'
-              : 'Select a category or click an OEM part number for direct supply calculation.'}
+              ? 'Оберіть категорію або скористайтеся підбором агро-вузлів (Case, Massey Ferguson, New Holland) для швидкого прорахунку.'
+              : 'Select a category or browse tractor components (Case, Massey Ferguson, New Holland) for instant supply calculation.'}
           </p>
         </div>
 
-        {/* Таби категорій */}
+        {/* Головні таби категорій */}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          {tabs.map(tab => {
+          {mainTabs.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
@@ -442,84 +591,145 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
+        {/* ======================================================== */}
+        {/* ІЄРАРХІЧНІ ПІДПУНКТИ ТРАКТОРІВ (ЯК НА AGRILINE PRODUCTS)  */}
+        {/* ======================================================== */}
+        {activeTab === 'tractors' && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="p-6 bg-white border border-slate-200 rounded-3xl shadow-sm space-y-4"
+          >
+            {/* Рівень 1: Вибір бренду трактора */}
+            <div>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                {isUk ? '1. Оберіть марку трактора (Agriline Catalog):' : '1. Select Tractor Make:'}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {tractorBrands.map(b => (
+                  <button
+                    key={b.id}
+                    onClick={() => setSelectedTractorBrand(b.id)}
+                    className={`px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      selectedTractorBrand === b.id
+                        ? 'bg-red-600 text-white shadow-xs'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    }`}
+                  >
+                    {isUk ? b.labelUk : b.labelEn}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Рівень 2: Вибір робочого вузла трактора */}
+            <div className="pt-2 border-t border-slate-100">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
+                {isUk ? '2. Оберіть вузол або систему:' : '2. Select Assembly Section:'}
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {tractorSections.map(s => (
+                  <button
+                    key={s.id}
+                    onClick={() => setSelectedTractorSection(s.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                      selectedTractorSection === s.id
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200'
+                    }`}
+                  >
+                    {isUk ? s.labelUk : s.labelEn}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
         {/* Сітка 4 колонки */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
-            {displayedList.map((item) => (
-              <motion.div
-                key={item.id}
-                layout
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
-              >
-                {/* Фотографія */}
-                <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
-                  <img
-                    src={item.image}
-                    alt={item.nameEn}
-                    className="w-full h-full object-contain p-1 rounded-lg group-hover:scale-105 transition-transform duration-300"
-                    onError={(e) => handleImageError(e, item.image)}
-                  />
-                  <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                    <span>{isUk ? 'В наявності UK' : 'In Stock UK'}</span>
-                  </div>
-                  <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
-                    0% VAT
-                  </div>
-                </div>
-
-                {/* Інформація */}
-                <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
-                      <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-                      <span className="truncate">{isUk ? item.originUk : item.originEn}</span>
+            {displayedList.length > 0 ? (
+              displayedList.map((item) => (
+                <motion.div
+                  key={item.id}
+                  layout
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                >
+                  {/* Фотографія */}
+                  <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
+                    <img
+                      src={item.image}
+                      alt={item.nameEn}
+                      className="w-full h-full object-contain p-1 rounded-lg group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => handleImageError(e, item.image)}
+                    />
+                    <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{isUk ? 'В наявності UK' : 'In Stock UK'}</span>
                     </div>
-
-                    <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-0.5">
-                      {item.brand}
-                    </div>
-
-                    <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-slate-950 transition-colors line-clamp-2">
-                      {isUk ? item.nameUk : item.nameEn}
-                    </h3>
-                  </div>
-
-                  {/* Кнопки ходових артикулів */}
-                  <div className="space-y-1 pt-2 border-t border-slate-100">
-                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
-                      {isUk ? 'Ходові коди:' : 'Popular OEM:'}
-                    </span>
-                    <div className="flex flex-wrap gap-1">
-                      {item.popularOems.map((code) => (
-                        <button
-                          key={code}
-                          type="button"
-                          onClick={() => onSelectOem(code, item.brand)}
-                          className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
-                          title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
-                        >
-                          {code}
-                        </button>
-                      ))}
+                    <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
+                      0% VAT
                     </div>
                   </div>
 
-                  {/* Кнопка переходу в калькулятор */}
-                  <button
-                    type="button"
-                    onClick={() => onSelectOem(item.oem, item.brand)}
-                    className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
-                  >
-                    <span>{isUk ? 'Розрахувати вартість' : 'Get Quote'}</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </motion.div>
-            ))}
+                  {/* Інформація */}
+                  <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
+                        <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                        <span className="truncate">{isUk ? item.originUk : item.originEn}</span>
+                      </div>
+
+                      <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-0.5">
+                        {item.brand}
+                      </div>
+
+                      <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-slate-950 transition-colors line-clamp-2">
+                        {isUk ? item.nameUk : item.nameEn}
+                      </h3>
+                    </div>
+
+                    {/* Ходові коди */}
+                    <div className="space-y-1 pt-2 border-t border-slate-100">
+                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                        {isUk ? 'Ходові коди / Cross OEM:' : 'Popular OEM:'}
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {item.popularOems.map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            onClick={() => onSelectOem(code, item.brand)}
+                            className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
+                            title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
+                          >
+                            {code}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Кнопка швидкого запиту */}
+                    <button
+                      type="button"
+                      onClick={() => onSelectOem(item.oem, item.brand)}
+                      className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+                    >
+                      <span>{isUk ? 'Розрахувати вартість' : 'Get Quote'}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </motion.div>
+              ))
+            ) : (
+              <div className="col-span-full py-12 text-center text-slate-400 text-sm">
+                {isUk ? 'Позицій у вибраному вузлі не знайдено. Введіть каталожний номер у форму вгорі.' : 'No parts found in selected section. Enter your OEM code into the search form above.'}
+              </div>
+            )}
           </AnimatePresence>
         </motion.div>
 

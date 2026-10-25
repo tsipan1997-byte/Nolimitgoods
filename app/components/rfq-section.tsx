@@ -43,6 +43,7 @@ export default function RFQSection() {
   const [items, setItems] = useState<RFQItemInput[]>([
     { id: '1', partNumber: '', machineModel: '', quantity: '1' },
   ]);
+  const [comment, setComment] = useState('');
   const [country, setCountry] = useState(isUk ? 'Україна' : 'Ukraine');
   const [contact, setContact] = useState('');
 
@@ -61,7 +62,6 @@ export default function RFQSection() {
     invoiceDate: string;
   } | null>(null);
 
-  // Функція виклику Google Ads конверсії з офіційного сніпету
   const triggerGoogleConversion = (url?: string) => {
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'conversion', {
@@ -111,18 +111,56 @@ export default function RFQSection() {
   };
 
   const removeItem = (id: string) => {
-    if (items.length <= 1) return;
+    if (items.length <= 1) {
+      setItems([{ id: '1', partNumber: '', machineModel: '', quantity: '1' }]);
+      return;
+    }
     setItems((prev) => prev.filter((it) => it.id !== id));
   };
 
   const updateItem = (id: string, field: keyof RFQItemInput, val: string) => {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, [field]: val } : it))
-    );
+    setItems((prev) => {
+      const next = prev.map((it) => (it.id === id ? { ...it, [field]: val } : it));
+      const currentIndex = prev.findIndex((it) => it.id === id);
+
+      // Автоматичне додавання наступного рядка при введенні в останній рядок
+      if (
+        field === 'partNumber' &&
+        currentIndex === prev.length - 1 &&
+        val.trim().length > 0 &&
+        prev.length < 10
+      ) {
+        return [
+          ...next,
+          { id: String(Date.now()), partNumber: '', machineModel: '', quantity: '1' },
+        ];
+      }
+      return next;
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const activeItems = items.filter((it) => it.partNumber.trim() !== '');
+
+    if (activeItems.length === 0 && !comment.trim()) {
+      alert(
+        isUk
+          ? 'Вкажіть хоча б один каталожний номер або напишіть список деталей у повідомленні.'
+          : 'Please enter at least one part number or paste your list in the message box.'
+      );
+      return;
+    }
+
+    if (!contact.trim()) {
+      alert(
+        isUk
+          ? 'Вкажіть ваш телефон, Email або месенджер для зв’язку.'
+          : 'Please provide your contact information (phone, email or messenger).'
+      );
+      return;
+    }
+
     setStatus('searching');
 
     const invNum = `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -130,8 +168,8 @@ export default function RFQSection() {
 
     setSearchStep(
       isUk
-        ? '1/3 Перевірка наявності деталей на складах UK та Європи...'
-        : '1/3 Checking live inventory across UK & EU distributor stocks...'
+        ? '1/3 Перевірка наявності деталей на офіційних складах...'
+        : '1/3 Checking live inventory across authorized distributor stocks...'
     );
 
     try {
@@ -139,13 +177,14 @@ export default function RFQSection() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items: items.map((it) => ({
+          items: activeItems.map((it) => ({
             partNumber: it.partNumber.trim(),
             machineModel: it.machineModel.trim(),
             quantity: Math.max(1, parseInt(it.quantity, 10) || 1),
           })),
           country,
-          contact,
+          contact: contact.trim(),
+          comment: comment.trim(),
           invoiceNumber: invNum,
         }),
       });
@@ -162,7 +201,7 @@ export default function RFQSection() {
 
       const data = await res.json();
       setSearchStep(
-        isUk ? '3/3 Формування рахунку-фактури...' : '3/3 Generating Proforma Invoice...'
+        isUk ? '3/3 Формування комерційного розрахунку...' : '3/3 Generating Proforma Invoice...'
       );
 
       if (!data.found || data.status === 'wait_for_rfq') {
@@ -182,8 +221,6 @@ export default function RFQSection() {
         invoiceDate: today,
       });
       setStatus('success');
-
-      // Реєстрація успішної конверсії в Google Ads
       triggerGoogleConversion();
     } catch (err) {
       console.error('Calculation error:', err);
@@ -292,8 +329,8 @@ export default function RFQSection() {
         alert(
           data.error ||
             (isUk
-              ? 'Помилка платіжного шлюзу. Зв’яжіться з офісом NoLimitGoods.'
-              : 'Payment gateway error. Please contact NoLimitGoods office.')
+              ? 'Помилка платіжного шлюзу. Зв’яжіться з нашою підтримкою.'
+              : 'Payment gateway error. Please contact support.')
         );
       }
     } catch (err) {
@@ -314,19 +351,22 @@ export default function RFQSection() {
   };
 
   const getWaitWhatsAppLink = () => {
-    const list = items
+    const activeItems = items.filter((it) => it.partNumber.trim() !== '');
+    const list = activeItems
       .map(
         (it, idx) =>
           `${idx + 1}. ${it.partNumber} [${it.machineModel || 'OEM'}] — ${it.quantity} pcs`
       )
       .join('\n');
-    const msg = `Hello! Request (WAIT FOR RFQ) for specification:\n${list}\n\nContact: ${contact}`;
+    const msg = `Добрий день! Запит на розрахунок деталей:\n${list || 'Список вказано в коментарі'}${
+      comment ? `\n\nКоментар: ${comment}` : ''
+    }\n\nКонтакт: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
   const getWhatsAppLink = () => {
     if (!calculation) return 'https://wa.me/447426826595';
-    const msg = `Hello! Confirming order ${calculation.invoiceNumber} for ${calculation.items.length} items. Total: £${calculation.total}. Contact: ${contact}`;
+    const msg = `Добрий день! Підтверджую замовлення ${calculation.invoiceNumber} на ${calculation.items.length} поз. Сума: £${calculation.total}. Контакт: ${contact}`;
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
@@ -334,27 +374,37 @@ export default function RFQSection() {
     setStatus('idle');
     setCalculation(null);
     setItems([{ id: '1', partNumber: '', machineModel: '', quantity: '1' }]);
+    setComment('');
     setCountry(isUk ? 'Україна' : 'Ukraine');
     setContact('');
   };
 
+  const activeCount = items.filter((it) => it.partNumber.trim() !== '').length;
+
   return (
-    <section id="parts-calculator" className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800 scroll-mt-20">
+    <section
+      id="parts-calculator"
+      className="py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800 scroll-mt-20"
+    >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-slate-300 text-xs sm:text-sm font-semibold mb-4 border border-slate-800">
             <Calculator className="w-4 h-4 text-emerald-400" />
-            <span>{isUk ? 'B2B Розрахунок специфікацій (до 10 позицій)' : 'Multi-Item B2B Procurement Portal (up to 10 parts)'}</span>
+            <span>
+              {isUk
+                ? 'B2B Розрахунок специфікацій (до 10 позицій)'
+                : 'Multi-Item B2B Procurement Portal (up to 10 parts)'}
+            </span>
           </div>
           <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
             {t?.rfq?.title || (isUk ? 'Розрахунок вартості замовлення' : 'Instant Order Calculation')}
           </h2>
           <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {isUk
-              ? 'Додавайте до 10 артикулів в одну заявку. Агент сканує склади в реальному часі та об’єднує доставку Nova Post в один збірний вантаж.'
-              : 'Add up to 10 OEM parts to a single proforma invoice with consolidated UK airfreight.'}
+              ? 'Введіть один або кілька OEM-номерів (нове поле відкриється автоматично) або додайте список деталей текстом.'
+              : 'Add up to 10 OEM parts to a single proforma invoice with consolidated freight.'}
           </p>
         </div>
 
@@ -370,7 +420,7 @@ export default function RFQSection() {
 
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">
-                  {isUk ? 'Перевірка специфікації по складах UK та Європи...' : 'Querying Stocks for Multiple Items...'}
+                  {isUk ? 'Обробка запиту по складах...' : 'Querying Stocks for Multiple Items...'}
                 </h3>
                 <p className="text-sm font-mono text-emerald-400 max-w-md mx-auto transition-all">
                   {searchStep}
@@ -383,38 +433,53 @@ export default function RFQSection() {
             </div>
           ) : status === 'wait_for_rfq' ? (
             <div className="py-8 text-center space-y-6">
-              <div className="w-16 h-16 rounded-full bg-slate-800 border border-slate-700 text-amber-400 flex items-center justify-center mx-auto">
-                <Clock className="w-8 h-8 animate-pulse" />
+              <div className="w-16 h-16 rounded-full bg-slate-800 border border-slate-700 text-emerald-400 flex items-center justify-center mx-auto">
+                <Clock className="w-8 h-8" />
               </div>
 
               <div>
-                <span className="inline-block bg-slate-800 border border-slate-700 text-amber-400 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
-                  STATUS: WAIT FOR RFQ
+                <span className="inline-block bg-slate-800 border border-slate-700 text-emerald-400 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
+                  {isUk ? 'ЗАПИТ ПРИЙНЯТО' : 'INQUIRY RECEIVED'}
                 </span>
                 <h3 className="text-2xl font-black text-white mb-2">
-                  {isUk ? 'Специфікацію передано в обробку (Хаб Ковентрі)' : 'Transferred to Coventry Office'}
+                  {isUk ? 'Специфікацію передано в обробку' : 'Transferred to Processing'}
                 </h3>
                 <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
                   {isUk
-                    ? `Частина деталей потребує індивідуальної звірки зі складами дистриб'юторів. Офіс NoLimitGoods підготує повний комерційний розрахунок.`
-                    : 'Parts require verification with UK distribution hubs. Our office will respond shortly.'}
+                    ? 'Наш фахівець перевірить наявність та зв’яжеться з вами для уточнення вартості.'
+                    : 'Our specialist will check stock availability and contact you with accurate pricing.'}
                 </p>
               </div>
 
               <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 max-w-md mx-auto text-left text-xs space-y-2">
                 <div className="text-slate-400 font-bold mb-2">
-                  {isUk ? `Запитані деталі (${items.length} поз.):` : `Requested Parts (${items.length} items):`}
+                  {isUk
+                    ? `Запитані деталі (${activeCount > 0 ? activeCount : 1} поз.):`
+                    : `Requested Parts (${activeCount > 0 ? activeCount : 1} items):`}
                 </div>
-                {items.map((it, idx) => (
-                  <div key={it.id} className="flex justify-between text-slate-300 border-b border-slate-800/60 pb-1">
-                    <span>
-                      {idx + 1}. <strong>{it.partNumber || '—'}</strong> ({it.machineModel || 'OEM'})
+                {items
+                  .filter((it) => it.partNumber.trim() !== '')
+                  .map((it, idx) => (
+                    <div
+                      key={it.id}
+                      className="flex justify-between text-slate-300 border-b border-slate-800/60 pb-1"
+                    >
+                      <span>
+                        {idx + 1}. <strong>{it.partNumber || '—'}</strong> ({it.machineModel || 'OEM'})
+                      </span>
+                      <span className="font-mono text-white">
+                        {it.quantity} {isUk ? 'шт' : 'pcs'}
+                      </span>
+                    </div>
+                  ))}
+                {comment && (
+                  <div className="pt-2 text-slate-400 border-b border-slate-800/60 pb-2">
+                    <span className="block font-semibold text-slate-300 mb-0.5">
+                      {isUk ? 'Повідомлення:' : 'Comment:'}
                     </span>
-                    <span className="font-mono text-white">
-                      {it.quantity} {isUk ? 'шт' : 'pcs'}
-                    </span>
+                    <span className="whitespace-pre-wrap">{comment}</span>
                   </div>
-                ))}
+                )}
                 <div className="flex justify-between text-slate-400 pt-2">
                   <span>{isUk ? 'Контакт:' : 'Contact:'}</span>
                   <span className="text-white">{contact}</span>
@@ -621,7 +686,7 @@ export default function RFQSection() {
                 </div>
               </div>
 
-              {/* КНОПКИ ДІЙ */}
+              {/* КНОПКИ ОПЛАТИ */}
               <div className="max-w-md mx-auto space-y-3 mb-6">
                 <button
                   type="button"
@@ -671,8 +736,8 @@ export default function RFQSection() {
               <div className="space-y-4 max-w-md mx-auto text-center border-t border-slate-800 pt-6">
                 <p className="text-xs text-slate-400">
                   {isUk
-                    ? 'Або підтвердіть замовлення через офіс у Ковентрі:'
-                    : 'Or confirm this order directly with our Coventry hub:'}
+                    ? 'Або підтвердіть замовлення через наш офіс:'
+                    : 'Or confirm this order directly with our office:'}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
@@ -766,24 +831,22 @@ export default function RFQSection() {
                         </label>
                         <input
                           type="text"
-                          required
                           value={item.partNumber}
                           onChange={(e) => updateItem(item.id, 'partNumber', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono"
-                          placeholder={isUk ? 'напр. P535114' : 'e.g. P535114'}
+                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono uppercase"
+                          placeholder={isUk ? 'напр. 281-1196' : 'e.g. 281-1196'}
                         />
                       </div>
                       <div className="sm:col-span-1">
                         <label className="block text-[11px] text-slate-400 mb-1">
-                          {isUk ? 'Техніка / Бренд *' : 'Equipment / Brand *'}
+                          {isUk ? 'Техніка / Бренд' : 'Equipment / Brand'}
                         </label>
                         <input
                           type="text"
-                          required
                           value={item.machineModel}
                           onChange={(e) => updateItem(item.id, 'machineModel', e.target.value)}
                           className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-white outline-none"
-                          placeholder={isUk ? 'напр. Donaldson / JCB' : 'e.g. Donaldson / JCB'}
+                          placeholder={isUk ? 'напр. CAT / Donaldson' : 'e.g. CAT / Donaldson'}
                         />
                       </div>
                       <div className="sm:col-span-1">
@@ -793,10 +856,9 @@ export default function RFQSection() {
                         <input
                           type="number"
                           min="1"
-                          required
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono"
+                          className="w-full px-3 py-2 bg-slate-900 text-white border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono text-center"
                           placeholder="1"
                         />
                       </div>
@@ -805,6 +867,27 @@ export default function RFQSection() {
                 ))}
               </div>
 
+              {/* Поле для тексту / списку з буфера */}
+              <div className="mb-6">
+                <label className="block text-sm font-semibold text-slate-300 mb-2">
+                  {isUk
+                    ? 'Повідомлення або перелік запчастин текстом:'
+                    : 'Additional message or bulk parts list:'}
+                </label>
+                <textarea
+                  rows={3}
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder={
+                    isUk
+                      ? 'Сюди можна скопіювати весь список деталей із таблиці чи документа, вказати VIN-код або модель машини...'
+                      : 'Paste your bulk parts list, VIN number, machine serial or additional requirements here...'
+                  }
+                  className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-sm resize-none"
+                />
+              </div>
+
+              {/* Контакти та Країна */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">
@@ -821,7 +904,7 @@ export default function RFQSection() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t?.rfq?.form?.contact || (isUk ? 'Email або WhatsApp' : 'Contact')} *
+                    {t?.rfq?.form?.contact || (isUk ? 'Email, Телефон або Telegram' : 'Contact')} *
                   </label>
                   <input
                     type="text"
@@ -843,9 +926,7 @@ export default function RFQSection() {
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
                     <span>
-                      {isUk
-                        ? 'Сканування та консолідація специфікації...'
-                        : 'Scanning & Consolidating Specification...'}
+                      {isUk ? 'Обробка запиту...' : 'Processing Inquiry...'}
                     </span>
                   </>
                 ) : (
@@ -853,8 +934,8 @@ export default function RFQSection() {
                     <Box className="w-5 h-5" />
                     <span>
                       {isUk
-                        ? `Прорахувати специфікацію (${items.length} поз.)`
-                        : `Calculate Specification (${items.length} Items)`}
+                        ? `Прорахувати специфікацію (${activeCount > 0 ? activeCount : 1} поз.)`
+                        : `Calculate Specification (${activeCount > 0 ? activeCount : 1} Items)`}
                     </span>
                     <ArrowRight className="w-5 h-5 ml-1" />
                   </>

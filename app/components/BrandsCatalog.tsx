@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShieldCheck, ArrowRight, CheckCircle2, MapPin, Layers, Gauge, Cpu, Wrench, Filter } from 'lucide-react';
+import { ShieldCheck, ArrowRight, CheckCircle2, MapPin, Layers, Gauge, Cpu, Wrench, Filter, DoorClosed } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
 
@@ -13,12 +13,12 @@ interface PartShowcaseItem {
   brand: string;
   originUk: string;
   originEn: string;
-  category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration';
+  category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration' | 'cab';
   image: string;
   popularOems: string[];
 }
 
-// 1. Головна вітрина: рівно 8 позицій (2 ряди по 4 картки)
+// 1. Головна вітрина: 8 ключових позицій (2 ряди по 4 картки)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -118,8 +118,58 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи брендів (по 4 представники з вашими фото)
+// 2. Підгрупи категорій
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
+  // КУЗОВ ТА КАБІНА (CAT CAB & BODY)
+  {
+    id: 'cab-cat-door',
+    nameUk: 'Двері кабіни оператора CAT у зборі',
+    nameEn: 'Operator Cab Door Assembly (CAT)',
+    oem: '281-1196',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Дистрибуція ЄС / Finning UK Hub',
+    originEn: 'EU Logistics / Finning UK Hub',
+    category: 'cab',
+    image: 'https://parts.cat.com/wcs-image/1191000/1191316.jpg',
+    popularOems: ['281-1196', '281-1199', '280-7548', '280-7544'],
+  },
+  {
+    id: 'cab-cat-roller',
+    nameUk: 'Центральний роликовий кронштейн дверей CAT',
+    nameEn: 'Cab Door Center Roller Bracket As',
+    oem: '281-1199',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Finning UK Central Hub',
+    originEn: 'Finning UK Central Hub',
+    category: 'cab',
+    image: 'https://parts.cat.com/wcs-image/1191000/1191319.jpg',
+    popularOems: ['281-1199', '281-1200', '281-6262', '281-6263'],
+  },
+  {
+    id: 'cab-cat-lock',
+    nameUk: 'Центральний замок дверей кабіни CAT',
+    nameEn: 'Cabin Door Lock Mechanism As',
+    oem: '280-7548',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Finning UK Central Hub',
+    originEn: 'Finning UK Central Hub',
+    category: 'cab',
+    image: 'https://parts.cat.com/wcs-image/1191000/1191315.jpg',
+    popularOems: ['280-7548', '280-7552', '293-3116', '132-7625'],
+  },
+  {
+    id: 'cab-cat-handle',
+    nameUk: 'Зовнішня ручка дверей 110 мм та важелі CAT',
+    nameEn: '110mm Push Door Handle & Levers',
+    oem: '280-7544',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Finning UK Central Hub',
+    originEn: 'Finning UK Central Hub',
+    category: 'cab',
+    image: 'https://parts.cat.com/wcs-image/1191000/1191314.jpg',
+    popularOems: ['280-7544', '277-6030', '277-6031', '281-3650'],
+  },
+
   // ФІЛЬТРАЦІЯ
   {
     id: 'filt-donaldson',
@@ -328,6 +378,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
 
   const tabs = [
     { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
+    { id: 'cab', labelUk: 'Кузов та кабіна', labelEn: 'Cab & Body', icon: DoorClosed },
     { id: 'filtration', labelUk: 'Фільтрація', labelEn: 'Filtration', icon: Filter },
     { id: 'engines', labelUk: 'Двигуни та CR', labelEn: 'Engines & CR', icon: Cpu },
     { id: 'hydraulics', labelUk: 'Гідравліка', labelEn: 'Hydraulics', icon: Gauge },
@@ -342,7 +393,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     const target = e.currentTarget;
     const currentSrc = target.getAttribute('src') || '';
 
-    if (!currentSrc.startsWith('/app/public/')) {
+    if (!currentSrc.startsWith('http') && !currentSrc.startsWith('/app/public/')) {
       target.src = '/app/public' + originalPath;
     } else {
       target.src = '/parts/JCB-PArker.jpg';
@@ -353,7 +404,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     <section id="oem-brands" className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-50 border-t border-slate-200 scroll-mt-24">
       <div className="max-w-7xl mx-auto space-y-10">
         
-        {/* Заголовок блоку: чистий B2B стиль без слова «Шоурум» */}
+        {/* Заголовок блоку */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-slate-200 text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
@@ -369,7 +420,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </p>
         </div>
 
-        {/* Стримані мінімалістичні таби (темно-графітовий активний стиль) */}
+        {/* Таби категорій */}
         <div className="flex flex-wrap items-center justify-center gap-2">
           {tabs.map(tab => {
             const Icon = tab.icon;
@@ -403,7 +454,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
               >
-                {/* Фотографія агрегата */}
+                {/* Фотографія */}
                 <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
                   <img
                     src={item.image}
@@ -420,7 +471,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   </div>
                 </div>
 
-                {/* Інформація про деталь */}
+                {/* Інформація */}
                 <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
                   <div>
                     <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
@@ -437,7 +488,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </h3>
                   </div>
 
-                  {/* Артикули */}
+                  {/* Кнопки ходових артикулів */}
                   <div className="space-y-1 pt-2 border-t border-slate-100">
                     <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
                       {isUk ? 'Ходові коди:' : 'Popular OEM:'}
@@ -446,6 +497,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                       {item.popularOems.map((code) => (
                         <button
                           key={code}
+                          type="button"
                           onClick={() => onSelectOem(code, item.brand)}
                           className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
                           title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
@@ -456,8 +508,9 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </div>
                   </div>
 
-                  {/* Кнопка розрахунку: стильний монохром */}
+                  {/* Кнопка переходу в калькулятор */}
                   <button
+                    type="button"
                     onClick={() => onSelectOem(item.oem, item.brand)}
                     className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
                   >

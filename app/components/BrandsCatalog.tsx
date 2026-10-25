@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { 
   ShieldCheck, ArrowRight, CheckCircle2, MapPin, Layers, 
-  Gauge, Cpu, Wrench, Filter, DoorClosed, Tractor, Check, Package
+  Gauge, Cpu, Wrench, Filter, DoorClosed, Tractor, Check 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
@@ -18,7 +18,6 @@ interface PartShowcaseItem {
   originEn: string;
   category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration' | 'cab' | 'tractors';
   tractorBrand?: 'case-ih' | 'massey-ferguson' | 'ford-nh' | 'kubota' | 'renault-claas' | 'deutz-fahr';
-  tractorSection?: 'cab' | 'transmission' | 'hydraulics' | 'engine';
   image: string;
   popularOems: string[];
 }
@@ -123,151 +122,142 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи товарів
+// 2. Всі запчастини для марок техніки
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
   // ==========================================
-  // ТРАКТОРИ ТА АГРОТЕХНІКА (AGRILINE UK)
+  // ТРАКТОРИ: ПРЯМІ ДЕТАЛІ ЗА МАРКАМИ
   // ==========================================
+  // Ford & New Holland
+  {
+    id: 'tr-nh-part-1',
+    nameUk: 'New Holland / Ford: Замок та фіксатор дверей кабіни',
+    nameEn: 'Ford / New Holland Cab Door Catch & Lock Kit',
+    oem: '83947477',
+    brand: 'NEW HOLLAND / CNH',
+    originUk: 'Бромсгров, Велика Британія',
+    originEn: 'Bromsgrove, UK Depot',
+    category: 'tractors',
+    tractorBrand: 'ford-nh',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
+    popularOems: ['83947477', 'E2NNB22050AA', '81868884', '82011854'],
+  },
+  {
+    id: 'tr-nh-part-2',
+    nameUk: 'New Holland / Ford: Зовнішня натискна ручка дверей кабіни',
+    nameEn: 'Ford / New Holland Outer Door Handle Assembly',
+    oem: '82011854',
+    brand: 'NEW HOLLAND / CNH',
+    originUk: 'Бромсгров, Велика Британія',
+    originEn: 'Bromsgrove, UK Depot',
+    category: 'tractors',
+    tractorBrand: 'ford-nh',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
+    popularOems: ['82011854', '5165243', '81878051', '83996272'],
+  },
+
   // Case IH
   {
-    id: 'tr-case-latch',
-    nameUk: 'Case IH: Замок дверей кабіни XL (Slam Latch)',
+    id: 'tr-case-part-1',
+    nameUk: 'Case IH: Внутрішній замок-клямка дверей кабіни XL',
     nameEn: 'Case IH XL Cab Door Inner Slam Latch',
     oem: '83994207',
     brand: 'CASE IH / AGRILINE UK',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
+    originUk: 'Бромсгров, Велика Британія',
+    originEn: 'Bromsgrove, UK Depot',
     category: 'tractors',
     tractorBrand: 'case-ih',
-    tractorSection: 'cab',
     image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
     popularOems: ['83994207', '15011', '81238', '1535127C1'],
   },
   {
-    id: 'tr-case-handle',
-    nameUk: 'Case IH: Зовнішня ручка дверей 110 мм',
+    id: 'tr-case-part-2',
+    nameUk: 'Case IH: Зовнішня тягова ручка дверей кабіни 110 мм',
     nameEn: 'Case IH Cab Door Exterior Pull Handle',
     oem: '3234209R1',
     brand: 'CASE IH / AGRILINE UK',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
+    originUk: 'Бромсгров, Велика Британія',
+    originEn: 'Bromsgrove, UK Depot',
     category: 'tractors',
     tractorBrand: 'case-ih',
-    tractorSection: 'cab',
     image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
     popularOems: ['3234209R1', '15014', '15049', '15020'],
   },
 
   // Massey Ferguson
   {
-    id: 'tr-mf-engine',
-    nameUk: 'Massey Ferguson: Водяна помпа Perkins 4.236',
+    id: 'tr-mf-part-1',
+    nameUk: 'Massey Ferguson: Водяна помпа Perkins 4.236 Heavy Duty',
     nameEn: 'Massey Ferguson Perkins HD Water Pump',
     oem: '41312487',
     brand: 'MASSEY FERGUSON / PERKINS',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
+    originUk: 'Пітерборо, Велика Британія',
+    originEn: 'Peterborough, UK',
     category: 'tractors',
     tractorBrand: 'massey-ferguson',
-    tractorSection: 'engine',
     image: '/parts/Perkins.jpg',
     popularOems: ['41312487', 'U5MW0010', '3637466M91', '41312167'],
   },
   {
-    id: 'tr-mf-cab',
-    nameUk: 'Massey Ferguson: Ручка та запірний замок дверей',
+    id: 'tr-mf-part-2',
+    nameUk: 'Massey Ferguson: Комплект ручки та запірного механізму',
     nameEn: 'Massey Ferguson Cab Door Handle Assembly',
     oem: '3389410M1',
     brand: 'MASSEY FERGUSON',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
+    originUk: 'Бромсгров, Велика Британія',
+    originEn: 'Bromsgrove, UK Depot',
     category: 'tractors',
     tractorBrand: 'massey-ferguson',
-    tractorSection: 'cab',
     image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
     popularOems: ['3389410M1', '3782012M1', '81240', '3389411M1'],
   },
 
-  // Ford & New Holland
-  {
-    id: 'tr-nh-cab',
-    nameUk: 'New Holland / Ford: Замок та фіксатор дверей кабіни',
-    nameEn: 'Ford / New Holland Cab Door Catch & Lock Kit',
-    oem: '83947477',
-    brand: 'NEW HOLLAND / CNH',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
-    category: 'tractors',
-    tractorBrand: 'ford-nh',
-    tractorSection: 'cab',
-    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
-    popularOems: ['83947477', 'E2NNB22050AA', '81868884', '82011854'],
-  },
-  {
-    id: 'tr-nh-handle',
-    nameUk: 'New Holland / Ford: Зовнішня ручка дверей кабіни',
-    nameEn: 'Ford / New Holland Outer Door Handle Assembly',
-    oem: '82011854',
-    brand: 'NEW HOLLAND / CNH',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
-    category: 'tractors',
-    tractorBrand: 'ford-nh',
-    tractorSection: 'cab',
-    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
-    popularOems: ['82011854', '5165243', '81878051', '83996272'],
-  },
-
   // Deutz-Fahr
   {
-    id: 'tr-deutz-eng',
+    id: 'tr-deutz-part-1',
     nameUk: 'Deutz-Fahr: Турбокомпресор Agroplus / Agrotron',
     nameEn: 'Deutz-Fahr Turbocharger Assembly OEM',
     oem: '04284142',
     brand: 'DEUTZ AG OEM',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
+    originUk: 'Кельн, Німеччина',
+    originEn: 'Cologne, Germany',
     category: 'tractors',
     tractorBrand: 'deutz-fahr',
-    tractorSection: 'engine',
     image: '/parts/Deutz.jpeg',
     popularOems: ['04284142', '04287047', '02937441', '04207588'],
   },
 
   // Renault / CLAAS
   {
-    id: 'tr-renault-cab',
-    nameUk: 'Renault / CLAAS: Фурнітура та замок дверей кабіни',
+    id: 'tr-renault-part-1',
+    nameUk: 'Renault / CLAAS: Запірна фурнітура та замок дверей кабіни',
     nameEn: 'Renault / CLAAS Cabin Door Latch Assembly',
     oem: '7700034685',
     brand: 'CLAAS / RENAULT AG',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
+    originUk: 'Бромсгров, Велика Британія',
+    originEn: 'Bromsgrove, UK Depot',
     category: 'tractors',
     tractorBrand: 'renault-claas',
-    tractorSection: 'cab',
     image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
     popularOems: ['7700034685', '6005022030', '149298', '81238'],
   },
 
   // Kubota
   {
-    id: 'tr-kubota-cab',
-    nameUk: 'Kubota M-Series: Замок дверей та натискна ручка',
+    id: 'tr-kubota-part-1',
+    nameUk: 'Kubota M-Series: Замок дверей та натискна клавішна ручка',
     nameEn: 'Kubota M-Series Cab Door Lock & Handle Kit',
     oem: '3C081-82200',
     brand: 'KUBOTA AG OEM',
-    originUk: 'Agriline UK Depot',
-    originEn: 'Agriline UK Depot',
+    originUk: 'Бромсгров, Велика Британія',
+    originEn: 'Bromsgrove, UK Depot',
     category: 'tractors',
     tractorBrand: 'kubota',
-    tractorSection: 'cab',
     image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
     popularOems: ['3C081-82200', '3C081-82220', '3A111-82200', '70914'],
   },
 
   // ==========================================
-  // КУЗОВ ТА КАБІНА (CAT CAB & BODY)
+  // КУЗОВ ТА КАБІНА CAT
   // ==========================================
   {
     id: 'cab-cat-door',
@@ -532,12 +522,12 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [activeTab, setActiveTab] = useState<string>('all');
   
+  // Вибрана марка трактора
   const [selectedTractorBrand, setSelectedTractorBrand] = useState<string>('ford-nh');
-  const [selectedTractorSection, setSelectedTractorSection] = useState<string>('all');
 
   const mainTabs = [
     { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
-    { id: 'tractors', labelUk: 'Трактори та Агро (Оригінали та аналоги)', labelEn: 'Tractors & Agri (OEM & Aftermarket)', icon: Tractor },
+    { id: 'tractors', labelUk: 'Трактори (Агротехніка)', labelEn: 'Tractors (Agri Fleet)', icon: Tractor },
     { id: 'cab', labelUk: 'Кузов та кабіна CAT', labelEn: 'CAT Cab & Body', icon: DoorClosed },
     { id: 'filtration', labelUk: 'Фільтрація', labelEn: 'Filtration', icon: Filter },
     { id: 'engines', labelUk: 'Двигуни та CR', labelEn: 'Engines & CR', icon: Cpu },
@@ -545,7 +535,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     { id: 'undercarriage', labelUk: 'Мости та редуктори', labelEn: 'Axles & Transmission', icon: Wrench },
   ];
 
-  // 6 брендів тракторів
+  // 6 брендів тракторів із вашими файлами з Agriline
   const tractorCards = [
     { 
       id: 'ford-nh', 
@@ -585,23 +575,10 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     },
   ];
 
-  const tractorSections = [
-    { id: 'all', labelUk: 'Всі системи', labelEn: 'All Systems' },
-    { id: 'cab', labelUk: 'Кабіна та двері', labelEn: 'Cab & Doors' },
-    { id: 'engine', labelUk: 'Двигун та охолодження', labelEn: 'Engine & Cooling' },
-    { id: 'hydraulics', labelUk: 'Гідравліка та навіска', labelEn: 'Hydraulics & Linkage' },
-    { id: 'transmission', labelUk: 'Зчеплення та КПП', labelEn: 'Clutch & Gearbox' },
-  ];
-
   const displayedList = activeTab === 'all'
     ? SHOWCASE_FEATURED
     : activeTab === 'tractors'
-      ? SUBGROUP_PARTS.filter(p => {
-          if (p.category !== 'tractors') return false;
-          if (p.tractorBrand !== selectedTractorBrand) return false;
-          if (selectedTractorSection !== 'all' && p.tractorSection !== selectedTractorSection) return false;
-          return true;
-        })
+      ? SUBGROUP_PARTS.filter(p => p.category === 'tractors' && p.tractorBrand === selectedTractorBrand)
       : SUBGROUP_PARTS.filter(p => p.category === activeTab);
 
   const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, originalPath: string) => {
@@ -630,12 +607,12 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </h2>
           <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
             {isUk 
-              ? 'Оберіть марку техніки або групу агрегатів для отримання актуальних цін з британських хабів Agriline, Finning та Bepco.'
-              : 'Select your machinery brand or equipment group for direct trade pricing from UK warehouses.'}
+              ? 'Оберіть марку трактора або категорію спецтехніки для швидкого підбору й розрахунку вартості поставки.'
+              : 'Select your machinery brand or equipment category for instant quote calculation.'}
           </p>
         </div>
 
-        {/* Головні таби категорій */}
+        {/* Головні таби */}
         <div className="flex flex-wrap items-center justify-center gap-2">
           {mainTabs.map(tab => {
             const Icon = tab.icon;
@@ -658,76 +635,47 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
         </div>
 
         {/* ======================================================== */}
-        {/* РОЗДІЛ: ТРАКТОРИ (ШІСТЬ БРЕНДІВ З AGRILINE + ВУЗЛИ)     */}
+        {/* РОЗДІЛ: ТРАКТОРИ (ТІЛЬКИ 6 МАРОК БЕЗ ЗАЙВИХ ПІДПУНКТІВ)  */}
         {/* ======================================================== */}
         {activeTab === 'tractors' && (
           <motion.div 
             initial={{ opacity: 0, y: -10 }} 
             animate={{ opacity: 1, y: 0 }} 
-            className="space-y-6"
+            className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
           >
-            {/* 1. Сітка вибору марки трактора */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-              {tractorCards.map((tractor) => {
-                const isSelected = selectedTractorBrand === tractor.id;
-                return (
-                  <button
-                    key={tractor.id}
-                    type="button"
-                    onClick={() => {
-                      setSelectedTractorBrand(tractor.id as any);
-                      setSelectedTractorSection('all');
-                    }}
-                    className={`relative p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between overflow-hidden group ${
-                      isSelected 
-                        ? 'bg-white border-red-600 shadow-md ring-2 ring-red-600/20' 
-                        : 'bg-white/80 border-slate-200 hover:border-slate-300 hover:shadow-xs'
-                    }`}
-                  >
-                    <div className="w-full h-24 bg-slate-50 rounded-xl flex items-center justify-center overflow-hidden mb-2">
-                      <img 
-                        src={tractor.image} 
-                        alt={tractor.name}
-                        className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => handleImageError(e, tractor.image)}
-                      />
-                    </div>
-                    <div>
-                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
-                        {tractor.badge}
-                      </span>
-                      <h4 className="font-bold text-slate-900 text-xs leading-tight flex items-center justify-between mt-0.5">
-                        <span className="truncate">{tractor.name}</span>
-                        {isSelected && <Check className="w-3.5 h-3.5 text-red-600 shrink-0 ml-1" />}
-                      </h4>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* 2. Підпункти систем для вибраної марки */}
-            <div className="p-4 bg-white border border-slate-200 rounded-2xl flex flex-wrap items-center justify-between gap-3">
-              <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                {isUk ? 'Вузли для обраної марки:' : 'Assembly Sections:'}
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {tractorSections.map(s => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={() => setSelectedTractorSection(s.id)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                      selectedTractorSection === s.id
-                        ? 'bg-slate-900 text-white'
-                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                    }`}
-                  >
-                    {isUk ? s.labelUk : s.labelEn}
-                  </button>
-                ))}
-              </div>
-            </div>
+            {tractorCards.map((tractor) => {
+              const isSelected = selectedTractorBrand === tractor.id;
+              return (
+                <button
+                  key={tractor.id}
+                  type="button"
+                  onClick={() => setSelectedTractorBrand(tractor.id)}
+                  className={`relative p-3 rounded-2xl border text-left transition-all cursor-pointer flex flex-col justify-between overflow-hidden group ${
+                    isSelected 
+                      ? 'bg-white border-red-600 shadow-md ring-2 ring-red-600/20' 
+                      : 'bg-white/80 border-slate-200 hover:border-slate-300 hover:shadow-xs'
+                  }`}
+                >
+                  <div className="w-full h-24 bg-slate-50 rounded-xl flex items-center justify-center overflow-hidden mb-2">
+                    <img 
+                      src={tractor.image} 
+                      alt={tractor.name}
+                      className="w-full h-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => handleImageError(e, tractor.image)}
+                    />
+                  </div>
+                  <div>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider block">
+                      {tractor.badge}
+                    </span>
+                    <h4 className="font-bold text-slate-900 text-xs leading-tight flex items-center justify-between mt-0.5">
+                      <span className="truncate">{tractor.name}</span>
+                      {isSelected && <Check className="w-3.5 h-3.5 text-red-600 shrink-0 ml-1" />}
+                    </h4>
+                  </div>
+                </button>
+              );
+            })}
           </motion.div>
         )}
 
@@ -736,97 +684,81 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
         {/* ======================================================== */}
         <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <AnimatePresence mode="popLayout">
-            {displayedList.length > 0 ? (
-              displayedList.map((item) => (
-                <motion.div
-                  key={item.id}
-                  layout
-                  initial={{ opacity: 0, y: 15 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
-                >
-                  {/* Фотографія деталі */}
-                  <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
-                    <img
-                      src={item.image}
-                      alt={item.nameEn}
-                      className="w-full h-full object-contain p-1 rounded-lg group-hover:scale-105 transition-transform duration-300"
-                      onError={(e) => handleImageError(e, item.image)}
-                    />
-                    <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{isUk ? 'В наявності UK' : 'In Stock UK'}</span>
-                    </div>
-                    <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
-                      0% VAT
-                    </div>
+            {displayedList.map((item) => (
+              <motion.div
+                key={item.id}
+                layout
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+              >
+                {/* Фотографія */}
+                <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
+                  <img
+                    src={item.image}
+                    alt={item.nameEn}
+                    className="w-full h-full object-contain p-1 rounded-lg group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => handleImageError(e, item.image)}
+                  />
+                  <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                    <span>{isUk ? 'В наявності UK' : 'In Stock UK'}</span>
                   </div>
-
-                  {/* Інформація */}
-                  <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
-                        <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-                        <span className="truncate">{isUk ? item.originUk : item.originEn}</span>
-                      </div>
-
-                      <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-0.5">
-                        {item.brand}
-                      </div>
-
-                      <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-slate-950 transition-colors line-clamp-2">
-                        {isUk ? item.nameUk : item.nameEn}
-                      </h3>
-                    </div>
-
-                    {/* Ходові OEM */}
-                    <div className="space-y-1 pt-2 border-t border-slate-100">
-                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
-                        {isUk ? 'OEM та крос-номери:' : 'OEM & Cross Numbers:'}
-                      </span>
-                      <div className="flex flex-wrap gap-1">
-                        {item.popularOems.map((code) => (
-                          <button
-                            key={code}
-                            type="button"
-                            onClick={() => onSelectOem(code, item.brand)}
-                            className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
-                            title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
-                          >
-                            {code}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Кнопка переходу в калькулятор */}
-                    <button
-                      type="button"
-                      onClick={() => onSelectOem(item.oem, item.brand)}
-                      className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
-                    >
-                      <span>{isUk ? 'Розрахувати вартість' : 'Get Quote'}</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
+                  <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
+                    0% VAT
                   </div>
-                </motion.div>
-              ))
-            ) : (
-              <div className="col-span-full py-16 text-center bg-white rounded-3xl border border-dashed border-slate-300 p-8 space-y-3">
-                <div className="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-500">
-                  <Package className="w-6 h-6" />
                 </div>
-                <h4 className="text-base font-bold text-slate-800">
-                  {isUk ? 'Вузол доступний під пряме замовлення з хабу' : 'Section available upon direct trade request'}
-                </h4>
-                <p className="max-w-md mx-auto text-xs text-slate-500">
-                  {isUk 
-                    ? 'Поставки з британського складу Agriline Products та Bepco. Введіть каталожний номер деталі або VIN у форму вище для миттєвого підбору.'
-                    : 'Dispatched from Agriline Products UK & Bepco warehouses. Enter your OEM code into the search form above.'}
-                </p>
-              </div>
-            )}
+
+                {/* Інформація */}
+                <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
+                  <div>
+                    <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
+                      <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                      <span className="truncate">{isUk ? item.originUk : item.originEn}</span>
+                    </div>
+
+                    <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-0.5">
+                      {item.brand}
+                    </div>
+
+                    <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-slate-950 transition-colors line-clamp-2">
+                      {isUk ? item.nameUk : item.nameEn}
+                    </h3>
+                  </div>
+
+                  {/* Ходові коди */}
+                  <div className="space-y-1 pt-2 border-t border-slate-100">
+                    <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                      {isUk ? 'Ходові коди / OEM:' : 'Popular OEM:'}
+                    </span>
+                    <div className="flex flex-wrap gap-1">
+                      {item.popularOems.map((code) => (
+                        <button
+                          key={code}
+                          type="button"
+                          onClick={() => onSelectOem(code, item.brand)}
+                          className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
+                          title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
+                        >
+                          {code}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Кнопка розрахунку вартості */}
+                  <button
+                    type="button"
+                    onClick={() => onSelectOem(item.oem, item.brand)}
+                    className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+                  >
+                    <span>{isUk ? 'Розрахувати вартість' : 'Get Quote'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </motion.div>
+            ))}
           </AnimatePresence>
         </motion.div>
 

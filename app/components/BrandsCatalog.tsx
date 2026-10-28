@@ -251,7 +251,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/watermarked_img_14206455484897953653.jpg',
+    image: '/parts/JCB-Parker.jpg'
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -407,7 +407,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/watermarked_img_3834904218519996669.jpg',
+    image: '/parts/Carraro.jpg'
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -443,7 +443,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/watermarked_img_14206455484897953653.jpg',
+    image: '/parts/JCB-Parker.jpg'
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];

@@ -2,18 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import {
-  CheckCircle,
   MessageSquare,
   ArrowRight,
   Calculator,
-  Printer,
-  FileText,
   Loader2,
   Search,
   Box,
   Clock,
-  CreditCard,
-  ShieldCheck,
   Plus,
   Trash2,
 } from 'lucide-react';
@@ -24,16 +19,6 @@ interface RFQItemInput {
   partNumber: string;
   machineModel: string;
   quantity: string;
-}
-
-interface CalculatedItem {
-  partNumber: string;
-  machineModel: string;
-  quantity: number;
-  partTitle: string;
-  clientUnitPriceGbp: number;
-  totalWeightKg: number;
-  itemTotalGbp: number;
 }
 
 export default function RFQSection() {
@@ -49,18 +34,6 @@ export default function RFQSection() {
 
   const [status, setStatus] = useState<any>('idle');
   const [searchStep, setSearchStep] = useState<string>('');
-  const [paying, setPaying] = useState(false);
-
-  const [calculation, setCalculation] = useState<{
-    items: CalculatedItem[];
-    itemsSubtotal: number;
-    shippingCost: number;
-    parcelTypeLabel: string;
-    totalWeightKg: number;
-    total: number;
-    invoiceNumber: string;
-    invoiceDate: string;
-  } | null>(null);
 
   const triggerGoogleConversion = (url?: string) => {
     if (typeof window !== 'undefined' && (window as any).gtag) {
@@ -164,16 +137,15 @@ export default function RFQSection() {
     setStatus('searching');
 
     const invNum = `NLG-PI-${Math.floor(100000 + Math.random() * 900000)}`;
-    const today = new Date().toLocaleDateString(isUk ? 'uk-UA' : 'en-GB');
 
     setSearchStep(
       isUk
-        ? '1/3 Перевірка наявності деталей на офіційних складах...'
-        : '1/3 Checking live inventory across authorized distributor stocks...'
+        ? '1/2 Перевірка наявності деталей на офіційних складах...'
+        : '1/2 Checking live inventory across authorized distributor stocks...'
     );
 
     try {
-      const res = await fetch('/api/rfq', {
+      await fetch('/api/rfq', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -191,163 +163,16 @@ export default function RFQSection() {
 
       setSearchStep(
         isUk
-          ? '2/3 Розрахунок цін та консолідація доставки Nova Post...'
-          : '2/3 Calculating pricing & consolidating freight route...'
+          ? '2/2 Передаємо запит нашому фахівцю...'
+          : '2/2 Sending your request to our specialist...'
       );
-
-      if (!res.ok) {
-        throw new Error(`HTTP error ${res.status}`);
-      }
-
-      const data = await res.json();
-      setSearchStep(
-        isUk ? '3/3 Формування комерційного розрахунку...' : '3/3 Generating Proforma Invoice...'
-      );
-
-      if (!data.found || data.status === 'wait_for_rfq') {
-        setStatus('wait_for_rfq');
-        triggerGoogleConversion();
-        return;
-      }
-
-      setCalculation({
-        items: data.items,
-        itemsSubtotal: Number(data.itemsSubtotal),
-        shippingCost: Number(data.shippingCost),
-        parcelTypeLabel: data.parcelType,
-        totalWeightKg: Number(data.totalWeightKg),
-        total: Number(data.total),
-        invoiceNumber: invNum,
-        invoiceDate: today,
-      });
-      setStatus('success');
-      triggerGoogleConversion();
     } catch (err) {
-      console.error('Calculation error:', err);
-      setStatus('wait_for_rfq');
-      triggerGoogleConversion();
-    }
-  };
-
-  const handlePrintIsolated = () => {
-    const invoiceEl = document.getElementById('printable-invoice');
-    if (!invoiceEl) {
-      window.print();
-      return;
+      console.error('RFQ error:', err);
     }
 
-    const printWindow = window.open('', '_blank', 'width=850,height=1000');
-    if (!printWindow) {
-      window.print();
-      return;
-    }
-
-    const invoiceContent = invoiceEl.innerHTML;
-
-    printWindow.document.open();
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Invoice ${calculation?.invoiceNumber || 'NoLimitGoods'}</title>
-          <style>
-            @page { size: A4 portrait; margin: 12mm; }
-            * { box-sizing: border-box; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; color: #0f172a; background: #fff; margin: 0; padding: 0; font-size: 12px; }
-            table { width: 100%; border-collapse: collapse; margin: 15px 0; }
-            th { text-align: left; padding: 8px 4px; border-bottom: 2px solid #cbd5e1; font-size: 10px; text-transform: uppercase; color: #64748b; }
-            td { padding: 8px 4px; border-bottom: 1px solid #f1f5f9; }
-            .text-right { text-align: right; }
-            .text-center { text-align: center; }
-            .font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
-            .font-bold { font-weight: bold; }
-            .font-black { font-weight: 900; }
-            .flex { display: flex; }
-            .justify-between { justify-content: space-between; }
-            .items-start { align-items: flex-start; }
-            .items-center { align-items: center; }
-            .border-b-2 { border-bottom: 2px solid #0f172a; }
-            .border-t { border-top: 1px solid #e2e8f0; }
-            .pb-5 { padding-bottom: 15px; }
-            .mb-5 { margin-bottom: 15px; }
-            .mb-6 { margin-bottom: 20px; }
-            .pt-4 { padding-top: 15px; }
-            .p-4 { padding: 12px; }
-            .bg-slate-50 { background-color: #f8fafc; border: 1px solid #f1f5f9; border-radius: 8px; }
-            .text-red-600 { color: #dc2626; }
-            .text-slate-400 { color: #94a3b8; }
-            .text-slate-500 { color: #64748b; }
-            .text-slate-600 { color: #475569; }
-            .text-slate-900 { color: #0f172a; }
-            .text-slate-950 { color: #020617; }
-            .text-emerald-800 { color: #065f46; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 6px; border-radius: 4px; font-size: 9px; }
-            .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-          </style>
-        </head>
-        <body>
-          <div>${invoiceContent}</div>
-          <script>
-            window.onload = function() {
-              window.focus();
-              window.print();
-              setTimeout(function() { window.close(); }, 500);
-            };
-          </script>
-        </body>
-      </html>
-    `);
-    printWindow.document.close();
-  };
-
-  const handleOnlinePayment = async () => {
-    if (!calculation) return;
-    setPaying(true);
-
-    try {
-      const summaryText = calculation.items
-        .map((it) => `${it.partNumber} [${it.machineModel || 'OEM'}] (x${it.quantity})`)
-        .join(', ');
-
-      const res = await fetch('/api/checkout', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          invoiceNumber: calculation.invoiceNumber,
-          partNumber: summaryText,
-          categoryLabel: isUk
-            ? `Специфікація (${calculation.items.length} поз.)`
-            : `Specification (${calculation.items.length} items)`,
-          totalAmount: calculation.total,
-          contact,
-        }),
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        alert(
-          data.error ||
-            (isUk
-              ? 'Помилка платіжного шлюзу. Зв’яжіться з нашою підтримкою.'
-              : 'Payment gateway error. Please contact support.')
-        );
-      }
-    } catch (err) {
-      console.error('Payment error:', err);
-      alert(
-        isUk
-          ? 'Не вдалося з’єднатися з сервером оплати.'
-          : 'Unable to connect to payment gateway.'
-      );
-    } finally {
-      setPaying(false);
-    }
-  };
-
-  const getUahTotal = () => {
-    if (!calculation) return '0';
-    return Math.round(Number(calculation.total) * 56).toLocaleString(isUk ? 'uk-UA' : 'en-US');
+    // Інвойс більше не показуємо: завжди повідомляємо, що фахівець зв'яжеться
+    setStatus('wait_for_rfq');
+    triggerGoogleConversion();
   };
 
   const getWaitWhatsAppLink = () => {
@@ -364,15 +189,8 @@ export default function RFQSection() {
     return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
   };
 
-  const getWhatsAppLink = () => {
-    if (!calculation) return 'https://wa.me/447426826595';
-    const msg = `Добрий день! Підтверджую замовлення ${calculation.invoiceNumber} на ${calculation.items.length} поз. Сума: £${calculation.total}. Контакт: ${contact}`;
-    return `https://wa.me/447426826595?text=${encodeURIComponent(msg)}`;
-  };
-
   const resetForm = () => {
     setStatus('idle');
-    setCalculation(null);
     setItems([{ id: '1', partNumber: '', machineModel: '', quantity: '1' }]);
     setComment('');
     setCountry(isUk ? 'Україна' : 'Ukraine');
@@ -404,7 +222,7 @@ export default function RFQSection() {
           <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
             {isUk
               ? 'Введіть один або кілька OEM-номерів (нове поле відкриється автоматично) або додайте список деталей текстом.'
-              : 'Add up to 10 OEM parts to a single proforma invoice with consolidated freight.'}
+              : 'Add up to 10 OEM parts to a single request. Our specialist will contact you with pricing.'}
           </p>
         </div>
 
@@ -420,7 +238,7 @@ export default function RFQSection() {
 
               <div>
                 <h3 className="text-xl font-bold text-white mb-2">
-                  {isUk ? 'Обробка запиту по складах...' : 'Querying Stocks for Multiple Items...'}
+                  {isUk ? 'Обробка запиту...' : 'Processing your request...'}
                 </h3>
                 <p className="text-sm font-mono text-emerald-400 max-w-md mx-auto transition-all">
                   {searchStep}
@@ -446,8 +264,8 @@ export default function RFQSection() {
                 </h3>
                 <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
                   {isUk
-                    ? 'Наш фахівець перевірить наявність та зв’яжеться з вами для уточнення вартості.'
-                    : 'Our specialist will check stock availability and contact you with accurate pricing.'}
+                    ? 'Наш фахівець зв’яжеться з вами для надання інформації.'
+                    : 'Our specialist will contact you to provide the information.'}
                 </p>
               </div>
 
@@ -525,262 +343,9 @@ export default function RFQSection() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-medium py-2 px-4 rounded-xl transition-colors cursor-pointer text-xs"
+                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2 px-4 rounded-xl transition-colors cursor-pointer text-xs"
                 >
-                  {isUk ? 'Новий розрахунок' : 'New Calculation'}
-                </button>
-              </div>
-            </div>
-          ) : status === 'success' && calculation ? (
-            <div className="py-2">
-              <div className="flex items-center justify-between pb-6 border-b border-slate-800 mb-6">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30">
-                    <CheckCircle className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl font-bold text-white">
-                      {isUk
-                        ? `Рахунок сформовано (${calculation.items.length} позицій)`
-                        : `Proforma Invoice Ready (${calculation.items.length} items)`}
-                    </h3>
-                    <p className="text-xs text-slate-400 font-mono">
-                      Ref: {calculation.invoiceNumber} • {calculation.invoiceDate}
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handlePrintIsolated}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-all border border-slate-700 cursor-pointer active:scale-95"
-                >
-                  <Printer className="w-4 h-4 text-slate-300" />
-                  <span>{isUk ? 'Друкувати / PDF' : 'Print / PDF'}</span>
-                </button>
-              </div>
-
-              {/* БЛАНК ІНВОЙСУ */}
-              <div id="printable-invoice" className="bg-white text-slate-900 rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 mb-8 font-sans">
-                <div className="flex flex-col sm:flex-row justify-between items-start border-b-2 border-slate-900 pb-5 mb-5 gap-4">
-                  <div>
-                    <div className="text-2xl font-black tracking-tight text-slate-950">
-                      NoLimitGoods <span className="text-red-600">LTD</span>
-                    </div>
-                    <div className="text-[11px] text-slate-500 font-medium">
-                      UK Export Hub & Machinery Logistics Solutions
-                    </div>
-                  </div>
-                  <div className="text-left sm:text-right text-[11px] text-slate-600 leading-relaxed font-mono">
-                    <strong className="text-slate-900">NoLimitGoods Limited</strong><br />
-                    Company No: 13146899 | VAT: GB 372654187<br />
-                    EORI: GB079878335000<br />
-                    374 Hipsell Highway, Coventry, CV2 5FR, UK
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h4 className="text-lg font-black uppercase text-slate-900 tracking-wider">
-                      PROFORMA INVOICE
-                    </h4>
-                    <span className="inline-block bg-emerald-50 border border-emerald-300 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded mt-1">
-                      UK EXPORT — 0% VAT ZERO-RATED
-                    </span>
-                  </div>
-                  <div className="text-right text-xs">
-                    <span className="text-slate-400 block text-[10px] uppercase font-bold">
-                      {isUk ? 'Рахунок №:' : 'Invoice Ref:'}
-                    </span>
-                    <strong className="text-slate-900 font-mono">{calculation.invoiceNumber}</strong>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50 rounded-xl p-4 mb-6 border border-slate-100 text-xs">
-                  <div>
-                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">
-                      {isUk ? 'Покупець / Consignee:' : 'Customer / Consignee:'}
-                    </span>
-                    <p className="font-semibold text-slate-900">
-                      {contact || (isUk ? 'Приватний замовник' : 'Direct Customer')}
-                    </p>
-                    <p className="text-slate-600">
-                      {isUk ? 'Країна доставки:' : 'Destination Country:'} {country}
-                    </p>
-                  </div>
-                  <div className="sm:text-right">
-                    <span className="text-slate-400 block text-[10px] font-bold uppercase mb-1">
-                      {isUk ? 'Логістична консолідація:' : 'Freight Consolidation:'}
-                    </span>
-                    <p className="text-slate-600">
-                      {isUk ? 'Маршрут:' : 'Route:'} <strong>Coventry Hub ➔ {country}</strong>
-                    </p>
-                    <p className="text-slate-600">
-                      {isUk ? 'Формат:' : 'Package:'} <strong>{calculation.parcelTypeLabel}</strong>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="overflow-x-auto mb-6">
-                  <table className="w-full text-left text-xs border-collapse">
-                    <thead>
-                      <tr className="border-b border-slate-200 text-slate-500 uppercase text-[10px]">
-                        <th className="py-2">#</th>
-                        <th className="py-2">{isUk ? 'Найменування та Бренд' : 'Description / Brand'}</th>
-                        <th className="py-2">{isUk ? 'Артикул OEM' : 'OEM Part Number'}</th>
-                        <th className="py-2 text-center">{isUk ? 'К-сть' : 'Qty'}</th>
-                        <th className="py-2 text-right">{isUk ? 'Ціна (£)' : 'Unit Price (£)'}</th>
-                        <th className="py-2 text-right">{isUk ? 'Сума (£)' : 'Total (£)'}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-100">
-                      {calculation.items.map((it, idx) => (
-                        <tr key={idx}>
-                          <td className="py-3 text-slate-400">{idx + 1}</td>
-                          <td className="py-3">
-                            <div className="font-semibold text-slate-800">{it.partTitle}</div>
-                            {it.machineModel && (
-                              <div className="text-[10px] text-slate-500 font-mono uppercase">{it.machineModel}</div>
-                            )}
-                          </td>
-                          <td className="py-3 font-mono font-bold text-slate-900">{it.partNumber}</td>
-                          <td className="py-3 text-center">
-                            {it.quantity} {isUk ? 'шт' : 'pcs'}
-                          </td>
-                          <td className="py-3 text-right">£{it.clientUnitPriceGbp.toFixed(2)}</td>
-                          <td className="py-3 text-right font-semibold">£{it.itemTotalGbp.toFixed(2)}</td>
-                        </tr>
-                      ))}
-                      <tr className="bg-slate-50/70">
-                        <td colSpan={4} className="py-3 px-2 font-medium text-slate-700">
-                          {isUk
-                            ? `Консолідована доставка Nova Post (загальна вага ${calculation.totalWeightKg} кг)`
-                            : `Consolidated Nova Post Freight (Total Weight ${calculation.totalWeightKg} kg)`}
-                        </td>
-                        <td className="py-3 text-right font-mono text-slate-500">FREIGHT</td>
-                        <td className="py-3 text-right font-semibold text-slate-900">
-                          £{calculation.shippingCost.toFixed(2)}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="border-t border-slate-200 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                  <div className="text-[11px] text-slate-500 max-w-sm">
-                    {isUk
-                      ? 'Рахунок дійсний 5 банківських днів. 0% UK VAT. Оплата за безготівковим розрахунком (IBAN/SWIFT) або онлайн карткою.'
-                      : 'Valid for 5 banking days. Zero-rated 0% UK Export VAT. Payable via IBAN/SWIFT BACS or online card.'}
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[11px] text-slate-500 uppercase font-bold block">
-                      {isUk ? 'Разом до сплати:' : 'Total Amount Due:'}
-                    </span>
-                    <div className="text-2xl sm:text-3xl font-black text-slate-950">
-                      £{calculation.total.toFixed(2)}
-                    </div>
-                    <div className="text-xs font-bold text-slate-600">
-                      ≈ {getUahTotal()} {isUk ? 'грн' : 'UAH'}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* КНОПКИ ОПЛАТИ */}
-              <div className="max-w-md mx-auto space-y-3 mb-6">
-                <button
-                  type="button"
-                  onClick={handleOnlinePayment}
-                  disabled={paying}
-                  className="w-full flex items-center justify-center gap-3 py-4 px-6 rounded-2xl bg-white hover:bg-slate-100 text-slate-950 font-extrabold text-sm sm:text-base transition-all shadow-md active:scale-95 cursor-pointer disabled:opacity-70"
-                >
-                  {paying ? (
-                    <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
-                      <span>{isUk ? 'Відкриття захищеного шлюзу...' : 'Connecting to Stripe Checkout...'}</span>
-                    </>
-                  ) : (
-                    <>
-                      <CreditCard className="w-5 h-5" />
-                      <span>
-                        {isUk
-                          ? `Оплатити онлайн усю специфікацію: £${calculation.total.toFixed(2)}`
-                          : `Pay Full Specification Online: £${calculation.total.toFixed(2)}`}
-                      </span>
-                    </>
-                  )}
-                </button>
-
-                <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400">
-                  <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>
-                    {isUk
-                      ? 'Захищений платіж UK 3D-Secure • Apple Pay • Google Pay • Visa / MC'
-                      : 'Protected UK 3D-Secure Payment • Apple Pay • Google Pay • Visa / MC'}
-                  </span>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={handlePrintIsolated}
-                  className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 font-bold text-xs transition-all cursor-pointer"
-                >
-                  <FileText className="w-4 h-4 text-slate-400" />
-                  <span>
-                    {isUk ? 'Зберегти офіційний інвойс (PDF)' : 'Download Proforma Invoice (PDF)'}
-                  </span>
-                </button>
-              </div>
-
-              {/* МЕСЕНДЖЕРИ */}
-              <div className="space-y-4 max-w-md mx-auto text-center border-t border-slate-800 pt-6">
-                <p className="text-xs text-slate-400">
-                  {isUk
-                    ? 'Або підтвердіть замовлення через наш офіс:'
-                    : 'Or confirm this order directly with our office:'}
-                </p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  <a
-                    href={getWhatsAppLink()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => triggerGoogleConversion()}
-                    className="flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>WhatsApp</span>
-                  </a>
-
-                  <a
-                    href="https://t.me/+447426826595"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => triggerGoogleConversion()}
-                    className="flex items-center justify-center gap-1.5 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>Telegram</span>
-                  </a>
-
-                  <a
-                    href="viber://chat?number=%2B447426826595"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={() => triggerGoogleConversion()}
-                    className="flex items-center justify-center gap-1.5 bg-[#7360F2] hover:bg-[#6350e0] text-white font-bold py-2.5 px-3 rounded-xl shadow-md transition-all text-xs cursor-pointer active:scale-95"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5" />
-                    <span>Viber</span>
-                  </a>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={resetForm}
-                  className="w-full bg-slate-800/60 hover:bg-slate-800 text-slate-400 font-medium py-2 px-4 rounded-xl transition-colors cursor-pointer text-xs"
-                >
-                  {isUk ? 'Розрахувати нову специфікацію' : 'New Quote'}
+                  {isUk ? 'Новий запит' : 'New Request'}
                 </button>
               </div>
             </div>
@@ -925,17 +490,15 @@ export default function RFQSection() {
                 {status === 'searching' ? (
                   <>
                     <Loader2 className="w-5 h-5 animate-spin" />
-                    <span>
-                      {isUk ? 'Обробка запиту...' : 'Processing Inquiry...'}
-                    </span>
+                    <span>{isUk ? 'Обробка запиту...' : 'Processing Inquiry...'}</span>
                   </>
                 ) : (
                   <>
                     <Box className="w-5 h-5" />
                     <span>
                       {isUk
-                        ? `Прорахувати специфікацію (${activeCount > 0 ? activeCount : 1} поз.)`
-                        : `Calculate Specification (${activeCount > 0 ? activeCount : 1} Items)`}
+                        ? `Надіслати запит (${activeCount > 0 ? activeCount : 1} поз.)`
+                        : `Send Request (${activeCount > 0 ? activeCount : 1} Items)`}
                     </span>
                     <ArrowRight className="w-5 h-5 ml-1" />
                   </>

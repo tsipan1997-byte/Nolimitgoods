@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { LanguageProvider } from '@/lib/language-context';
+import CookieConsent from './components/cookie-consent';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
@@ -56,6 +57,22 @@ export default function RootLayout({
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                ad_storage: 'denied',
+                ad_user_data: 'denied',
+                ad_personalization: 'denied',
+                analytics_storage: 'denied'
+              });
+              try {
+                if (localStorage.getItem('nlg_cookie_consent') === 'granted') {
+                  gtag('consent', 'update', {
+                    ad_storage: 'granted',
+                    ad_user_data: 'granted',
+                    ad_personalization: 'granted',
+                    analytics_storage: 'granted'
+                  });
+                }
+              } catch (e) {}
               gtag('js', new Date());
               gtag('config', 'AW-670192610');
             `,
@@ -74,19 +91,19 @@ export default function RootLayout({
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
+            try {
+              if (localStorage.getItem('nlg_cookie_consent') === 'granted') {
+                fbq('consent', 'grant');
+              } else {
+                fbq('consent', 'revoke');
+              }
+            } catch (e) {
+              fbq('consent', 'revoke');
+            }
             fbq('init', '2306915906774402');
             fbq('track', 'PageView');
           `}
         </Script>
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            style={{ display: 'none' }}
-            src="https://www.facebook.com/tr?id=2306915906774402&ev=PageView&noscript=1"
-            alt=""
-          />
-        </noscript>
         {/* End Meta Pixel Code */}
 
         {/* Відстеження кліків по месенджерах / телефону / email -> подія Contact у Meta */}
@@ -111,6 +128,7 @@ export default function RootLayout({
 
         <LanguageProvider>
           {children}
+          <CookieConsent />
         </LanguageProvider>
       </body>
     </html>

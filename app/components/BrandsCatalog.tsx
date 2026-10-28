@@ -379,6 +379,24 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [activeTab, setActiveTab] = useState<string>('all');
 
+  // Подія ViewContent у Meta Pixel: показує, які деталі найбільше цікавлять людей
+  const selectOem = (oem: string, brand: string) => {
+    try {
+      const w = window as any;
+      if (typeof w.fbq === 'function') {
+        w.fbq('track', 'ViewContent', {
+          content_ids: [oem],
+          content_name: oem,
+          content_category: brand,
+          content_type: 'product',
+        });
+      }
+    } catch {
+      // трекінг не повинен ламати кнопку
+    }
+    onSelectOem(oem, brand);
+  };
+
   const mainTabs = [
     { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
     { id: 'tractors', labelUk: 'Трактори (Агротехніка)', labelEn: 'Tractors (Agri Fleet)', icon: Tractor },
@@ -478,15 +496,15 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-slate-200 text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            {isUk ? 'Прямі відвантаження з британських складів • 0% UK VAT' : 'Direct UK Dispatches • 0% UK VAT'}
+            {isUk ? 'Поставки зі складів UK та ЄС • 0% UK VAT' : 'Supply from UK & EU Stocks • 0% UK VAT'}
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            {isUk ? 'Оригінальні вузли та перевірені замінники в наявності' : 'Genuine OEM & Aftermarket Assemblies in Stock'}
+            {isUk ? 'Оригінальні вузли та перевірені замінники під замовлення' : 'Genuine OEM & Aftermarket Assemblies on Order'}
           </h2>
           <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
             {isUk 
-              ? 'Оберіть марку трактора або групу агрегатів для отримання прямої ціни постачання.'
-              : 'Select your machinery brand or equipment group for direct trade pricing.'}
+              ? 'Оберіть марку трактора або групу агрегатів. Наявність і ціну підтвердить наш фахівець.'
+              : 'Select your machinery brand or equipment group. Our specialist will confirm availability and price.'}
           </p>
         </div>
 
@@ -557,16 +575,16 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   {/* Ходові каталожні номери для швидкого кліку */}
                   <div className="space-y-1.5 pt-3 border-t border-slate-100">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                      {isUk ? 'Ходові артикули для розрахунку:' : 'Popular OEM for Quote:'}
+                      {isUk ? 'Ходові артикули для запиту ціни:' : 'Popular OEM for Quote:'}
                     </span>
                     <div className="flex flex-wrap gap-1.5">
                       {tractor.codes.map((code) => (
                         <button
                           key={code}
                           type="button"
-                          onClick={() => onSelectOem(code, tractor.brand)}
+                          onClick={() => selectOem(code, tractor.brand)}
                           className="px-2.5 py-1 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-xs font-bold transition-colors border border-slate-200/80 cursor-pointer"
-                          title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
+                          title={isUk ? `Дізнатися ціну ${code}` : `Get quote for ${code}`}
                         >
                           {code}
                         </button>
@@ -577,10 +595,10 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   {/* Кнопка прямого запиту ціни по марці */}
                   <button
                     type="button"
-                    onClick={() => onSelectOem(tractor.defaultOem, tractor.brand)}
+                    onClick={() => selectOem(tractor.defaultOem, tractor.brand)}
                     className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs tracking-wider uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-xs active:scale-98"
                   >
-                    <span>{isUk ? `Розрахувати деталі ${tractor.brand}` : `Get ${tractor.brand} Quote`}</span>
+                    <span>{isUk ? `Дізнатися ціну: ${tractor.brand}` : `Get ${tractor.brand} Quote`}</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
@@ -612,7 +630,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     />
                     <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
                       <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                      <span>{isUk ? 'В наявності UK' : 'In Stock UK'}</span>
+                      <span>{isUk ? 'Під замовлення UK/ЄС' : 'On order UK/EU'}</span>
                     </div>
                     <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
                       0% VAT
@@ -646,9 +664,9 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                           <button
                             key={code}
                             type="button"
-                            onClick={() => onSelectOem(code, item.brand)}
+                            onClick={() => selectOem(code, item.brand)}
                             className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
-                            title={isUk ? `Розрахувати ${code}` : `Calculate ${code}`}
+                            title={isUk ? `Дізнатися ціну ${code}` : `Get quote for ${code}`}
                           >
                             {code}
                           </button>
@@ -656,13 +674,13 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                       </div>
                     </div>
 
-                    {/* Кнопка розрахунку вартості */}
+                    {/* Кнопка запиту ціни */}
                     <button
                       type="button"
-                      onClick={() => onSelectOem(item.oem, item.brand)}
+                      onClick={() => selectOem(item.oem, item.brand)}
                       className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
                     >
-                      <span>{isUk ? 'Розрахувати вартість' : 'Get Quote'}</span>
+                      <span>{isUk ? 'Дізнатися ціну' : 'Get Quote'}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>

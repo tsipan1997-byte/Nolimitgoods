@@ -9,6 +9,12 @@ export default function Footer() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
+  const openCookieSettings = () => {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new Event('nlg:open-cookie-settings'));
+    }
+  };
+
   return (
     <footer className="bg-slate-950 border-t border-slate-800/80 text-slate-400 text-xs font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -110,7 +116,17 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-slate-500">
           <p>© 2026 NoLimitGoods Limited. {isUk ? 'Всі права захищені.' : 'All rights reserved.'}</p>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <Link href="/privacy" className="hover:text-white transition-colors underline underline-offset-4">
+              {isUk ? 'Політика конфіденційності' : 'Privacy Policy'}
+            </Link>
+            <button
+              type="button"
+              onClick={openCookieSettings}
+              className="hover:text-white transition-colors underline underline-offset-4 cursor-pointer"
+            >
+              {isUk ? 'Налаштування cookie' : 'Cookie settings'}
+            </button>
             <span className="text-emerald-400 font-mono font-bold">0% UK Export VAT Status</span>
           </div>
         </div>

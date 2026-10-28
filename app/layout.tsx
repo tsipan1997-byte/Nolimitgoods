@@ -39,6 +39,27 @@ export const metadata: Metadata = {
   },
 };
 
+const ORGANIZATION_JSON_LD = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'NoLimitGoods Ltd',
+  legalName: 'NoLimitGoods Limited',
+  url: 'https://www.nolimitgoods.co.uk',
+  logo: 'https://www.nolimitgoods.co.uk/logo.png',
+  email: 'sales@nolimitgoods.co.uk',
+  telephone: '+447426826595',
+  vatID: 'GB372654187',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '374 Hipsell Highway',
+    addressLocality: 'Coventry',
+    postalCode: 'CV2 5FR',
+    addressCountry: 'GB',
+  },
+  description:
+    'Прямий експорт запчастин та фільтрів для спецтехніки з Великобританії. 0% UK Export VAT.',
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -47,6 +68,10 @@ export default function RootLayout({
   return (
     <html lang="uk" className="scroll-smooth dark">
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
+        />
         {/* Підключення Google Tag AW-670192610 */}
         <script
           async

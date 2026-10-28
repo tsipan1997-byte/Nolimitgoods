@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { 
   ShieldCheck, ArrowRight, CheckCircle2, MapPin, Layers, 
-  Gauge, Cpu, Wrench, Filter, DoorClosed, Tractor, Check 
+  Gauge, Cpu, Wrench, Filter, DoorClosed, Tractor, Plane, ShieldAlert 
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
@@ -16,13 +16,25 @@ interface PartShowcaseItem {
   brand: string;
   originUk: string;
   originEn: string;
-  category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration' | 'cab';
+  category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration' | 'cab' | 'pall-defense';
   image: string;
   popularOems: string[];
 }
 
 // 1. Головна вітрина: 8 ключових позицій (2 ряди по 4 картки)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
+  {
+    id: 'pall-aerospace-main',
+    nameUk: 'Pall Corporation: Поставка будь-яких фільтрів та систем',
+    nameEn: 'Pall Corporation: Supply of Any Filters & Systems',
+    oem: 'HC9600FKS16H',
+    brand: 'PALL CORPORATION',
+    originUk: 'Портсмут, Велика Британія',
+    originEn: 'Portsmouth, UK',
+    category: 'pall-defense',
+    image: '/parts/Pall.jpeg',
+    popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
+  },
   {
     id: 'jcb-pump',
     nameUk: 'Головний гідравлічний насос JCB Parker 3CX/4CX',
@@ -107,22 +119,62 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     image: '/parts/Donaldson.jpeg',
     popularOems: ['P558000', 'P553004', 'P535114', 'DBA5024'],
   },
-  {
-    id: 'danfoss-motor',
-    nameUk: 'Гідромотор ходу / дозатор Danfoss OSPB',
-    nameEn: 'Danfoss Steering Unit & Orbital Motor',
-    oem: 'OSPB 160 ON',
-    brand: 'DANFOSS MOBILE',
-    originUk: 'Норборг, Данія',
-    originEn: 'Nordborg, Denmark',
-    category: 'hydraulics',
-    image: '/parts/Danfoss.jpg',
-    popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
-  },
 ];
 
-// 2. Підгрупи товарів CAT, Фільтрації, Двигунів, Гідравліки та Мостів
+// 2. Підгрупи товарів та повний каталог (включно з 4 підпунктами Pall)
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
+  // ==========================================
+  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL
+  // ==========================================
+  {
+    id: 'pall-sub-1',
+    nameUk: 'Авіація та військова техніка (Aerospace & Defense)',
+    nameEn: 'Aerospace & Defense: Aircraft & Military Fleet',
+    oem: 'HC9600FKS16H',
+    brand: 'PALL AEROSPACE',
+    originUk: 'Портсмут, Велика Британія',
+    originEn: 'Portsmouth, UK',
+    category: 'pall-defense',
+    image: '/parts/Pall.jpeg',
+    popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
+  },
+  {
+    id: 'pall-sub-2',
+    nameUk: 'Промислове виробництво (Industrial Manufacturing)',
+    nameEn: 'Industrial Manufacturing: Hydraulic & Lube Elements',
+    oem: 'UE319AS20H',
+    brand: 'PALL INDUSTRIAL',
+    originUk: 'Портсмут, Велика Британія',
+    originEn: 'Portsmouth, UK',
+    category: 'pall-defense',
+    image: '/parts/Pall.jpeg',
+    popularOems: ['UE319AS20H', 'HC9600FKS16H', 'HC8314FKN39H', 'AB250'],
+  },
+  {
+    id: 'pall-sub-3',
+    nameUk: 'Нафта, газ та енергетика (Oil & Gas / Power Generation)',
+    nameEn: 'Oil & Gas / Power Generation: High-Flow Systems',
+    oem: 'HC8314FKN39H',
+    brand: 'PALL ENERGY',
+    originUk: 'Європейський хаб / UK',
+    originEn: 'EU Hub / UK',
+    category: 'pall-defense',
+    image: '/parts/Pall.jpeg',
+    popularOems: ['HC8314FKN39H', 'HC9021FDT8Z', 'HF4PP005', 'COR100'],
+  },
+  {
+    id: 'pall-sub-4',
+    nameUk: 'Хімічна промисловість та інші фільтри (Chemicals & Food)',
+    nameEn: 'Chemicals, Polymers & Food/Beverage Filtration',
+    oem: 'MEMBRALOX-GP',
+    brand: 'PALL CHEMICALS',
+    originUk: 'Берлін, Німеччина / UK',
+    originEn: 'Berlin, Germany / UK',
+    category: 'pall-defense',
+    image: '/parts/Pall.jpeg',
+    popularOems: ['MEMBRALOX-GP', 'AB1U050', 'KA250', 'PALL-FBC'],
+  },
+
   // ==========================================
   // КУЗОВ ТА КАБІНА (CAT & CASE ЗА ІНВОЙСАМИ)
   // ==========================================
@@ -420,6 +472,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
 
   const mainTabs = [
     { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
+    { id: 'pall-defense', labelUk: 'Pall (Фільтри будь-які)', labelEn: 'Pall Corporation Solutions', icon: Plane },
     { id: 'tractors', labelUk: 'Трактори (Агротехніка)', labelEn: 'Tractors (Agri Fleet)', icon: Tractor },
     { id: 'cab', labelUk: 'Кузов та кабіна (CAT & Case)', labelEn: 'Cab & Body (CAT & Case)', icon: DoorClosed },
     { id: 'hydraulics', labelUk: 'Гідравліка (JCB & Rexroth)', labelEn: 'Hydraulics (JCB & Rexroth)', icon: Gauge },
@@ -523,8 +576,8 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </h2>
           <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
             {isUk 
-              ? 'Оберіть марку трактора або групу агрегатів. Натисніть артикул для автоматичного розрахунку вартості поставки.'
-              : 'Select your machinery brand or equipment group. Click an OEM to instantly calculate dispatch price.'}
+              ? 'Оберіть марку трактора або лінійку фільтрації Pall під індивідуальний запит.'
+              : 'Select your machinery brand or Pall filtration lineup for custom orders.'}
           </p>
         </div>
 
@@ -550,8 +603,102 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* РОЗДІЛ: ТРАКТОРИ */}
-        {activeTab === 'tractors' ? (
+        {/* СПЕЦІАЛЬНИЙ БЛОК: 4 ПІДПУНКТИ PALL */}
+        {activeTab === 'pall-defense' ? (
+          <motion.div 
+            initial={{ opacity: 0, y: 15 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            className="space-y-8"
+          >
+            <div className="bg-slate-900 text-white p-6 sm:p-8 rounded-3xl shadow-lg border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="space-y-2 text-center md:text-left">
+                <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                  <ShieldAlert className="w-4 h-4" />
+                  {isUk ? 'Постачання будь-яких фільтрів Pall під замовлення' : 'Custom Pall Filtration Supply'}
+                </div>
+                <h3 className="text-xl sm:text-2xl font-black tracking-tight">
+                  {isUk ? 'Офіційні рішення Pall Corporation за 4 основними напрямами' : 'Official Pall Corporation Solutions Across 4 Sectors'}
+                </h3>
+                <p className="text-slate-300 text-xs sm:text-sm max-w-2xl leading-relaxed">
+                  {isUk
+                    ? 'Ми доставляємо будь-які оригінальні фільтри, картриджі та елементи Pall для авіації, оборони, промисловості, нафтогазового сектору та хімічних виробництв з урахуванням усіх вимог.'
+                    : 'We deliver any original Pall filters and elements for aerospace, defense, industrial, oil & gas, and chemical applications.'}
+                </p>
+              </div>
+            </div>
+
+            {/* 4 картки підпунктів */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {SUBGROUP_PARTS.filter(p => p.category === 'pall-defense').map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
+                >
+                  <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
+                    <img
+                      src={item.image}
+                      alt={item.nameEn}
+                      className="w-full h-full object-contain p-1 rounded-lg group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => handleImageError(e, item.image)}
+                    />
+                    <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>{isUk ? 'Під замовлення' : 'On Order'}</span>
+                    </div>
+                    <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
+                      {isUk ? 'Індивідуально' : 'Custom'}
+                    </div>
+                  </div>
+
+                  <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
+                        <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                        <span className="truncate">{isUk ? item.originUk : item.originEn}</span>
+                      </div>
+
+                      <div className="text-[11px] font-bold text-slate-900 uppercase tracking-wider mb-0.5">
+                        {item.brand}
+                      </div>
+
+                      <h3 className="font-bold text-slate-800 text-sm leading-snug group-hover:text-slate-950 transition-colors line-clamp-2">
+                        {isUk ? item.nameUk : item.nameEn}
+                      </h3>
+                    </div>
+
+                    <div className="space-y-1 pt-2 border-t border-slate-100">
+                      <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
+                        {isUk ? 'Популярні артикули / OEM:' : 'Popular OEM:'}
+                      </span>
+                      <div className="flex flex-wrap gap-1">
+                        {item.popularOems.map((code) => (
+                          <button
+                            key={code}
+                            type="button"
+                            onClick={() => selectOem(code, item.brand)}
+                            className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
+                            title={isUk ? `Запросити пропозицію ${code}` : `Get quote for ${code}`}
+                          >
+                            {code}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => selectOem(item.oem, item.brand)}
+                      className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
+                    >
+                      <span>{isUk ? 'Запросити пропозицію' : 'Request Quote'}</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        ) : activeTab === 'tractors' ? (
           <motion.div 
             initial={{ opacity: 0, y: 15 }} 
             animate={{ opacity: 1, y: 0 }} 

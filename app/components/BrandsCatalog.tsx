@@ -25,15 +25,27 @@ interface PartShowcaseItem {
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
-    nameUk: 'Головний гідравлічний насос JCB Parker',
-    nameEn: 'JCB Parker Hydraulic Gear Pump',
+    nameUk: 'Головний гідравлічний насос JCB Parker 3CX/4CX',
+    nameEn: 'JCB Parker Main Hydraulic Gear Pump',
     oem: '332/Y3163',
-    brand: 'JCB GENUINE',
+    brand: 'JCB GENUINE / PARKER',
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
     image: '/parts/JCB-PArker.jpg',
-    popularOems: ['332/Y3163', '20/925327', '320/04186', '04/600786'],
+    popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
+  },
+  {
+    id: 'case-accuboom',
+    nameUk: 'Блок управління обприскувача Case AccuBoom Unit',
+    nameEn: 'Case IH AccuBoom Boom Control Unit',
+    oem: '87643472',
+    brand: 'CASE IH / RAVEN',
+    originUk: 'Дистрибуція ЄС / UK Hub',
+    originEn: 'EU Logistics / UK Hub',
+    category: 'cab',
+    image: '/parts/case_international_puma_series.png.webp',
+    popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
     id: 'carraro-axle',
@@ -107,26 +119,16 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     image: '/parts/Danfoss.jpg',
     popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
   },
-  {
-    id: 'fleetguard-filter',
-    nameUk: 'Фільтр-водовіддільник Fleetguard FS1280',
-    nameEn: 'Fleetguard Fuel/Water Separator FS1280',
-    oem: 'FS1280',
-    brand: 'FLEETGUARD CUMMINS',
-    originUk: 'Склади UK та Європи',
-    originEn: 'UK & European Stocks',
-    category: 'filtration',
-    image: '/parts/Fleetguard.jpeg',
-    popularOems: ['FS1280', '3930942', 'FS19732', 'LF16015'],
-  },
 ];
 
 // 2. Підгрупи товарів CAT, Фільтрації, Двигунів, Гідравліки та Мостів
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
-  // КУЗОВ ТА КАБІНА CAT
+  // ==========================================
+  // КУЗОВ ТА КАБІНА (CAT & CASE ЗА ІНВОЙСАМИ)
+  // ==========================================
   {
     id: 'cab-cat-door',
-    nameUk: 'Двері кабіни оператора CAT у зборі',
+    nameUk: 'Двері кабіни оператора CAT у зборі (281-1196)',
     nameEn: 'Operator Cab Door Assembly (CAT)',
     oem: '281-1196',
     brand: 'CATERPILLAR OEM',
@@ -134,7 +136,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'EU Logistics / Finning UK Hub',
     category: 'cab',
     image: '/parts/images.jpeg',
-    popularOems: ['281-1196', '281-1199', '280-7548', '280-7544'],
+    popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {
     id: 'cab-cat-roller',
@@ -150,7 +152,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
   },
   {
     id: 'cab-cat-lock',
-    nameUk: 'Центральний замок дверей кабіни CAT',
+    nameUk: 'Центральний замок дверей кабіни CAT у зборі',
     nameEn: 'Cabin Door Lock Mechanism As',
     oem: '280-7548',
     brand: 'CATERPILLAR OEM',
@@ -158,11 +160,11 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Finning UK Central Hub',
     category: 'cab',
     image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
-    popularOems: ['280-7548', '280-7552', '293-3116', '132-7625'],
+    popularOems: ['280-7548', '196-1441', '280-7552', '132-7625'],
   },
   {
     id: 'cab-cat-handle',
-    nameUk: 'Зовнішня ручка дверей 110 мм та важелі CAT',
+    nameUk: 'Зовнішня натискна ручка дверей 110 мм CAT',
     nameEn: '110mm Push Door Handle & Levers',
     oem: '280-7544',
     brand: 'CATERPILLAR OEM',
@@ -172,8 +174,74 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
     popularOems: ['280-7544', '277-6030', '277-6031', '281-3650'],
   },
+  {
+    id: 'cab-case-compressor',
+    nameUk: 'Компресор кондиціонера Sanden Case Stackcruiser',
+    nameEn: 'Case Stackcruiser Sanden AC Compressor',
+    oem: '47773024',
+    brand: 'CASE IH / SANDEN',
+    originUk: 'Дистрибуція ЄС / UK Depot',
+    originEn: 'EU Logistics / UK Depot',
+    category: 'cab',
+    image: '/parts/case_international_puma_series.png.webp',
+    popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
+  },
 
+  // ==========================================
+  // ГІДРАВЛІКА (ВКЛЮЧАЮЧИ ЛІНІЙКУ JCB PARKER)
+  // ==========================================
+  {
+    id: 'hyd-jcb',
+    nameUk: 'JCB Parker: Спарений шестеренний насос 3CX/4CX',
+    nameEn: 'JCB Parker: Tandem Hydraulic Pumps',
+    oem: '332/Y3163',
+    brand: 'JCB GENUINE / PARKER',
+    originUk: 'Рочестер, Велика Британія',
+    originEn: 'Rocester, UK',
+    category: 'hydraulics',
+    image: '/parts/JCB-PArker.jpg',
+    popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
+  },
+  {
+    id: 'hyd-jcb-second',
+    nameUk: 'JCB Parker: Тандемний гідронасос 36/29 см³ (20/925327)',
+    nameEn: 'JCB Parker Dual Hydraulic Pump 36/29cc',
+    oem: '20/925327',
+    brand: 'JCB GENUINE / PARKER',
+    originUk: 'Рочестер, Велика Британія',
+    originEn: 'Rocester, UK',
+    category: 'hydraulics',
+    image: '/parts/JCB-PArker.jpg',
+    popularOems: ['20/925327', '332/Y3163', '332/F9030', '20/925339'],
+  },
+  {
+    id: 'hyd-rexroth',
+    nameUk: 'Bosch Rexroth: Насоси A10VSO та мотори ходу',
+    nameEn: 'Bosch Rexroth: A10VSO Pumps & Travel Motors',
+    oem: 'A10VSO18DRG',
+    brand: 'BOSCH REXROTH',
+    originUk: 'Лор-ам-Майн, Німеччина',
+    originEn: 'Lohr am Main, Germany',
+    category: 'hydraulics',
+    image: '/parts/Rexroth.jpg',
+    popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', '4WE6D6X'],
+  },
+  {
+    id: 'hyd-danfoss',
+    nameUk: 'Danfoss: Орбітроли керма OSPB та блоки PVG 32',
+    nameEn: 'Danfoss: OSPB Steering Units & PVG 32 Valves',
+    oem: 'OSPB 160 ON',
+    brand: 'DANFOSS MOBILE',
+    originUk: 'Норборг, Данія',
+    originEn: 'Nordborg, Denmark',
+    category: 'hydraulics',
+    image: '/parts/Danfoss.jpg',
+    popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
+  },
+
+  // ==========================================
   // ФІЛЬТРАЦІЯ
+  // ==========================================
   {
     id: 'filt-donaldson',
     nameUk: 'Donaldson: Twist&Drain та картриджі PowerCore',
@@ -223,7 +291,9 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
 
+  // ==========================================
   // ДВИГУНИ
+  // ==========================================
   {
     id: 'eng-perkins',
     nameUk: 'Perkins Engines: Форсунки Common Rail та поршні',
@@ -273,57 +343,9 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     popularOems: ['04284142', '04287047', '02937441', '04207588'],
   },
 
-  // ГІДРАВЛІКА
-  {
-    id: 'hyd-jcb',
-    nameUk: 'JCB Parker: Спарені насоси та мотори 3CX/4CX',
-    nameEn: 'JCB Parker: Tandem Hydraulic Pumps',
-    oem: '332/Y3163',
-    brand: 'JCB GENUINE',
-    originUk: 'Рочестер, Велика Британія',
-    originEn: 'Rocester, UK',
-    category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg',
-    popularOems: ['332/Y3163', '20/925327', '320/04186', '04/600786'],
-  },
-  {
-    id: 'hyd-rexroth',
-    nameUk: 'Bosch Rexroth: Насоси A10VSO та мотори ходу',
-    nameEn: 'Bosch Rexroth: A10VSO Pumps & Travel Motors',
-    oem: 'A10VSO18DRG',
-    brand: 'BOSCH REXROTH',
-    originUk: 'Лор-ам-Майн, Німеччина',
-    originEn: 'Lohr am Main, Germany',
-    category: 'hydraulics',
-    image: '/parts/Rexroth.jpg',
-    popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', '4WE6D6X'],
-  },
-  {
-    id: 'hyd-danfoss',
-    nameUk: 'Danfoss: Орбітроли керма OSPB та блоки PVG 32',
-    nameEn: 'Danfoss: OSPB Steering Units & PVG 32 Valves',
-    oem: 'OSPB 160 ON',
-    brand: 'DANFOSS MOBILE',
-    originUk: 'Норборг, Данія',
-    originEn: 'Nordborg, Denmark',
-    category: 'hydraulics',
-    image: '/parts/Danfoss.jpg',
-    popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
-  },
-  {
-    id: 'hyd-eaton',
-    nameUk: 'Eaton Vickers: Промислові гідроагрегати та клапани',
-    nameEn: 'Eaton Vickers: Heavy Hydraulic Pumps & Valves',
-    oem: '25V21A1A22R',
-    brand: 'EATON VICKERS',
-    originUk: 'Хавант, Велика Британія',
-    originEn: 'Havant, UK',
-    category: 'hydraulics',
-    image: '/parts/Eaton%20Vickers.jpeg',
-    popularOems: ['25V21A1A22R', '35V38A1A22R', 'DG4V-3-2A', 'PVH098R'],
-  },
-
+  // ==========================================
   // МОСТИ ТА ХОДОВА
+  // ==========================================
   {
     id: 'und-carraro',
     nameUk: 'Carraro Drivetech: Мости в зборі, шестерні, шворні',
@@ -379,7 +401,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [activeTab, setActiveTab] = useState<string>('all');
 
-  // Подія ViewContent у Meta Pixel: показує, які деталі найбільше цікавлять людей
+  // Подія ViewContent у Meta Pixel
   const selectOem = (oem: string, brand: string) => {
     try {
       const w = window as any;
@@ -392,7 +414,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
         });
       }
     } catch {
-      // трекінг не повинен ламати кнопку
+      // трекінг не повинен ламати інтерфейс
     }
     onSelectOem(oem, brand);
   };
@@ -400,25 +422,25 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const mainTabs = [
     { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
     { id: 'tractors', labelUk: 'Трактори (Агротехніка)', labelEn: 'Tractors (Agri Fleet)', icon: Tractor },
-    { id: 'cab', labelUk: 'Кузов та кабіна CAT', labelEn: 'CAT Cab & Body', icon: DoorClosed },
+    { id: 'cab', labelUk: 'Кузов та кабіна (CAT & Case)', labelEn: 'Cab & Body (CAT & Case)', icon: DoorClosed },
+    { id: 'hydraulics', labelUk: 'Гідравліка (JCB & Rexroth)', labelEn: 'Hydraulics (JCB & Rexroth)', icon: Gauge },
     { id: 'filtration', labelUk: 'Фільтрація', labelEn: 'Filtration', icon: Filter },
     { id: 'engines', labelUk: 'Двигуни та CR', labelEn: 'Engines & CR', icon: Cpu },
-    { id: 'hydraulics', labelUk: 'Гідравліка', labelEn: 'Hydraulics', icon: Gauge },
     { id: 'undercarriage', labelUk: 'Мости та редуктори', labelEn: 'Axles & Transmission', icon: Wrench },
   ];
 
-  // 6 ключових брендів тракторів з вашими реальними фото без зайвих дрібних карток
+  // 6 ключових брендів тракторів (чиста навігація)
   const tractorCards = [
     { 
       id: 'case-ih', 
       name: 'Case IH / International', 
       brand: 'CASE IH',
-      defaultOem: '83994207',
+      defaultOem: '87643472',
       image: '/parts/case_international_puma_series.png.webp', 
       badge: 'Puma, Maxxum, XL',
-      descUk: 'Оригінальні та альтернативні запчастини (Agriline, Bepco, CNH). Повний асортимент зчеплення, гідравліки та кабін.',
-      descEn: 'Genuine and aftermarket tractor components. Direct dispatches from UK warehouses.',
-      codes: ['83994207', '3234209R1', '1964264C1', '1949354C1']
+      descUk: 'Оригінальні блоки електроніки AccuBoom, кондиціонери Sanden, зчеплення та кабіни.',
+      descEn: 'AccuBoom control units, Sanden AC compressors, clutches and cab hardware.',
+      codes: ['87643472', '47773024', '83994207', '3234209R1']
     },
     { 
       id: 'ford-nh', 
@@ -503,8 +525,8 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </h2>
           <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
             {isUk 
-              ? 'Оберіть марку трактора або групу агрегатів. Наявність і ціну підтвердить наш фахівець.'
-              : 'Select your machinery brand or equipment group. Our specialist will confirm availability and price.'}
+              ? 'Оберіть марку трактора або групу агрегатів. Натисніть артикул для автоматичного розрахунку вартості поставки.'
+              : 'Select your machinery brand or equipment group. Click an OEM to instantly calculate dispatch price.'}
           </p>
         </div>
 

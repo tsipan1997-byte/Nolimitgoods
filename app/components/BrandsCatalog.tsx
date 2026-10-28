@@ -21,7 +21,7 @@ interface PartShowcaseItem {
   popularOems: string[];
 }
 
-// 1. Головна вітрина: 8 ключових позицій з точними шляхами до твоїх фоток
+// 1. Головна вітрина: 8 ключових позицій (2 ряди по 4 картки)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'pall-aerospace-main',
@@ -32,7 +32,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/helicopter.webp',
+    image: '/parts/helicopter.webp', //[cite: 16]
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
   {
@@ -44,20 +44,20 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-Parker.jpg', // Виправлено шлях під твою назву файлу з GitHub
+    image: '/parts/JCB-PArker.jpg', //[cite: 16]
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
-    id: 'case-accuboom',
-    nameUk: 'Блок управління обприскувача Case AccuBoom Unit',
-    nameEn: 'Case IH AccuBoom Boom Control Unit',
-    oem: '87643472',
-    brand: 'CASE IH / RAVEN',
-    originUk: 'Дистрибуція ЄС / UK Hub',
-    originEn: 'EU Logistics / UK Hub',
-    category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp', // Виправлено шлях
-    popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
+    id: 'hyd-jcb-second',
+    nameUk: 'JCB Parker: Тандемний гідронасос 36/29 см³ (20/925327)',
+    nameEn: 'JCB Parker Dual Hydraulic Pump 36/29cc',
+    oem: '20/925327',
+    brand: 'JCB GENUINE / PARKER',
+    originUk: 'Рочестер, Велика Британія',
+    originEn: 'Rocester, UK',
+    category: 'hydraulics',
+    image: '/parts/JCB-PArker.jpg', //[cite: 16]
+    popularOems: ['20/925327', '332/Y3163', '332/F9030', '20/925339'],
   },
   {
     id: 'carraro-axle',
@@ -68,7 +68,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg', // Виправлено шлях під твою назву файлу з GitHub
+    image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -121,10 +121,10 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи товарів та 4 офіційні підпункти Pall з твоїми завантаженими фотографіями
+// 2. Підгрупи товарів та 4 офіційні підпункти Pall з твоїми унікальними завантаженими фотографіями
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
   // ==========================================
-  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL (ЗІ ЗБЕРЕЖЕНИМИ ФОТО)
+  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL З РІЗНИМИ УНІКАЛЬНИМИ ФОТОГРАФІЯМИ
   // ==========================================
   {
     id: 'pall-sub-1',
@@ -135,7 +135,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/helicopter.webp', // прикріплено helicopter.webp
+    image: '/parts/helicopter.webp', //[cite: 16]
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
   {
@@ -147,7 +147,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/General-Industrial.jpg', // прикріплено General-Industrial.jpg
+    image: '/parts/General-Industrial.jpg', //[cite: 16]
     popularOems: ['UE319AS20H', 'HC9600FKS16H', 'HC8314FKN39H', 'AB250'],
   },
   {
@@ -159,7 +159,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Європейський хаб / UK',
     originEn: 'EU Hub / UK',
     category: 'pall-defense',
-    image: '/parts/oil-gas-case-study-15.webp', // прикріплено oil-gas-case-study-15.webp
+    image: '/parts/oil-gas-case-study-15.webp', //[cite: 16]
     popularOems: ['HC8314FKN39H', 'HC9021FDT8Z', 'HF4PP005', 'COR100'],
   },
   {
@@ -171,7 +171,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Берлін, Німеччина / UK',
     originEn: 'Berlin, Germany / UK',
     category: 'pall-defense',
-    image: '/parts/membralox-gpic-image.webp', // прикріплено membralox-gpic-image.webp
+    image: '/parts/membralox-gpic-image.webp', //[cite: 16]
     popularOems: ['MEMBRALOX-GP', 'AB1U050', 'KA250', 'PALL-FBC'],
   },
 
@@ -187,7 +187,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK Hub',
     originEn: 'EU Logistics / Finning UK Hub',
     category: 'cab',
-    image: '/parts/CAT.jpeg', // Змінюємо на точний шлях наявної картинки
+    image: '/parts/CAT.jpeg',
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {
@@ -223,7 +223,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Finning UK Central Hub',
     originEn: 'Finning UK Central Hub',
     category: 'cab',
-    image: '/parts/cronstain.jpeg', // Працюючий шлях
+    image: '/parts/cronstain.jpeg',
     popularOems: ['280-7544', '277-6030', '277-6031', '281-3650'],
   },
   {
@@ -235,7 +235,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp', // Працюючий шлях
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
 
@@ -251,7 +251,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-Parker.jpg'
+    image: '/parts/JCB-PArker.jpg', //[cite: 16]
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -263,7 +263,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/watermarked_img_14206455484897953653.jpg',
+    image: '/parts/JCB-PArker.jpg', //[cite: 16]
     popularOems: ['20/925327', '332/Y3163', '332/F9030', '20/925339'],
   },
   {
@@ -368,7 +368,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'EU & UK Distribution',
     category: 'engines',
     image: '/parts/CAT.jpeg',
-    popularOems: ['10R-7675', '326-1644', '224-3238', '387-9427'],
+    popularOems: ['10R-7675', '326-1644', '224-3238', '1R-0716'],
   },
   {
     id: 'eng-cummins',
@@ -407,7 +407,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg'
+    image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -443,7 +443,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/JCB-Parker.jpg'
+    image: '/parts/JCB-PArker.jpg', //[cite: 16]
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -603,7 +603,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* СПЕЦІАЛЬНИЙ БЛОК: 4 ПІДПУНКТИ PALL ЗІ ТВОЇМИ ФОТО */}
+        {/* СПЕЦІАЛЬНИЙ БЛОК: 4 ПІДПУНКТИ PALL ЗІ ТВОЇМИ РІЗНИМИ ФОТО */}
         {activeTab === 'pall-defense' ? (
           <motion.div 
             initial={{ opacity: 0, y: 15 }} 
@@ -627,7 +627,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
               </div>
             </div>
 
-            {/* 4 картки підпунктів з твоїми картинками */}
+            {/* 4 картки підпунктів з різними унікальними фотками */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {SUBGROUP_PARTS.filter(p => p.category === 'pall-defense').map((item) => (
                 <div

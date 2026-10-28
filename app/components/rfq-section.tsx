@@ -170,6 +170,14 @@ export default function RFQSection() {
       console.error('RFQ error:', err);
     }
 
+    // Подія Lead для Meta (Facebook) Pixel
+    if (typeof window !== 'undefined' && (window as any).fbq) {
+      (window as any).fbq('track', 'Lead', {
+        content_name: 'RFQ',
+        num_items: activeItems.length,
+      });
+    }
+
     // Інвойс більше не показуємо: завжди повідомляємо, що фахівець зв'яжеться
     setStatus('wait_for_rfq');
     triggerGoogleConversion();

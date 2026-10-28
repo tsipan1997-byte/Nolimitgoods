@@ -21,7 +21,7 @@ interface PartShowcaseItem {
   popularOems: string[];
 }
 
-// 1. Головна вітрина: 8 ключових позицій з логічно правильними унікальними фото
+// 1. Головна вітрина: 8 ключових позицій (2 ряди по 4 картки)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'pall-aerospace-main',
@@ -56,7 +56,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/ZF.jpeg', // Логічно ставимо редуктор/трансмісію ZF для різноманітності[cite: 14]
+    image: '/parts/ZF.jpeg',
     popularOems: ['20/925327', '332/Y3163', '332/F9030', '20/925339'],
   },
   {
@@ -68,7 +68,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',[cite: 13, 14]
+    image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -80,7 +80,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    image: '/parts/Rexroth.jpg',[cite: 14]
+    image: '/parts/Rexroth.jpg',
     popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
   {
@@ -92,7 +92,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    image: '/parts/Perkins.jpg',[cite: 13]
+    image: '/parts/Perkins.jpg',
     popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
   {
@@ -104,7 +104,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Distribution / UK Hub',
     category: 'engines',
-    image: '/parts/CAT.jpeg',[cite: 13]
+    image: '/parts/CAT.jpeg',
     popularOems: ['10R-7675', '326-1644', '224-3238', '1R-0716'],
   },
   {
@@ -116,15 +116,15 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    image: '/parts/Donaldson.jpeg',[cite: 13]
+    image: '/parts/Donaldson.jpeg',
     popularOems: ['P558000', 'P553004', 'P535114', 'DBA5024'],
   },
 ];
 
-// 2. Підгрупи товарів та 4 офіційні підпункти Pall з твоїми унікальними завантаженими фотографіями
+// 2. Підгрупи товарів та 4 офіційні підпункти Pall з твоїми унікальними фотографіями
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
   // ==========================================
-  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL З РІЗНИМИ УНІКАЛЬНИМИ ФОТОГРАФІЯМИ
+  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL З УНІКАЛЬНИМИ ФОТОГРАФІЯМИ
   // ==========================================
   {
     id: 'pall-sub-1',
@@ -135,7 +135,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/helicopter.webp', //[cite: 16]
+    image: '/parts/helicopter.webp',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
   {
@@ -147,7 +147,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/General-Industrial.jpg', //[cite: 16]
+    image: '/parts/General-Industrial.jpg',
     popularOems: ['UE319AS20H', 'HC9600FKS16H', 'HC8314FKN39H', 'AB250'],
   },
   {
@@ -159,7 +159,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Європейський хаб / UK',
     originEn: 'EU Hub / UK',
     category: 'pall-defense',
-    image: '/parts/oil-gas-case-study-15.webp', //[cite: 16]
+    image: '/parts/oil-gas-case-study-15.webp',
     popularOems: ['HC8314FKN39H', 'HC9021FDT8Z', 'HF4PP005', 'COR100'],
   },
   {
@@ -171,7 +171,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Берлін, Німеччина / UK',
     originEn: 'Berlin, Germany / UK',
     category: 'pall-defense',
-    image: '/parts/membralox-gpic-image.webp', //[cite: 16]
+    image: '/parts/membralox-gpic-image.webp',
     popularOems: ['MEMBRALOX-GP', 'AB1U050', 'KA250', 'PALL-FBC'],
   },
 
@@ -251,7 +251,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg', //[cite: 16]
+    image: '/parts/JCB-PArker.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -263,7 +263,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg', //[cite: 16]
+    image: '/parts/JCB-PArker.jpg',
     popularOems: ['20/925327', '332/Y3163', '332/F9030', '20/925339'],
   },
   {
@@ -276,7 +276,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
     image: '/parts/Rexroth.jpg',
-    popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', '4WE6D6X'],
+    popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
   {
     id: 'hyd-danfoss',
@@ -368,7 +368,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'EU & UK Distribution',
     category: 'engines',
     image: '/parts/CAT.jpeg',
-    popularOems: ['10R-7675', '326-1644', '224-3238', '1R-0716'],
+    popularOems: ['10R-7675', '326-1644', '224-3238', '387-9427'],
   },
   {
     id: 'eng-cummins',
@@ -443,7 +443,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/JCB-PArker.jpg', //[cite: 16]
+    image: '/parts/JCB-PArker.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -489,7 +489,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
       defaultOem: '87643472',
       image: '/parts/case_international_puma_series.png.webp', 
       badge: 'Puma, Maxxum, XL',
-      descUk: 'Оригінальні блоки електроніки AccuBoom, кондиціонери Sanden, зчеплення та кабіни.',
+      descUk: 'Оригінальні блоки електроніки AccuBoom, кондиціонери Санден, зчеплення та кабіни.',
       descEn: 'AccuBoom control units, Sanden AC compressors, clutches and cab hardware.',
       codes: ['87643472', '47773024', '83994207', '3234209R1']
     },
@@ -603,7 +603,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* СПЕЦІАЛЬНИЙ БЛОК: 4 ПІДПУНКТИ PALL ЗІ ТВОЇМИ РІЗНИМИ ФОТО */}
+        {/* СПЕЦІАЛЬНИЙ БЛОК: 4 ПІДПУНКТИ PALL */}
         {activeTab === 'pall-defense' ? (
           <motion.div 
             initial={{ opacity: 0, y: 15 }} 
@@ -627,7 +627,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
               </div>
             </div>
 
-            {/* 4 картки підпунктів з різними унікальними фотками */}
+            {/* 4 картки підпунктів */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {SUBGROUP_PARTS.filter(p => p.category === 'pall-defense').map((item) => (
                 <div
@@ -822,7 +822,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                             type="button"
                             onClick={() => selectOem(code, item.brand)}
                             className="px-2 py-0.5 rounded-md bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-950 font-mono text-[11px] font-bold transition-colors border border-slate-200/70 cursor-pointer"
-                            title={isUk ? `Дізнатися ціну ${code}` : `Get quote for ${code}`}
+                            title={isUk ? `Запросити пропозицію ${code}` : `Get quote for ${code}`}
                           >
                             {code}
                           </button>
@@ -839,7 +839,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
-                </motion.div>
+                </div>
               ))}
             </AnimatePresence>
           </motion.div>

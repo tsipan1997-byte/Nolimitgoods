@@ -121,11 +121,8 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи товарів та 4 офіційні підпункти Pall з твоїми унікальними фотографіями
+// 2. Підгрупи товарів та 4 офіційні підпункти Pall з унікальними фотографіями
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
-  // ==========================================
-  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL З УНІКАЛЬНИМИ ФОТОГРАФІЯМИ
-  // ==========================================
   {
     id: 'pall-sub-1',
     nameUk: 'Авіація та військова техніка (Aerospace & Defense)',
@@ -174,10 +171,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     image: '/parts/membralox-gpic-image.webp',
     popularOems: ['MEMBRALOX-GP', 'AB1U050', 'KA250', 'PALL-FBC'],
   },
-
-  // ==========================================
-  // КУЗОВ ТА КАБІНА (CAT & CASE ЗА ІНВОЙСАМИ)
-  // ==========================================
   {
     id: 'cab-cat-door',
     nameUk: 'Двері кабіни оператора CAT у зборі (281-1196)',
@@ -238,10 +231,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
-
-  // ==========================================
-  // ГІДРАВЛІКА (ВКЛЮЧАЮЧИ ЛІНІЙКУ JCB PARKER)
-  // ==========================================
   {
     id: 'hyd-jcb',
     nameUk: 'JCB Parker: Спарений шестеренний насос 3CX/4CX',
@@ -290,10 +279,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     image: '/parts/Danfoss.jpg',
     popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', 'PVG 32 157B'],
   },
-
-  // ==========================================
-  // ФІЛЬТРАЦІЯ
-  // ==========================================
   {
     id: 'filt-donaldson',
     nameUk: 'Donaldson: Twist&Drain та картриджі PowerCore',
@@ -342,10 +327,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     image: '/parts/Pall.jpeg',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
-
-  // ==========================================
-  // ДВИГУНИ
-  // ==========================================
   {
     id: 'eng-perkins',
     nameUk: 'Perkins Engines: Форсунки Common Rail та поршні',
@@ -394,10 +375,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     image: '/parts/Deutz.jpeg',
     popularOems: ['04284142', '04287047', '02937441', '04207588'],
   },
-
-  // ==========================================
-  // МОСТИ ТА ХОДОВА
-  // ==========================================
   {
     id: 'und-carraro',
     nameUk: 'Carraro Drivetech: Мости в зборі, шестерні, шворні',
@@ -489,7 +466,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
       defaultOem: '87643472',
       image: '/parts/case_international_puma_series.png.webp', 
       badge: 'Puma, Maxxum, XL',
-      descUk: 'Оригінальні блоки електроніки AccuBoom, кондиціонери Санден, зчеплення та кабіни.',
+      descUk: 'Оригінальні блоки електроніки AccuBoom, кондиціонери Sanden, зчеплення та кабіни.',
       descEn: 'AccuBoom control units, Sanden AC compressors, clutches and cab hardware.',
       codes: ['87643472', '47773024', '83994207', '3234209R1']
     },

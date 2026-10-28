@@ -21,7 +21,7 @@ interface PartShowcaseItem {
   popularOems: string[];
 }
 
-// 1. Головна вітрина: 8 ключових позицій (2 ряди по 4 картки)
+// 1. Головна вітрина: 8 ключових позицій з логічно правильними унікальними фото
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'pall-aerospace-main',
@@ -32,7 +32,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/helicopter.webp', //[cite: 16]
+    image: '/parts/helicopter.webp',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
   {
@@ -44,7 +44,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg', //[cite: 16]
+    image: '/parts/JCB-PArker.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -56,7 +56,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg', //[cite: 16]
+    image: '/parts/ZF.jpeg', // Логічно ставимо редуктор/трансмісію ZF для різноманітності[cite: 14]
     popularOems: ['20/925327', '332/Y3163', '332/F9030', '20/925339'],
   },
   {
@@ -68,7 +68,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/Carraro.jpg',[cite: 13, 14]
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -80,7 +80,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    image: '/parts/Rexroth.jpg',
+    image: '/parts/Rexroth.jpg',[cite: 14]
     popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
   {
@@ -92,7 +92,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    image: '/parts/Perkins.jpg',
+    image: '/parts/Perkins.jpg',[cite: 13]
     popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
   {
@@ -104,7 +104,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Distribution / UK Hub',
     category: 'engines',
-    image: '/parts/CAT.jpeg',
+    image: '/parts/CAT.jpeg',[cite: 13]
     popularOems: ['10R-7675', '326-1644', '224-3238', '1R-0716'],
   },
   {
@@ -116,7 +116,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    image: '/parts/Donaldson.jpeg',
+    image: '/parts/Donaldson.jpeg',[cite: 13]
     popularOems: ['P558000', 'P553004', 'P535114', 'DBA5024'],
   },
 ];

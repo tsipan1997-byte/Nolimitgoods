@@ -32,7 +32,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg',
+    image: '/parts/watermarked_img_14206455484897953653.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -44,19 +44,19 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp',
+    image: '/parts/watermarked_img_14744019675939396501.jpg',
     popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
     id: 'carraro-axle',
-    nameUk: 'Тяжкий передній міст у зборі Carraro',
+    nameUk: 'Тяжкий передній міст у зборі Carraro Drivetech',
     nameEn: 'Carraro Heavy Duty Axle Assembly',
     oem: '149298',
     brand: 'CARRARO DRIVETECH',
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/watermarked_img_3834904218519996669.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -135,7 +135,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK Hub',
     originEn: 'EU Logistics / Finning UK Hub',
     category: 'cab',
-    image: '/parts/images.jpeg',
+    image: '/parts/watermarked_img_12690233770305597422.jpg',
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {
@@ -183,7 +183,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp',
+    image: '/parts/watermarked_img_15262443315777313665.jpg',
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
 
@@ -199,7 +199,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg',
+    image: '/parts/watermarked_img_14206455484897953653.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -211,7 +211,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg',
+    image: '/parts/watermarked_img_14206455484897953653.jpg',
     popularOems: ['20/925327', '332/Y3163', '332/F9030', '20/925339'],
   },
   {
@@ -355,7 +355,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/watermarked_img_3834904218519996669.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -391,7 +391,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/JCB-PArker.jpg',
+    image: '/parts/watermarked_img_14206455484897953653.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -401,7 +401,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [activeTab, setActiveTab] = useState<string>('all');
 
-  // Подія ViewContent у Meta Pixel
   const selectOem = (oem: string, brand: string) => {
     try {
       const w = window as any;
@@ -414,7 +413,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
         });
       }
     } catch {
-      // трекінг не повинен ламати інтерфейс
+      // ігноруємо помилки аналітики
     }
     onSelectOem(oem, brand);
   };
@@ -429,7 +428,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     { id: 'undercarriage', labelUk: 'Мости та редуктори', labelEn: 'Axles & Transmission', icon: Wrench },
   ];
 
-  // 6 ключових брендів тракторів (чиста навігація)
   const tractorCards = [
     { 
       id: 'case-ih', 
@@ -506,7 +504,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
     if (!currentSrc.startsWith('http') && !currentSrc.startsWith('/app/public/')) {
       target.src = '/app/public' + originalPath;
     } else {
-      target.src = '/parts/JCB-PArker.jpg';
+      target.src = '/parts/watermarked_img_14206455484897953653.jpg';
     }
   };
 
@@ -530,7 +528,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           </p>
         </div>
 
-        {/* Головні таби категорій */}
+        {/* Таби категорій */}
         <div className="flex flex-wrap items-center justify-center gap-2">
           {mainTabs.map(tab => {
             const Icon = tab.icon;
@@ -552,9 +550,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* ======================================================== */}
-        {/* РОЗДІЛ: ТРАКТОРИ (ТІЛЬКИ 6 МАРОК БЕЗ ЗАЙВИХ ПІДПУНКТІВ)  */}
-        {/* ======================================================== */}
+        {/* РОЗДІЛ: ТРАКТОРИ */}
         {activeTab === 'tractors' ? (
           <motion.div 
             initial={{ opacity: 0, y: 15 }} 
@@ -566,7 +562,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                 key={tractor.id}
                 className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
               >
-                {/* Фотографія техніки */}
                 <div className="relative w-full h-52 bg-slate-50/50 p-4 flex items-center justify-center overflow-hidden border-b border-slate-100">
                   <img
                     src={tractor.image}
@@ -583,7 +578,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   </div>
                 </div>
 
-                {/* Інформація про марку */}
                 <div className="p-5 space-y-4 flex-1 flex flex-col justify-between">
                   <div>
                     <h3 className="font-black text-slate-900 text-lg leading-snug">
@@ -594,7 +588,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </p>
                   </div>
 
-                  {/* Ходові каталожні номери для швидкого кліку */}
                   <div className="space-y-1.5 pt-3 border-t border-slate-100">
                     <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
                       {isUk ? 'Ходові артикули для запиту ціни:' : 'Popular OEM for Quote:'}
@@ -614,7 +607,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </div>
                   </div>
 
-                  {/* Кнопка прямого запиту ціни по марці */}
                   <button
                     type="button"
                     onClick={() => selectOem(tractor.defaultOem, tractor.brand)}
@@ -628,9 +620,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
             ))}
           </motion.div>
         ) : (
-          /* ======================================================== */
-          /* СІТКА КАРТОК ЗАПЧАСТИН ДЛЯ РЕШТИ КАТЕГОРІЙ               */
-          /* ======================================================== */
+          /* СІТКА КАРТОК ЗАПЧАСТИН */
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <AnimatePresence mode="popLayout">
               {(activeTab === 'all' ? SHOWCASE_FEATURED : SUBGROUP_PARTS.filter(p => p.category === activeTab)).map((item) => (
@@ -642,7 +632,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
                 >
-                  {/* Фотографія */}
                   <div className="relative w-full h-48 bg-white p-3 flex items-center justify-center overflow-hidden border-b border-slate-100">
                     <img
                       src={item.image}
@@ -659,7 +648,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                     </div>
                   </div>
 
-                  {/* Інформація */}
                   <div className="p-4 space-y-3.5 flex-1 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-1 text-slate-500 text-[11px] mb-1">
@@ -676,7 +664,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                       </h3>
                     </div>
 
-                    {/* Ходові коди */}
                     <div className="space-y-1 pt-2 border-t border-slate-100">
                       <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block">
                         {isUk ? 'Ходові коди / OEM:' : 'Popular OEM:'}
@@ -696,7 +683,6 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
                       </div>
                     </div>
 
-                    {/* Кнопка запиту ціни */}
                     <button
                       type="button"
                       onClick={() => selectOem(item.oem, item.brand)}

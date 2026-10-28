@@ -6,13 +6,35 @@ import { LanguageProvider } from '@/lib/language-context';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
+const SITE_TITLE = 'Запчастини до спецтехніки з Великобританії • 0% VAT | NoLimitGoods';
+const SITE_DESCRIPTION =
+  'NoLimitGoods Limited — офіційний хаб з постачання запчастин та фільтрів з Великобританії. 0% UK Export VAT. Доставка в Україну 5–14 робочих днів.';
+
 export const metadata: Metadata = {
-  title: 'NoLimitGoods Ltd',
-  description: 'NoLimitGoods Limited — офіційний хаб з постачання запчастин та фільтрів з Великобританії. 0% UK Export VAT.',
+  metadataBase: new URL('https://www.nolimitgoods.co.uk'),
+  title: SITE_TITLE,
+  description: SITE_DESCRIPTION,
   openGraph: {
-    title: 'NoLimitGoods Ltd',
-    description: 'NoLimitGoods Limited — офіційний хаб з постачання запчастин та фільтрів з Великобританії. 0% UK Export VAT.',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     type: 'website',
+    url: 'https://www.nolimitgoods.co.uk',
+    siteName: 'NoLimitGoods Ltd',
+    locale: 'uk_UA',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'NoLimitGoods — запчастини до спецтехніки з Великобританії',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: ['/og-image.jpg'],
   },
 };
 
@@ -66,6 +88,26 @@ export default function RootLayout({
           />
         </noscript>
         {/* End Meta Pixel Code */}
+
+        {/* Відстеження кліків по месенджерах / телефону / email -> подія Contact у Meta */}
+        <Script id="meta-contact-tracking" strategy="afterInteractive">
+          {`
+            document.addEventListener('click', function (e) {
+              var el = e.target && e.target.closest ? e.target.closest('a') : null;
+              if (!el) return;
+              var href = el.getAttribute('href') || '';
+              var method = null;
+              if (href.indexOf('wa.me') > -1 || href.indexOf('whatsapp') > -1) method = 'whatsapp';
+              else if (href.indexOf('t.me') > -1) method = 'telegram';
+              else if (href.indexOf('viber://') === 0) method = 'viber';
+              else if (href.indexOf('tel:') === 0) method = 'phone';
+              else if (href.indexOf('mailto:') === 0) method = 'email';
+              if (method && window.fbq) {
+                window.fbq('track', 'Contact', { contact_method: method });
+              }
+            }, true);
+          `}
+        </Script>
 
         <LanguageProvider>
           {children}

@@ -31,6 +31,8 @@ export default function RFQSection() {
   const [comment, setComment] = useState('');
   const [country, setCountry] = useState(isUk ? 'Україна' : 'Ukraine');
   const [contact, setContact] = useState('');
+  const [showComment, setShowComment] = useState(false);
+  const [showCountry, setShowCountry] = useState(false);
 
   const [status, setStatus] = useState<any>('idle');
   const [searchStep, setSearchStep] = useState<string>('');
@@ -203,6 +205,8 @@ export default function RFQSection() {
     setComment('');
     setCountry(isUk ? 'Україна' : 'Ukraine');
     setContact('');
+    setShowComment(false);
+    setShowCountry(false);
   };
 
   const activeCount = items.filter((it) => it.partNumber.trim() !== '').length;
@@ -359,12 +363,10 @@ export default function RFQSection() {
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
-              <div className="space-y-4 mb-6">
-                <div className="flex justify-between items-center mb-2">
+              <div className="space-y-3 mb-5">
+                <div className="flex justify-between items-center">
                   <span className="text-xs uppercase font-bold tracking-wider text-slate-400">
-                    {isUk
-                      ? `Перелік запчастин (Позиції 1–${items.length} з 10):`
-                      : `Part Numbers List (Items 1–${items.length} of 10):`}
+                    {isUk ? 'Які деталі потрібні?' : 'Which parts do you need?'}
                   </span>
                   {items.length < 10 && (
                     <button
@@ -373,121 +375,126 @@ export default function RFQSection() {
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors cursor-pointer"
                     >
                       <Plus className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>{isUk ? 'Додати позицію' : 'Add Item'}</span>
+                      <span>{isUk ? 'Ще деталь' : 'Add part'}</span>
                     </button>
                   )}
                 </div>
 
                 {items.map((item, index) => (
-                  <div
-                    key={item.id}
-                    className="p-4 bg-slate-950/70 border border-slate-800 rounded-2xl relative space-y-3"
-                  >
-                    <div className="flex justify-between items-center text-xs font-semibold text-slate-400">
-                      <span>{isUk ? `Позиція #${index + 1}` : `Item #${index + 1}`}</span>
-                      {items.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => removeItem(item.id)}
-                          className="text-slate-500 hover:text-red-400 p-1 transition-colors cursor-pointer"
-                          title={isUk ? 'Видалити' : 'Remove'}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
+                  <div key={item.id} className="flex items-start gap-2">
+                    <div className="flex-1 grid grid-cols-1 sm:grid-cols-5 gap-2">
+                      <input
+                        type="text"
+                        value={item.partNumber}
+                        onChange={(e) => updateItem(item.id, 'partNumber', e.target.value)}
+                        className="sm:col-span-2 w-full px-3 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl text-sm focus:border-white outline-none font-mono uppercase"
+                        placeholder={
+                          index === 0
+                            ? isUk
+                              ? 'Артикул OEM, напр. 281-1196 *'
+                              : 'OEM part number, e.g. 281-1196 *'
+                            : isUk
+                            ? 'Наступний артикул'
+                            : 'Next part number'
+                        }
+                        aria-label={isUk ? 'Каталожний номер OEM' : 'OEM Part Number'}
+                      />
+                      <input
+                        type="text"
+                        value={item.machineModel}
+                        onChange={(e) => updateItem(item.id, 'machineModel', e.target.value)}
+                        className="sm:col-span-2 w-full px-3 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl text-sm focus:border-white outline-none"
+                        placeholder={isUk ? 'Бренд / техніка (необов’язково)' : 'Brand / machine (optional)'}
+                        aria-label={isUk ? 'Техніка / Бренд' : 'Equipment / Brand'}
+                      />
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.quantity}
+                        onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
+                        className="sm:col-span-1 w-full px-3 py-3 bg-slate-950 text-white border border-slate-700 rounded-xl text-sm focus:border-white outline-none font-mono text-center"
+                        placeholder="1"
+                        aria-label={isUk ? 'Кількість' : 'Quantity'}
+                      />
                     </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div className="sm:col-span-1">
-                        <label className="block text-[11px] text-slate-400 mb-1">
-                          {isUk ? 'Каталожний номер OEM *' : 'OEM Part Number *'}
-                        </label>
-                        <input
-                          type="text"
-                          value={item.partNumber}
-                          onChange={(e) => updateItem(item.id, 'partNumber', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono uppercase"
-                          placeholder={isUk ? 'напр. 281-1196' : 'e.g. 281-1196'}
-                        />
-                      </div>
-                      <div className="sm:col-span-1">
-                        <label className="block text-[11px] text-slate-400 mb-1">
-                          {isUk ? 'Техніка / Бренд' : 'Equipment / Brand'}
-                        </label>
-                        <input
-                          type="text"
-                          value={item.machineModel}
-                          onChange={(e) => updateItem(item.id, 'machineModel', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-lg text-sm focus:border-white outline-none"
-                          placeholder={isUk ? 'напр. CAT / Donaldson' : 'e.g. CAT / Donaldson'}
-                        />
-                      </div>
-                      <div className="sm:col-span-1">
-                        <label className="block text-[11px] text-slate-400 mb-1">
-                          {isUk ? 'Кількість (шт) *' : 'Quantity (pcs) *'}
-                        </label>
-                        <input
-                          type="number"
-                          min="1"
-                          value={item.quantity}
-                          onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
-                          className="w-full px-3 py-2 bg-slate-900 text-white border border-slate-700 rounded-lg text-sm focus:border-white outline-none font-mono text-center"
-                          placeholder="1"
-                        />
-                      </div>
-                    </div>
+                    {items.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        className="text-slate-500 hover:text-red-400 p-3 transition-colors cursor-pointer"
+                        title={isUk ? 'Видалити' : 'Remove'}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 ))}
+
+                {/* Коментар / список текстом: згорнуто */}
+                {!showComment ? (
+                  <button
+                    type="button"
+                    onClick={() => setShowComment(true)}
+                    className="text-xs text-slate-400 hover:text-white underline underline-offset-4 cursor-pointer"
+                  >
+                    {isUk
+                      ? '+ Додати коментар або вставити список деталей текстом'
+                      : '+ Add a comment or paste a parts list'}
+                  </button>
+                ) : (
+                  <textarea
+                    rows={3}
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder={
+                      isUk
+                        ? 'Вставте список деталей, VIN-код або модель машини...'
+                        : 'Paste your parts list, VIN number or machine model here...'
+                    }
+                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-sm resize-none"
+                  />
+                )}
               </div>
 
-              {/* Поле для тексту / списку з буфера */}
-              <div className="mb-6">
+              {/* Контакт: єдине обов'язкове поле крім артикулу */}
+              <div className="mb-3">
                 <label className="block text-sm font-semibold text-slate-300 mb-2">
-                  {isUk
-                    ? 'Повідомлення або перелік запчастин текстом:'
-                    : 'Additional message or bulk parts list:'}
+                  {isUk ? 'Телефон, Telegram, Viber або Email *' : 'Phone, Telegram, Viber or Email *'}
                 </label>
-                <textarea
-                  rows={3}
-                  value={comment}
-                  onChange={(e) => setComment(e.target.value)}
-                  placeholder={
-                    isUk
-                      ? 'Сюди можна скопіювати весь список деталей із таблиці чи документа, вказати VIN-код або модель машини...'
-                      : 'Paste your bulk parts list, VIN number, machine serial or additional requirements here...'
-                  }
-                  className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-sm resize-none"
+                <input
+                  type="text"
+                  required
+                  value={contact}
+                  onChange={(e) => setContact(e.target.value)}
+                  className="w-full px-4 py-3.5 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-base"
+                  placeholder="+380... / @username / email@domain.com"
                 />
               </div>
 
-              {/* Контакти та Країна */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t?.rfq?.form?.country || (isUk ? 'Країна призначення' : 'Country')} *
-                  </label>
+              {/* Країна: за замовчуванням Україна, змінити можна за бажанням */}
+              <div className="mb-6 text-xs text-slate-400">
+                {!showCountry ? (
+                  <span>
+                    {isUk ? 'Доставка: ' : 'Delivery to: '}
+                    <strong className="text-slate-300">{country}</strong>{' '}
+                    <button
+                      type="button"
+                      onClick={() => setShowCountry(true)}
+                      className="underline underline-offset-4 hover:text-white cursor-pointer"
+                    >
+                      {isUk ? 'змінити країну' : 'change country'}
+                    </button>
+                  </span>
+                ) : (
                   <input
                     type="text"
                     required
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
                     className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-sm"
-                    placeholder={isUk ? 'Україна' : 'Ukraine'}
+                    placeholder={isUk ? 'Країна призначення' : 'Destination country'}
                   />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold text-slate-300 mb-2">
-                    {t?.rfq?.form?.contact || (isUk ? 'Email, Телефон або Telegram' : 'Contact')} *
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={contact}
-                    onChange={(e) => setContact(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:ring-1 focus:ring-slate-500 outline-none text-sm"
-                    placeholder="+380... / email@domain.com"
-                  />
-                </div>
+                )}
               </div>
 
               <button
@@ -505,13 +512,18 @@ export default function RFQSection() {
                     <Box className="w-5 h-5" />
                     <span>
                       {isUk
-                        ? `Надіслати запит (${activeCount > 0 ? activeCount : 1} поз.)`
-                        : `Send Request (${activeCount > 0 ? activeCount : 1} Items)`}
+                        ? `Дізнатися ціну (${activeCount > 0 ? activeCount : 1} поз.)`
+                        : `Get a Quote (${activeCount > 0 ? activeCount : 1} Items)`}
                     </span>
                     <ArrowRight className="w-5 h-5 ml-1" />
                   </>
                 )}
               </button>
+              <p className="text-center text-[11px] text-slate-500 mt-3">
+                {isUk
+                  ? 'Безкоштовно і без зобовʼязань. Ми звʼяжемося з вами з ціною та термінами.'
+                  : 'Free and no obligation. We will contact you with pricing and lead time.'}
+              </p>
             </form>
           )}
         </div>

@@ -223,7 +223,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Finning UK Central Hub',
     originEn: 'Finning UK Central Hub',
     category: 'cab',
-    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi.jpg',
+    image: '/parts/cronstain.jpeg', // Працюючий шлях
     popularOems: ['280-7544', '277-6030', '277-6031', '281-3650'],
   },
   {
@@ -235,7 +235,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: '/parts/watermarked_img_15262443315777313665.jpg',
+    image: '/parts/case_international_puma_series.png.webp', // Працюючий шлях
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
 

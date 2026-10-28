@@ -3,11 +3,10 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { LanguageProvider } from '@/lib/language-context';
-import CookieConsent from './components/cookie-consent';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
-const SITE_TITLE = 'Запчастини до спецтехніки з Великобританії • 0% VAT | NoLimitGoods';
+const SITE_TITLE = 'NoLimitGoods Ltd';
 const SITE_DESCRIPTION =
   'NoLimitGoods Limited — офіційний хаб з постачання запчастин та фільтрів з Великобританії. 0% UK Export VAT. Доставка в Україну 5–14 робочих днів.';
 
@@ -72,7 +71,7 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
         />
-        {/* Підключення Google Tag AW-670192610 */}
+        {/* Google Tag AW-670192610 */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=AW-670192610"
@@ -129,9 +128,8 @@ export default function RootLayout({
             fbq('track', 'PageView');
           `}
         </Script>
-        {/* End Meta Pixel Code */}
 
-        {/* Відстеження кліків по месенджерах / телефону / email -> подія Contact у Meta */}
+        {/* Відстеження кліків по контактах у Meta */}
         <Script id="meta-contact-tracking" strategy="afterInteractive">
           {`
             document.addEventListener('click', function (e) {
@@ -153,7 +151,6 @@ export default function RootLayout({
 
         <LanguageProvider>
           {children}
-          <CookieConsent />
         </LanguageProvider>
       </body>
     </html>

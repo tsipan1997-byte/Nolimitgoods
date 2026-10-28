@@ -13,11 +13,11 @@ interface SourcedOffer {
   storeUrl: string;
   title: string;
   rawPriceGbp: number;
-  hasVat: boolean;
+  hasVat?: boolean;
   netBaseGbp: number;
   clientPriceGbp: number;
   weightKg: number;
-  isKnownPrice: boolean;
+  isKnownPrice?: boolean;
 }
 
 const FX_RATES: Record<string, number> = {
@@ -55,6 +55,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://vicaryplant.co.uk/search?q=20/925327',
     title: 'Тандемний насос JCB Parker 36/29cc (20/925327)',
     rawPriceGbp: 950.0,
+    hasVat: false,
     netBaseGbp: 760.0,
     clientPriceGbp: 950.0,
     weightKg: 17.0,
@@ -65,6 +66,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://vicaryplant.co.uk/search?q=333/G5390',
     title: 'Гідравлічний здвоєний насос JCB Parker (333/G5390)',
     rawPriceGbp: 950.0,
+    hasVat: false,
     netBaseGbp: 760.0,
     clientPriceGbp: 950.0,
     weightKg: 17.5,
@@ -75,6 +77,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://vicaryplant.co.uk/search?q=332/F9030',
     title: 'Шестеренний гідронасос JCB Parker (332/F9030)',
     rawPriceGbp: 908.0,
+    hasVat: false,
     netBaseGbp: 726.4,
     clientPriceGbp: 908.0,
     weightKg: 16.5,
@@ -87,6 +90,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://agrilineproducts.com/case-international',
     title: 'Блок управління обприскувача Case AccuBoom (87643472)',
     rawPriceGbp: 2800.0,
+    hasVat: false,
     netBaseGbp: 2240.0,
     clientPriceGbp: 2800.0,
     weightKg: 4.5,
@@ -97,6 +101,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://agrilineproducts.com/case-international',
     title: 'Компресор кондиціонера Sanden Case Stackcruiser (47773024)',
     rawPriceGbp: 650.0,
+    hasVat: false,
     netBaseGbp: 520.0,
     clientPriceGbp: 650.0,
     weightKg: 8.2,
@@ -109,6 +114,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Двері кабіни оператора CAT у зборі (281-1196)',
     rawPriceGbp: 1063.75,
+    hasVat: false,
     netBaseGbp: 851.0,
     clientPriceGbp: 1063.75,
     weightKg: 22.0,
@@ -119,6 +125,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Центральний роликовий кронштейн дверей CAT (281-1199)',
     rawPriceGbp: 393.66,
+    hasVat: false,
     netBaseGbp: 314.93,
     clientPriceGbp: 393.66,
     weightKg: 3.5,
@@ -129,6 +136,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Тяга / направляюча дверей кабіни CAT (293-3116)',
     rawPriceGbp: 482.25,
+    hasVat: false,
     netBaseGbp: 385.8,
     clientPriceGbp: 482.25,
     weightKg: 2.8,
@@ -139,6 +147,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Центральний замок дверей кабіни CAT (280-7548)',
     rawPriceGbp: 219.36,
+    hasVat: false,
     netBaseGbp: 175.49,
     clientPriceGbp: 219.36,
     weightKg: 1.4,
@@ -149,6 +158,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Вторинний замок дверей кабіни CAT (196-1441)',
     rawPriceGbp: 198.98,
+    hasVat: false,
     netBaseGbp: 159.18,
     clientPriceGbp: 198.98,
     weightKg: 1.2,
@@ -159,6 +169,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Зовнішня ручка дверей 110 мм CAT (280-7544)',
     rawPriceGbp: 187.5,
+    hasVat: false,
     netBaseGbp: 150.0,
     clientPriceGbp: 187.5,
     weightKg: 0.9,
@@ -169,6 +180,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Замок кватирки вікна кабіни CAT (132-7625)',
     rawPriceGbp: 119.85,
+    hasVat: false,
     netBaseGbp: 95.88,
     clientPriceGbp: 119.85,
     weightKg: 0.6,
@@ -179,6 +191,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Куліса / тяга дверної ручки CAT (277-6031)',
     rawPriceGbp: 116.75,
+    hasVat: false,
     netBaseGbp: 93.4,
     clientPriceGbp: 116.75,
     weightKg: 0.5,
@@ -189,6 +202,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Ущільнювач дверей кабіни CAT 3 мм (281-3650)',
     rawPriceGbp: 50.23,
+    hasVat: false,
     netBaseGbp: 40.18,
     clientPriceGbp: 50.23,
     weightKg: 1.1,
@@ -201,6 +215,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://intatracuk.com',
     title: 'Тяжкий передній міст Carraro (149298)',
     rawPriceGbp: 1850.0,
+    hasVat: false,
     netBaseGbp: 1480.0,
     clientPriceGbp: 1850.0,
     weightKg: 145.0,
@@ -211,6 +226,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://whitehouseproductsltd.com',
     title: 'Регульований насос Rexroth A10VSO (A10VSO18DRG)',
     rawPriceGbp: 1250.0,
+    hasVat: false,
     netBaseGbp: 1000.0,
     clientPriceGbp: 1250.0,
     weightKg: 14.0,
@@ -221,6 +237,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://diperk.com',
     title: 'Комплект паливних форсунок Perkins CR (2645A747)',
     rawPriceGbp: 460.0,
+    hasVat: false,
     netBaseGbp: 368.0,
     clientPriceGbp: 460.0,
     weightKg: 2.2,
@@ -231,6 +248,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://parts.cat.com',
     title: 'Турбокомпресор Caterpillar C7/C9 (10R-7675)',
     rawPriceGbp: 940.0,
+    hasVat: false,
     netBaseGbp: 752.0,
     clientPriceGbp: 940.0,
     weightKg: 15.0,
@@ -241,6 +259,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://inlinefilters.co.uk',
     title: 'Фільтр-сепаратор Donaldson Twist&Drain (P558000)',
     rawPriceGbp: 64.0,
+    hasVat: false,
     netBaseGbp: 51.2,
     clientPriceGbp: 64.0,
     weightKg: 1.6,
@@ -251,6 +270,7 @@ const SOURCED_PARTS: Record<string, SourcedOffer> = {
     storeUrl: 'https://inlinefilters.co.uk',
     title: 'Фільтр-водовіддільник Fleetguard (FS1280)',
     rawPriceGbp: 38.5,
+    hasVat: false,
     netBaseGbp: 30.8,
     clientPriceGbp: 38.5,
     weightKg: 1.2,

@@ -187,7 +187,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK Hub',
     originEn: 'EU Logistics / Finning UK Hub',
     category: 'cab',
-    image: '/parts/watermarked_img_12690233770305597422.jpg',
+    image: '/parts/CAT.jpeg', // Змінюємо на точний шлях наявної картинки
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {

@@ -21,7 +21,7 @@ interface PartShowcaseItem {
   popularOems: string[];
 }
 
-// 1. Головна вітрина: 8 ключових позицій (2 ряди по 4 картки)
+// 1. Головна вітрина: 8 ключових позицій з точними шляхами до твоїх фоток
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'pall-aerospace-main',
@@ -44,7 +44,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/watermarked_img_14206455484897953653.jpg',
+    image: '/parts/JCB-Parker.jpg', // Виправлено шлях під твою назву файлу з GitHub
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -56,7 +56,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'cab',
-    image: '/parts/watermarked_img_14744019675939396501.jpg',
+    image: '/parts/case_international_puma_series.png.webp', // Виправлено шлях
     popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
@@ -68,7 +68,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/watermarked_img_3834904218519996669.jpg',
+    image: '/parts/Carraro.jpg', // Виправлено шлях під твою назву файлу з GitHub
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {

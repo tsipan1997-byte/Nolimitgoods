@@ -114,6 +114,30 @@ export default function RFQSection() {
     });
   };
 
+  // Джерело заявки: UTM-мітки з посилання реклами та сайт, з якого прийшла людина
+  const getSourceLine = () => {
+    if (typeof window === 'undefined') return '';
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const keys = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid'];
+      const parts: string[] = [];
+      keys.forEach((k) => {
+        const v = params.get(k);
+        if (v) parts.push(`${k}=${k === 'fbclid' ? 'yes' : v}`);
+      });
+      if (document.referrer) {
+        try {
+          parts.push(`ref=${new URL(document.referrer).hostname}`);
+        } catch {
+          // ігноруємо некоректний referrer
+        }
+      }
+      return parts.length ? `\n[Джерело: ${parts.join(' | ')}]` : '';
+    } catch {
+      return '';
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const activeItems = items.filter((it) => it.partNumber.trim() !== '');
@@ -158,7 +182,7 @@ export default function RFQSection() {
           })),
           country,
           contact: contact.trim(),
-          comment: comment.trim(),
+          comment: (comment.trim() + getSourceLine()).trim(),
           invoiceNumber: invNum,
         }),
       });

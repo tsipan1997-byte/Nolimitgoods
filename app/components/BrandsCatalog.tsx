@@ -32,7 +32,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/Pall.jpeg',
+    image: '/parts/helicopter.webp',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
   {
@@ -121,10 +121,10 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи товарів та повний каталог (включно з 4 підпунктами Pall)
+// 2. Підгрупи товарів та 4 офіційні підпункти Pall з твоїми завантаженими фотографіями
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
   // ==========================================
-  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL
+  // 4 ОФІЦІЙНІ ПІДПУНКТИ PALL (ЗІ ЗБЕРЕЖЕНИМИ ФОТО)
   // ==========================================
   {
     id: 'pall-sub-1',
@@ -135,7 +135,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/Pall.jpeg',
+    image: '/parts/helicopter.webp', // прикріплено helicopter.webp
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
   },
   {
@@ -147,7 +147,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall-defense',
-    image: '/parts/Pall.jpeg',
+    image: '/parts/General-Industrial.jpg', // прикріплено General-Industrial.jpg
     popularOems: ['UE319AS20H', 'HC9600FKS16H', 'HC8314FKN39H', 'AB250'],
   },
   {
@@ -159,7 +159,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Європейський хаб / UK',
     originEn: 'EU Hub / UK',
     category: 'pall-defense',
-    image: '/parts/Pall.jpeg',
+    image: '/parts/oil-gas-case-study-15.webp', // прикріплено oil-gas-case-study-15.webp
     popularOems: ['HC8314FKN39H', 'HC9021FDT8Z', 'HF4PP005', 'COR100'],
   },
   {
@@ -171,7 +171,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Берлін, Німеччина / UK',
     originEn: 'Berlin, Germany / UK',
     category: 'pall-defense',
-    image: '/parts/Pall.jpeg',
+    image: '/parts/membralox-gpic-image.webp', // прикріплено membralox-gpic-image.webp
     popularOems: ['MEMBRALOX-GP', 'AB1U050', 'KA250', 'PALL-FBC'],
   },
 
@@ -356,7 +356,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Peterborough, UK',
     category: 'engines',
     image: '/parts/Perkins.jpg',
-    popularOems: ['2645A747', 'U5MK8267', 'T413847', 'U5PR0062'],
+    popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
   {
     id: 'eng-cat',
@@ -603,7 +603,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
           })}
         </div>
 
-        {/* СПЕЦІАЛЬНИЙ БЛОК: 4 ПІДПУНКТИ PALL */}
+        {/* СПЕЦІАЛЬНИЙ БЛОК: 4 ПІДПУНКТИ PALL ЗІ ТВОЇМИ ФОТО */}
         {activeTab === 'pall-defense' ? (
           <motion.div 
             initial={{ opacity: 0, y: 15 }} 
@@ -627,7 +627,7 @@ export default function BrandsCatalog({ onSelectOem }: { onSelectOem: (oem: stri
               </div>
             </div>
 
-            {/* 4 картки підпунктів */}
+            {/* 4 картки підпунктів з твоїми картинками */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {SUBGROUP_PARTS.filter(p => p.category === 'pall-defense').map((item) => (
                 <div

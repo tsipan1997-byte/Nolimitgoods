@@ -18,6 +18,8 @@ import {
   Copy,
   Check,
   PackageCheck,
+  KeyRound,
+  Car,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
@@ -30,12 +32,20 @@ interface PartShowcaseItem {
   brand: string;
   originUk: string;
   originEn: string;
-  category: 'hydraulics' | 'undercarriage' | 'engines' | 'filtration' | 'cab' | 'pall-defense';
+  category:
+    | 'hydraulics'
+    | 'undercarriage'
+    | 'engines'
+    | 'filtration'
+    | 'cab'
+    | 'pall-defense'
+    | 'spec-korea'
+    | 'cars-korea';
   image: string;
   popularOems: string[];
 }
 
-// 1. Головна вітрина: 8 ключових позицій (2 ряди по 4 картки)
+// 1. Головна вітрина: ключові позиції (Топ вузли)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'feat-pall-aerospace',
@@ -48,6 +58,30 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     category: 'pall-defense',
     image: '/parts/helicopter.webp',
     popularOems: ['HC9600FKS16H', 'UE319AS20H', 'HC8314FKN39H', 'HC9021FDT8Z'],
+  },
+  {
+    id: 'feat-korea-spec-pump',
+    nameUk: 'Головний гідравлічний насос Hyundai Robex R210 / R220',
+    nameEn: 'Hyundai Robex Excavator Main Hydraulic Pump',
+    oem: '31N6-10010',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
+  },
+  {
+    id: 'feat-korea-car-electronics',
+    nameUk: 'Оригінальні блоки ECU, BCM, смарт-ключі Hyundai / Kia',
+    nameEn: 'Genuine Hyundai / Kia ECU, BCM & Smart Key Modules',
+    oem: '95440-J9000',
+    brand: 'HYUNDAI GENUINE (KOREA)',
+    originUk: 'Сеул, Південна Корея',
+    originEn: 'Seoul, South Korea',
+    category: 'cars-korea',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    popularOems: ['95440-J9000', '39110-2B000', '95420-H1000', '95400-F2000'],
   },
   {
     id: 'feat-jcb-pump-main',
@@ -135,8 +169,108 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи товарів та 4 офіційні підпункти Pall
+// 2. Підгрупи товарів та офіційні деталізовані позиції
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
+  // --- СПЕЦТЕХНІКА З КОРЕЇ (HYUNDAI ROBEX) ---
+  {
+    id: 'korea-spec-pump',
+    nameUk: 'Головний гідравлічний насос Hyundai Robex R210 / R220',
+    nameEn: 'Hyundai Robex Excavator Main Hydraulic Pump',
+    oem: '31N6-10010',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
+  },
+  {
+    id: 'korea-spec-roller',
+    nameUk: 'Опорний каток ходової частини Hyundai R210 / R220 / R250',
+    nameEn: 'Hyundai Heavy Duty Lower Track Roller',
+    oem: 'E181-2002BG',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
+    popularOems: ['E181-2002BG', '81EM-10030BG', '81EM-10010', '81N6-13010BG'],
+  },
+  {
+    id: 'korea-spec-sprocket',
+    nameUk: 'Зірочка тягова гусеничного ходу (Sprocket) Hyundai R210',
+    nameEn: 'Hyundai Drive Sprocket Segment Group',
+    oem: '81EM-10010',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
+    popularOems: ['81EM-10010', '81EM-10013BG', '81N6-23600', '81N6-13010BG'],
+  },
+  {
+    id: 'korea-spec-seal-kit',
+    nameUk: 'Ремкомплект гідроциліндрів стріли та ковша Hyundai Robex',
+    nameEn: 'Hyundai Robex Boom & Bucket Cylinder Seal Kit',
+    oem: '31Y1-15705',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    popularOems: ['31Y1-15705', '31Y1-15885', '31Q6-01280', 'E131-0212A'],
+  },
+
+  // --- ЛЕГКОВІ АВТО З КОРЕЇ (HYUNDAI / KIA / GENESIS: КЛЮЧІ ТА ЕЛЕКТРОНІКА) ---
+  {
+    id: 'korea-car-keys',
+    nameUk: 'Оригінальні смарт-ключі та іммобілайзери Hyundai / Kia (Smart Fob)',
+    nameEn: 'Genuine Hyundai / Kia Smart Keys & Immobilizer Modules',
+    oem: '95440-J9000',
+    brand: 'HYUNDAI GENUINE (KOREA)',
+    originUk: 'Сеул, Південна Корея',
+    originEn: 'Seoul, South Korea',
+    category: 'cars-korea',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    popularOems: ['95440-J9000', '95440-D3000', '95420-H1000', '95430-C1000'],
+  },
+  {
+    id: 'korea-car-ecu',
+    nameUk: 'Електронні блоки керування двигуном ECU / PCM / TCM Hyundai & Kia',
+    nameEn: 'Hyundai Engine & Transmission Control Units (ECU/TCM)',
+    oem: '39110-2B000',
+    brand: 'HYUNDAI MOBIS (KOREA)',
+    originUk: 'Інчхон, Південна Корея',
+    originEn: 'Incheon, South Korea',
+    category: 'cars-korea',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    popularOems: ['39110-2B000', '39100-2GGA0', '39128-2B720', '95400-F2000'],
+  },
+  {
+    id: 'korea-car-bcm',
+    nameUk: 'Модулі кузовної електроніки BCM, Junction Box та шлейфи керма',
+    nameEn: 'Hyundai Body Control Modules (BCM) & Clock Springs',
+    oem: '95400-F2000',
+    brand: 'HYUNDAI MOBIS (KOREA)',
+    originUk: 'Сеул, Південна Корея',
+    originEn: 'Seoul, South Korea',
+    category: 'cars-korea',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    popularOems: ['95400-F2000', '93490-2M000', '91950-C1010', '95800-D3000'],
+  },
+  {
+    id: 'korea-car-injectors',
+    nameUk: 'Паливні форсунки Common Rail Santa Fe / Tucson CRDi',
+    nameEn: 'Hyundai CRDi High Pressure Fuel Injectors',
+    oem: '33800-2F000',
+    brand: 'HYUNDAI / MOBIS',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'cars-korea',
+    image: '/parts/Perkins.jpg',
+    popularOems: ['33800-2F000', '33800-27400', '33800-4A710', '31922-2W000'],
+  },
+
   // --- PALL CORPORATION (4 НАПРЯМИ) ---
   {
     id: 'pall-sub-1',
@@ -516,6 +650,8 @@ export default function BrandsCatalog({
 
   const mainTabs = [
     { id: 'all', labelUk: 'Всі ключові вузли (Топ-8)', labelEn: 'All Key Assemblies (Top 8)', icon: Layers },
+    { id: 'spec-korea', labelUk: 'Спецтехніка з Кореї (Hyundai)', labelEn: 'Korea Heavy Plant (Hyundai)', icon: Wrench },
+    { id: 'cars-korea', labelUk: 'Легкові авто з Кореї (Ключі, ECU)', labelEn: 'Korea Passenger (ECU & Keys)', icon: Cpu },
     { id: 'pall-defense', labelUk: 'Pall (Фільтри будь-які)', labelEn: 'Pall Corporation Solutions', icon: Plane },
     { id: 'tractors', labelUk: 'Трактори (Агротехніка)', labelEn: 'Tractors (Agri Fleet)', icon: Tractor },
     { id: 'cab', labelUk: 'Кузов та кабіна (CAT & Case)', labelEn: 'Cab & Body (CAT & Case)', icon: DoorClosed },
@@ -615,7 +751,7 @@ export default function BrandsCatalog({
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-slate-200 text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-            {isUk ? 'Поставки зі складів UK та ЄС • 0% UK VAT' : 'Supply from UK & EU Stocks • 0% UK VAT'}
+            {isUk ? 'Поставки зі складів UK, ЄС та Південної Кореї • 0% UK VAT' : 'Supply from UK, EU & South Korea • 0% UK VAT'}
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             {isUk
@@ -624,8 +760,8 @@ export default function BrandsCatalog({
           </h2>
           <p className="max-w-2xl mx-auto text-slate-600 text-sm sm:text-base">
             {isUk
-              ? 'Оберіть марку трактора, вузол кабіни або лінійку фільтрації Pall. Натисніть на артикул для миттєвого прорахунку.'
-              : 'Select your machinery brand, cab assembly or Pall filtration lineup. Click any OEM code for an instant quote.'}
+              ? 'Оберіть марку спецтехніки, авто з Кореї, трактор або фільтри Pall. Натисніть на артикул для миттєвого прорахунку.'
+              : 'Select your machinery brand, Korean vehicles, tractor or Pall filters. Click any OEM code for an instant quote.'}
           </p>
         </div>
 
@@ -651,6 +787,70 @@ export default function BrandsCatalog({
             );
           })}
         </div>
+
+        {/* СПЕЦІАЛЬНИЙ БЛОК: СПЕЦТЕХНІКА З КОРЕЇ */}
+        {activeTab === 'spec-korea' && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-slate-900 text-white p-6 rounded-3xl border border-slate-800 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-md"
+          >
+            <div className="space-y-2 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-amber-500/15 border border-amber-400/30 text-amber-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                <Wrench className="w-4 h-4" />
+                {isUk ? 'Hyundai Construction Equipment Korea' : 'Hyundai Construction Equipment Korea'}
+              </div>
+              <h3 className="text-lg sm:text-xl font-black">
+                {isUk ? 'Оригінальна гідравліка та ходова для спецтехніки Hyundai Robex' : 'Genuine Hydraulics & Undercarriage for Robex Excavators'}
+              </h3>
+              <p className="text-xs text-slate-400 max-w-2xl leading-relaxed">
+                {isUk
+                  ? 'Прямі авіа- та контейнерні поставки з хабів Південної Кореї: гідронасоси, катки ходової частини, зірочки та оригінальні ремкомплекти стріли й ковша.'
+                  : 'Direct sourcing from Korean distribution hubs: main hydraulic pumps, heavy track rollers, drive sprockets and cylinder seal kits.'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => selectOem('31N6-10010', 'HYUNDAI HEAVY IND.')}
+              className="shrink-0 px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <span>{isUk ? 'Запитати на спецтехніку' : 'Quote Heavy Equipment'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+
+        {/* СПЕЦІАЛЬНИЙ БЛОК: ЛЕГКОВІ АВТО З КОРЕЇ (ЕЛЕКТРОНІКА ТА КЛЮЧІ) */}
+        {activeTab === 'cars-korea' && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-blue-950 to-slate-900 text-white p-6 rounded-3xl border border-blue-800/40 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-md"
+          >
+            <div className="space-y-2 text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/40 text-blue-300 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                <KeyRound className="w-4 h-4" />
+                {isUk ? 'Рідкісні блоки, ключі та електроніка під замовлення' : 'Rare ECUs, Smart Keys & Modules On-Order'}
+              </div>
+              <h3 className="text-lg sm:text-xl font-black">
+                {isUk ? 'Оригінальні блоки ECU, BCM, смарт-ключі та іммобілайзери з Кореї' : 'Genuine Hyundai / Kia ECU, BCM, Smart Keys & Modules'}
+              </h3>
+              <p className="text-xs text-slate-300 max-w-2xl leading-relaxed">
+                {isUk
+                  ? 'Швидка доставка дефіцитної автомобільної електроніки: прошиті смарт-ключі, блоки іммобілайзера, модулі управління двигуном (ECU/PCM) та апаратура CRDi.'
+                  : 'Fast sourcing of rare automotive electronics: genuine programmed smart keys, immobilizers, engine/body control modules and CRDi injection units.'}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => selectOem('95440-J9000', 'HYUNDAI GENUINE')}
+              className="shrink-0 px-5 py-3 rounded-xl bg-blue-500 hover:bg-blue-400 text-slate-950 font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer"
+            >
+              <span>{isUk ? 'Запитати ключ або блок' : 'Quote ECU or Key'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
 
         {/* СПЕЦІАЛЬНИЙ БЛОК 1: 4 ПІДПУНКТИ PALL CORPORATION */}
         {activeTab === 'pall-defense' ? (
@@ -895,7 +1095,11 @@ export default function BrandsCatalog({
                       />
                       <div className="absolute top-2.5 left-2.5 bg-white/95 backdrop-blur-md px-2 py-0.5 rounded-lg border border-slate-200/80 shadow-xs flex items-center gap-1.5 text-[10px] font-bold text-slate-800">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-                        <span>{isUk ? 'Під замовлення UK/ЄС' : 'On order UK/EU'}</span>
+                        <span>
+                          {item.category === 'spec-korea' || item.category === 'cars-korea'
+                            ? (isUk ? 'Південна Корея' : 'South Korea')
+                            : (isUk ? 'Під замовлення UK/ЄС' : 'On order UK/EU')}
+                        </span>
                       </div>
                       <div className="absolute top-2.5 right-2.5 bg-slate-900 text-white px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
                         0% VAT

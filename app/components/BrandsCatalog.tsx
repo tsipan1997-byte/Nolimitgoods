@@ -68,8 +68,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    // СЮДИ ТРЕБА ПОСТАВИТИ САМЕ НАСОС:
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg', 
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg', // Фото гідравлічного насоса
     popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
   },
   {
@@ -81,8 +80,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    // А СЮДИ — БЛОКИ ТА КЛЮЧІ:
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg', 
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg', // Фото електроніки та смарт-ключів
     popularOems: ['95440-J9000', '39110-2B000', '95420-H1000', '95400-F2000'],
   },
   {
@@ -171,7 +169,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   },
 ];
 
-// 2. Підгрупи товарів та офіційні деталізовані позиції
+// 2. Деталізовані позиції підгруп
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
   // --- СПЕЦТЕХНІКА З КОРЕЇ (HYUNDAI ROBEX) ---
   {
@@ -183,7 +181,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg', // Насос
     popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
   },
   {
@@ -195,7 +193,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg', // Каток ходової
     popularOems: ['E181-2002BG', '81EM-10030BG', '81EM-10010', '81N6-13010BG'],
   },
   {
@@ -219,7 +217,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
     popularOems: ['31Y1-15705', '31Y1-15885', '31Q6-01280', 'E131-0212A'],
   },
 
@@ -233,7 +231,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg', // Блоки та смарт-ключі
     popularOems: ['95440-J9000', '95440-D3000', '95420-H1000', '95430-C1000'],
   },
   {
@@ -245,7 +243,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Інчхон, Південна Корея',
     originEn: 'Incheon, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg', // Блоки
     popularOems: ['39110-2B000', '39100-2GGA0', '39128-2B720', '95400-F2000'],
   },
   {
@@ -257,7 +255,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
     popularOems: ['95400-F2000', '93490-2M000', '91950-C1010', '95800-D3000'],
   },
   {

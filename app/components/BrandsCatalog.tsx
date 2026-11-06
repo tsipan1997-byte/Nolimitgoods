@@ -68,7 +68,8 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    // СЮДИ ТРЕБА ПОСТАВИТИ САМЕ НАСОС:
+    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg', 
     popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
   },
   {
@@ -80,7 +81,8 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    // А СЮДИ — БЛОКИ ТА КЛЮЧІ:
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg', 
     popularOems: ['95440-J9000', '39110-2B000', '95420-H1000', '95400-F2000'],
   },
   {

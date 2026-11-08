@@ -56,7 +56,7 @@ export interface PartShowcaseItem {
   isKoreaHub?: boolean;
 }
 
-// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ)
+// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ З РЕАЛЬНИМИ ФОТОГРАФІЯМИ)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -67,7 +67,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/watermarked_img_14206455484897953653.jpg',
+    image: '/parts/JCB-PArker.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -79,7 +79,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'cab',
-    image: '/parts/watermarked_img_14744019675939396501.jpg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
@@ -91,7 +91,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/watermarked_img_3834904218519996669.jpg',
+    image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -103,7 +103,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK Hub',
     originEn: 'EU Logistics / Finning UK Hub',
     category: 'cab',
-    image: '/parts/watermarked_img_12690233770305597422.jpg',
+    image: '/parts/images.jpeg',
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {
@@ -115,7 +115,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: '/parts/watermarked_img_15262443315777313665.jpg',
+    image: '/parts/cronstain.jpeg',
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
@@ -187,7 +187,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    image: '/parts/Rexroth.jpg',
     popularOems: ['31N6-10010', '31Q6-10010', 'E181-2002BG', '81EM-10010'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -202,7 +202,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['39110-2B010', '95440-G5000', '92101-G6000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -222,7 +222,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK',
     originEn: 'EU Logistics / Finning UK',
     category: 'cab',
-    image: '/parts/watermarked_img_12690233770305597422.jpg',
+    image: '/parts/images.jpeg',
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {
@@ -258,7 +258,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Базілдон, Велика Британія',
     originEn: 'Basildon, UK',
     category: 'cab',
-    image: '/parts/watermarked_img_14744019675939396501.jpg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['87643472', '47773024', '83994207', '82011854'],
   },
 
@@ -322,7 +322,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    image: '/parts/Rexroth.jpg',
     popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -337,7 +337,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
+    image: '/parts/Carraro.jpg',
     popularOems: ['E181-2002BG', '81EM-10030BG', '81EM-10010', '81N6-13010BG'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -384,7 +384,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['39110-2B010', '95440-G5000', '95440-D4000', '39101-2E150'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -399,7 +399,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra-2.jpg',
+    image: '/parts/images.jpeg',
     popularOems: ['92101-G6000', '92102-G6000', '92401-D3100', '92101-S1100'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -414,7 +414,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пхьонтхек, Південна Корея',
     originEn: 'Pyeongtaek, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_5hp3cb5hp3cb5hp3.jpg',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
     popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -429,7 +429,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_5hp3cb5hp3cb5hp3-2.jpg',
+    image: '/parts/Perkins.jpg',
     popularOems: ['24321-2E010', '24350-2E011', '24370-2E010', '35310-2E500'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -482,7 +482,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Європейський хаб',
     originEn: 'European Hub',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: '/parts/cronstain.jpeg',
     popularOems: ['CB0142', 'CB0078', '315419', '814903006'],
   },
 
@@ -596,7 +596,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/watermarked_img_14206455484897953653.jpg',
+    image: '/parts/JCB-PArker.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -1243,7 +1243,7 @@ export default function BrandsCatalog({
                           className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
                         />
 
-                        {/* Лівий бейдж: Під замовлення або Південна Корея */}
+                        {/* Лівий бейдж */}
                         <div className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/95 backdrop-blur-xs border border-slate-200 text-[10px] font-bold text-slate-700 shadow-2xs">
                           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                           <span>

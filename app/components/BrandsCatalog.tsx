@@ -56,7 +56,7 @@ export interface PartShowcaseItem {
   isKoreaHub?: boolean;
 }
 
-// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ З РЕАЛЬНИМИ ФОТОГРАФІЯМИ)
+// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -79,7 +79,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'cab',
-    image: '/parts/cronstain.jpeg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
@@ -246,7 +246,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK',
     originEn: 'EU Logistics / Finning UK',
     category: 'cab',
-    image: '/parts/images.jpeg',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
     popularOems: ['280-7548', '280-7544', '132-7625', '277-6030'],
   },
   {
@@ -258,7 +258,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Базілдон, Велика Британія',
     originEn: 'Basildon, UK',
     category: 'cab',
-    image: '/parts/cronstain.jpeg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['87643472', '47773024', '83994207', '82011854'],
   },
 
@@ -354,6 +354,9 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     category: 'spec-korea',
     image: '/parts/Spocket.jpeg',
     popularOems: ['81EM-10010', '81EM-10013BG', '81N6-23600', '81N6-13010BG'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
   },
   {
     id: 'korea-spec-seals',
@@ -396,7 +399,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra-2.jpg',
+    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
     popularOems: ['92101-G6000', '92102-G6000', '92401-D3100', '92101-S1100'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -411,7 +414,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пхьонтхек, Південна Корея',
     originEn: 'Pyeongtaek, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_5hp3cb5hp3cb5hp3.jpg',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
     popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -426,7 +429,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_5hp3cb5hp3cb5hp3-2.jpg',
+    image: '/parts/Perkins.jpg',
     popularOems: ['24321-2E010', '24350-2E011', '24370-2E010', '35310-2E500'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -517,7 +520,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Людвігсбург, Німеччина',
     originEn: 'Ludwigsburg, Germany',
     category: 'filtration',
-    image: '/parts/Mann+Hummel.jpeg',
+    image: '/parts/Mann-Filter.jpeg',
     popularOems: ['C23610', 'W950/26', 'WD13145', 'CF1200'],
   },
   {
@@ -739,7 +742,7 @@ export default function BrandsCatalog({
     trackAndSelectOem(oem, brand);
   };
 
-  // 6 ключових брендів тракторів
+  // 6 брендів тракторів
   const tractorCards = [
     {
       id: 'case-ih',
@@ -809,7 +812,7 @@ export default function BrandsCatalog({
     },
   ];
 
-  // Групи систем для блоку Агротехніки
+  // Системні групи агротехніки
   const tractorSystemGroups = [
     {
       titleUk: 'Кабіна, електроніка та клімат',

@@ -19,7 +19,7 @@ export default function HeroSection() {
   };
 
   const scrollToCatalog = () => {
-    const catalogSection = document.getElementById('catalog');
+    const catalogSection = document.getElementById('catalog') || document.getElementById('oem-brands');
     if (catalogSection) {
       catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
@@ -36,13 +36,11 @@ export default function HeroSection() {
           playsInline
           className="w-full h-full object-cover object-center opacity-30 filter brightness-75 contrast-125 scale-105"
         >
-          {/* Якісний оптимізований фоновий стрім важкої техніки / логістичного хабу */}
           <source
             src="https://assets.mixkit.co/videos/preview/mixkit-heavy-industrial-machinery-operating-in-a-quarry-41551-large.mp4"
             type="video/mp4"
           />
         </video>
-        {/* Градієнтне затемнення: безшовний плавний перехід у темну тему сайту */}
         <div className="absolute inset-0 bg-gradient-to-b from-[#06090E]/80 via-[#06090E]/60 to-[#06090E]" />
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[750px] h-[350px] bg-red-600/15 blur-[160px] rounded-full" />
       </div>
@@ -50,7 +48,7 @@ export default function HeroSection() {
       {/* 2. ГОЛОВНИЙ КОНТЕНТ */}
       <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
         
-        {/* Статус-бейдж UK хабу з пульсацією */}
+        {/* Статус-бейдж UK хабу */}
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -104,18 +102,19 @@ export default function HeroSection() {
             : 'End-to-end logistics solutions, T1 transit customs clearance, and zero-rated 0% UK export status directly to your enterprise.'}
         </motion.p>
 
-        {/* Кнопки виклику дій */}
+        {/* Кнопки дій */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
         >
+          {/* Яскраво-червона кнопка без жовтого градієнту */}
           <button
             onClick={scrollToCalculator}
-            className="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-red-600 via-red-600 to-amber-600 hover:from-red-500 hover:to-amber-500 text-white font-bold text-sm tracking-wider uppercase transition-all shadow-[0_0_30px_rgba(239,68,68,0.4)] flex items-center justify-center gap-2 cursor-pointer active:scale-95"
+            className="w-full sm:w-auto px-9 py-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm tracking-wider uppercase transition-all shadow-[0_10px_30px_rgba(220,38,38,0.45)] hover:shadow-[0_14px_35px_rgba(220,38,38,0.6)] flex items-center justify-center gap-2 cursor-pointer active:scale-95"
           >
-            <span>{isUk ? 'Розрахувати вартість замовлення' : 'Calculate Order Quote'}</span>
+            <span>{isUk ? 'Зробити замовлення' : 'Place Order'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 

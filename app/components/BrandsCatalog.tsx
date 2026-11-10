@@ -21,6 +21,7 @@ import {
   HardHat,
   Disc,
   Cog,
+  ImageOff,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
@@ -49,12 +50,53 @@ export interface PartShowcaseItem {
     | 'suspension'
     | 'spec-korea'
     | 'cars-korea';
+  /** Порожній рядок = фото ще немає, покажеться заглушка */
   image: string;
   popularOems: string[];
   badgeUk?: string;
   badgeEn?: string;
   isKoreaHub?: boolean;
 }
+
+// ─────────────────────────────────────────────────────────────
+// ЄДИНЕ МІСЦЕ ДЛЯ ШЛЯХІВ ДО ФОТО (всі файли лежать у /public/parts)
+// Назви файлів чутливі до регістру на Vercel!
+// ─────────────────────────────────────────────────────────────
+const IMG = {
+  // Техніка / агро
+  jcbPump: '/parts/JCB-PArker.jpg', // велика A — саме так файл названий у репо
+  caseAccuboom: '/parts/case_international_puma_series.png.webp',
+  carraroAxle: '/parts/carraro-axle.jpg',
+  catCabDoor: '/parts/cat-cab-door.jpg',
+  catDoorLatch: '/parts/cat-door-lock.jpg',
+  catDoorBracket: '/parts/cat-door-roller-bracket.jpg',
+  catDoorLockHandle: '/parts/cat-door-lock-handle.jpg',
+  sandenCompressor: '/parts/sanden-compressor.jpg',
+  rexroth: '/parts/Rexroth.jpg',
+
+  // Двигуни / фільтрація
+  perkins: '/parts/Perkins.jpg',
+  donaldson: '/parts/Donaldson.jpeg',
+  pall: '/parts/Pall.jpeg',
+
+  // Амортизатори
+  kybStrut: '/parts/KYBstrudass.webp',
+  kybRear: '/parts/kyb-rear-shock.jpg',
+  monroeMagnum: '/parts/monroe-magnum-shock.jpg',
+
+  // Hyundai: спецтехніка
+  hyundaiPump: '/parts/hyundai-pump.jpg',
+  hyundaiMainPump: '/parts/hyundai-main-pump.jpg',
+  hyundaiTrackRoller: '/parts/hyundai-track-roller.jpg',
+  hyundaiSprocket: '/parts/Spocket.jpeg', // так, у репо саме "Spocket"
+  hyundaiSealKit: '/parts/Remcomp.jpeg',
+
+  // Hyundai: легкові
+  hyundaiEcuKeys: '/parts/hyundai-ecu-keys.jpg',
+  hyundaiEcu: '/parts/hyundai-ecu.jpg',
+  mobisLedOptics: '', // TODO: фото LED-оптики
+  mandoSuspension: '', // TODO: фото важелів / кульових опор Mando
+} as const;
 
 // 1. ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ (ГОЛОВНА ВІТРИНА)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
@@ -67,7 +109,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-Parker.jpg',
+    image: IMG.jcbPump,
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -79,7 +121,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp',
+    image: IMG.caseAccuboom,
     popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
@@ -91,7 +133,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/General-Industrial.jpg',
+    image: IMG.carraroAxle,
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -103,7 +145,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK Hub',
     originEn: 'EU Logistics / Finning UK Hub',
     category: 'cab',
-    image: '/parts/images.jpeg',
+    image: IMG.catCabDoor,
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {
@@ -115,7 +157,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: '/parts/Rexroth.jpg',
+    image: IMG.sandenCompressor,
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
@@ -127,7 +169,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    image: '/parts/Rexroth.jpg',
+    image: IMG.rexroth,
     popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
   {
@@ -139,7 +181,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    image: '/parts/Perkins.jpg',
+    image: IMG.perkins,
     popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
   {
@@ -151,7 +193,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    image: '/parts/Donaldson.jpeg',
+    image: IMG.donaldson,
     popularOems: ['P558000', 'P553004', 'P535114', 'SH60187'],
   },
   {
@@ -163,7 +205,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall',
-    image: '/parts/Pall.jpeg',
+    image: IMG.pall,
     popularOems: ['HC9600FKN8H', 'HC8314FKN39Z', 'UE319AP20Z', 'HC2216FKS6Z'],
   },
   {
@@ -175,7 +217,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: IMG.kybStrut,
     popularOems: ['SR4198', '339702', '349041', 'G8107'],
   },
   {
@@ -187,7 +229,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    image: IMG.hyundaiPump,
     popularOems: ['31N6-10010', '31Q6-10010', 'E181-2002BG', '81EM-10010'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -202,7 +244,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: IMG.hyundaiEcuKeys,
     popularOems: ['39110-2B010', '95440-G5000', '92101-G6000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -222,7 +264,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: IMG.kybStrut,
     popularOems: ['SR4198', 'SR4458', '172518', '172926'],
   },
   {
@@ -234,7 +276,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: IMG.kybStrut,
     popularOems: ['SR4199', 'SR4459', '172519', '172927'],
   },
   {
@@ -246,7 +288,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: IMG.kybRear,
     popularOems: ['339702', '339703', '349041', '554384'],
   },
   {
@@ -258,7 +300,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сент-Трейден, Бельгія',
     originEn: 'Sint-Truiden, Belgium',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: IMG.monroeMagnum,
     popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
   },
 
@@ -272,7 +314,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+    image: IMG.hyundaiMainPump,
     popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -287,7 +329,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
+    image: IMG.hyundaiTrackRoller,
     popularOems: ['E181-2002BG', '81EM-10030BG', '81EM-10010', '81N6-13010BG'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -302,7 +344,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Spocket.jpeg',
+    image: IMG.hyundaiSprocket,
     popularOems: ['81EM-10010', '81EM-10013BG', '81N6-23600', '81N6-13010BG'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -317,7 +359,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: '/parts/Remcomp.jpeg',
+    image: IMG.hyundaiSealKit,
     popularOems: ['31Y1-15705', '31Y1-15885', '31Q6-01280', 'E131-0212A'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -334,7 +376,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: IMG.hyundaiEcu,
     popularOems: ['39110-2B010', '95440-G5000', '95440-D4000', '39101-2E150'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -349,7 +391,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
+    image: IMG.mobisLedOptics,
     popularOems: ['92101-G6000', '92102-G6000', '92401-D3100', '92101-S1100'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -364,7 +406,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пхьонтхек, Південна Корея',
     originEn: 'Pyeongtaek, South Korea',
     category: 'cars-korea',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: IMG.mandoSuspension,
     popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -379,7 +421,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Perkins.jpg',
+    image: IMG.perkins, // тимчасово: фото форсунок, поки немає окремого для GDI/ГРМ
     popularOems: ['24321-2E010', '24350-2E011', '24370-2E010', '35310-2E500'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -396,7 +438,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK',
     originEn: 'EU Logistics / Finning UK',
     category: 'cab',
-    image: '/parts/images.jpeg',
+    image: IMG.catCabDoor,
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
   },
   {
@@ -408,7 +450,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK',
     originEn: 'EU Logistics / Finning UK',
     category: 'cab',
-    image: '/parts/cronstain.jpeg',
+    image: IMG.catDoorBracket,
     popularOems: ['281-1199', '281-1200', '281-6262', '281-6263'],
   },
   {
@@ -420,8 +462,20 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK',
     originEn: 'EU Logistics / Finning UK',
     category: 'cab',
-    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
+    image: IMG.catDoorLockHandle,
     popularOems: ['280-7548', '280-7544', '132-7625', '277-6030'],
+  },
+  {
+    id: 'sub-cab-cat-latch',
+    nameUk: 'Засувка дверей кабіни CAT з тягою (Door Latch & Rod)',
+    nameEn: 'CAT Cab Door Latch with Linkage Rod',
+    oem: '277-6031',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Дистрибуція ЄС / Finning UK',
+    originEn: 'EU Logistics / Finning UK',
+    category: 'cab',
+    image: IMG.catDoorLatch,
+    popularOems: ['277-6031', '281-3650', '196-1441', '5C-2890'],
   },
   {
     id: 'sub-cab-accuboom',
@@ -432,8 +486,20 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Базілдон, Велика Британія',
     originEn: 'Basildon, UK',
     category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp',
+    image: IMG.caseAccuboom,
     popularOems: ['87643472', '47773024', '83994207', '82011854'],
+  },
+  {
+    id: 'sub-cab-sanden',
+    nameUk: 'Компресор кондиціонера Sanden Case Stackcruiser',
+    nameEn: 'Case Stackcruiser Sanden AC Compressor',
+    oem: '47773024',
+    brand: 'CASE IH / SANDEN',
+    originUk: 'Дистрибуція ЄС / UK Depot',
+    originEn: 'EU Logistics / UK Depot',
+    category: 'cab',
+    image: IMG.sandenCompressor,
+    popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
 
   // --- PALL CORPORATION ---
@@ -482,7 +548,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall',
-    image: '/parts/Pall.jpeg',
+    image: IMG.pall,
     popularOems: ['HC9600FKN8H', 'HC8314FKN39Z', 'UE319AP20Z', 'HC2216FKS6Z'],
   },
 
@@ -496,7 +562,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Левен, Бельгія',
     originEn: 'Leuven, Belgium',
     category: 'filtration',
-    image: '/parts/Donaldson.jpeg',
+    image: IMG.donaldson,
     popularOems: ['P558000', 'P553004', 'P535114', 'SH60187'],
   },
   {
@@ -532,7 +598,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'filtration',
-    image: '/parts/Pall.jpeg',
+    image: IMG.pall,
     popularOems: ['HC9600FKN8H', 'HC8314FKN39Z', 'UE319AP20Z', 'HC2216FKS6Z'],
   },
 
@@ -546,7 +612,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пітерборо, Велика Британія',
     originEn: 'Peterborough, UK',
     category: 'engines',
-    image: '/parts/Perkins.jpg',
+    image: IMG.perkins,
     popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
   },
   {
@@ -596,7 +662,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-Parker.jpg',
+    image: IMG.jcbPump,
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -608,7 +674,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Лор-ам-Майн, Німеччина',
     originEn: 'Lohr am Main, Germany',
     category: 'hydraulics',
-    image: '/parts/Rexroth.jpg',
+    image: IMG.rexroth,
     popularOems: ['A10VSO18DRG', 'A10VSO71DFR1', 'A4VG90EP4D1', 'A2FE107/61W'],
   },
   {
@@ -646,7 +712,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/General-Industrial.jpg',
+    image: IMG.carraroAxle,
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -707,6 +773,40 @@ const CAT_FULL_DOOR_KIT_OEMS = [
   '5C-2890',
 ];
 
+// Безпечне фото: якщо шляху немає або файл не завантажився — показуємо заглушку
+function SafeImage({
+  src,
+  alt,
+  className,
+  placeholderText,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  placeholderText: string;
+}) {
+  const [failed, setFailed] = useState(false);
+
+  if (!src || failed) {
+    return (
+      <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-slate-300">
+        <ImageOff className="w-10 h-10" />
+        <span className="text-[11px] font-semibold text-slate-400">{placeholderText}</span>
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={src}
+      alt={alt}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className={className}
+    />
+  );
+}
+
 export default function BrandsCatalog({
   onSelectOem,
 }: {
@@ -716,6 +816,8 @@ export default function BrandsCatalog({
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [activeTab, setActiveTab] = useState<string>('all');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const placeholderText = isUk ? 'Фото готується' : 'Photo coming soon';
 
   const trackAndSelectOem = (oem: string, brand: string) => {
     try {
@@ -874,17 +976,6 @@ export default function BrandsCatalog({
     activeTab === 'all'
       ? SHOWCASE_FEATURED
       : SUBGROUP_PARTS.filter((p) => p.category === activeTab);
-
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>, originalPath: string) => {
-    const target = e.currentTarget;
-    const currentSrc = target.getAttribute('src') || '';
-
-    if (!currentSrc.startsWith('http') && !currentSrc.startsWith('/app/public/')) {
-      target.src = '/app/public' + originalPath;
-    } else {
-      target.src = '/parts/JCB-Parker.jpg';
-    }
-  };
 
   return (
     <section
@@ -1122,10 +1213,11 @@ export default function BrandsCatalog({
                 >
                   <div>
                     <div className="relative h-44 w-full bg-white rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-100 mb-4">
-                      <img
+                      <SafeImage
+                        key={tractor.image}
                         src={tractor.image}
                         alt={tractor.name}
-                        onError={(e) => handleImageError(e, tractor.image)}
+                        placeholderText={placeholderText}
                         className="max-h-full max-w-full object-contain"
                       />
                       <span className="absolute top-2.5 left-2.5 px-2.5 py-1 rounded-md bg-slate-900/90 text-white text-[10px] font-bold uppercase tracking-wider">
@@ -1236,10 +1328,11 @@ export default function BrandsCatalog({
                     {/* Верхній блок із фото */}
                     <div>
                       <div className="relative h-52 w-full bg-white flex items-center justify-center p-4 border-b border-slate-100 overflow-hidden">
-                        <img
+                        <SafeImage
+                          key={item.image || item.id}
                           src={item.image}
                           alt={isUk ? item.nameUk : item.nameEn}
-                          onError={(e) => handleImageError(e, item.image)}
+                          placeholderText={placeholderText}
                           className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-500"
                         />
 

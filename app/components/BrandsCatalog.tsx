@@ -66,12 +66,12 @@ const IMG = {
   // Техніка / агро
   jcbPump: '/parts/JCB-PArker.jpg', // велика A — саме так файл названий у репо
   caseAccuboom: '/parts/case_international_puma_series.png.webp',
-  carraroAxle: '/parts/carraro-axle.jpg',
-  catCabDoor: '/parts/cat-cab-door.jpg',
+  carraroAxle: '/parts/Gemini_Generated_Image_ichchhichchhichc-4.jpg',
+  catCabDoor: '/parts/Gemini_Generated_Image_ichchhichchhichc.jpg',
   catDoorLatch: '/parts/cat-door-lock.jpg',
-  catDoorBracket: '/parts/cat-door-roller-bracket.jpg',
-  catDoorLockHandle: '/parts/cat-door-lock-handle.jpg',
-  sandenCompressor: '/parts/sanden-compressor.jpg',
+  catDoorBracket: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi.jpg',
+  catDoorLockHandle: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
+  sandenCompressor: '/parts/Gemini_Generated_Image_ichchhichchhichc-3.jpg',
   rexroth: '/parts/Rexroth.jpg',
 
   // Двигуни / фільтрація
@@ -86,13 +86,13 @@ const IMG = {
 
   // Hyundai: спецтехніка
   hyundaiPump: '/parts/hyundai-pump.jpg',
-  hyundaiMainPump: '/parts/hyundai-main-pump.jpg',
-  hyundaiTrackRoller: '/parts/hyundai-track-roller.jpg',
+  hyundaiMainPump: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+  hyundaiTrackRoller: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
   hyundaiSprocket: '/parts/Spocket.jpeg', // так, у репо саме "Spocket"
   hyundaiSealKit: '/parts/Remcomp.jpeg',
 
   // Hyundai: легкові
-  hyundaiEcuKeys: '/parts/hyundai-ecu-keys.jpg',
+  hyundaiEcuKeys: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
   hyundaiEcu: '/parts/hyundai-ecu.jpg',
   mobisLedOptics: '', // TODO: фото LED-оптики
   mandoSuspension: '', // TODO: фото важелів / кульових опор Mando

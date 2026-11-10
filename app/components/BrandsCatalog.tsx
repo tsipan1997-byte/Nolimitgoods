@@ -67,7 +67,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg',
+    image: '/parts/JCB-Parker.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -115,7 +115,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: '/parts/Rexroth.jpg',
+    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
@@ -175,7 +175,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: '/parts/Gemini_Generated_Image_ichchhichch-2.jpg',
     popularOems: ['SR4198', '339702', '349041', 'G8107'],
   },
   {
@@ -399,7 +399,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
     popularOems: ['92101-G6000', '92102-G6000', '92401-D3100', '92101-S1100'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -438,52 +438,52 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
 
   // --- АМОРТИЗАТОРИ ТА ПІДВІСКА (KYB / MONROE) ---
   {
-    id: 'susp-kyb-strut',
-    nameUk: 'Стійки у зборі з пружинами KYB Strut-Plus / Monroe Quick-Strut',
-    nameEn: 'KYB Strut-Plus & Monroe Complete Strut Assemblies',
+    id: 'susp-kyb-strut-right',
+    nameUk: 'Стійка передня права у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
+    nameEn: 'Front Right Complete Strut Assembly (KYB Strut-Plus / Monroe)',
     oem: 'SR4198',
     brand: 'KYB CORPORATION',
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: '/parts/Gemini_Generated_Image_ichchhichch-2.jpg',
     popularOems: ['SR4198', 'SR4458', '172518', '172926'],
   },
   {
-    id: 'susp-kyb-excelg',
-    nameUk: 'Газомасляні амортизатори KYB Excel-G та Gas-a-Just',
-    nameEn: 'KYB Excel-G & Gas-a-Just Gas Shock Absorbers',
+    id: 'susp-kyb-strut-left',
+    nameUk: 'Стійка передня ліва у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
+    nameEn: 'Front Left Complete Strut Assembly (KYB Strut-Plus / Monroe)',
+    oem: 'SR4199',
+    brand: 'KYB CORPORATION',
+    originUk: 'Склади UK та ЄС',
+    originEn: 'UK & EU Hubs',
+    category: 'suspension',
+    image: '/parts/Gemini_Generated_Image_ichchhichch-3.jpg',
+    popularOems: ['SR4199', 'SR4459', '172519', '172927'],
+  },
+  {
+    id: 'susp-kyb-excelg-bare',
+    nameUk: 'Газомасляний амортизатор задній (не в зборі) KYB Excel-G / Gas-a-Just',
+    nameEn: 'KYB Excel-G & Gas-a-Just Rear Bare Shock Absorber',
     oem: '339702',
     brand: 'KYB CORPORATION',
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: '/parts/Gemini_Generated_Image_ichchhichch-4.jpg',
     popularOems: ['339702', '339703', '349041', '554384'],
   },
   {
     id: 'susp-monroe-magnum',
-    nameUk: 'Посилені амортизатори Monroe Magnum та OESpectrum',
+    nameUk: 'Посилені амортизатори шасі Monroe Magnum та OESpectrum',
     nameEn: 'Monroe Magnum Heavy-Duty & OESpectrum Shocks',
     oem: 'G8107',
     brand: 'MONROE TENNECO',
     originUk: 'Сент-Трейден, Бельгія',
     originEn: 'Sint-Truiden, Belgium',
     category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: '/parts/Gemini_Generated_Image_ichchhichch.jpg',
     popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
-  },
-  {
-    id: 'susp-cab-dampers',
-    nameUk: 'Амортизатори підвіски кабіни та сидінь операторів спецтехніки',
-    nameEn: 'Heavy Machinery Cab & Operator Seat Dampers',
-    oem: 'CB0142',
-    brand: 'MONROE / SACHS',
-    originUk: 'Європейський хаб',
-    originEn: 'European Hub',
-    category: 'suspension',
-    image: '/parts/cronstain.jpeg',
-    popularOems: ['CB0142', 'CB0078', '315419', '814903006'],
   },
 
   // --- ФІЛЬТРАЦІЯ ---
@@ -596,7 +596,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'hydraulics',
-    image: '/parts/JCB-PArker.jpg',
+    image: '/parts/JCB-Parker.jpg',
     popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
   },
   {
@@ -682,7 +682,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/ZF.jpeg',
+    image: '/parts/General-Industrial.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -882,7 +882,7 @@ export default function BrandsCatalog({
     if (!currentSrc.startsWith('http') && !currentSrc.startsWith('/app/public/')) {
       target.src = '/app/public' + originalPath;
     } else {
-      target.src = '/parts/JCB-PArker.jpg';
+      target.src = '/parts/JCB-Parker.jpg';
     }
   };
 

@@ -50,7 +50,6 @@ export interface PartShowcaseItem {
     | 'suspension'
     | 'spec-korea'
     | 'cars-korea';
-  /** Порожній рядок = фото ще немає, покажеться заглушка */
   image: string;
   popularOems: string[];
   badgeUk?: string;
@@ -59,46 +58,35 @@ export interface PartShowcaseItem {
 }
 
 // ─────────────────────────────────────────────────────────────
-// ЄДИНЕ МІСЦЕ ДЛЯ ШЛЯХІВ ДО ФОТО (всі файли лежать у /public/parts)
-// Назви файлів чутливі до регістру на Vercel!
+// ШЛЯХИ ДО ФОТО (всі файли лежать у /public/parts)
 // ─────────────────────────────────────────────────────────────
 const IMG = {
-  // Техніка / агро
-  jcbPump: '/parts/JCB-PArker.jpg', // велика A — саме так файл названий у репо
+  jcbPump: '/parts/JCB-PArker.jpg',
   caseAccuboom: '/parts/case_international_puma_series.png.webp',
-  carraroAxle: '/parts/Gemini_Generated_Image_ichchhichchhichc-4.jpg',
-  catCabDoor: '/parts/Gemini_Generated_Image_ichchhichchhichc.jpg',
-  catDoorLatch: '/parts/cat-door-lock.jpg',
-  catDoorBracket: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi.jpg',
-  catDoorLockHandle: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
-  sandenCompressor: '/parts/Gemini_Generated_Image_ichchhichchhichc-3.jpg',
+  carraroAxle: '/parts/Carraro.jpg',
+  catCabDoor: '/parts/images.jpeg',
+  catDoorLock: '/parts/images.jpeg',
+  catDoorBracket: '/parts/cronstain.jpeg',
   rexroth: '/parts/Rexroth.jpg',
-
-  // Двигуни / фільтрація
   perkins: '/parts/Perkins.jpg',
   donaldson: '/parts/Donaldson.jpeg',
   pall: '/parts/Pall.jpeg',
+  kybStrut: '/parts/SR4198_ANG_3.jpg.webp',
 
-  // Амортизатори
-  kybStrut: '/parts/KYBstrudass.webp',
-  kybRear: '/parts/kyb-rear-shock.jpg',
-  monroeMagnum: '/parts/monroe-magnum-shock.jpg',
+  // Спецтехніка Корея
+  hyundaiSpecPump: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+  hyundaiSpecRoller: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
+  hyundaiSpecSprocket: '/parts/Spocket.jpeg',
+  hyundaiSpecSeals: '/parts/Remcomp.jpeg',
 
-  // Hyundai: спецтехніка
-  hyundaiPump: '/parts/hyundai-pump.jpg',
-  hyundaiMainPump: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
-  hyundaiTrackRoller: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
-  hyundaiSprocket: '/parts/Spocket.jpeg', // так, у репо саме "Spocket"
-  hyundaiSealKit: '/parts/Remcomp.jpeg',
-
-  // Hyundai: легкові
-  hyundaiEcuKeys: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
-  hyundaiEcu: '/parts/hyundai-ecu.jpg',
-  mobisLedOptics: '', // TODO: фото LED-оптики
-  mandoSuspension: '', // TODO: фото важелів / кульових опор Mando
+  // Легкові Корея (тут використовуємо щойно завантажені сумісні картинки)
+  mobisEcuKeys: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+  mobisLedOptics: '/parts/lights.webp',          // завантажений файл lights.webp
+  mandoSuspension: '/parts/suspension.webp',     // завантажений файл suspension.webp
+  mobisEngine: '/parts/Perkins.jpg',
 } as const;
 
-// 1. ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ (ГОЛОВНА ВІТРИНА)
+// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -157,7 +145,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: IMG.sandenCompressor,
+    image: IMG.rexroth,
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
@@ -229,7 +217,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Ульсан, Південна Корея',
     originEn: 'Ulsan, South Korea',
     category: 'spec-korea',
-    image: IMG.hyundaiPump,
+    image: IMG.hyundaiSpecPump,
     popularOems: ['31N6-10010', '31Q6-10010', 'E181-2002BG', '81EM-10010'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -244,7 +232,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: IMG.hyundaiEcuKeys,
+    image: IMG.mobisEcuKeys,
     popularOems: ['39110-2B010', '95440-G5000', '92101-G6000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -254,180 +242,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
 
 // 2. ДЕТАЛІЗОВАНІ КАРТКИ ПІДГРУП КАТАЛОГУ
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
-  // --- АМОРТИЗАТОРИ ТА ПІДВІСКА (KYB / MONROE) ---
-  {
-    id: 'susp-kyb-strut-right',
-    nameUk: 'Стійка передня права у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
-    nameEn: 'Front Right Complete Strut Assembly (KYB Strut-Plus / Monroe)',
-    oem: 'SR4198',
-    brand: 'KYB CORPORATION',
-    originUk: 'Склади UK та ЄС',
-    originEn: 'UK & EU Hubs',
-    category: 'suspension',
-    image: IMG.kybStrut,
-    popularOems: ['SR4198', 'SR4458', '172518', '172926'],
-  },
-  {
-    id: 'susp-kyb-strut-left',
-    nameUk: 'Стійка передня ліва у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
-    nameEn: 'Front Left Complete Strut Assembly (KYB Strut-Plus / Monroe)',
-    oem: 'SR4199',
-    brand: 'KYB CORPORATION',
-    originUk: 'Склади UK та ЄС',
-    originEn: 'UK & EU Hubs',
-    category: 'suspension',
-    image: IMG.kybStrut,
-    popularOems: ['SR4199', 'SR4459', '172519', '172927'],
-  },
-  {
-    id: 'susp-kyb-excelg-bare',
-    nameUk: 'Газомасляний амортизатор задній (не в зборі) KYB Excel-G / Gas-a-Just',
-    nameEn: 'KYB Excel-G & Gas-a-Just Rear Bare Shock Absorber',
-    oem: '339702',
-    brand: 'KYB CORPORATION',
-    originUk: 'Дистрибуція ЄС / UK Hub',
-    originEn: 'EU Logistics / UK Hub',
-    category: 'suspension',
-    image: IMG.kybRear,
-    popularOems: ['339702', '339703', '349041', '554384'],
-  },
-  {
-    id: 'susp-monroe-magnum',
-    nameUk: 'Посилені амортизатори шасі Monroe Magnum та OESpectrum',
-    nameEn: 'Monroe Magnum Heavy-Duty & OESpectrum Shocks',
-    oem: 'G8107',
-    brand: 'MONROE TENNECO',
-    originUk: 'Сент-Трейден, Бельгія',
-    originEn: 'Sint-Truiden, Belgium',
-    category: 'suspension',
-    image: IMG.monroeMagnum,
-    popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
-  },
-
-  // --- СПЕЦТЕХНІКА З КОРЕЇ (HYUNDAI CONSTRUCTION) ---
-  {
-    id: 'korea-spec-pump',
-    nameUk: 'Головний гідравлічний насос Hyundai Robex R210 / R220',
-    nameEn: 'Hyundai Robex Excavator Main Hydraulic Pump',
-    oem: '31N6-10010',
-    brand: 'HYUNDAI HEAVY IND.',
-    originUk: 'Ульсан, Південна Корея',
-    originEn: 'Ulsan, South Korea',
-    category: 'spec-korea',
-    image: IMG.hyundaiMainPump,
-    popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-  {
-    id: 'korea-spec-roller',
-    nameUk: 'Опорний каток ходової частини Hyundai R210 / R220 / R250',
-    nameEn: 'Hyundai Heavy Duty Lower Track Roller',
-    oem: 'E181-2002BG',
-    brand: 'HYUNDAI HEAVY IND.',
-    originUk: 'Ульсан, Південна Корея',
-    originEn: 'Ulsan, South Korea',
-    category: 'spec-korea',
-    image: IMG.hyundaiTrackRoller,
-    popularOems: ['E181-2002BG', '81EM-10030BG', '81EM-10010', '81N6-13010BG'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-  {
-    id: 'korea-spec-sprocket',
-    nameUk: 'Зірочка тягова гусеничного ходу (Sprocket) Hyundai R210',
-    nameEn: 'Hyundai R210 Track Drive Sprocket',
-    oem: '81EM-10010',
-    brand: 'HYUNDAI HEAVY IND.',
-    originUk: 'Ульсан, Південна Корея',
-    originEn: 'Ulsan, South Korea',
-    category: 'spec-korea',
-    image: IMG.hyundaiSprocket,
-    popularOems: ['81EM-10010', '81EM-10013BG', '81N6-23600', '81N6-13010BG'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-  {
-    id: 'korea-spec-seals',
-    nameUk: 'Ремкомплект гідроциліндрів стріли та ковша Hyundai Robex',
-    nameEn: 'Hyundai Robex Boom & Bucket Cylinder Seal Kit',
-    oem: '31Y1-15705',
-    brand: 'HYUNDAI HEAVY IND.',
-    originUk: 'Ульсан, Південна Корея',
-    originEn: 'Ulsan, South Korea',
-    category: 'spec-korea',
-    image: IMG.hyundaiSealKit,
-    popularOems: ['31Y1-15705', '31Y1-15885', '31Q6-01280', 'E131-0212A'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-
-  // --- ЛЕГКОВІ АВТО З КОРЕЇ (HYUNDAI / KIA / GENESIS MOBIS) ---
-  {
-    id: 'korea-car-ecu',
-    nameUk: 'Електронні блоки управління двигуном (ECU) та смарт-ключі Mobis',
-    nameEn: 'Hyundai / Kia Genuine ECU Modules & Smart Keys',
-    oem: '39110-2B010',
-    brand: 'HYUNDAI MOBIS GENUINE',
-    originUk: 'Сеул, Південна Корея',
-    originEn: 'Seoul, South Korea',
-    category: 'cars-korea',
-    image: IMG.hyundaiEcu,
-    popularOems: ['39110-2B010', '95440-G5000', '95440-D4000', '39101-2E150'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-  {
-    id: 'korea-car-optics',
-    nameUk: 'Оригінальна передня LED-оптика та блоки Hyundai / Kia / Genesis',
-    nameEn: 'Genuine LED Modules & Optics Hyundai / Kia',
-    oem: '92101-G6000',
-    brand: 'HYUNDAI MOBIS GENUINE',
-    originUk: 'Сеул, Південна Корея',
-    originEn: 'Seoul, South Korea',
-    category: 'cars-korea',
-    image: IMG.mobisLedOptics,
-    popularOems: ['92101-G6000', '92102-G6000', '92401-D3100', '92101-S1100'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-  {
-    id: 'korea-car-suspension',
-    nameUk: 'Важелі підвіски, кульові опори та маточини Mando / CTR / Mobis',
-    nameEn: 'Control Arms, Ball Joints & Wheel Hubs Mando / CTR',
-    oem: '54500-C1000',
-    brand: 'MOBIS / MANDO / CTR',
-    originUk: 'Пхьонтхек, Південна Корея',
-    originEn: 'Pyeongtaek, South Korea',
-    category: 'cars-korea',
-    image: IMG.mandoSuspension,
-    popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-  {
-    id: 'korea-car-engine',
-    nameUk: 'Комплекти ГРМ, фазорегулятори CVVT та паливні форсунки GDI/CRDi',
-    nameEn: 'Timing Chain Kits, CVVT Gears & GDI/CRDi Injectors',
-    oem: '24321-2E010',
-    brand: 'HYUNDAI MOBIS GENUINE',
-    originUk: 'Сеул, Південна Корея',
-    originEn: 'Seoul, South Korea',
-    category: 'cars-korea',
-    image: IMG.perkins, // тимчасово: фото форсунок, поки немає окремого для GDI/ГРМ
-    popularOems: ['24321-2E010', '24350-2E011', '24370-2E010', '35310-2E500'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-
   // --- КУЗОВ ТА КАБІНА (CAT CAB & CASE) ---
   {
     id: 'sub-cab-cat-door',
@@ -462,20 +276,8 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / Finning UK',
     originEn: 'EU Logistics / Finning UK',
     category: 'cab',
-    image: IMG.catDoorLockHandle,
+    image: IMG.catDoorLock,
     popularOems: ['280-7548', '280-7544', '132-7625', '277-6030'],
-  },
-  {
-    id: 'sub-cab-cat-latch',
-    nameUk: 'Засувка дверей кабіни CAT з тягою (Door Latch & Rod)',
-    nameEn: 'CAT Cab Door Latch with Linkage Rod',
-    oem: '277-6031',
-    brand: 'CATERPILLAR OEM',
-    originUk: 'Дистрибуція ЄС / Finning UK',
-    originEn: 'EU Logistics / Finning UK',
-    category: 'cab',
-    image: IMG.catDoorLatch,
-    popularOems: ['277-6031', '281-3650', '196-1441', '5C-2890'],
   },
   {
     id: 'sub-cab-accuboom',
@@ -488,18 +290,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     category: 'cab',
     image: IMG.caseAccuboom,
     popularOems: ['87643472', '47773024', '83994207', '82011854'],
-  },
-  {
-    id: 'sub-cab-sanden',
-    nameUk: 'Компресор кондиціонера Sanden Case Stackcruiser',
-    nameEn: 'Case Stackcruiser Sanden AC Compressor',
-    oem: '47773024',
-    brand: 'CASE IH / SANDEN',
-    originUk: 'Дистрибуція ЄС / UK Depot',
-    originEn: 'EU Logistics / UK Depot',
-    category: 'cab',
-    image: IMG.sandenCompressor,
-    popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
 
   // --- PALL CORPORATION ---
@@ -549,7 +339,181 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Portsmouth, UK',
     category: 'pall',
     image: IMG.pall,
-    popularOems: ['HC9600FKN8H', 'HC8314FKN39Z', 'UE319AP20Z', 'HC2216FKS6Z'],
+    popularOems: ['HC9600FKN8H', 'HC2216FKS6Z', 'UE319AP20Z', 'HC9020FKP8Z'],
+  },
+
+  // --- СПЕЦТЕХНІКА З КОРЕЇ (HYUNDAI CONSTRUCTION) ---
+  {
+    id: 'korea-spec-pump',
+    nameUk: 'Головний гідравлічний насос Hyundai Robex R210 / R220',
+    nameEn: 'Hyundai Robex Excavator Main Hydraulic Pump',
+    oem: '31N6-10010',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: IMG.hyundaiSpecPump,
+    popularOems: ['31N6-10010', '31Q6-10010', '31E30018', 'E131-0212A'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+  {
+    id: 'korea-spec-roller',
+    nameUk: 'Опорний каток ходової частини Hyundai R210 / R220 / R250',
+    nameEn: 'Hyundai Heavy Duty Lower Track Roller',
+    oem: 'E181-2002BG',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: IMG.hyundaiSpecRoller,
+    popularOems: ['E181-2002BG', '81EM-10030BG', '81EM-10010', '81N6-13010BG'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+  {
+    id: 'korea-spec-sprocket',
+    nameUk: 'Зірочка тягова гусеничного ходу (Sprocket) Hyundai R210',
+    nameEn: 'Hyundai R210 Track Drive Sprocket',
+    oem: '81EM-10010',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: IMG.hyundaiSpecSprocket,
+    popularOems: ['81EM-10010', '81EM-10013BG', '81N6-23600', '81N6-13010BG'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+  {
+    id: 'korea-spec-seals',
+    nameUk: 'Ремкомплект гідроциліндрів стріли та ковша Hyundai Robex',
+    nameEn: 'Hyundai Robex Boom & Bucket Cylinder Seal Kit',
+    oem: '31Y1-15705',
+    brand: 'HYUNDAI HEAVY IND.',
+    originUk: 'Ульсан, Південна Корея',
+    originEn: 'Ulsan, South Korea',
+    category: 'spec-korea',
+    image: IMG.hyundaiSpecSeals,
+    popularOems: ['31Y1-15705', '31Y1-15885', '31Q6-01280', 'E131-0212A'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+
+  // --- ЛЕГКОВІ АВТО З КОРЕЇ (HYUNDAI / KIA / GENESIS MOBIS) ---
+  {
+    id: 'korea-car-ecu',
+    nameUk: 'Електронні блоки управління двигуном (ECU) та смарт-ключі Mobis',
+    nameEn: 'Hyundai / Kia Genuine ECU Modules & Smart Keys',
+    oem: '39110-2B010',
+    brand: 'HYUNDAI MOBIS GENUINE',
+    originUk: 'Сеул, Південна Корея',
+    originEn: 'Seoul, South Korea',
+    category: 'cars-korea',
+    image: IMG.mobisEcuKeys,
+    popularOems: ['39110-2B010', '95440-G5000', '95440-D4000', '39101-2E150'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+  {
+    id: 'korea-car-optics',
+    nameUk: 'Оригінальна передня LED-оптика та ліхтарі Hyundai / Kia / Genesis',
+    nameEn: 'Genuine LED Headlights & Taillights Hyundai / Kia',
+    oem: '92101-G6000',
+    brand: 'HYUNDAI MOBIS GENUINE',
+    originUk: 'Сеул, Південна Корея',
+    originEn: 'Seoul, South Korea',
+    category: 'cars-korea',
+    image: IMG.mobisLedOptics, // Використовує свіжозавантажене світло / LED оптика
+    popularOems: ['92101-G6000', '92102-G6000', '92401-D3100', '92101-S1100'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+  {
+    id: 'korea-car-suspension',
+    nameUk: 'Важелі підвіски, кульові опори та маточини Mando / CTR / Mobis',
+    nameEn: 'Control Arms, Ball Joints & Wheel Hubs Mando / CTR',
+    oem: '54500-C1000',
+    brand: 'MOBIS / MANDO / CTR',
+    originUk: 'Пхьонтхек, Південна Корея',
+    originEn: 'Pyeongtaek, South Korea',
+    category: 'cars-korea',
+    image: IMG.mandoSuspension, // Використовує свіжозавантажену підвіску Mando/CTR
+    popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+  {
+    id: 'korea-car-engine',
+    nameUk: 'Комплекти ГРМ, фазорегулятори CVVT та паливні форсунки GDI/CRDi',
+    nameEn: 'Timing Chain Kits, CVVT Gears & GDI/CRDi Injectors',
+    oem: '24321-2E010',
+    brand: 'HYUNDAI MOBIS GENUINE',
+    originUk: 'Сеул, Південна Корея',
+    originEn: 'Seoul, South Korea',
+    category: 'cars-korea',
+    image: IMG.mobisEngine,
+    popularOems: ['24321-2E010', '24350-2E011', '24370-2E010', '35310-2E500'],
+    badgeUk: 'Південна Корея',
+    badgeEn: 'South Korea',
+    isKoreaHub: true,
+  },
+
+  // --- АМОРТИЗАТОРИ ТА ПІДВІСКА (KYB / MONROE) ---
+  {
+    id: 'susp-kyb-strut',
+    nameUk: 'Стійки у зборі з пружинами KYB Strut-Plus / Monroe Quick-Strut',
+    nameEn: 'KYB Strut-Plus & Monroe Complete Strut Assemblies',
+    oem: 'SR4198',
+    brand: 'KYB CORPORATION',
+    originUk: 'Склади UK та ЄС',
+    originEn: 'UK & EU Hubs',
+    category: 'suspension',
+    image: IMG.kybStrut,
+    popularOems: ['SR4198', 'SR4458', '172518', '172926'],
+  },
+  {
+    id: 'susp-kyb-excelg',
+    nameUk: 'Газомасляні амортизатори KYB Excel-G та Gas-a-Just',
+    nameEn: 'KYB Excel-G & Gas-a-Just Gas Shock Absorbers',
+    oem: '339702',
+    brand: 'KYB CORPORATION',
+    originUk: 'Дистрибуція ЄС / UK Hub',
+    originEn: 'EU Logistics / UK Hub',
+    category: 'suspension',
+    image: IMG.kybStrut,
+    popularOems: ['339702', '339703', '349041', '554384'],
+  },
+  {
+    id: 'susp-monroe-magnum',
+    nameUk: 'Посилені амортизатори Monroe Magnum та OESpectrum',
+    nameEn: 'Monroe Magnum Heavy-Duty & OESpectrum Shocks',
+    oem: 'G8107',
+    brand: 'MONROE TENNECO',
+    originUk: 'Сент-Трейден, Бельгія',
+    originEn: 'Sint-Truiden, Belgium',
+    category: 'suspension',
+    image: IMG.kybStrut,
+    popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
+  },
+  {
+    id: 'susp-cab-dampers',
+    nameUk: 'Амортизатори підвіски кабіни та сидінь операторів спецтехніки',
+    nameEn: 'Heavy Machinery Cab & Operator Seat Dampers',
+    oem: 'CB0142',
+    brand: 'MONROE / SACHS',
+    originUk: 'Європейський хаб',
+    originEn: 'European Hub',
+    category: 'suspension',
+    image: IMG.catDoorBracket,
+    popularOems: ['CB0142', 'CB0078', '315419', '814903006'],
   },
 
   // --- ФІЛЬТРАЦІЯ ---
@@ -586,7 +550,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Людвігсбург, Німеччина',
     originEn: 'Ludwigsburg, Germany',
     category: 'filtration',
-    image: '/parts/Mann-Filter.jpeg',
+    image: '/parts/Mann+Hummel.jpeg',
     popularOems: ['C23610', 'W950/26', 'WD13145', 'CF1200'],
   },
   {
@@ -748,7 +712,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: IMG.jcbPump,
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -773,7 +737,7 @@ const CAT_FULL_DOOR_KIT_OEMS = [
   '5C-2890',
 ];
 
-// Безпечне фото: якщо шляху немає або файл не завантажився — показуємо заглушку
+// Безпечний компонент картинок із фолбеком на заглушку
 function SafeImage({
   src,
   alt,
@@ -844,7 +808,7 @@ export default function BrandsCatalog({
     trackAndSelectOem(oem, brand);
   };
 
-  // 6 брендів тракторів
+  // 6 ключових брендів тракторів
   const tractorCards = [
     {
       id: 'case-ih',
@@ -914,7 +878,7 @@ export default function BrandsCatalog({
     },
   ];
 
-  // Системні групи агротехніки
+  // Групи систем для блоку Агротехніки
   const tractorSystemGroups = [
     {
       titleUk: 'Кабіна, електроніка та клімат',
@@ -1137,7 +1101,7 @@ export default function BrandsCatalog({
           </div>
         )}
 
-        {/* СПЕЦІАЛЬНИЙ БЛОК: СПЕЦТЕХНІКА З КОРЕЇ (HYUNDAI ROBEX / DOOSAN) */}
+        {/* СПЕЦІАЛЬНИЙ БЛОК: СПЕЦТЕХНІКА З КОРЕЇ */}
         {activeTab === 'spec-korea' && (
           <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl border border-blue-800/50">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -1169,7 +1133,7 @@ export default function BrandsCatalog({
           </div>
         )}
 
-        {/* СПЕЦІАЛЬНИЙ БЛОК: ЛЕГКОВІ АВТО З КОРЕЇ (HYUNDAI / KIA / GENESIS MOBIS) */}
+        {/* СПЕЦІАЛЬНИЙ БЛОК: ЛЕГКОВІ АВТО З КОРЕЇ */}
         {activeTab === 'cars-korea' && (
           <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-8 shadow-xl border border-indigo-800/50">
             <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -1214,7 +1178,6 @@ export default function BrandsCatalog({
                   <div>
                     <div className="relative h-44 w-full bg-white rounded-xl overflow-hidden flex items-center justify-center p-3 border border-slate-100 mb-4">
                       <SafeImage
-                        key={tractor.image}
                         src={tractor.image}
                         alt={tractor.name}
                         placeholderText={placeholderText}
@@ -1329,7 +1292,6 @@ export default function BrandsCatalog({
                     <div>
                       <div className="relative h-52 w-full bg-white flex items-center justify-center p-4 border-b border-slate-100 overflow-hidden">
                         <SafeImage
-                          key={item.image || item.id}
                           src={item.image}
                           alt={isUk ? item.nameUk : item.nameEn}
                           placeholderText={placeholderText}

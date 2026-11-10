@@ -21,6 +21,7 @@ import {
   HardHat,
   Disc,
   Cog,
+  KeyRound,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
@@ -56,7 +57,7 @@ export interface PartShowcaseItem {
   isKoreaHub?: boolean;
 }
 
-// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ)
+// 1. ГОЛОВНА ВІТРИНА (ТОП КЛЮЧОВИХ ПОЗИЦІЙ)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -79,7 +80,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp',
+    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
     popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
@@ -91,7 +92,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/General-Industrial.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -105,18 +106,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     category: 'cab',
     image: '/parts/images.jpeg',
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
-  },
-  {
-    id: 'cab-case-compressor',
-    nameUk: 'Компресор кондиціонера Sanden Case Stackcruiser',
-    nameEn: 'Case Stackcruiser Sanden AC Compressor',
-    oem: '47773024',
-    brand: 'CASE IH / SANDEN',
-    originUk: 'Дистрибуція ЄС / UK Depot',
-    originEn: 'EU Logistics / UK Depot',
-    category: 'cab',
-    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
-    popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
     id: 'rexroth-pump',
@@ -175,7 +164,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichch-2.jpg',
+    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-2.jpg',
     popularOems: ['SR4198', '339702', '349041', 'G8107'],
   },
   {
@@ -212,106 +201,6 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
 
 // 2. ДЕТАЛІЗОВАНІ КАРТКИ ПІДГРУП КАТАЛОГУ
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
-  // --- КУЗОВ ТА КАБІНА (CAT CAB & CASE) ---
-  {
-    id: 'sub-cab-cat-door',
-    nameUk: 'Двері кабіни оператора CAT у зборі (Operator Cab Door)',
-    nameEn: 'CAT Operator Cab Door Complete Assembly',
-    oem: '281-1196',
-    brand: 'CATERPILLAR OEM',
-    originUk: 'Дистрибуція ЄС / Finning UK',
-    originEn: 'EU Logistics / Finning UK',
-    category: 'cab',
-    image: '/parts/images.jpeg',
-    popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
-  },
-  {
-    id: 'sub-cab-cat-bracket',
-    nameUk: 'Центральний роликовий кронштейн дверей CAT (281-1199)',
-    nameEn: 'CAT Door Center Roller Bracket Assembly',
-    oem: '281-1199',
-    brand: 'CATERPILLAR OEM',
-    originUk: 'Дистрибуція ЄС / Finning UK',
-    originEn: 'EU Logistics / Finning UK',
-    category: 'cab',
-    image: '/parts/cronstain.jpeg',
-    popularOems: ['281-1199', '281-1200', '281-6262', '281-6263'],
-  },
-  {
-    id: 'sub-cab-cat-lock',
-    nameUk: 'Центральний замок, ручка та фіксатор вікна кабіни CAT',
-    nameEn: 'CAT Cabin Door Lock, Handle & Window Latch',
-    oem: '280-7548',
-    brand: 'CATERPILLAR OEM',
-    originUk: 'Дистрибуція ЄС / Finning UK',
-    originEn: 'EU Logistics / Finning UK',
-    category: 'cab',
-    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
-    popularOems: ['280-7548', '280-7544', '132-7625', '277-6030'],
-  },
-  {
-    id: 'sub-cab-accuboom',
-    nameUk: 'Блок контролю обприскувача Case IH AccuBoom та компресор Sanden',
-    nameEn: 'Case IH AccuBoom Controller & Sanden AC Unit',
-    oem: '87643472',
-    brand: 'CASE IH / CNH',
-    originUk: 'Базілдон, Велика Британія',
-    originEn: 'Basildon, UK',
-    category: 'cab',
-    image: '/parts/case_international_puma_series.png.webp',
-    popularOems: ['87643472', '47773024', '83994207', '82011854'],
-  },
-
-  // --- PALL CORPORATION (СПЕЦРОЗДІЛ) ---
-  {
-    id: 'pall-aerospace',
-    nameUk: 'Pall Aerospace: Фільтрація гідросистем авіації та гелікоптерів',
-    nameEn: 'Pall Aerospace: Aviation & Helicopter Hydraulic Filtration',
-    oem: 'QA08982',
-    brand: 'PALL AEROSPACE UK',
-    originUk: 'Портсмут, Велика Британія',
-    originEn: 'Portsmouth, UK',
-    category: 'pall',
-    image: '/parts/helicopter.webp',
-    popularOems: ['QA08982', 'AC7900FKN8H', 'MC7400SKZ4H', 'AE4520Z'],
-  },
-  {
-    id: 'pall-oilgas',
-    nameUk: 'Pall Oil & Gas: Високобарічні коалесцери та газові сепаратори',
-    nameEn: 'Pall Oil & Gas: High-Pressure Coalescers & Separators',
-    oem: 'HC8314FKN39Z',
-    brand: 'PALL INDUSTRIAL',
-    originUk: 'Портсмут, Велика Британія',
-    originEn: 'Portsmouth, UK',
-    category: 'pall',
-    image: '/parts/oil-gas-case-study-15.webp',
-    popularOems: ['HC8314FKN39Z', 'CS604LGH13', 'UE619AT40Z', 'HC8904FKS16Z'],
-  },
-  {
-    id: 'pall-membralox',
-    nameUk: 'Pall Membralox: Керамічні мембранні модулі промислової очистки',
-    nameEn: 'Pall Membralox: Ceramic Membrane Filtration Modules',
-    oem: 'EP1940GL0.2A',
-    brand: 'PALL MEMBRALOX',
-    originUk: 'Дистрибуція ЄС / UK Hub',
-    originEn: 'EU Logistics / UK Hub',
-    category: 'pall',
-    image: '/parts/membralox-gpic-image.webp',
-    popularOems: ['EP1940GL0.2A', 'T1-70-MEM', 'P19-60-GL', 'S37-40-0.8'],
-  },
-  {
-    id: 'pall-hydraulics',
-    nameUk: 'Pall Ultipor / Coralon: Картриджі гідравліки високого тиску',
-    nameEn: 'Pall Ultipor & Coralon: Heavy Duty Hydraulic Cartridges',
-    oem: 'HC9600FKN8H',
-    brand: 'PALL CORPORATION',
-    originUk: 'Портсмут, Велика Британія',
-    originEn: 'Portsmouth, UK',
-    category: 'pall',
-    image: '/parts/Pall.jpeg',
-    popularOems: ['HC9600FKN8H', 'HC2216FKS6Z', 'UE319AP20Z', 'HC9020FKP8Z'],
-  },
-
   // --- СПЕЦТЕХНІКА З КОРЕЇ (HYUNDAI CONSTRUCTION) ---
   {
     id: 'korea-spec-pump',
@@ -446,7 +335,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichch-2.jpg',
+    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-2.jpg',
     popularOems: ['SR4198', 'SR4458', '172518', '172926'],
   },
   {
@@ -458,7 +347,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichch-3.jpg',
+    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-3.jpg',
     popularOems: ['SR4199', 'SR4459', '172519', '172927'],
   },
   {
@@ -470,7 +359,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichch-4.jpg',
+    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-4.jpg',
     popularOems: ['339702', '339703', '349041', '554384'],
   },
   {
@@ -482,8 +371,108 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сент-Трейден, Бельгія',
     originEn: 'Sint-Truiden, Belgium',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichch.jpg',
+    image: '/parts/Gemini_Generated_Image_ichchhichchhichc.jpg',
     popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
+  },
+
+  // --- КУЗОВ ТА КАБІНА (CAT CAB & CASE) ---
+  {
+    id: 'sub-cab-cat-door',
+    nameUk: 'Двері кабіни оператора CAT у зборі (Operator Cab Door)',
+    nameEn: 'CAT Operator Cab Door Complete Assembly',
+    oem: '281-1196',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Дистрибуція ЄС / Finning UK',
+    originEn: 'EU Logistics / Finning UK',
+    category: 'cab',
+    image: '/parts/images.jpeg',
+    popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
+  },
+  {
+    id: 'sub-cab-cat-bracket',
+    nameUk: 'Центральний роликовий кронштейн дверей CAT (281-1199)',
+    nameEn: 'CAT Door Center Roller Bracket Assembly',
+    oem: '281-1199',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Дистрибуція ЄС / Finning UK',
+    originEn: 'EU Logistics / Finning UK',
+    category: 'cab',
+    image: '/parts/cronstain.jpeg',
+    popularOems: ['281-1199', '281-1200', '281-6262', '281-6263'],
+  },
+  {
+    id: 'sub-cab-cat-lock',
+    nameUk: 'Центральний замок, ручка та фіксатор вікна кабіни CAT',
+    nameEn: 'CAT Cabin Door Lock, Handle & Window Latch',
+    oem: '280-7548',
+    brand: 'CATERPILLAR OEM',
+    originUk: 'Дистрибуція ЄС / Finning UK',
+    originEn: 'EU Logistics / Finning UK',
+    category: 'cab',
+    image: '/parts/Gemini_Generated_Image_i8pfhi8pfhi8pfhi-2.jpg',
+    popularOems: ['280-7548', '280-7544', '132-7625', '277-6030'],
+  },
+  {
+    id: 'sub-cab-accuboom',
+    nameUk: 'Блок контролю обприскувача Case IH AccuBoom та компресор Sanden',
+    nameEn: 'Case IH AccuBoom Controller & Sanden AC Unit',
+    oem: '87643472',
+    brand: 'CASE IH / CNH',
+    originUk: 'Базілдон, Велика Британія',
+    originEn: 'Basildon, UK',
+    category: 'cab',
+    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
+    popularOems: ['87643472', '47773024', '83994207', '82011854'],
+  },
+
+  // --- PALL CORPORATION ---
+  {
+    id: 'pall-aerospace',
+    nameUk: 'Pall Aerospace: Фільтрація гідросистем авіації та гелікоптерів',
+    nameEn: 'Pall Aerospace: Aviation & Helicopter Hydraulic Filtration',
+    oem: 'QA08982',
+    brand: 'PALL AEROSPACE UK',
+    originUk: 'Портсмут, Велика Британія',
+    originEn: 'Portsmouth, UK',
+    category: 'pall',
+    image: '/parts/helicopter.webp',
+    popularOems: ['QA08982', 'AC7900FKN8H', 'MC7400SKZ4H', 'AE4520Z'],
+  },
+  {
+    id: 'pall-oilgas',
+    nameUk: 'Pall Oil & Gas: Високобарічні коалесцери та газові сепаратори',
+    nameEn: 'Pall Oil & Gas: High-Pressure Coalescers & Separators',
+    oem: 'HC8314FKN39Z',
+    brand: 'PALL INDUSTRIAL',
+    originUk: 'Портсмут, Велика Британія',
+    originEn: 'Portsmouth, UK',
+    category: 'pall',
+    image: '/parts/oil-gas-case-study-15.webp',
+    popularOems: ['HC8314FKN39Z', 'CS604LGH13', 'UE619AT40Z', 'HC8904FKS16Z'],
+  },
+  {
+    id: 'pall-membralox',
+    nameUk: 'Pall Membralox: Керамічні мембранні модулі промислової очистки',
+    nameEn: 'Pall Membralox: Ceramic Membrane Filtration Modules',
+    oem: 'EP1940GL0.2A',
+    brand: 'PALL MEMBRALOX',
+    originUk: 'Дистрибуція ЄС / UK Hub',
+    originEn: 'EU Logistics / UK Hub',
+    category: 'pall',
+    image: '/parts/membralox-gpic-image.webp',
+    popularOems: ['EP1940GL0.2A', 'T1-70-MEM', 'P19-60-GL', 'S37-40-0.8'],
+  },
+  {
+    id: 'pall-hydraulics',
+    nameUk: 'Pall Ultipor / Coralon: Картриджі гідравліки високого тиску',
+    nameEn: 'Pall Ultipor & Coralon: Heavy Duty Hydraulic Cartridges',
+    oem: 'HC9600FKN8H',
+    brand: 'PALL CORPORATION',
+    originUk: 'Портсмут, Велика Британія',
+    originEn: 'Portsmouth, UK',
+    category: 'pall',
+    image: '/parts/Pall.jpeg',
+    popularOems: ['HC9600FKN8H', 'HC2216FKS6Z', 'UE319AP20Z', 'HC9020FKP8Z'],
   },
 
   // --- ФІЛЬТРАЦІЯ ---
@@ -646,7 +635,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/General-Industrial.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -682,7 +671,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/General-Industrial.jpg',
+    image: '/parts/Carraro.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -857,7 +846,7 @@ export default function BrandsCatalog({
   ];
 
   const mainTabs = [
-    { id: 'all', labelUk: 'Всі ключові вузли (Топ-12)', labelEn: 'All Key Assemblies (Top 12)', icon: Layers },
+    { id: 'all', labelUk: 'Всі ключові вузли (Топ-11)', labelEn: 'All Key Assemblies (Top 11)', icon: Layers },
     { id: 'tractors', labelUk: 'Трактори та Агро (6 марок)', labelEn: 'Tractors & Agri (6 Brands)', icon: Tractor },
     { id: 'pall', labelUk: 'Pall Corporation (Авіа / Нафта)', labelEn: 'Pall Corporation (Aero / Oil)', icon: Plane },
     { id: 'spec-korea', labelUk: 'Спецтехніка з Кореї (Hyundai)', labelEn: 'Korea Heavy Equipment (Hyundai)', icon: HardHat },

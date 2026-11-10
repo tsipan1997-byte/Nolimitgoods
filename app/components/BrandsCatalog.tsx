@@ -21,7 +21,6 @@ import {
   HardHat,
   Disc,
   Cog,
-  KeyRound,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
@@ -57,7 +56,7 @@ export interface PartShowcaseItem {
   isKoreaHub?: boolean;
 }
 
-// 1. ГОЛОВНА ВІТРИНА (ТОП КЛЮЧОВИХ ПОЗИЦІЙ)
+// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -80,7 +79,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'cab',
-    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
   },
   {
@@ -92,7 +91,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/General-Industrial.jpg',
+    image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -106,6 +105,18 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     category: 'cab',
     image: '/parts/images.jpeg',
     popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
+  },
+  {
+    id: 'cab-case-compressor',
+    nameUk: 'Компресор кондиціонера Sanden Case Stackcruiser',
+    nameEn: 'Case Stackcruiser Sanden AC Compressor',
+    oem: '47773024',
+    brand: 'CASE IH / SANDEN',
+    originUk: 'Дистрибуція ЄС / UK Depot',
+    originEn: 'EU Logistics / UK Depot',
+    category: 'cab',
+    image: '/parts/Danfoss.jpg',
+    popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
     id: 'rexroth-pump',
@@ -164,7 +175,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-2.jpg',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
     popularOems: ['SR4198', '339702', '349041', 'G8107'],
   },
   {
@@ -201,6 +212,56 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
 
 // 2. ДЕТАЛІЗОВАНІ КАРТКИ ПІДГРУП КАТАЛОГУ
 const SUBGROUP_PARTS: PartShowcaseItem[] = [
+  // --- АМОРТИЗАТОРИ ТА ПІДВІСКА (KYB / MONROE) ---
+  {
+    id: 'susp-kyb-strut-right',
+    nameUk: 'Стійка передня права у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
+    nameEn: 'Front Right Complete Strut Assembly (KYB Strut-Plus / Monroe)',
+    oem: 'SR4198',
+    brand: 'KYB CORPORATION',
+    originUk: 'Склади UK та ЄС',
+    originEn: 'UK & EU Hubs',
+    category: 'suspension',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
+    popularOems: ['SR4198', 'SR4458', '172518', '172926'],
+  },
+  {
+    id: 'susp-kyb-strut-left',
+    nameUk: 'Стійка передня ліва у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
+    nameEn: 'Front Left Complete Strut Assembly (KYB Strut-Plus / Monroe)',
+    oem: 'SR4199',
+    brand: 'KYB CORPORATION',
+    originUk: 'Склади UK та ЄС',
+    originEn: 'UK & EU Hubs',
+    category: 'suspension',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
+    popularOems: ['SR4199', 'SR4459', '172519', '172927'],
+  },
+  {
+    id: 'susp-kyb-excelg-bare',
+    nameUk: 'Газомасляний амортизатор задній (не в зборі) KYB Excel-G / Gas-a-Just',
+    nameEn: 'KYB Excel-G & Gas-a-Just Rear Bare Shock Absorber',
+    oem: '339702',
+    brand: 'KYB CORPORATION',
+    originUk: 'Дистрибуція ЄС / UK Hub',
+    originEn: 'EU Logistics / UK Hub',
+    category: 'suspension',
+    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-3.jpg',
+    popularOems: ['339702', '339703', '349041', '554384'],
+  },
+  {
+    id: 'susp-monroe-magnum',
+    nameUk: 'Посилені амортизатори шасі Monroe Magnum та OESpectrum',
+    nameEn: 'Monroe Magnum Heavy-Duty & OESpectrum Shocks',
+    oem: 'G8107',
+    brand: 'MONROE TENNECO',
+    originUk: 'Сент-Трейден, Бельгія',
+    originEn: 'Sint-Truiden, Belgium',
+    category: 'suspension',
+    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-4.jpg',
+    popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
+  },
+
   // --- СПЕЦТЕХНІКА З КОРЕЇ (HYUNDAI CONSTRUCTION) ---
   {
     id: 'korea-spec-pump',
@@ -281,8 +342,8 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
   },
   {
     id: 'korea-car-optics',
-    nameUk: 'Оригінальна передня LED-оптика та ліхтарі Hyundai / Kia / Genesis',
-    nameEn: 'Genuine LED Headlights & Taillights Hyundai / Kia',
+    nameUk: 'Оригінальна передня LED-оптика та блоки Hyundai / Kia / Genesis',
+    nameEn: 'Genuine LED Modules & Optics Hyundai / Kia',
     oem: '92101-G6000',
     brand: 'HYUNDAI MOBIS GENUINE',
     originUk: 'Сеул, Південна Корея',
@@ -303,7 +364,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пхьонтхек, Південна Корея',
     originEn: 'Pyeongtaek, South Korea',
     category: 'cars-korea',
-    image: '/parts/SR4198_ANG_3.jpg.webp',
+    image: '/parts/Carraro.jpg',
     popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -323,56 +384,6 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
     isKoreaHub: true,
-  },
-
-  // --- АМОРТИЗАТОРИ ТА ПІДВІСКА (KYB / MONROE) ---
-  {
-    id: 'susp-kyb-strut-right',
-    nameUk: 'Стійка передня права у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
-    nameEn: 'Front Right Complete Strut Assembly (KYB Strut-Plus / Monroe)',
-    oem: 'SR4198',
-    brand: 'KYB CORPORATION',
-    originUk: 'Склади UK та ЄС',
-    originEn: 'UK & EU Hubs',
-    category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-2.jpg',
-    popularOems: ['SR4198', 'SR4458', '172518', '172926'],
-  },
-  {
-    id: 'susp-kyb-strut-left',
-    nameUk: 'Стійка передня ліва у зборі з пружиною KYB Strut-Plus / Monroe Quick-Strut',
-    nameEn: 'Front Left Complete Strut Assembly (KYB Strut-Plus / Monroe)',
-    oem: 'SR4199',
-    brand: 'KYB CORPORATION',
-    originUk: 'Склади UK та ЄС',
-    originEn: 'UK & EU Hubs',
-    category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-3.jpg',
-    popularOems: ['SR4199', 'SR4459', '172519', '172927'],
-  },
-  {
-    id: 'susp-kyb-excelg-bare',
-    nameUk: 'Газомасляний амортизатор задній (не в зборі) KYB Excel-G / Gas-a-Just',
-    nameEn: 'KYB Excel-G & Gas-a-Just Rear Bare Shock Absorber',
-    oem: '339702',
-    brand: 'KYB CORPORATION',
-    originUk: 'Дистрибуція ЄС / UK Hub',
-    originEn: 'EU Logistics / UK Hub',
-    category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-4.jpg',
-    popularOems: ['339702', '339703', '349041', '554384'],
-  },
-  {
-    id: 'susp-monroe-magnum',
-    nameUk: 'Посилені амортизатори шасі Monroe Magnum та OESpectrum',
-    nameEn: 'Monroe Magnum Heavy-Duty & OESpectrum Shocks',
-    oem: 'G8107',
-    brand: 'MONROE TENNECO',
-    originUk: 'Сент-Трейден, Бельгія',
-    originEn: 'Sint-Truiden, Belgium',
-    category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichchhichc.jpg',
-    popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
   },
 
   // --- КУЗОВ ТА КАБІНА (CAT CAB & CASE) ---
@@ -421,7 +432,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Базілдон, Велика Британія',
     originEn: 'Basildon, UK',
     category: 'cab',
-    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
+    image: '/parts/case_international_puma_series.png.webp',
     popularOems: ['87643472', '47773024', '83994207', '82011854'],
   },
 
@@ -635,7 +646,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/General-Industrial.jpg',
+    image: '/parts/Carraro.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -671,7 +682,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/General-Industrial.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -846,7 +857,7 @@ export default function BrandsCatalog({
   ];
 
   const mainTabs = [
-    { id: 'all', labelUk: 'Всі ключові вузли (Топ-11)', labelEn: 'All Key Assemblies (Top 11)', icon: Layers },
+    { id: 'all', labelUk: 'Всі ключові вузли (Топ-12)', labelEn: 'All Key Assemblies (Top 12)', icon: Layers },
     { id: 'tractors', labelUk: 'Трактори та Агро (6 марок)', labelEn: 'Tractors & Agri (6 Brands)', icon: Tractor },
     { id: 'pall', labelUk: 'Pall Corporation (Авіа / Нафта)', labelEn: 'Pall Corporation (Aero / Oil)', icon: Plane },
     { id: 'spec-korea', labelUk: 'Спецтехніка з Кореї (Hyundai)', labelEn: 'Korea Heavy Equipment (Hyundai)', icon: HardHat },

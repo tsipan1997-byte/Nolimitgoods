@@ -1,141 +1,50 @@
-// 1. ТОП КЛЮЧОВИХ ПОЗИЦІЙ (ГОЛОВНА ВІТРИНА)
-const SHOWCASE_FEATURED: PartShowcaseItem[] = [
-  {
-    id: 'jcb-pump',
-    nameUk: 'Головний гідравлічний насос JCB Parker 3CX/4CX',
-    nameEn: 'JCB Parker Main Hydraulic Gear Pump',
-    oem: '332/Y3163',
-    brand: 'JCB GENUINE / PARKER',
-    originUk: 'Рочестер, Велика Британія',
-    originEn: 'Rocester, UK',
-    category: 'hydraulics',
-    image: '/parts/JCB-Parker.jpg', // точна назва з маленькою "a"
-    popularOems: ['332/Y3163', '20/925327', '333/G5390', '20/925339'],
-  },
-  {
-    id: 'case-accuboom',
-    nameUk: 'Блок управління обприскувача Case AccuBoom Unit',
-    nameEn: 'Case IH AccuBoom Boom Control Unit',
-    oem: '87643472',
-    brand: 'CASE IH / RAVEN',
-    originUk: 'Дистрибуція ЄС / UK Hub',
-    originEn: 'EU Logistics / UK Hub',
-    category: 'cab',
-    image: '/parts/Gemini_Generated_Image_5hp4r05hp4r05hp4.jpg',
-    popularOems: ['87643472', '47773024', '83994207', '3234209R1'],
-  },
-  {
-    id: 'carraro-axle',
-    nameUk: 'Тяжкий передній міст у зборі Carraro Drivetech',
-    nameEn: 'Carraro Heavy Duty Axle Assembly',
-    oem: '149298',
-    brand: 'CARRARO DRIVETECH',
-    originUk: 'Камподарсего, Італія',
-    originEn: 'Campodarsego, Italy',
-    category: 'undercarriage',
-    image: '/parts/General-Industrial.jpg', // реальний важкий міст
-    popularOems: ['149298', '047702', '125196', '140643'],
-  },
-  {
-    id: 'cab-cat-door',
-    nameUk: 'Двері кабіни оператора CAT у зборі (281-1196)',
-    nameEn: 'Operator Cab Door Assembly (CAT)',
-    oem: '281-1196',
-    brand: 'CATERPILLAR OEM',
-    originUk: 'Дистрибуція ЄС / Finning UK Hub',
-    originEn: 'EU Logistics / Finning UK Hub',
-    category: 'cab',
-    image: '/parts/images.jpeg', // двері кабіни CAT
-    popularOems: ['281-1196', '281-1199', '293-3116', '280-7548'],
-  },
-  {
-    id: 'rexroth-pump',
-    nameUk: 'Регульований насос Bosch Rexroth A10VSO',
-    nameEn: 'Bosch Rexroth Axial Piston Pump A10VSO',
-    oem: 'A10VSO18DRG',
-    brand: 'BOSCH REXROTH',
-    originUk: 'Лор-ам-Майн, Німеччина',
-    originEn: 'Lohr am Main, Germany',
-    category: 'hydraulics',
-    image: '/parts/Rexroth.jpg',
-    popularOems: ['A10VSO18DRG', 'A10VSO71DFR', 'A4VG90EP4D1', 'A2FE107/61W'],
-  },
-  {
-    id: 'perkins-cr',
-    nameUk: 'Комплект паливних форсунок Perkins CR',
-    nameEn: 'Perkins Fuel Injector Set Delphi',
-    oem: '2645A747',
-    brand: 'PERKINS ENGINES',
-    originUk: 'Пітерборо, Велика Британія',
-    originEn: 'Peterborough, UK',
-    category: 'engines',
-    image: '/parts/Perkins.jpg',
-    popularOems: ['2645A747', 'U5MK8267', 'T413847', '2641A203'],
-  },
-  {
-    id: 'donaldson-filter',
-    nameUk: 'Фільтр-сепаратор Donaldson Twist&Drain',
-    nameEn: 'Donaldson Twist&Drain Fuel Separator',
-    oem: 'P558000',
-    brand: 'DONALDSON FILTRATION',
-    originUk: 'Левен, Бельгія',
-    originEn: 'Leuven, Belgium',
-    category: 'filtration',
-    image: '/parts/Donaldson.jpeg',
-    popularOems: ['P558000', 'P553004', 'P535114', 'SH60187'],
-  },
-  {
-    id: 'pall-featured',
-    nameUk: 'Фільтроелементи високого тиску Pall Ultipor / Coralon',
-    nameEn: 'Pall High-Pressure Hydraulic Elements',
-    oem: 'HC9600FKN8H',
-    brand: 'PALL CORPORATION',
-    originUk: 'Портсмут, Велика Британія',
-    originEn: 'Portsmouth, UK',
-    category: 'pall',
-    image: '/parts/Pall.jpeg',
-    popularOems: ['HC9600FKN8H', 'HC8314FKN39Z', 'UE319AP20Z', 'HC2216FKS6Z'],
-  },
-  {
-    id: 'kyb-monroe-featured',
-    nameUk: 'Амортизатори та стійки підвіски KYB / Monroe',
-    nameEn: 'KYB & Monroe Heavy-Duty Shock Absorbers',
-    oem: 'SR4198',
-    brand: 'KYB / MONROE',
-    originUk: 'Склади UK та ЄС',
-    originEn: 'UK & EU Hubs',
-    category: 'suspension',
-    image: '/parts/SR4198_ANG_3.jpg.webp', // справжня стійка підвіски
-    popularOems: ['SR4198', '339702', '349041', 'G8107'],
-  },
-  {
-    id: 'korea-spec-featured',
-    nameUk: 'Головний гідравлічний насос Hyundai Robex R210 / R220',
-    nameEn: 'Hyundai Robex Excavator Main Hydraulic Pump',
-    oem: '31N6-10010',
-    brand: 'HYUNDAI HEAVY IND.',
-    originUk: 'Ульсан, Південна Корея',
-    originEn: 'Ulsan, South Korea',
-    category: 'spec-korea',
-    image: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg', // насос спецтехніки
-    popularOems: ['31N6-10010', '31Q6-10010', 'E181-2002BG', '81EM-10010'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-  {
-    id: 'korea-cars-featured',
-    nameUk: 'Електронні блоки ECU, смарт-ключі та оптика Hyundai / Kia Mobis',
-    nameEn: 'Hyundai / Kia Mobis Genuine ECU, Smart Keys & Optics',
-    oem: '39110-2B010',
-    brand: 'HYUNDAI MOBIS GENUINE',
-    originUk: 'Сеул, Південна Корея',
-    originEn: 'Seoul, South Korea',
-    category: 'cars-korea',
-    image: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg', // смарт-ключі та блоки Mobis
-    popularOems: ['39110-2B010', '95440-G5000', '92101-G6000', '54651-C1000'],
-    badgeUk: 'Південна Корея',
-    badgeEn: 'South Korea',
-    isKoreaHub: true,
-  },
-];
+'use client';
+
+import React from 'react';
+import Header from './components/header';
+import HeroSection from './components/hero-section';
+import BrandsCatalog from './components/BrandsCatalog';
+import DeliveriesSection from './components/deliveries-section';
+import ContactSection from './components/contact-section';
+import Footer from './components/footer';
+import FloatingContact from './components/floating-contact';
+
+export default function HomePage() {
+  const handleSelectOem = (oem: string, brand: string) => {
+    const calcSection = document.getElementById('parts-calculator');
+    const input = document.querySelector('input[type="text"]') as HTMLInputElement | null;
+
+    if (calcSection) {
+      calcSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    if (input) {
+      input.value = oem;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      input.focus();
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-red-500 selection:text-white">
+      <Header />
+
+      <div id="parts-calculator">
+        <HeroSection />
+      </div>
+
+      <BrandsCatalog onSelectOem={handleSelectOem} />
+
+      <div id="deliveries">
+        <DeliveriesSection />
+      </div>
+
+      <div id="contacts">
+        <ContactSection />
+      </div>
+
+      <Footer />
+      <FloatingContact />
+    </div>
+  );
+}

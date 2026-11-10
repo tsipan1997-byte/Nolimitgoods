@@ -56,7 +56,7 @@ export interface PartShowcaseItem {
   isKoreaHub?: boolean;
 }
 
-// 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ)
+// 1. ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ (ГОЛОВНА ВІТРИНА)
 const SHOWCASE_FEATURED: PartShowcaseItem[] = [
   {
     id: 'jcb-pump',
@@ -91,7 +91,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/General-Industrial.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -115,7 +115,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: '/parts/Danfoss.jpg',
+    image: '/parts/Rexroth.jpg',
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
@@ -246,7 +246,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-3.jpg',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
     popularOems: ['339702', '339703', '349041', '554384'],
   },
   {
@@ -258,7 +258,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сент-Трейден, Бельгія',
     originEn: 'Sint-Truiden, Belgium',
     category: 'suspension',
-    image: '/parts/Gemini_Generated_Image_ichchhichchhichc-4.jpg',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
     popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
   },
 
@@ -364,7 +364,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пхьонтхек, Південна Корея',
     originEn: 'Pyeongtaek, South Korea',
     category: 'cars-korea',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/SR4198_ANG_3.jpg.webp',
     popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -483,7 +483,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originEn: 'Portsmouth, UK',
     category: 'pall',
     image: '/parts/Pall.jpeg',
-    popularOems: ['HC9600FKN8H', 'HC2216FKS6Z', 'UE319AP20Z', 'HC9020FKP8Z'],
+    popularOems: ['HC9600FKN8H', 'HC8314FKN39Z', 'UE319AP20Z', 'HC2216FKS6Z'],
   },
 
   // --- ФІЛЬТРАЦІЯ ---
@@ -646,7 +646,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Камподарсего, Італія',
     originEn: 'Campodarsego, Italy',
     category: 'undercarriage',
-    image: '/parts/Carraro.jpg',
+    image: '/parts/General-Industrial.jpg',
     popularOems: ['149298', '047702', '125196', '140643'],
   },
   {
@@ -682,7 +682,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: '/parts/General-Industrial.jpg',
+    image: '/parts/Carraro.jpg',
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];

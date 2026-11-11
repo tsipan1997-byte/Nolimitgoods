@@ -59,31 +59,65 @@ export interface PartShowcaseItem {
 
 // ─────────────────────────────────────────────────────────────
 // ШЛЯХИ ДО ФОТО (всі файли лежать у /public/parts)
+// Порожній рядок '' = показується заглушка «Фото готується»
+// (краще заглушка, ніж фото іншої деталі).
+// Символи "+" та пробіли в іменах файлів закодовані (%2B, %20),
+// щоб Vercel коректно знаходив файли без перейменування.
 // ─────────────────────────────────────────────────────────────
 const IMG = {
+  // Гідравліка / мости / кабіна
   jcbPump: '/parts/JCB-PArker.jpg',
-  caseAccuboom: '/parts/case_international_puma_series.png.webp',
+  jcbKnuckle: '', // TODO: фото поворотного кулака / редуктора JCB
+  caseAccuboom: '', // TODO: фото самого блоку AccuBoom (не трактора)
+  sandenCompressor: '', // TODO: фото компресора Sanden
   carraroAxle: '/parts/Carraro.jpg',
   catCabDoor: '/parts/images.jpeg',
-  catDoorLock: '/parts/images.jpeg',
+  catDoorLock: '', // TODO: фото замка / ручки дверей CAT
   catDoorBracket: '/parts/cronstain.jpeg',
+  cabDampers: '', // TODO: фото амортизатора кабіни / сидіння
   rexroth: '/parts/Rexroth.jpg',
   perkins: '/parts/Perkins.jpg',
   donaldson: '/parts/Donaldson.jpeg',
   pall: '/parts/Pall.jpeg',
   kybStrut: '/parts/SR4198_ANG_3.jpg.webp',
 
-  // Спецтехніка Корея
-  hyundaiSpecPump: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+  // Файли з "+" та пробілами в назві
+  mannHummel: '/parts/Mann%2BHummel.jpeg',
+  eatonVickers: '/parts/Eaton%20Vickers.jpeg',
+  danaSpicer: '/parts/Dana%20Spicer.jpeg',
+
+  // Інші бренди
+  fleetguard: '/parts/Fleetguard.jpeg',
+  cat: '/parts/CAT.jpeg',
+  cummins: '/parts/Cummins.jpeg',
+  deutz: '/parts/Deutz.jpeg',
+  danfoss: '/parts/Danfoss.jpg',
+  zf: '/parts/ZF.jpeg',
+
+  // Pall
+  pallAerospace: '/parts/helicopter.webp',
+  pallOilGas: '/parts/oil-gas-case-study-15.webp',
+  pallMembralox: '/parts/membralox-gpic-image.webp',
+
+  // Спецтехніка Корея (файли насоса та ECU були переплутані — виправлено)
+  hyundaiSpecPump: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
   hyundaiSpecRoller: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
   hyundaiSpecSprocket: '/parts/Spocket.jpeg',
   hyundaiSpecSeals: '/parts/Remcomp.jpeg',
 
-  // Легкові Корея (тут використовуємо щойно завантажені сумісні картинки)
-  mobisEcuKeys: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
-  mobisLedOptics: '/parts/lights.webp',          // завантажений файл lights.webp
-  mandoSuspension: '/parts/suspension.webp',     // завантажений файл suspension.webp
-  mobisEngine: '/parts/Perkins.jpg',
+  // Легкові Корея
+  mobisEcuKeys: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+  mobisLedOptics: '/parts/lights.webp',
+  mandoSuspension: '/parts/suspension.webp',
+  mobisEngine: '', // TODO: фото ланцюга ГРМ / CVVT (було фото форсунок Perkins)
+
+  // Трактори
+  tractorCase: '/parts/case_international_puma_series.png.webp',
+  tractorFordNh: '/parts/ford_&_fordson_60_series.png.webp',
+  tractorMf: '/parts/Massey_Ferguson_1_1.png.webp',
+  tractorDeutz: '/parts/deutz_agroplus_series.png.webp',
+  tractorRenault: '/parts/renault_celtis.png.webp',
+  tractorKubota: '/parts/Kubota-M-Series.png.webp',
 } as const;
 
 // 1. ГОЛОВНА ВІТРИНА (ТОП-12 КЛЮЧОВИХ ПОЗИЦІЙ)
@@ -145,7 +179,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Depot',
     originEn: 'EU Logistics / UK Depot',
     category: 'cab',
-    image: IMG.rexroth,
+    image: IMG.sandenCompressor,
     popularOems: ['47773024', '87643472', '83994207', '3234209R1'],
   },
   {
@@ -302,7 +336,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall',
-    image: '/parts/helicopter.webp',
+    image: IMG.pallAerospace,
     popularOems: ['QA08982', 'AC7900FKN8H', 'MC7400SKZ4H', 'AE4520Z'],
   },
   {
@@ -314,7 +348,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Портсмут, Велика Британія',
     originEn: 'Portsmouth, UK',
     category: 'pall',
-    image: '/parts/oil-gas-case-study-15.webp',
+    image: IMG.pallOilGas,
     popularOems: ['HC8314FKN39Z', 'CS604LGH13', 'UE619AT40Z', 'HC8904FKS16Z'],
   },
   {
@@ -326,7 +360,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'pall',
-    image: '/parts/membralox-gpic-image.webp',
+    image: IMG.pallMembralox,
     popularOems: ['EP1940GL0.2A', 'T1-70-MEM', 'P19-60-GL', 'S37-40-0.8'],
   },
   {
@@ -429,7 +463,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сеул, Південна Корея',
     originEn: 'Seoul, South Korea',
     category: 'cars-korea',
-    image: IMG.mobisLedOptics, // Використовує свіжозавантажене світло / LED оптика
+    image: IMG.mobisLedOptics,
     popularOems: ['92101-G6000', '92102-G6000', '92401-D3100', '92101-S1100'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -444,7 +478,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Пхьонтхек, Південна Корея',
     originEn: 'Pyeongtaek, South Korea',
     category: 'cars-korea',
-    image: IMG.mandoSuspension, // Використовує свіжозавантажену підвіску Mando/CTR
+    image: IMG.mandoSuspension,
     popularOems: ['54500-C1000', '54501-C1000', '51750-C1000', '54651-C1000'],
     badgeUk: 'Південна Корея',
     badgeEn: 'South Korea',
@@ -512,7 +546,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Європейський хаб',
     originEn: 'European Hub',
     category: 'suspension',
-    image: IMG.catDoorBracket,
+    image: IMG.cabDampers,
     popularOems: ['CB0142', 'CB0078', '315419', '814903006'],
   },
 
@@ -538,7 +572,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Склади UK та Європи',
     originEn: 'UK & European Hubs',
     category: 'filtration',
-    image: '/parts/Fleetguard.jpeg',
+    image: IMG.fleetguard,
     popularOems: ['FS1280', '3930942', 'FS19732', 'LF16015'],
   },
   {
@@ -550,7 +584,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Людвігсбург, Німеччина',
     originEn: 'Ludwigsburg, Germany',
     category: 'filtration',
-    image: '/parts/Mann+Hummel.jpeg',
+    image: IMG.mannHummel,
     popularOems: ['C23610', 'W950/26', 'WD13145', 'CF1200'],
   },
   {
@@ -588,7 +622,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Finning UK / Євросклад',
     originEn: 'Finning UK / EU Depot',
     category: 'engines',
-    image: '/parts/CAT.jpeg',
+    image: IMG.cat,
     popularOems: ['387-9427', '10R-7675', '326-1644', '224-3238'],
   },
   {
@@ -600,7 +634,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дарлінгтон, Велика Британія',
     originEn: 'Darlington, UK',
     category: 'engines',
-    image: '/parts/Cummins.jpeg',
+    image: IMG.cummins,
     popularOems: ['4937065', '5263307', '4940647', '3973228'],
   },
   {
@@ -612,7 +646,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Кельн, Німеччина',
     originEn: 'Cologne, Germany',
     category: 'engines',
-    image: '/parts/Deutz.jpeg',
+    image: IMG.deutz,
     popularOems: ['04287047', '04284142', '02937441', '04207588'],
   },
 
@@ -650,7 +684,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Норборг, Данія',
     originEn: 'Nordborg, Denmark',
     category: 'hydraulics',
-    image: '/parts/Danfoss.jpg',
+    image: IMG.danfoss,
     popularOems: ['OSPB 160 ON', 'OSPB 200 ON', 'OMT 250', '157B4032'],
   },
   {
@@ -662,7 +696,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Гавант, Велика Британія',
     originEn: 'Havant, UK',
     category: 'hydraulics',
-    image: '/parts/Eaton Vickers.jpeg',
+    image: IMG.eatonVickers,
     popularOems: ['35VQ38A', '25VQ21A', '4535V60A38', '421232'],
   },
 
@@ -688,7 +722,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Фрідріхсгафен, Німеччина',
     originEn: 'Friedrichshafen, Germany',
     category: 'undercarriage',
-    image: '/parts/ZF.jpeg',
+    image: IMG.zf,
     popularOems: ['0501.216.002', '0501.322.845', '4143.040.001', '0734.319.418'],
   },
   {
@@ -700,7 +734,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Монселіче, Італія',
     originEn: 'Monselice, Italy',
     category: 'undercarriage',
-    image: '/parts/Dana Spicer.jpeg',
+    image: IMG.danaSpicer,
     popularOems: ['213.12.012.01', '012.052.02', '212.09.045', '311.08.019'],
   },
   {
@@ -712,7 +746,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Рочестер, Велика Британія',
     originEn: 'Rocester, UK',
     category: 'undercarriage',
-    image: IMG.jcbPump,
+    image: IMG.jcbKnuckle,
     popularOems: ['458/20403', '450/10206', '04/600786', '714/40526'],
   },
 ];
@@ -815,7 +849,7 @@ export default function BrandsCatalog({
       name: 'Case IH / International',
       brand: 'CASE IH',
       defaultOem: '87643472',
-      image: '/parts/case_international_puma_series.png.webp',
+      image: IMG.tractorCase,
       badge: 'Puma, Maxxum, XL',
       descUk: 'Оригінальні блоки електроніки AccuBoom, кондиціонери Sanden, зчеплення та кабіни.',
       descEn: 'AccuBoom control units, Sanden AC compressors, clutches and cab hardware.',
@@ -826,7 +860,7 @@ export default function BrandsCatalog({
       name: 'Ford & New Holland',
       brand: 'NEW HOLLAND',
       defaultOem: '82011854',
-      image: '/parts/ford_&_fordson_60_series.png.webp',
+      image: IMG.tractorFordNh,
       badge: '60 Series, TS, TM, T6',
       descUk: 'Прямі поставки комплектуючих трансмісії, фільтрації та мостів для техніки Ford та New Holland.',
       descEn: 'Transmission, engine and hydraulic components directly from British agri hubs.',
@@ -837,7 +871,7 @@ export default function BrandsCatalog({
       name: 'Massey Ferguson',
       brand: 'MASSEY FERGUSON',
       defaultOem: '41312487',
-      image: '/parts/Massey_Ferguson_1_1.png.webp',
+      image: IMG.tractorMf,
       badge: 'MF 300, 5400, 6400',
       descUk: 'Вузли двигунів Perkins, водяні помпи, паливна апаратура та елементи навіски для тракторів MF.',
       descEn: 'Perkins engine parts, water pumps, fuel systems and linkages for Massey Ferguson.',
@@ -848,7 +882,7 @@ export default function BrandsCatalog({
       name: 'Deutz-Fahr',
       brand: 'DEUTZ-FAHR',
       defaultOem: '04284142',
-      image: '/parts/deutz_agroplus_series.png.webp',
+      image: IMG.tractorDeutz,
       badge: 'Agroplus, Agrotron',
       descUk: 'Оригінальні турбіни Deutz AG, гільзо-поршнева група, ремені та комплекти прокладок.',
       descEn: 'Deutz AG turbochargers, cylinder kits, filters and engine overhaul sets.',
@@ -859,7 +893,7 @@ export default function BrandsCatalog({
       name: 'Renault / CLAAS',
       brand: 'RENAULT / CLAAS',
       defaultOem: '7700034685',
-      image: '/parts/renault_celtis.png.webp',
+      image: IMG.tractorRenault,
       badge: 'Celtis, Ares, Ceres',
       descUk: 'Зчеплення, гальмівні диски, деталі бортових редукторів та гідросистеми з європейських хабів.',
       descEn: 'Heavy duty clutches, brake discs, planetary parts and hydraulics from EU depots.',
@@ -870,7 +904,7 @@ export default function BrandsCatalog({
       name: 'Kubota Agricultural',
       brand: 'KUBOTA',
       defaultOem: '3C081-82200',
-      image: '/parts/Kubota-M-Series.png.webp',
+      image: IMG.tractorKubota,
       badge: 'M-Series, ME, M9000',
       descUk: 'Гідравлічні насоси, фільтрокомплекти та вузли переднього моста для тракторів серії M.',
       descEn: 'Hydraulic gear pumps, full filter kits and front axle components for M-Series.',
@@ -1014,21 +1048,21 @@ export default function BrandsCatalog({
                     <Plane className="w-5 h-5 text-sky-400 shrink-0" />
                     <div className="text-xs">
                       <div className="font-bold text-white">Aerospace & Defense</div>
-                      <div className="text-slate-400">Гідросистеми авіації</div>
+                      <div className="text-slate-400">{isUk ? 'Гідросистеми авіації' : 'Aviation hydraulics'}</div>
                     </div>
                   </div>
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2.5">
                     <Factory className="w-5 h-5 text-amber-400 shrink-0" />
                     <div className="text-xs">
                       <div className="font-bold text-white">Oil, Gas & Turbine</div>
-                      <div className="text-slate-400">Сепаратори високого тиску</div>
+                      <div className="text-slate-400">{isUk ? 'Сепаратори високого тиску' : 'High-pressure separators'}</div>
                     </div>
                   </div>
                   <div className="p-3 rounded-xl bg-white/5 border border-white/10 flex items-center gap-2.5">
                     <Droplets className="w-5 h-5 text-emerald-400 shrink-0" />
                     <div className="text-xs">
                       <div className="font-bold text-white">Membralox Ceramic</div>
-                      <div className="text-slate-400">Керамічна мікрофільтрація</div>
+                      <div className="text-slate-400">{isUk ? 'Керамічна мікрофільтрація' : 'Ceramic microfiltration'}</div>
                     </div>
                   </div>
                 </div>

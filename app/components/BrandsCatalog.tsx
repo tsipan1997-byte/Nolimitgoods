@@ -67,22 +67,25 @@ export interface PartShowcaseItem {
 const IMG = {
   // Гідравліка / мости / кабіна
   jcbPump: '/parts/JCB-PArker.jpg',
-  jcbKnuckle: '', // TODO: фото поворотного кулака / редуктора JCB
-  caseAccuboom: '', // TODO: фото самого блоку AccuBoom (не трактора)
-  sandenCompressor: '', // TODO: фото компресора Sanden
+  jcbKnuckle: '/parts/jcb-axle.jpg', // фото моста з маточинами
+  caseAccuboom: '/parts/accuboom-ecu.jpg', // фото блоку управління (срібний корпус)
+  sandenCompressor: '/parts/sanden-compressor.jpg', // фото компресора кондиціонера
   carraroAxle: '/parts/Carraro.jpg',
   catCabDoor: '/parts/images.jpeg',
-  catDoorLock: '', // TODO: фото замка / ручки дверей CAT
+  catDoorLock: '/parts/cat-door-lock.jpg',
   catDoorBracket: '/parts/cronstain.jpeg',
-  cabDampers: '', // TODO: фото амортизатора кабіни / сидіння
+  cabDampers: '/parts/cab-damper.jpg', // амортизатор кабіни / сидіння (завантажити)
   rexroth: '/parts/Rexroth.jpg',
   perkins: '/parts/Perkins.jpg',
   donaldson: '/parts/Donaldson.jpeg',
   pall: '/parts/Pall.jpeg',
   kybStrut: '/parts/SR4198_ANG_3.jpg.webp',
+  kybStrutAssembly: '/parts/KYBstrudass.webp',
+  kybRearShock: '/parts/kyb-rear-shock.jpg',
+  monroeMagnum: '/parts/monroe-magnum-shock.jpg',
+  mannHummel: '/parts/Mann-Filter.jpeg',
 
-  // Файли з "+" та пробілами в назві
-  mannHummel: '/parts/Mann%2BHummel.jpeg',
+  // Файли з пробілами в назві (закодовано %20)
   eatonVickers: '/parts/Eaton%20Vickers.jpeg',
   danaSpicer: '/parts/Dana%20Spicer.jpeg',
 
@@ -99,17 +102,17 @@ const IMG = {
   pallOilGas: '/parts/oil-gas-case-study-15.webp',
   pallMembralox: '/parts/membralox-gpic-image.webp',
 
-  // Спецтехніка Корея (файли насоса та ECU були переплутані — виправлено)
-  hyundaiSpecPump: '/parts/Gemini_Generated_Image_6c50at6c50at6c50.jpg',
+  // Спецтехніка Корея (окремі файли з чіткими назвами — без плутанини)
+  hyundaiSpecPump: '/parts/hyundai-pump.jpg',
   hyundaiSpecRoller: '/parts/Gemini_Generated_Image_6c50at6c50at6c50-2.jpg',
   hyundaiSpecSprocket: '/parts/Spocket.jpeg',
   hyundaiSpecSeals: '/parts/Remcomp.jpeg',
 
   // Легкові Корея
-  mobisEcuKeys: '/parts/Gemini_Generated_Image_q9raa4q9raa4q9ra.jpg',
+  mobisEcuKeys: '/parts/hyundai-ecu.jpg',
   mobisLedOptics: '/parts/lights.webp',
   mandoSuspension: '/parts/suspension.webp',
-  mobisEngine: '', // TODO: фото ланцюга ГРМ / CVVT (було фото форсунок Perkins)
+  mobisEngine: '/parts/mobis-injectors.jpg', // 4 форсунки GDI Hyundai (обрізати без амортизатора)
 
   // Трактори
   tractorCase: '/parts/case_international_puma_series.png.webp',
@@ -239,7 +242,7 @@ const SHOWCASE_FEATURED: PartShowcaseItem[] = [
     originUk: 'Склади UK та ЄС',
     originEn: 'UK & EU Hubs',
     category: 'suspension',
-    image: IMG.kybStrut,
+    image: IMG.kybStrutAssembly,
     popularOems: ['SR4198', '339702', '349041', 'G8107'],
   },
   {
@@ -522,7 +525,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Дистрибуція ЄС / UK Hub',
     originEn: 'EU Logistics / UK Hub',
     category: 'suspension',
-    image: IMG.kybStrut,
+    image: IMG.kybRearShock,
     popularOems: ['339702', '339703', '349041', '554384'],
   },
   {
@@ -534,7 +537,7 @@ const SUBGROUP_PARTS: PartShowcaseItem[] = [
     originUk: 'Сент-Трейден, Бельгія',
     originEn: 'Sint-Truiden, Belgium',
     category: 'suspension',
-    image: IMG.kybStrut,
+    image: IMG.monroeMagnum,
     popularOems: ['G8107', 'G8108', 'CB0069', 'V4505'],
   },
   {

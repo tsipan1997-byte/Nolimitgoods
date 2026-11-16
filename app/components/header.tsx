@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Menu, X, Globe, ArrowRight, UserCheck } from 'lucide-react';
+import { SOCIAL } from '@/lib/site-config';
+import { InstagramIcon } from './social-icons';
 import { useLanguage } from '@/lib/language-context';
 import B2BRegisterModal from './b2b-register-modal';
 
@@ -17,8 +19,9 @@ export default function Header() {
   };
 
   const navLinks = [
-    { href: '#catalog', labelUk: 'Каталог вузлів OEM', labelEn: 'OEM Assemblies' },
-    { href: '#parts-calculator', labelUk: 'Розрахунок вартості', labelEn: 'Quote Calculator' },
+    { href: '#prices', labelUk: 'Ціни', labelEn: 'Prices' },
+    { href: '#parts-calculator', labelUk: 'Запит ціни', labelEn: 'Get a Quote' },
+    { href: '#catalog', labelUk: 'Каталог брендів', labelEn: 'Brands' },
     { href: '#deliveries', labelUk: 'Відео відвантажень', labelEn: 'Live Dispatch' },
     { href: '#contacts', labelUk: 'Юридичні реквізити', labelEn: 'Legal & Contacts' },
   ];
@@ -81,6 +84,16 @@ export default function Header() {
                 <UserCheck className="w-3.5 h-3.5 text-emerald-400" />
                 <span>{isUk ? 'B2B Реєстрація' : 'B2B Portal'}</span>
               </button>
+
+              <a
+                href={SOCIAL.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+                className="flex items-center justify-center w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 hover:border-pink-500/60 text-slate-300 hover:text-pink-400 transition-colors"
+              >
+                <InstagramIcon className="w-4 h-4" />
+              </a>
 
               <button
                 type="button"

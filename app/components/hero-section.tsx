@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Truck, ArrowRight, Layers, Sparkles, Activity } from 'lucide-react';
+import { ShieldCheck, Truck, ArrowRight, Camera, Search, Tag } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 
 export default function HeroSection() {
@@ -18,11 +18,8 @@ export default function HeroSection() {
     }
   };
 
-  const scrollToCatalog = () => {
-    const catalogSection = document.getElementById('catalog') || document.getElementById('oem-brands');
-    if (catalogSection) {
-      catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
+  const scrollToPrices = () => {
+    document.getElementById('prices')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -117,8 +114,8 @@ export default function HeroSection() {
 
       {/* 2. ГОЛОВНИЙ КОНТЕНТ */}
       <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
-        
-        {/* Статус-бейдж UK хабу */}
+
+        {/* Бейдж UK-хабу */}
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -131,8 +128,8 @@ export default function HeroSection() {
           </span>
           <span className="text-xs sm:text-sm font-semibold text-slate-200 tracking-wide">
             {isUk
-              ? 'NoLimitGoods Ltd • Прямий експорт з Великобританії (Coventry Hub)'
-              : 'NoLimitGoods Ltd • Direct Export from United Kingdom (Coventry Hub)'}
+              ? 'NoLimitGoods Ltd • Власний хаб у Ковентрі, Велика Британія'
+              : 'NoLimitGoods Ltd • Own hub in Coventry, United Kingdom'}
           </span>
         </motion.div>
 
@@ -141,21 +138,17 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight"
+          className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.05]"
         >
           {isUk ? (
             <>
-              Запчастини до спецтехніки та авто <br />
-              <span className="text-[#E02424]">
-                з усього світу. Без лімітів.
-              </span>
+              Знайдемо і привеземо <br />
+              <span className="text-[#E02424]">будь-яку запчастину.</span>
             </>
           ) : (
             <>
-              Heavy Machinery & Commercial Parts <br />
-              <span className="text-[#E02424]">
-                From Anywhere in the World. No Limits.
-              </span>
+              We find it. We deliver it. <br />
+              <span className="text-[#E02424]">Any part, anywhere.</span>
             </>
           )}
         </motion.h1>
@@ -165,12 +158,40 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="max-w-3xl mx-auto text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed font-normal"
+          className="max-w-3xl mx-auto text-slate-300 text-base sm:text-lg leading-relaxed"
         >
           {isUk
-            ? 'Повний цикл логістики, офіційний статус експорту 0% UK VAT, консолідація вантажів у Ковентрі та прямі контракти без посередницьких націнок.'
-            : 'End-to-end logistics solutions, T1 transit customs clearance, and zero-rated 0% UK export status directly to your enterprise.'}
+            ? 'Спецтехніка, сільгосптехніка, вантажівки й легкові авто. Шукаємо по складах Великої Британії, Європи та США і доставляємо в Україну — від одного фільтра до палети.'
+            : 'Construction and farm machinery, trucks and cars. We search stock across the UK, Europe and the USA and deliver to your door — from a single filter to a full pallet.'}
         </motion.p>
+
+        {/* Оригінал / аналог / б/у */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.25 }}
+          className="flex flex-wrap items-center justify-center gap-2"
+        >
+          {(isUk
+            ? [
+                ['Оригінал', 'border-emerald-500/40 text-emerald-300'],
+                ['Якісний аналог', 'border-sky-500/40 text-sky-300'],
+                ['Б/у', 'border-amber-500/40 text-amber-300'],
+              ]
+            : [
+                ['Genuine OEM', 'border-emerald-500/40 text-emerald-300'],
+                ['Quality aftermarket', 'border-sky-500/40 text-sky-300'],
+                ['Used', 'border-amber-500/40 text-amber-300'],
+              ]
+          ).map(([label, cls]) => (
+            <span key={label} className={`px-4 py-1.5 rounded-full border bg-slate-950/60 text-sm font-semibold ${cls}`}>
+              {label}
+            </span>
+          ))}
+          <span className="text-sm text-slate-400 ml-1">
+            {isUk ? '— порахуємо всі варіанти' : '— we quote every option'}
+          </span>
+        </motion.div>
 
         {/* Кнопки дій */}
         <motion.div
@@ -179,68 +200,51 @@ export default function HeroSection() {
           transition={{ duration: 0.6, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2"
         >
-          {/* Яскраво-червона кнопка без жовтого градієнту */}
           <button
             onClick={scrollToCalculator}
             className="w-full sm:w-auto px-9 py-4 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-sm tracking-wider uppercase transition-all shadow-[0_10px_30px_rgba(220,38,38,0.45)] hover:shadow-[0_14px_35px_rgba(220,38,38,0.6)] flex items-center justify-center gap-2 cursor-pointer active:scale-95"
           >
-            <span>{isUk ? 'Зробити замовлення' : 'Place Order'}</span>
+            <span>{isUk ? 'Отримати ціну' : 'Get a quote'}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
 
           <button
-            onClick={scrollToCatalog}
+            onClick={scrollToPrices}
             className="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white font-bold text-sm tracking-wider uppercase border border-slate-700/80 transition-all flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer active:scale-95"
           >
-            <Layers className="w-4 h-4 text-amber-400" />
-            <span>{isUk ? 'Переглянути каталог деталей' : 'Explore OEM Catalog'}</span>
+            <Tag className="w-4 h-4 text-amber-400" />
+            <span>{isUk ? 'Приклади цін' : 'See prices'}</span>
           </button>
         </motion.div>
 
-        {/* 3. ПЕРЕВАГИ (4 ПЛАШКИ) */}
+        {/* 3. ПЕРЕВАГИ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4 }}
           className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-8"
         >
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
-            <div className="text-lg sm:text-xl font-black text-white flex items-center gap-1.5">
-              100% <ShieldCheck className="w-4 h-4 text-emerald-400 inline" />
+          {(isUk
+            ? [
+                { icon: Search, color: 'text-white', title: 'Знайдемо', text: 'Навіть рідкісний OEM-номер — по VIN або фото' },
+                { icon: Truck, color: 'text-amber-400', title: '5–14 роб. днів', text: 'Типовий термін доставки в Україну' },
+                { icon: Camera, color: 'text-sky-400', title: 'Фотозвіт', text: 'Фото й відео деталі перед відправкою' },
+                { icon: ShieldCheck, color: 'text-emerald-400', title: 'UK Ltd', text: 'Офіційний інвойс від британської компанії' },
+              ]
+            : [
+                { icon: Search, color: 'text-white', title: 'We find it', text: 'Even rare OEM numbers — by VIN or photo' },
+                { icon: Truck, color: 'text-amber-400', title: '5–14 working days', text: 'Typical delivery time' },
+                { icon: Camera, color: 'text-sky-400', title: 'Photo report', text: 'Photos and video before dispatch' },
+                { icon: ShieldCheck, color: 'text-emerald-400', title: 'UK Ltd', text: 'Official invoice from a UK company' },
+              ]
+          ).map((f) => (
+            <div key={f.title} className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
+              <div className={`text-lg sm:text-xl font-black flex items-center gap-1.5 ${f.color}`}>
+                <f.icon className="w-4 h-4 inline" /> {f.title}
+              </div>
+              <div className="text-xs text-slate-400 mt-1 leading-snug">{f.text}</div>
             </div>
-            <div className="text-xs text-slate-400 mt-1">
-              {isUk ? 'Оригінальні деталі OEM' : 'Genuine OEM Equipment'}
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
-            <div className="text-lg sm:text-xl font-black text-amber-400 flex items-center gap-1.5">
-              5–14 {isUk ? 'роб. днів' : 'working days'} <Truck className="w-4 h-4 text-amber-400 inline" />
-            </div>
-            <div className="text-xs text-slate-400 mt-1">
-              {isUk
-                ? 'Експрес-замовлення (до 1 міс. для великих партій)'
-                : 'Express orders (up to 1 mo. for bulk)'}
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
-            <div className="text-lg sm:text-xl font-black text-sky-400 flex items-center gap-1.5">
-              DOUANE <Sparkles className="w-4 h-4 text-sky-400 inline" />
-            </div>
-            <div className="text-xs text-slate-400 mt-1">
-              {isUk ? 'Офіційне митне очищення' : 'T1 Transit & Customs'}
-            </div>
-          </div>
-
-          <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800/90 backdrop-blur-md text-left">
-            <div className="text-lg sm:text-xl font-black text-emerald-400 flex items-center gap-1.5">
-              0% VAT <Activity className="w-4 h-4 text-emerald-400 inline" />
-            </div>
-            <div className="text-xs text-slate-400 mt-1">
-              {isUk ? 'UK Ltd експортний інвойс' : 'Official UK Direct Invoice'}
-            </div>
-          </div>
+          ))}
         </motion.div>
 
       </div>

@@ -3,6 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
+import { SOCIAL } from '@/lib/site-config';
+import { InstagramIcon, FacebookIcon } from './social-icons';
 import { useLanguage } from '@/lib/language-context';
 
 export default function Footer() {
@@ -41,9 +43,21 @@ export default function Footer() {
             </Link>
             <p className="text-slate-400 text-[11px] leading-relaxed">
               {isUk 
-                ? 'Прямий експорт оригінальних запчастин для спецтехніки та комерційного транспорту з Великобританії.' 
-                : 'Direct UK exporter of genuine OEM machinery and commercial vehicle parts.'}
+                ? 'Знайдемо і привеземо запчастини для спецтехніки, сільгосптехніки та авто: оригінал, аналог або б/у.'
+                : 'We find and deliver parts for machinery, farm equipment and vehicles: genuine, aftermarket or used.'}
             </p>
+            <div className="flex items-center gap-2">
+              <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"
+                className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 hover:border-pink-500/60 flex items-center justify-center text-slate-300 hover:text-pink-400 transition-colors">
+                <InstagramIcon className="w-4 h-4" />
+              </a>
+              {SOCIAL.facebook && (
+                <a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"
+                  className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 hover:border-blue-500/60 flex items-center justify-center text-slate-300 hover:text-blue-400 transition-colors">
+                  <FacebookIcon className="w-4 h-4" />
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Колонка 2: Навігація */}
@@ -54,7 +68,12 @@ export default function Footer() {
             <ul className="space-y-2 text-[11px]">
               <li>
                 <a href="#parts-calculator" className="hover:text-white transition-colors">
-                  {isUk ? 'Розрахунок вартості' : 'Quote Calculator'}
+                  {isUk ? 'Запит ціни' : 'Get a Quote'}
+                </a>
+              </li>
+              <li>
+                <a href="#prices" className="hover:text-white transition-colors">
+                  {isUk ? 'Приклади цін' : 'Price examples'}
                 </a>
               </li>
               <li>
@@ -127,7 +146,6 @@ export default function Footer() {
             >
               {isUk ? 'Налаштування cookie' : 'Cookie settings'}
             </button>
-            <span className="text-emerald-400 font-mono font-bold">0% UK Export VAT Status</span>
           </div>
         </div>
       </div>

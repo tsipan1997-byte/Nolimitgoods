@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
 const SITE_TITLE = 'NoLimitGoods Ltd';
 const SITE_DESCRIPTION =
-  'NoLimitGoods Limited — офіційний хаб з постачання запчастин та фільтрів з Великобританії. 0% UK Export VAT. Доставка в Україну 5–14 робочих днів.';
+  'NoLimitGoods Ltd — знайдемо і привеземо запчастини для спецтехніки, сільгосптехніки та авто: оригінал, аналог або б/у. Хаб у Великій Британії, доставка в Україну 5–14 робочих днів.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.nolimitgoods.co.uk'),
@@ -56,7 +56,7 @@ const ORGANIZATION_JSON_LD = {
     addressCountry: 'GB',
   },
   description:
-    'Прямий експорт запчастин та фільтрів для спецтехніки з Великобританії. 0% UK Export VAT.',
+    'Знайдемо і привеземо запчастини для спецтехніки, сільгосптехніки та авто: оригінал, аналог або б/у.',
 };
 
 export default function RootLayout({

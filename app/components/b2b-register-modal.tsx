@@ -83,7 +83,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
             </h3>
             <p className="text-slate-600 text-sm max-w-md mx-auto leading-relaxed">
               {isUk 
-                ? 'Ми перевіримо реквізити вашої компанії та звʼяжемося для фіксації індивідуальних дилерських умов постачання з Великобританії з 0% UK VAT.' 
+                ? 'Ми перевіримо реквізити вашої компанії та звʼяжемося для фіксації індивідуальних дилерських умов постачання.' 
                 : 'We will verify your company details and establish your direct UK trade account with zero-rated VAT pricing.'}
             </p>
             <button

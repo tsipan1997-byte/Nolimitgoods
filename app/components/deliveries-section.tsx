@@ -105,10 +105,10 @@ export default function DeliveriesSection() {
                 <ShieldCheck className="w-5 h-5 text-sky-400 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-white mb-0.5">
-                    {isUk ? 'Митниця DOUANE / 0% VAT' : 'Customs Cleared'}
+                    {isUk ? 'Документи для митниці' : 'Customs paperwork'}
                   </h4>
                   <p className="text-xs text-slate-400">
-                    {isUk ? 'Повний пакет експортних документів' : 'Zero-rated UK VAT invoicing'}
+                    {isUk ? 'Повний пакет експортних документів' : 'Full export document set'}
                   </p>
                 </div>
               </div>

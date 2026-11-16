@@ -4,6 +4,8 @@ import React from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
 import RFQSection from './components/rfq-section';
+import PriceShowcase from './components/price-showcase';
+import SocialSection from './components/social-section';
 import BrandsCatalog from './components/BrandsCatalog';
 import DeliveriesSection from './components/deliveries-section';
 import ContactSection from './components/contact-section';
@@ -22,6 +24,9 @@ export default function HomePage() {
 
       <HeroSection />
 
+      {/* Приклади реальних цін з живим курсом гривні */}
+      <PriceShowcase />
+
       {/* Форма запиту одразу під головним екраном: сюди ведуть усі кнопки «Зробити замовлення» */}
       <RFQSection />
 
@@ -30,6 +35,8 @@ export default function HomePage() {
       <div id="deliveries">
         <DeliveriesSection />
       </div>
+
+      <SocialSection />
 
       <div id="contacts">
         <ContactSection />

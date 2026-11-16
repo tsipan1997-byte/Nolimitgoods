@@ -37,8 +37,8 @@ Phone: +44 7426 826595`;
           </h2>
           <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base">
             {isUk 
-              ? 'Працюємо за прямими B2B зовнішньоекономічними договорами з 0% UK Export VAT.'
-              : 'Direct B2B export contracts from Coventry Hub with 0% UK Export VAT.'}
+              ? 'Працюємо як британська компанія: договір, інвойс і всі документи для митного оформлення.'
+              : 'We operate as a UK company: contract, invoice and full customs paperwork.'}
           </p>
         </div>
 
@@ -107,10 +107,6 @@ Phone: +44 7426 826595`;
                 <div className="flex justify-between py-1 border-b border-slate-900">
                   <span className="text-slate-500">EORI Number:</span>
                   <span className="text-white font-bold">GB079878335000</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-900">
-                  <span className="text-slate-500">Zero-Rated VAT:</span>
-                  <span className="text-emerald-400 font-bold">0% Export Status</span>
                 </div>
               </div>
             </div>

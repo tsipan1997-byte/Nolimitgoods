@@ -989,8 +989,8 @@ export default function BrandsCatalog({
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900 text-slate-200 text-xs font-bold uppercase tracking-wider">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             {isUk
-              ? 'Поставки зі складів UK, ЄС та Південної Кореї • 0% UK VAT'
-              : 'Direct Supply from UK, EU & South Korea Hubs • 0% UK VAT'}
+              ? 'Поставки зі складів UK, ЄС та Південної Кореї • оригінал, аналог, б/у'
+              : 'Supply from UK, EU & South Korea hubs • genuine, aftermarket, used'}
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             {isUk
@@ -1347,11 +1347,6 @@ export default function BrandsCatalog({
                               ? 'Під замовлення'
                               : 'On Order'}
                           </span>
-                        </div>
-
-                        {/* Правий бейдж: 0% VAT */}
-                        <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-slate-900 text-white text-[10px] font-mono font-bold">
-                          0% VAT
                         </div>
                       </div>
 

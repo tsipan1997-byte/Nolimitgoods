@@ -94,14 +94,14 @@ export default function SocialSection() {
             </div>
           </div>
           {REELS.length > 0 && (
-            <div className="relative mt-10 grid grid-cols-2 lg:grid-cols-4 gap-3">
+            <div className="relative mt-10 -mx-2 px-2 flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 lg:grid lg:grid-cols-4 lg:overflow-visible">
               {REELS.slice(0, 4).map((u) => (
                 <iframe
                   key={u}
                   src={`${u.split('?')[0].replace(/\/?$/, '/')}embed`}
                   title="Instagram Reel"
                   loading="lazy"
-                  className="w-full aspect-[9/16] rounded-2xl bg-white border-0"
+                  className="shrink-0 w-[85%] sm:w-[320px] lg:w-full h-[620px] snap-center rounded-2xl bg-white border-0"
                   allow="encrypted-media"
                 />
               ))}

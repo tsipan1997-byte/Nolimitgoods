@@ -14,7 +14,7 @@ export default function ContactSection() {
 Company No: 13146899
 VAT ID: GB 372 6541 87
 EORI: GB079878335000
-Address: 374 Hipsell Highway, Coventry, West Midlands, CV2 5FR, United Kingdom
+Address: 374 Hipswell Highway, Coventry, West Midlands, CV2 5FR, United Kingdom
 Email: sales@nolimitgoods.co.uk
 Phone: +44 7426 826595`;
     navigator.clipboard.writeText(text);
@@ -56,7 +56,7 @@ Phone: +44 7426 826595`;
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-slate-500 shrink-0 mt-1" />
                 <div>
-                  <div className="font-bold text-slate-900">374 Hipsell Highway, Coventry</div>
+                  <div className="font-bold text-slate-900">374 Hipswell Highway, Coventry</div>
                   <div className="text-slate-500">West Midlands, CV2 5FR, United Kingdom</div>
                 </div>
               </div>

@@ -60,7 +60,7 @@ export default function FeaturesSection() {
                 {isUk ? 'Хаб у Ковентрі (UK)' : 'Coventry Hub (UK)'}
               </h3>
               <div className="text-xs text-amber-400/90 font-medium mb-3">
-                374 Hipsell Highway, CV2 5FR
+                374 Hipswell Highway, CV2 5FR
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
                 {isUk 

@@ -9,6 +9,7 @@ import CategoryTiles from './components/category-tiles';
 import InteractiveDiagram from './components/interactive-diagram';
 import QuoteCart from './components/quote-cart';
 import SocialSection from './components/social-section';
+import TrustSection from './components/trust-section';
 import BrandsCatalog from './components/BrandsCatalog';
 import DeliveriesSection from './components/deliveries-section';
 import ContactSection from './components/contact-section';
@@ -34,6 +35,7 @@ export default function HomePage() {
       <PriceShowcase />
 
       {/* Форма запиту одразу під головним екраном: сюди ведуть усі кнопки «Зробити замовлення» */}
+      <TrustSection />
       <RFQSection />
 
       {/* Інтерактивна схема двигуна з цінами */}

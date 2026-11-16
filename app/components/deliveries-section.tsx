@@ -59,7 +59,7 @@ export default function DeliveriesSection() {
               </h3>
               <p className="text-sm text-slate-600 leading-relaxed">
                 {isUk
-                  ? 'Кожна палета маркується наліпками DOUANE, комплектується на складі в Ковентрі (374 Hipsell Highway), страхується на повну інвойсну вартість та доставляється клієнтам у цілості.'
+                  ? 'Кожна палета маркується наліпками DOUANE, комплектується на складі в Ковентрі (374 Hipswell Highway), страхується на повну інвойсну вартість та доставляється клієнтам у цілості.'
                   : 'Palletized consignments with T1 transit documentation. Dispatched from Coventry and received directly at Ukrainian equipment terminals.'}
               </p>
             </div>
@@ -96,7 +96,7 @@ export default function DeliveriesSection() {
                     {isUk ? 'Склад (Coventry, UK)' : 'Coventry Hub Direct'}
                   </h4>
                   <p className="text-xs text-slate-500">
-                    374 Hipsell Highway, CV2 5FR
+                    374 Hipswell Highway, CV2 5FR
                   </p>
                 </div>
               </div>

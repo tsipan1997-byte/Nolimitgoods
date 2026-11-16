@@ -50,7 +50,7 @@ const ORGANIZATION_JSON_LD = {
   vatID: 'GB372654187',
   address: {
     '@type': 'PostalAddress',
-    streetAddress: '374 Hipsell Highway',
+    streetAddress: '374 Hipswell Highway',
     addressLocality: 'Coventry',
     postalCode: 'CV2 5FR',
     addressCountry: 'GB',

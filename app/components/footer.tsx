@@ -102,7 +102,7 @@ export default function Footer() {
             <ul className="space-y-2 text-[11px]">
               <li className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                <span>374 Hipsell Highway, Coventry, CV2 5FR</span>
+                <span>374 Hipswell Highway, Coventry, CV2 5FR</span>
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-red-500 shrink-0" />

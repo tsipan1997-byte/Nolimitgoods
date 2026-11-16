@@ -3,7 +3,7 @@
 import React from 'react';
 import { ArrowUpRight, Video, Camera, Truck } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { SOCIAL } from '@/lib/site-config';
+import { SOCIAL, REELS } from '@/lib/site-config';
 import { InstagramIcon, FacebookIcon } from './social-icons';
 
 export default function SocialSection() {
@@ -93,6 +93,20 @@ export default function SocialSection() {
               )}
             </div>
           </div>
+          {REELS.length > 0 && (
+            <div className="relative mt-10 grid grid-cols-2 lg:grid-cols-4 gap-3">
+              {REELS.slice(0, 4).map((u) => (
+                <iframe
+                  key={u}
+                  src={`${u.split('?')[0].replace(/\/?$/, '/')}embed`}
+                  title="Instagram Reel"
+                  loading="lazy"
+                  className="w-full aspect-[9/16] rounded-2xl bg-white border-0"
+                  allow="encrypted-media"
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

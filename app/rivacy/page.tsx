@@ -28,7 +28,7 @@ export default function PrivacyPage() {
             <h2 className="text-xl font-bold text-white mb-2">1. Хто відповідає за ваші дані</h2>
             <p>
               Контролер персональних даних: <strong className="text-white">NoLimitGoods Limited</strong>,
-              зареєстрована в Англії та Уельсі, Company No: 13146899, адреса: 374 Hipsell Highway, Coventry,
+              зареєстрована в Англії та Уельсі, Company No: 13146899, адреса: 374 Hipswell Highway, Coventry,
               CV2 5FR, United Kingdom. Email для питань щодо даних:{' '}
               <a href="mailto:sales@nolimitgoods.co.uk" className="underline underline-offset-4 text-white">
                 sales@nolimitgoods.co.uk
@@ -146,7 +146,7 @@ export default function PrivacyPage() {
           <section className="pt-6 border-t border-slate-800">
             <h2 className="text-xl font-bold text-white mb-2">Summary in English</h2>
             <p>
-              NoLimitGoods Limited (Company No: 13146899, 374 Hipsell Highway, Coventry, CV2 5FR, UK) is the data
+              NoLimitGoods Limited (Company No: 13146899, 374 Hipswell Highway, Coventry, CV2 5FR, UK) is the data
               controller. We collect the contact details and parts enquiry information you submit, and, only with
               your consent, cookie and pixel data (Meta and Google Ads) to measure and improve advertising. We do
               not sell your data. Service providers may process it on our behalf (hosting, messaging, advertising

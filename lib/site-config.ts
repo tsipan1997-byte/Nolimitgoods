@@ -18,3 +18,17 @@ export const CONTACT = {
 
 // Наша націнка на ціну постачальника без VAT (1.25 = +25%)
 export const MARKUP = 1.25;
+
+// Реальні дані компанії — показуються в блоці «Перевірте нас»
+export const COMPANY = {
+  legalName: 'NoLimitGoods Ltd',
+  number: '13146899',
+  since: 2021,
+  vat: 'GB372654187',
+  address: '374 Hipswell Highway, Coventry, CV2 5FR, UK',
+  registryUrl: 'https://find-and-update.company-information.service.gov.uk/company/13146899',
+};
+
+// Ваші Reels: вставте сюди посилання на 2–4 відео (https://www.instagram.com/reel/XXXX/),
+// і вони з'являться на головній. Поки порожньо — блок не показується.
+export const REELS: string[] = [];

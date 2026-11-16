@@ -31,4 +31,9 @@ export const COMPANY = {
 
 // Ваші Reels: вставте сюди посилання на 2–4 відео (https://www.instagram.com/reel/XXXX/),
 // і вони з'являться на головній. Поки порожньо — блок не показується.
-export const REELS: string[] = [];
+export const REELS: string[] = [
+  'https://www.instagram.com/reel/DfktfweKyHr/',
+  'https://www.instagram.com/reel/DffnHk-ir-D/',
+  'https://www.instagram.com/reel/Dfiu4sgI9uw/',
+  'https://www.instagram.com/reel/DfpdwiPts6g/',
+];

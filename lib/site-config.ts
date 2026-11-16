@@ -6,7 +6,7 @@ export const SOCIAL = {
   instagramHandle: '@nolimit_goods',
   // Вставте посилання на сторінку Facebook — і кнопка зʼявиться автоматично.
   // Поки порожньо, кнопка Facebook на сайті не показується.
-  facebook: '',
+  facebook: 'https://www.facebook.com/profile.php?id=61595405257258',
 };
 
 export const CONTACT = {

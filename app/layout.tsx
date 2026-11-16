@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { LanguageProvider } from '@/lib/language-context';
+import CookieConsent from './cookie-consent';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
@@ -151,6 +152,7 @@ export default function RootLayout({
 
         <LanguageProvider>
           {children}
+          <CookieConsent />
         </LanguageProvider>
       </body>
     </html>

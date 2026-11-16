@@ -28,6 +28,7 @@ export default function CookieConsent() {
       }
       if ((window as any).fbq) {
         (window as any).fbq('consent', 'grant');
+        (window as any).fbq('track', 'PageView');
       }
     }
     setAccepted(true);
@@ -47,7 +48,7 @@ export default function CookieConsent() {
           onClick={handleAccept}
           className="px-4 py-1.5 bg-white hover:bg-slate-200 text-slate-950 font-bold text-xs rounded-xl transition-all cursor-pointer shadow-xs active:scale-95"
         >
-          {isUk ? 'Зрозуміло' : 'Accept'}
+          {isUk ? 'Прийняти' : 'Accept'}
         </button>
       </div>
     </div>

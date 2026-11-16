@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { ShoppingCart, Check } from 'lucide-react';
-import { TYPE_LABEL, illustrationFor, type CatalogItem } from '@/lib/catalog';
+import { TYPE_LABEL, illustrationFor, partSlug, type CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, fmtUah, shippingGbp, type Rates } from '@/lib/pricing';
 import { addToCart } from './quote-cart';
 
@@ -12,6 +13,7 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
   const gbp = clientPriceGbp(item, rates);
   const uah = gbp !== null && rates ? gbp * rates.uah.GBP : null;
   const ship = shippingGbp(item.weightKg, item.oversized);
+  const href = `/part/${partSlug(item)}`;
 
   const add = () => {
     addToCart(item);
@@ -21,7 +23,7 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
 
   return (
     <article className="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-[0_18px_40px_-18px_rgba(15,23,42,0.25)] overflow-hidden transition-all">
-      <div className="relative aspect-[4/3] bg-white border-b border-slate-100">
+      <Link href={href} className="relative block aspect-[4/3] bg-white border-b border-slate-100">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -49,12 +51,14 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
         {item.imageIllustrative && (
           <span className="absolute bottom-2 right-3 text-[10px] text-slate-500/50">{isUk ? 'фото ілюстративне' : 'illustrative photo'}</span>
         )}
-      </div>
+      </Link>
 
       <div className="flex flex-col flex-1 p-4">
         <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{item.brand}</div>
         <div className="font-mono text-sm text-slate-900 mt-0.5">{item.partNumber}</div>
-        <h3 className="text-sm font-semibold text-slate-700 mt-2 leading-snug">{isUk ? item.titleUk : item.titleEn}</h3>
+        <h3 className="text-sm font-semibold text-slate-700 mt-2 leading-snug">
+          <Link href={href} className="hover:text-red-600 hover:underline">{isUk ? item.titleUk : item.titleEn}</Link>
+        </h3>
         <div className="text-xs text-slate-500 mt-1">{isUk ? item.fitsUk : item.fitsEn}</div>
 
         <div className="mt-auto pt-4">

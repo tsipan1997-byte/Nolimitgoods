@@ -331,3 +331,11 @@ export const MODEL_PAGES: ModelPage[] = [
 export function itemsForModel(m: ModelPage): CatalogItem[] {
   return CATALOG.filter((i) => m.match.test(`${i.fitsUk} ${i.fitsEn} ${i.titleEn}`));
 }
+
+// ───────────── СТОРІНКА КОЖНОЇ ДЕТАЛІ: /part/<номер-бренд> ─────────────
+export function partSlug(i: Pick<CatalogItem, 'partNumber' | 'brand'>): string {
+  return `${i.partNumber}-${i.brand}`
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}

@@ -11,14 +11,14 @@ const SITE_DESCRIPTION =
   'NoLimitGoods Ltd — знайдемо і привеземо запчастини для спецтехніки, сільгосптехніки та авто: оригінал, аналог або б/у. Хаб у Великій Британії, доставка в Україну 5–14 робочих днів.';
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://www.nolimitgoods.co.uk'),
+  metadataBase: new URL('https://www.nolimitgoods.com'),
   title: SITE_TITLE,
   description: SITE_DESCRIPTION,
   openGraph: {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
     type: 'website',
-    url: 'https://www.nolimitgoods.co.uk',
+    url: 'https://www.nolimitgoods.com',
     siteName: 'NoLimitGoods Ltd',
     locale: 'uk_UA',
     images: [
@@ -43,8 +43,8 @@ const ORGANIZATION_JSON_LD = {
   '@type': 'Organization',
   name: 'NoLimitGoods Ltd',
   legalName: 'NoLimitGoods Limited',
-  url: 'https://www.nolimitgoods.co.uk',
-  logo: 'https://www.nolimitgoods.co.uk/logo.png',
+  url: 'https://www.nolimitgoods.com',
+  logo: 'https://www.nolimitgoods.com/logo.png',
   email: 'sales@nolimitgoods.co.uk',
   telephone: '+447426826595',
   vatID: 'GB372654187',

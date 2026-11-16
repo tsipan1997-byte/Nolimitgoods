@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { MODEL_PAGES, CATEGORIES } from '@/lib/catalog';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://www.nolimitgoods.co.uk';
+  const base = 'https://www.nolimitgoods.com';
   const now = new Date();
   return [
     { url: base, lastModified: now, changeFrequency: 'weekly', priority: 1 },

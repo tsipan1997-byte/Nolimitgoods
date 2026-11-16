@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShoppingCart, Check, Wrench } from 'lucide-react';
-import { TYPE_LABEL, GROUPS, type CatalogItem } from '@/lib/catalog';
+import { ShoppingCart, Check } from 'lucide-react';
+import { TYPE_LABEL, illustrationFor, type CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, fmtUah, shippingGbp, type Rates } from '@/lib/pricing';
 import { addToCart } from './quote-cart';
 
@@ -12,7 +12,6 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
   const gbp = clientPriceGbp(item, rates);
   const uah = gbp !== null && rates ? gbp * rates.uah.GBP : null;
   const ship = shippingGbp(item.weightKg, item.oversized);
-  const group = GROUPS.find((g) => g.id === item.group);
 
   const add = () => {
     addToCart(item);
@@ -32,17 +31,23 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
             className="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-[1.03] transition-transform duration-300"
           />
         ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 text-slate-500">
-            <Wrench className="w-10 h-10 mb-2 text-slate-400" />
-            <span className="font-mono text-lg font-bold text-slate-700">{item.partNumber}</span>
-            <span className="text-[11px] uppercase tracking-wider mt-1">{group ? (isUk ? group.uk : group.en) : ''}</span>
-          </div>
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={illustrationFor(item)}
+              alt=""
+              loading="lazy"
+              className="absolute inset-0 w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+            />
+            <span className="absolute bottom-2 left-3 font-mono text-[11px] font-bold text-slate-700 bg-white/70 px-1.5 rounded">{item.partNumber}</span>
+            <span className="absolute bottom-2 right-3 text-[10px] text-slate-500/50">{isUk ? 'ілюстрація' : 'illustration'}</span>
+          </>
         )}
         <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur ${t.cls}`}>
           {isUk ? t.uk : t.en}
         </span>
         {item.imageIllustrative && (
-          <span className="absolute bottom-2 right-3 text-[10px] text-slate-500">{isUk ? 'фото ілюстративне' : 'illustrative photo'}</span>
+          <span className="absolute bottom-2 right-3 text-[10px] text-slate-500/50">{isUk ? 'фото ілюстративне' : 'illustrative photo'}</span>
         )}
       </div>
 

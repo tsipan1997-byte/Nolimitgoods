@@ -223,3 +223,37 @@ export function loadFullCatalog(): Promise<CatalogItem[]> {
   }
   return fullPromise;
 }
+
+// Ілюстрація за типом деталі для позицій без власного фото (public/illustrations/*.svg)
+export function illustrationFor(item: CatalogItem): string {
+  const t = `${item.titleUk} ${item.titleEn}`.toLowerCase();
+  const map: [RegExp, string][] = [
+    [/повітрян|air filter/, 'air-filter'],
+    [/паливний фільтр|fuel filter|separator/, 'fuel-filter'],
+    [/гідравлічний фільтр|hydraulic filter/, 'hydraulic-filter'],
+    [/масляний фільтр|oil filter|lube/, 'oil-filter'],
+    [/фільтр|filter/, 'filter'],
+    [/підкачув|lift pump/, 'lift-pump'],
+    [/помпа|water pump/, 'water-pump'],
+    [/шестерен|gear pump|насос коробки|насос|pump unit|гідронасос/, 'gear-pump'],
+    [/ремкомплект|seal/, 'seal-kit'],
+    [/кардан|pto/, 'pto-shaft'],
+    [/тяга|top link/, 'top-link'],
+    [/стартер|starter/, 'starter'],
+    [/генератор|alternator/, 'alternator'],
+    [/склоочисн|wiper/, 'wiper-motor'],
+    [/фара|light/, 'led-light'],
+    [/свічка|glow/, 'glow-plug'],
+    [/помпа|water pump/, 'water-pump'],
+    [/турбо|turbo/, 'turbo'],
+    [/форсунк|injector/, 'injector'],
+    [/підкачув|lift pump/, 'lift-pump'],
+    [/компресор|compressor/, 'ac-compressor'],
+    [/амортизатор|strut/, 'gas-strut'],
+    [/зуб|tooth|teeth/, 'bucket-tooth'],
+    [/замок|lock/, 'door-lock'],
+    [/колодк|brake/, 'brake-pads'],
+  ];
+  const hit = map.find(([re]) => re.test(t));
+  return `/illustrations/${hit ? hit[1] : 'generic'}.svg`;
+}

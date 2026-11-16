@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300"><defs>
+<radialGradient id="bg" cx="50%" cy="38%" r="75%"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#dfe4ea"/></radialGradient>
+<linearGradient id="metal" x1="0" x2="1"><stop offset="0" stop-color="#5b6470"/><stop offset=".28" stop-color="#e9edf1"/><stop offset=".55" stop-color="#a7afb8"/><stop offset="1" stop-color="#3f4752"/></linearGradient>
+<linearGradient id="metalV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5b6470"/><stop offset=".3" stop-color="#e9edf1"/><stop offset=".6" stop-color="#a7afb8"/><stop offset="1" stop-color="#3f4752"/></linearGradient>
+<linearGradient id="dark" x1="0" x2="1"><stop offset="0" stop-color="#0f141a"/><stop offset=".35" stop-color="#4a525c"/><stop offset=".6" stop-color="#252b33"/><stop offset="1" stop-color="#0b0f14"/></linearGradient>
+<linearGradient id="darkV" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0f141a"/><stop offset=".35" stop-color="#4a525c"/><stop offset=".6" stop-color="#252b33"/><stop offset="1" stop-color="#0b0f14"/></linearGradient>
+<linearGradient id="red" x1="0" x2="1"><stop offset="0" stop-color="#7f1010"/><stop offset=".3" stop-color="#e53935"/><stop offset=".6" stop-color="#b71c1c"/><stop offset="1" stop-color="#5c0a0a"/></linearGradient>
+<linearGradient id="blue" x1="0" x2="1"><stop offset="0" stop-color="#0d2a52"/><stop offset=".3" stop-color="#2f6fc4"/><stop offset=".6" stop-color="#1b4b8f"/><stop offset="1" stop-color="#0a1f3d"/></linearGradient>
+<linearGradient id="yellow" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8a6400"/><stop offset=".3" stop-color="#ffd23f"/><stop offset=".6" stop-color="#e0a800"/><stop offset="1" stop-color="#6b4d00"/></linearGradient>
+<linearGradient id="copper" x1="0" x2="1"><stop offset="0" stop-color="#6d3b12"/><stop offset=".3" stop-color="#e8a463"/><stop offset=".6" stop-color="#b9732f"/><stop offset="1" stop-color="#4f2a0c"/></linearGradient>
+<linearGradient id="glass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#eaf6ff"/><stop offset=".5" stop-color="#9fc3dd"/><stop offset="1" stop-color="#4d7894"/></linearGradient>
+<filter id="sh" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter>
+</defs><rect width="400" height="300" fill="url(#bg)"/><ellipse cx="200" cy="258" rx="110" ry="12" fill="#000" opacity=".22" filter="url(#sh)"/>
+<circle cx="200" cy="160" r="88" fill="url(#metal)"/>
+<circle cx="200" cy="160" r="70" fill="url(#metalV)"/>
+<rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(0 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(30 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(60 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(90 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(120 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(150 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(180 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(210 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(240 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(270 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(300 200 160)"/><rect x="196" y="72" width="8" height="40" rx="3" fill="#2b3036" transform="rotate(330 200 160)"/>
+<circle cx="200" cy="160" r="42" fill="url(#dark)"/>
+<circle cx="200" cy="160" r="34" fill="none" stroke="#9aa3ad" stroke-width="3"/>
+<circle cx="200" cy="160" r="26" fill="none" stroke="#9aa3ad" stroke-width="3"/>
+<circle cx="200" cy="160" r="10" fill="url(#metal)"/>
+<rect x="276" y="80" width="40" height="22" rx="10" fill="url(#metal)"/><circle cx="306" cy="91" r="6" fill="#dfe4ea"/>
+<rect x="84" y="214" width="40" height="22" rx="10" fill="url(#metal)"/><circle cx="94" cy="225" r="6" fill="#dfe4ea"/>
+</svg>

@@ -358,21 +358,21 @@ export default function RFQSection() {
   return (
     <section
       id="parts-calculator"
-      className="py-20 sm:py-24 bg-slate-950 text-white relative overflow-hidden border-b border-slate-800 scroll-mt-20"
+      className="py-20 sm:py-24 bg-white text-slate-900 relative overflow-hidden border-b border-slate-200 scroll-mt-20"
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-red-600/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Заголовок */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900 text-slate-300 text-xs sm:text-sm font-semibold mb-4 border border-slate-800">
-            <BadgeCheck className="w-4 h-4 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white text-slate-600 text-xs sm:text-sm font-semibold mb-4 border border-slate-200">
+            <BadgeCheck className="w-4 h-4 text-emerald-600" />
             <span>{isUk ? 'Безкоштовна процінка, без зобовʼязань' : 'Free quote, no obligation'}</span>
           </div>
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight mb-4">
+          <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">
             {isUk ? 'Дізнатися ціну на запчастини' : 'Get a Price for Your Parts'}
           </h2>
-          <p className="text-base sm:text-lg text-slate-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-slate-500 max-w-2xl mx-auto">
             {isUk
               ? 'Не знаєте артикул? Напишіть VIN або модель техніки чи додайте фото деталі — підберемо самі.'
               : "Don't know the part number? Add a VIN, machine model or a photo — we'll identify it."}
@@ -382,34 +382,34 @@ export default function RFQSection() {
         {/* Як це працює */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
           {steps.map((s, i) => (
-            <div key={s.title} className="flex items-start gap-3 p-4 rounded-2xl bg-slate-900/70 border border-slate-800">
+            <div key={s.title} className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-slate-200">
               <div className="shrink-0 w-9 h-9 rounded-xl bg-red-600/15 border border-red-600/30 flex items-center justify-center">
-                <s.icon className="w-4 h-4 text-red-400" />
+                <s.icon className="w-4 h-4 text-red-600" />
               </div>
               <div className="text-left">
-                <div className="text-sm font-bold text-white">
+                <div className="text-sm font-bold text-slate-900">
                   {i + 1}. {s.title}
                 </div>
-                <div className="text-xs text-slate-400 mt-0.5 leading-snug">{s.text}</div>
+                <div className="text-xs text-slate-500 mt-0.5 leading-snug">{s.text}</div>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 sm:p-10 shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-10 shadow-2xl">
           {status === 'success' ? (
             <div className="py-6 text-center space-y-6">
               <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto">
                 <CheckCircle2 className="w-8 h-8" />
               </div>
               <div>
-                <span className="inline-block bg-slate-800 border border-slate-700 text-emerald-400 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
+                <span className="inline-block bg-slate-100 border border-slate-300 text-emerald-600 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
                   {isUk ? `Запит ${leadId} прийнято` : `Request ${leadId} received`}
                 </span>
-                <h3 className="text-2xl font-black text-white mb-2">
+                <h3 className="text-2xl font-black text-slate-900 mb-2">
                   {isUk ? 'Дякуємо! Запит уже в менеджера' : 'Thank you! Your request is with our team'}
                 </h3>
-                <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                <p className="text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
                   {isUk
                     ? `Звʼяжемося з вами (${contact}) з цінами та термінами. Якщо зручніше — напишіть нам у месенджер, вказавши номер ${leadId}.`
                     : `We'll contact you (${contact}) with prices and lead times. You can also message us quoting ${leadId}.`}
@@ -417,20 +417,20 @@ export default function RFQSection() {
               </div>
 
               {(activeItems.length > 0 || photos.length > 0) && (
-                <div className="bg-slate-950 border border-slate-800 rounded-2xl p-5 max-w-md mx-auto text-left text-xs space-y-2">
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 max-w-md mx-auto text-left text-xs space-y-2">
                   {activeItems.map((it, idx) => (
-                    <div key={it.id} className="flex justify-between text-slate-300 border-b border-slate-800/60 pb-1">
+                    <div key={it.id} className="flex justify-between text-slate-600 border-b border-slate-200 pb-1">
                       <span>
                         {idx + 1}. <strong className="font-mono">{it.partNumber}</strong>
                         {it.machineModel ? ` (${it.machineModel})` : ''}
                       </span>
-                      <span className="font-mono text-white">
+                      <span className="font-mono text-slate-900">
                         {it.quantity} {isUk ? 'шт' : 'pcs'}
                       </span>
                     </div>
                   ))}
                   {photos.length > 0 && (
-                    <div className="text-slate-400">
+                    <div className="text-slate-500">
                       📷 {isUk ? `Фото: ${photos.length} шт.` : `Photos: ${photos.length}`}
                     </div>
                   )}
@@ -442,7 +442,7 @@ export default function RFQSection() {
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 px-4 rounded-xl transition-colors text-sm"
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 px-4 rounded-xl transition-colors text-sm"
                 >
                   {isUk ? 'Надіслати ще один запит' : 'Send another request'}
                 </button>
@@ -454,10 +454,10 @@ export default function RFQSection() {
                 <AlertTriangle className="w-8 h-8" />
               </div>
               <div>
-                <h3 className="text-2xl font-black text-white mb-2">
+                <h3 className="text-2xl font-black text-slate-900 mb-2">
                   {isUk ? 'Не вдалося надіслати з сайту' : "Couldn't send from the website"}
                 </h3>
-                <p className="text-sm text-slate-300 max-w-lg mx-auto leading-relaxed">
+                <p className="text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
                   {isUk
                     ? 'Нічого не втрачено: натисніть WhatsApp — запит уже заповнений, лишиться тільки надіслати.'
                     : 'Nothing is lost: tap WhatsApp — your request is pre-filled, just press send.'}
@@ -468,7 +468,7 @@ export default function RFQSection() {
                 <button
                   type="button"
                   onClick={() => setStatus('idle')}
-                  className="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 px-4 rounded-xl transition-colors text-sm"
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 font-medium py-2.5 px-4 rounded-xl transition-colors text-sm"
                 >
                   {isUk ? 'Спробувати ще раз' : 'Try again'}
                 </button>
@@ -479,16 +479,16 @@ export default function RFQSection() {
               {/* 1. Артикули */}
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between items-center">
-                  <span className="text-xs uppercase font-bold tracking-wider text-slate-400">
+                  <span className="text-xs uppercase font-bold tracking-wider text-slate-500">
                     {isUk ? 'Артикул (якщо знаєте)' : 'Part number (if known)'}
                   </span>
                   {items.length < MAX_ITEMS && (
                     <button
                       type="button"
                       onClick={() => setItems((p) => [...p, emptyItem()])}
-                      className="inline-flex items-center gap-1.5 text-xs font-bold text-white bg-slate-800 hover:bg-slate-700 border border-slate-700 px-3 py-1.5 rounded-lg transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-300 px-3 py-1.5 rounded-lg transition-colors"
                     >
-                      <Plus className="w-3.5 h-3.5 text-emerald-400" />
+                      <Plus className="w-3.5 h-3.5 text-emerald-600" />
                       <span>{isUk ? 'Ще деталь' : 'Add part'}</span>
                     </button>
                   )}
@@ -501,7 +501,7 @@ export default function RFQSection() {
                         type="text"
                         value={item.partNumber}
                         onChange={(e) => updateItem(item.id, 'partNumber', e.target.value)}
-                        className="col-span-6 sm:col-span-2 w-full px-3 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl text-base sm:text-sm focus:border-white outline-none font-mono uppercase"
+                        className="col-span-6 sm:col-span-2 w-full px-3 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl text-base sm:text-sm focus:border-red-500 outline-none font-mono uppercase"
                         placeholder={
                           index === 0 ? (isUk ? 'Напр. 281-1196' : 'e.g. 281-1196') : isUk ? 'Наступний артикул' : 'Next part number'
                         }
@@ -511,7 +511,7 @@ export default function RFQSection() {
                         type="text"
                         value={item.machineModel}
                         onChange={(e) => updateItem(item.id, 'machineModel', e.target.value)}
-                        className="col-span-4 sm:col-span-2 w-full px-3 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl text-base sm:text-sm focus:border-white outline-none"
+                        className="col-span-4 sm:col-span-2 w-full px-3 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl text-base sm:text-sm focus:border-red-500 outline-none"
                         placeholder={isUk ? 'Бренд / техніка' : 'Brand / machine'}
                         aria-label={isUk ? 'Бренд або техніка' : 'Brand or machine'}
                       />
@@ -521,7 +521,7 @@ export default function RFQSection() {
                         inputMode="numeric"
                         value={item.quantity}
                         onChange={(e) => updateItem(item.id, 'quantity', e.target.value)}
-                        className="col-span-2 sm:col-span-1 w-full px-3 py-3 bg-slate-950 text-white border border-slate-700 rounded-xl text-base sm:text-sm focus:border-white outline-none font-mono text-center"
+                        className="col-span-2 sm:col-span-1 w-full px-3 py-3 bg-white text-slate-900 border border-slate-300 rounded-xl text-base sm:text-sm focus:border-red-500 outline-none font-mono text-center"
                         aria-label={isUk ? 'Кількість' : 'Quantity'}
                       />
                     </div>
@@ -529,7 +529,7 @@ export default function RFQSection() {
                       <button
                         type="button"
                         onClick={() => removeItem(item.id)}
-                        className="text-slate-500 hover:text-red-400 p-3 transition-colors"
+                        className="text-slate-500 hover:text-red-600 p-3 transition-colors"
                         title={isUk ? 'Видалити' : 'Remove'}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -541,7 +541,7 @@ export default function RFQSection() {
 
               {/* 2. VIN / опис / список + фото */}
               <div className="mb-6 space-y-3">
-                <span className="block text-xs uppercase font-bold tracking-wider text-slate-400">
+                <span className="block text-xs uppercase font-bold tracking-wider text-slate-500">
                   {isUk ? 'Або опишіть, що треба' : 'Or describe what you need'}
                 </span>
                 <textarea
@@ -553,12 +553,12 @@ export default function RFQSection() {
                       ? 'VIN або серійний номер, модель техніки, рік — чи вставте цілий список деталей з дефектовки'
                       : 'VIN or serial number, machine model, year — or paste your full parts list'
                   }
-                  className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:border-white outline-none text-base sm:text-sm resize-y"
+                  className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl focus:border-red-500 outline-none text-base sm:text-sm resize-y"
                 />
 
                 <div className="flex flex-wrap items-center gap-3">
                   {photos.map((p) => (
-                    <div key={p.id} className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+                    <div key={p.id} className="relative w-20 h-20 rounded-xl overflow-hidden border border-slate-300 bg-white">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={p.preview} alt="" className="w-full h-full object-cover" />
                       <button
@@ -576,9 +576,9 @@ export default function RFQSection() {
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
-                      className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-dashed border-slate-600 hover:border-white text-slate-300 hover:text-white text-sm font-semibold transition-colors"
+                      className="inline-flex items-center gap-2 px-4 py-3 rounded-xl border border-dashed border-slate-300 hover:border-slate-900 text-slate-600 hover:text-slate-900 text-sm font-semibold transition-colors"
                     >
-                      <Camera className="w-4 h-4 text-amber-400" />
+                      <Camera className="w-4 h-4 text-amber-600" />
                       <span>
                         {isUk
                           ? `Фото деталі або шильдика${photos.length ? ` (${photos.length}/${MAX_PHOTOS})` : ''}`
@@ -599,7 +599,7 @@ export default function RFQSection() {
 
               {/* 3. Що цікавить */}
               <div className="mb-6">
-                <span className="block text-xs uppercase font-bold tracking-wider text-slate-400 mb-2">
+                <span className="block text-xs uppercase font-bold tracking-wider text-slate-500 mb-2">
                   {isUk ? 'Що рахувати' : 'What to quote'}
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -614,7 +614,7 @@ export default function RFQSection() {
                         className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
                           on
                             ? 'bg-red-600 border-red-600 text-white'
-                            : 'bg-slate-950 border-slate-700 text-slate-300 hover:border-slate-500'
+                            : 'bg-white border-slate-300 text-slate-600 hover:border-slate-400'
                         }`}
                       >
                         {t}
@@ -629,7 +629,7 @@ export default function RFQSection() {
 
               {/* 4. Контакт */}
               <div className="mb-3">
-                <label htmlFor="rfq-contact" className="block text-sm font-semibold text-slate-300 mb-2">
+                <label htmlFor="rfq-contact" className="block text-sm font-semibold text-slate-600 mb-2">
                   {isUk ? 'Куди надіслати ціну? *' : 'Where should we send the price? *'}
                 </label>
                 <input
@@ -639,20 +639,20 @@ export default function RFQSection() {
                   autoComplete="tel"
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
-                  className="w-full px-4 py-3.5 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:border-white outline-none text-base"
+                  className="w-full px-4 py-3.5 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl focus:border-red-500 outline-none text-base"
                   placeholder={isUk ? 'Телефон / @telegram / email' : 'Phone / @telegram / email'}
                 />
               </div>
 
-              <div className="mb-6 text-xs text-slate-400">
+              <div className="mb-6 text-xs text-slate-500">
                 {!showCountry ? (
                   <span>
                     {isUk ? 'Доставка: ' : 'Delivery to: '}
-                    <strong className="text-slate-300">{country}</strong>{' '}
+                    <strong className="text-slate-600">{country}</strong>{' '}
                     <button
                       type="button"
                       onClick={() => setShowCountry(true)}
-                      className="underline underline-offset-4 hover:text-white"
+                      className="underline underline-offset-4 hover:text-slate-900"
                     >
                       {isUk ? 'змінити' : 'change'}
                     </button>
@@ -662,7 +662,7 @@ export default function RFQSection() {
                     type="text"
                     value={country}
                     onChange={(e) => setCountry(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-950 text-white placeholder-slate-500 border border-slate-700 rounded-xl focus:border-white outline-none text-base sm:text-sm"
+                    className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl focus:border-red-500 outline-none text-base sm:text-sm"
                     placeholder={isUk ? 'Країна доставки' : 'Destination country'}
                   />
                 )}

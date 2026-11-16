@@ -20,33 +20,33 @@ export default function PriceShowcase() {
   }, []);
 
   return (
-    <section id="prices" className="relative py-20 sm:py-24 bg-[#06090E] border-b border-slate-800 scroll-mt-20">
+    <section id="prices" className="relative py-20 sm:py-24 bg-slate-50 border-b border-slate-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
           <div className="max-w-2xl">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-400 mb-3">{isUk ? 'Приклади цін' : 'Price examples'}</p>
-            <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-600 mb-3">{isUk ? 'Приклади цін' : 'Price examples'}</p>
+            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
               {isUk ? 'Скільки це коштує насправді' : 'What parts really cost'}
             </h2>
-            <p className="mt-4 text-slate-400 text-base sm:text-lg">
+            <p className="mt-4 text-slate-500 text-base sm:text-lg">
               {isUk
                 ? 'Реальні позиції, які ми возимо. Ціна вже з нашою комісією, у фунтах і в гривнях за сьогоднішнім курсом, плюс доставка в Україну за вагою.'
                 : 'Real items we supply. Prices include our fee, in pounds and hryvnia at today’s rate, plus delivery by weight.'}
             </p>
           </div>
 
-          <div className="shrink-0 inline-flex items-center gap-3 self-start lg:self-auto px-4 py-3 rounded-2xl bg-slate-900/80 border border-slate-800">
-            <RefreshCw className={`w-4 h-4 ${rates ? 'text-emerald-400' : 'text-slate-500 animate-spin'}`} />
+          <div className="shrink-0 inline-flex items-center gap-3 self-start lg:self-auto px-4 py-3 rounded-2xl bg-white border border-slate-200">
+            <RefreshCw className={`w-4 h-4 ${rates ? 'text-emerald-600' : 'text-slate-500 animate-spin'}`} />
             <div className="text-xs leading-tight">
               {rates ? (
                 <>
-                  <div className="text-white font-bold font-mono">£1 = {rates.uah.GBP.toFixed(2)} ₴</div>
-                  <div className="text-slate-400 mt-0.5">{isUk ? `Курс НБУ на ${rates.date}` : `NBU rate, ${rates.date}`}</div>
+                  <div className="text-slate-900 font-bold font-mono">£1 = {rates.uah.GBP.toFixed(2)} ₴</div>
+                  <div className="text-slate-500 mt-0.5">{isUk ? `Курс НБУ на ${rates.date}` : `NBU rate, ${rates.date}`}</div>
                 </>
               ) : ratesFailed ? (
-                <div className="text-slate-400">{isUk ? 'Курс НБУ тимчасово недоступний' : 'NBU rate unavailable'}</div>
+                <div className="text-slate-500">{isUk ? 'Курс НБУ тимчасово недоступний' : 'NBU rate unavailable'}</div>
               ) : (
-                <div className="text-slate-400">{isUk ? 'Завантажуємо курс НБУ…' : 'Loading NBU rate…'}</div>
+                <div className="text-slate-500">{isUk ? 'Завантажуємо курс НБУ…' : 'Loading NBU rate…'}</div>
               )}
             </div>
           </div>
@@ -70,7 +70,7 @@ export default function PriceShowcase() {
             </div>
             <Link
               href="/catalog"
-              className="mt-6 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-red-700 text-sm font-extrabold uppercase tracking-wide hover:bg-red-50 transition-colors"
+              className="mt-6 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 text-red-700 text-sm font-extrabold uppercase tracking-wide hover:bg-red-50 transition-colors"
             >
               <span>{isUk ? 'Відкрити каталог' : 'Open catalog'}</span>
               <ArrowRight className="w-4 h-4" />

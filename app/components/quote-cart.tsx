@@ -142,56 +142,56 @@ export default function QuoteCart() {
         >
           <ShoppingCart className="w-5 h-5" />
           <span>{isUk ? 'Запит' : 'Quote'}</span>
-          <span className="min-w-6 h-6 px-1.5 rounded-full bg-white text-red-600 text-xs font-black flex items-center justify-center">{count}</span>
+          <span className="min-w-6 h-6 px-1.5 rounded-full bg-slate-900 text-red-600 text-xs font-black flex items-center justify-center">{count}</span>
         </button>
       )}
 
       {open && (
         <div className="fixed inset-0 z-[60] flex justify-end">
           <div className="absolute inset-0 bg-black/60" onClick={() => setOpen(false)} />
-          <aside className="relative w-full max-w-md h-full bg-slate-950 border-l border-slate-800 flex flex-col">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-800">
-              <h3 className="text-lg font-black text-white flex items-center gap-2">
+          <aside className="relative w-full max-w-md h-full bg-white border-l border-slate-200 flex flex-col">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200">
+              <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
                 <ShoppingCart className="w-5 h-5 text-red-500" />
                 {isUk ? 'Кошик запиту' : 'Quote cart'}
               </h3>
-              <button type="button" onClick={() => setOpen(false)} className="p-2 text-slate-400 hover:text-white" aria-label="Close">
+              <button type="button" onClick={() => setOpen(false)} className="p-2 text-slate-500 hover:text-slate-900" aria-label="Close">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {status === 'done' ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center px-6 gap-4">
-                <CheckCircle2 className="w-14 h-14 text-emerald-400" />
-                <h4 className="text-xl font-black text-white">{isUk ? `Запит ${leadId} надіслано` : `Request ${leadId} sent`}</h4>
-                <p className="text-sm text-slate-400">
+                <CheckCircle2 className="w-14 h-14 text-emerald-600" />
+                <h4 className="text-xl font-black text-slate-900">{isUk ? `Запит ${leadId} надіслано` : `Request ${leadId} sent`}</h4>
+                <p className="text-sm text-slate-500">
                   {isUk ? 'Менеджер підтвердить наявність, точну ціну й термін і звʼяжеться з вами.' : 'We will confirm stock, exact price and lead time and contact you.'}
                 </p>
-                <button type="button" onClick={() => { setStatus('idle'); setOpen(false); }} className="mt-2 px-5 py-2.5 rounded-xl bg-slate-800 text-white text-sm font-bold">
+                <button type="button" onClick={() => { setStatus('idle'); setOpen(false); }} className="mt-2 px-5 py-2.5 rounded-xl bg-slate-100 text-slate-900 text-sm font-bold">
                   {isUk ? 'Закрити' : 'Close'}
                 </button>
               </div>
             ) : (
               <>
                 <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
-                  {!items.length && <p className="text-sm text-slate-400">{isUk ? 'Кошик порожній.' : 'Cart is empty.'}</p>}
+                  {!items.length && <p className="text-sm text-slate-500">{isUk ? 'Кошик порожній.' : 'Cart is empty.'}</p>}
                   {items.map(({ line, item }) => {
                     const p = clientPriceGbp(item, rates);
                     return (
-                      <div key={item.id} className="flex gap-3 p-3 rounded-xl bg-slate-900 border border-slate-800">
+                      <div key={item.id} className="flex gap-3 p-3 rounded-xl bg-white border border-slate-200">
                         <div className="flex-1 min-w-0">
-                          <div className="text-[11px] uppercase font-bold text-slate-400">{item.brand}</div>
-                          <div className="font-mono text-sm text-white">{item.partNumber}</div>
-                          <div className="text-xs text-slate-400 truncate">{isUk ? item.titleUk : item.titleEn}</div>
+                          <div className="text-[11px] uppercase font-bold text-slate-500">{item.brand}</div>
+                          <div className="font-mono text-sm text-slate-900">{item.partNumber}</div>
+                          <div className="text-xs text-slate-500 truncate">{isUk ? item.titleUk : item.titleEn}</div>
                           <div className="mt-2 flex items-center gap-2">
-                            <button type="button" onClick={() => setQty(item.id, line.qty - 1)} className="w-7 h-7 rounded-lg bg-slate-800 text-white flex items-center justify-center" aria-label="-"><Minus className="w-3.5 h-3.5" /></button>
-                            <span className="w-6 text-center text-sm text-white font-mono">{line.qty}</span>
-                            <button type="button" onClick={() => setQty(item.id, line.qty + 1)} className="w-7 h-7 rounded-lg bg-slate-800 text-white flex items-center justify-center" aria-label="+"><Plus className="w-3.5 h-3.5" /></button>
+                            <button type="button" onClick={() => setQty(item.id, line.qty - 1)} className="w-7 h-7 rounded-lg bg-slate-100 text-slate-900 flex items-center justify-center" aria-label="-"><Minus className="w-3.5 h-3.5" /></button>
+                            <span className="w-6 text-center text-sm text-slate-900 font-mono">{line.qty}</span>
+                            <button type="button" onClick={() => setQty(item.id, line.qty + 1)} className="w-7 h-7 rounded-lg bg-slate-100 text-slate-900 flex items-center justify-center" aria-label="+"><Plus className="w-3.5 h-3.5" /></button>
                           </div>
                         </div>
                         <div className="flex flex-col items-end justify-between">
-                          <button type="button" onClick={() => remove(item.id)} className="text-slate-500 hover:text-red-400" aria-label="Remove"><Trash2 className="w-4 h-4" /></button>
-                          <div className="text-sm font-bold text-white">{p !== null ? fmtGbp(p * line.qty) : '—'}</div>
+                          <button type="button" onClick={() => remove(item.id)} className="text-slate-500 hover:text-red-600" aria-label="Remove"><Trash2 className="w-4 h-4" /></button>
+                          <div className="text-sm font-bold text-slate-900">{p !== null ? fmtGbp(p * line.qty) : '—'}</div>
                         </div>
                       </div>
                     );
@@ -199,17 +199,17 @@ export default function QuoteCart() {
                 </div>
 
                 {items.length > 0 && (
-                  <div className="border-t border-slate-800 px-5 py-4 space-y-3">
+                  <div className="border-t border-slate-200 px-5 py-4 space-y-3">
                     <div className="text-sm space-y-1">
-                      <div className="flex justify-between text-slate-300"><span>{isUk ? 'Деталі' : 'Parts'}</span><span className="font-bold text-white">{partsTotal !== null ? fmtGbp(partsTotal) : '—'}</span></div>
-                      <div className="flex justify-between text-slate-300">
+                      <div className="flex justify-between text-slate-600"><span>{isUk ? 'Деталі' : 'Parts'}</span><span className="font-bold text-slate-900">{partsTotal !== null ? fmtGbp(partsTotal) : '—'}</span></div>
+                      <div className="flex justify-between text-slate-600">
                         <span>{isUk ? `Доставка в Україну (~${weight.toFixed(1)} кг)` : `Delivery (~${weight.toFixed(1)} kg)`}</span>
-                        <span className="font-bold text-white">{ship !== null ? fmtGbp(ship) : isUk ? 'індивідуально' : 'on request'}</span>
+                        <span className="font-bold text-slate-900">{ship !== null ? fmtGbp(ship) : isUk ? 'індивідуально' : 'on request'}</span>
                       </div>
                       {partsTotal !== null && ship !== null && rates && (
-                        <div className="flex justify-between pt-1 border-t border-slate-800 text-white font-black">
+                        <div className="flex justify-between pt-1 border-t border-slate-200 text-slate-900 font-black">
                           <span>{isUk ? 'Разом орієнтовно' : 'Estimated total'}</span>
-                          <span>{fmtGbp(partsTotal + ship)} <span className="text-amber-300 font-bold text-xs">≈ {Math.round((partsTotal + ship) * rates.uah.GBP).toLocaleString('uk-UA')} ₴</span></span>
+                          <span>{fmtGbp(partsTotal + ship)} <span className="text-amber-600 font-bold text-xs">≈ {Math.round((partsTotal + ship) * rates.uah.GBP).toLocaleString('uk-UA')} ₴</span></span>
                         </div>
                       )}
                     </div>
@@ -218,17 +218,17 @@ export default function QuoteCart() {
                       value={contact}
                       onChange={(e) => setContact(e.target.value)}
                       placeholder={isUk ? 'Телефон / @telegram / email *' : 'Phone / @telegram / email *'}
-                      className="w-full px-4 py-3 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-xl text-base focus:border-white outline-none"
+                      className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl text-base focus:border-red-500 outline-none"
                     />
                     <input
                       type="text"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
                       placeholder={isUk ? 'Коментар: VIN, модель техніки (необовʼязково)' : 'Comment: VIN, machine (optional)'}
-                      className="w-full px-4 py-3 bg-slate-900 text-white placeholder-slate-500 border border-slate-700 rounded-xl text-base sm:text-sm focus:border-white outline-none"
+                      className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl text-base sm:text-sm focus:border-red-500 outline-none"
                     />
                     {status === 'error' && (
-                      <p className="text-xs text-amber-300">{isUk ? 'Не вдалося надіслати. Спробуйте ще раз або напишіть у WhatsApp +44 7426 826595.' : 'Could not send. Try again or WhatsApp +44 7426 826595.'}</p>
+                      <p className="text-xs text-amber-600">{isUk ? 'Не вдалося надіслати. Спробуйте ще раз або напишіть у WhatsApp +44 7426 826595.' : 'Could not send. Try again or WhatsApp +44 7426 826595.'}</p>
                     )}
                     <button
                       type="button"

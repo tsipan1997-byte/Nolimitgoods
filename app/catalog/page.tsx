@@ -10,7 +10,7 @@ import QuoteCart from '../components/quote-cart';
 import ProductCard from '../components/product-card';
 import InteractiveDiagram from '../components/interactive-diagram';
 import { useLanguage } from '@/lib/language-context';
-import { CATALOG, CATEGORIES, GROUPS, TYPE_LABEL, loadFullCatalog, type CatalogItem, type CategoryId, type GroupId, type PartType } from '@/lib/catalog';
+import { CATALOG, CATEGORIES, GROUPS, TYPE_LABEL, loadFullCatalog, MODEL_PAGES, type CatalogItem, type CategoryId, type GroupId, type PartType } from '@/lib/catalog';
 import { clientPriceGbp, loadRates, type Rates } from '@/lib/pricing';
 
 type Sort = 'popular' | 'price-asc' | 'price-desc';
@@ -76,23 +76,23 @@ export default function CatalogPage() {
 
   const chip = (on: boolean) =>
     `px-3.5 py-2 rounded-full text-sm font-semibold border whitespace-nowrap transition-colors ${
-      on ? 'bg-white text-slate-950 border-white' : 'bg-slate-900 text-slate-300 border-slate-700 hover:border-slate-500'
+      on ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-300 hover:border-slate-400'
     }`;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-white text-slate-800 flex flex-col">
       <Header />
 
       {/* Шапка каталогу */}
-      <section className="border-b border-slate-800 bg-gradient-to-b from-[#120709] to-slate-950">
+      <section className="border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-8">
           <nav className="flex items-center gap-1 text-xs text-slate-500 mb-4">
-            <Link href="/" className="hover:text-white">{isUk ? 'Головна' : 'Home'}</Link>
+            <Link href="/" className="hover:text-slate-900">{isUk ? 'Головна' : 'Home'}</Link>
             <ChevronRight className="w-3 h-3" />
-            <span className="text-slate-300">{isUk ? 'Каталог' : 'Catalog'}</span>
+            <span className="text-slate-600">{isUk ? 'Каталог' : 'Catalog'}</span>
           </nav>
-          <h1 className="text-3xl md:text-5xl font-black text-white tracking-tight">{isUk ? 'Каталог запчастин' : 'Parts catalog'}</h1>
-          <p className="mt-3 text-slate-400 max-w-2xl">
+          <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">{isUk ? 'Каталог запчастин' : 'Parts catalog'}</h1>
+          <p className="mt-3 text-slate-500 max-w-2xl">
             {isUk
               ? 'Ціни з нашою комісією, у фунтах і гривнях за курсом НБУ, плюс доставка в Україну за вагою. Додавайте в запит — підтвердимо наявність і точну ціну.'
               : 'Prices include our fee, in pounds and hryvnia (NBU rate), plus delivery by weight. Add to your quote — we confirm stock and exact price.'}
@@ -106,10 +106,10 @@ export default function CatalogPage() {
               value={q}
               onChange={(e) => setQ(e.target.value)}
               placeholder={isUk ? 'Артикул, бренд або назва: 320/B4420, Donaldson, помпа…' : 'Part number, brand or name…'}
-              className="w-full pl-12 pr-10 py-4 rounded-2xl bg-slate-900 border border-slate-700 focus:border-white outline-none text-base text-white placeholder-slate-500"
+              className="w-full pl-12 pr-10 py-4 rounded-2xl bg-white border border-slate-300 focus:border-red-500 outline-none text-base text-slate-900 placeholder-slate-400"
             />
             {q && (
-              <button type="button" onClick={() => setQ('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-white" aria-label="Clear">
+              <button type="button" onClick={() => setQ('')} className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-slate-500 hover:text-slate-900" aria-label="Clear">
                 <X className="w-4 h-4" />
               </button>
             )}
@@ -128,13 +128,25 @@ export default function CatalogPage() {
                     on ? 'border-red-500 bg-red-600/15' : 'border-slate-800 bg-slate-900/70 hover:border-slate-600'
                   }`}
                 >
-                  <div className="text-base font-black text-white">{isUk ? c.uk : c.en}</div>
-                  <div className="text-xs text-slate-400 mt-1 leading-snug">{isUk ? c.hintUk : c.hintEn}</div>
-                  <div className="text-xs font-bold text-red-400 mt-2">{countIn(c.id)} {isUk ? 'позицій' : 'items'}</div>
+                  <div className="text-base font-black text-slate-900">{isUk ? c.uk : c.en}</div>
+                  <div className="text-xs text-slate-500 mt-1 leading-snug">{isUk ? c.hintUk : c.hintEn}</div>
+                  <div className="text-xs font-bold text-red-600 mt-2">{countIn(c.id)} {isUk ? 'позицій' : 'items'}</div>
                 </button>
               );
             })}
           </div>
+        </div>
+      </section>
+
+      {/* Популярні моделі авто (SEO-сторінки) */}
+      <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mr-1">{isUk ? 'Популярні авто:' : 'Popular cars:'}</span>
+          {MODEL_PAGES.map((m) => (
+            <Link key={m.slug} href={`/zapchastyny/${m.slug}`} className="px-3 py-1.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:border-red-500 hover:text-red-600">
+              {m.name}
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -159,7 +171,7 @@ export default function CatalogPage() {
             <select
               value={sort}
               onChange={(e) => setSort(e.target.value as Sort)}
-              className="ml-auto px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-200"
+              className="ml-auto px-3 py-2 rounded-xl bg-white border border-slate-300 text-sm text-slate-700"
               aria-label={isUk ? 'Сортування' : 'Sort'}
             >
               <option value="popular">{isUk ? 'Спочатку популярні' : 'Popular first'}</option>
@@ -169,7 +181,7 @@ export default function CatalogPage() {
           </div>
           <div className="text-sm text-slate-500">
             {isUk ? `Знайдено: ${filtered.length}` : `Found: ${filtered.length}`}
-            {rates && <span className="ml-3 font-mono text-slate-400">£1 = {rates.uah.GBP.toFixed(2)} ₴ ({isUk ? 'НБУ' : 'NBU'} {rates.date})</span>}
+            {rates && <span className="ml-3 font-mono text-slate-500">£1 = {rates.uah.GBP.toFixed(2)} ₴ ({isUk ? 'НБУ' : 'NBU'} {rates.date})</span>}
           </div>
         </div>
 
@@ -182,17 +194,17 @@ export default function CatalogPage() {
           </div>
           {filtered.length > limit && (
             <div className="mt-8 text-center">
-              <button type="button" onClick={() => setLimit((l) => l + 48)} className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-sm">
+              <button type="button" onClick={() => setLimit((l) => l + 48)} className="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 font-bold text-sm">
                 {isUk ? `Показати ще (${filtered.length - limit})` : `Show more (${filtered.length - limit})`}
               </button>
             </div>
           )}
           </>
         ) : (
-          <div className="p-8 rounded-2xl border border-dashed border-slate-700 text-center">
+          <div className="p-8 rounded-2xl border border-dashed border-slate-300 text-center">
             <PackageSearch className="w-10 h-10 mx-auto text-slate-500" />
-            <h3 className="mt-3 text-lg font-black text-white">{isUk ? 'У каталозі цього немає — але ми знайдемо' : 'Not listed — but we will find it'}</h3>
-            <p className="text-sm text-slate-400 mt-1">{isUk ? 'Надішліть артикул, VIN або фото — порахуємо оригінал, аналог і б/у.' : 'Send a part number, VIN or photo.'}</p>
+            <h3 className="mt-3 text-lg font-black text-slate-900">{isUk ? 'У каталозі цього немає — але ми знайдемо' : 'Not listed — but we will find it'}</h3>
+            <p className="text-sm text-slate-500 mt-1">{isUk ? 'Надішліть артикул, VIN або фото — порахуємо оригінал, аналог і б/у.' : 'Send a part number, VIN or photo.'}</p>
             <Link href="/#parts-calculator" className="inline-block mt-4 px-5 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold text-sm">
               {isUk ? 'Запитати ціну' : 'Request a price'}
             </Link>
@@ -202,12 +214,12 @@ export default function CatalogPage() {
         {/* Банер під запит */}
         <div className="mt-10 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-red-700 to-red-600 flex flex-col md:flex-row md:items-center gap-4 justify-between">
           <div>
-            <h3 className="text-2xl font-black text-white">{isUk ? 'Тут лише частина того, що ми возимо' : 'This is just part of what we supply'}</h3>
+            <h3 className="text-2xl font-black text-slate-900">{isUk ? 'Тут лише частина того, що ми возимо' : 'This is just part of what we supply'}</h3>
             <p className="text-red-50/90 text-sm mt-1">
               {isUk ? 'Будь-який бренд і артикул — від одного фільтра до палети.' : 'Any brand or part number — from one filter to a pallet.'}
             </p>
           </div>
-          <Link href="/#parts-calculator" className="shrink-0 px-6 py-3.5 rounded-xl bg-white text-red-700 font-extrabold uppercase text-sm tracking-wide text-center">
+          <Link href="/#parts-calculator" className="shrink-0 px-6 py-3.5 rounded-xl bg-slate-900 text-red-700 font-extrabold uppercase text-sm tracking-wide text-center">
             {isUk ? 'Надіслати свій список' : 'Send your list'}
           </Link>
         </div>

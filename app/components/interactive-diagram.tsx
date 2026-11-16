@@ -43,32 +43,32 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
   };
 
   const panel = active && (
-    <div className="p-5 rounded-2xl bg-slate-900 border border-slate-700">
+    <div className="p-5 rounded-2xl bg-white border border-slate-300">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-[11px] uppercase font-bold tracking-wider text-red-400">{isUk ? diagram.machineUk : diagram.machineEn}</p>
-          <h3 className="text-xl font-black text-white mt-1">{isUk ? active.uk : active.en}</h3>
+          <p className="text-[11px] uppercase font-bold tracking-wider text-red-600">{isUk ? diagram.machineUk : diagram.machineEn}</p>
+          <h3 className="text-xl font-black text-slate-900 mt-1">{isUk ? active.uk : active.en}</h3>
         </div>
-        <button type="button" onClick={() => setActive(null)} className="p-1 text-slate-500 hover:text-white" aria-label="Close">
+        <button type="button" onClick={() => setActive(null)} className="p-1 text-slate-500 hover:text-slate-900" aria-label="Close">
           <X className="w-5 h-5" />
         </button>
       </div>
-      <p className="text-sm text-slate-400 mt-2">{isUk ? active.descUk : active.descEn}</p>
+      <p className="text-sm text-slate-500 mt-2">{isUk ? active.descUk : active.descEn}</p>
 
       {item ? (
-        <div className="mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800">
+        <div className="mt-4 p-4 rounded-xl bg-white border border-slate-200">
           <div className="flex items-center gap-2">
             <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${TYPE_LABEL[item.type].cls}`}>
               {isUk ? TYPE_LABEL[item.type].uk : TYPE_LABEL[item.type].en}
             </span>
-            <span className="font-mono text-sm text-white">{item.partNumber}</span>
+            <span className="font-mono text-sm text-slate-900">{item.partNumber}</span>
           </div>
           <div className="mt-3 flex items-baseline gap-3 flex-wrap">
-            <span className="text-sm text-slate-400">{isUk ? 'від' : 'from'}</span>
-            <span className="text-3xl font-black text-white">{gbp !== null ? fmtGbp(gbp) : '—'}</span>
-            {gbp !== null && rates && <span className="text-amber-300 font-semibold">≈ {fmtUah(gbp * rates.uah.GBP)}</span>}
+            <span className="text-sm text-slate-500">{isUk ? 'від' : 'from'}</span>
+            <span className="text-3xl font-black text-slate-900">{gbp !== null ? fmtGbp(gbp) : '—'}</span>
+            {gbp !== null && rates && <span className="text-amber-600 font-semibold">≈ {fmtUah(gbp * rates.uah.GBP)}</span>}
           </div>
-          <div className="text-xs text-slate-400 mt-1">
+          <div className="text-xs text-slate-500 mt-1">
             {ship !== null ? (isUk ? `+ доставка в Україну ${fmtGbp(ship)}` : `+ delivery ${fmtGbp(ship)}`) : ''}
           </div>
           <button
@@ -90,9 +90,9 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
           </p>
         </div>
       ) : (
-        <div className="mt-4 p-4 rounded-xl bg-slate-950 border border-slate-800">
-          <div className="text-lg font-black text-white">{isUk ? 'Ціна на запит' : 'Price on request'}</div>
-          <p className="text-xs text-slate-400 mt-1">
+        <div className="mt-4 p-4 rounded-xl bg-white border border-slate-200">
+          <div className="text-lg font-black text-slate-900">{isUk ? 'Ціна на запит' : 'Price on request'}</div>
+          <p className="text-xs text-slate-500 mt-1">
             {isUk ? 'Порахуємо оригінал, аналог і б/у під ваш серійний номер двигуна.' : 'We quote genuine, aftermarket and used for your engine serial.'}
           </p>
           <button
@@ -109,19 +109,19 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
   );
 
   return (
-    <section id="diagram" className="py-20 sm:py-24 bg-slate-950 border-b border-slate-800 scroll-mt-20">
+    <section id="diagram" className="py-20 sm:py-24 bg-white border-b border-slate-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mb-10">
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-400 mb-3">{isUk ? 'Інтерактивна схема' : 'Interactive diagram'}</p>
-          <h2 className="text-3xl md:text-5xl font-black text-white tracking-tight leading-tight">{isUk ? diagram.titleUk : diagram.titleEn}</h2>
-          <p className="mt-4 text-slate-400 text-base sm:text-lg flex items-center gap-2">
-            <MousePointerClick className="w-5 h-5 text-red-400 shrink-0" />
+          <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-600 mb-3">{isUk ? 'Інтерактивна схема' : 'Interactive diagram'}</p>
+          <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">{isUk ? diagram.titleUk : diagram.titleEn}</h2>
+          <p className="mt-4 text-slate-500 text-base sm:text-lg flex items-center gap-2">
+            <MousePointerClick className="w-5 h-5 text-red-600 shrink-0" />
             {isUk ? 'Натисніть на червону точку — побачите назву деталі й ціну.' : 'Tap a red dot to see the part name and price.'}
           </p>
         </div>
 
         <div className="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-8 items-start">
-          <div className="relative mx-auto w-full max-w-[640px] rounded-2xl overflow-hidden border border-slate-800 bg-white">
+          <div className="relative mx-auto w-full max-w-[640px] rounded-2xl overflow-hidden border border-slate-200 bg-slate-900">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={diagram.image} alt={isUk ? diagram.titleUk : diagram.titleEn} width={diagram.width} height={diagram.height} className="w-full h-auto block" />
             {diagram.hotspots.map((h) => {
@@ -143,7 +143,7 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
                   >
                     {h.catalogId ? '£' : '+'}
                   </span>
-                  <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-1 whitespace-nowrap px-2 py-0.5 rounded bg-slate-900 text-white text-[11px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-1 whitespace-nowrap px-2 py-0.5 rounded bg-white text-slate-900 text-[11px] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
                     {isUk ? h.uk : h.en}
                   </span>
                 </button>
@@ -156,7 +156,7 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
 
           <div ref={panelRef} className="lg:sticky lg:top-24 space-y-4">
             {panel || (
-              <div className="p-5 rounded-2xl bg-slate-900/60 border border-dashed border-slate-700 text-slate-400 text-sm">
+              <div className="p-5 rounded-2xl bg-white border border-dashed border-slate-300 text-slate-500 text-sm">
                 {isUk
                   ? 'Оберіть деталь на схемі. Точки з «£» мають ціну в каталозі, з «+» — рахуємо під запит.'
                   : 'Pick a part on the diagram. “£” dots have a catalog price; “+” dots are quoted on request.'}

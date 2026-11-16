@@ -20,8 +20,8 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
   };
 
   return (
-    <article className="group flex flex-col rounded-2xl bg-slate-900/70 border border-slate-800 hover:border-slate-600 overflow-hidden transition-colors">
-      <div className="relative aspect-[4/3] bg-white">
+    <article className="group flex flex-col rounded-2xl bg-white border border-slate-200 hover:border-slate-300 hover:shadow-[0_18px_40px_-18px_rgba(15,23,42,0.25)] overflow-hidden transition-all">
+      <div className="relative aspect-[4/3] bg-white border-b border-slate-100">
         {item.image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -52,15 +52,15 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
       </div>
 
       <div className="flex flex-col flex-1 p-4">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-400">{item.brand}</div>
-        <div className="font-mono text-sm text-white mt-0.5">{item.partNumber}</div>
-        <h3 className="text-sm font-semibold text-slate-200 mt-2 leading-snug">{isUk ? item.titleUk : item.titleEn}</h3>
+        <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{item.brand}</div>
+        <div className="font-mono text-sm text-slate-900 mt-0.5">{item.partNumber}</div>
+        <h3 className="text-sm font-semibold text-slate-700 mt-2 leading-snug">{isUk ? item.titleUk : item.titleEn}</h3>
         <div className="text-xs text-slate-500 mt-1">{isUk ? item.fitsUk : item.fitsEn}</div>
 
         <div className="mt-auto pt-4">
-          <div className="text-2xl font-black text-white">{gbp !== null ? fmtGbp(gbp) : '—'}</div>
-          <div className="text-sm font-semibold text-amber-300 min-h-[1.25rem]">{uah !== null ? `≈ ${fmtUah(uah)}` : ''}</div>
-          <div className="text-xs text-slate-400 mt-1">
+          <div className="text-2xl font-black text-slate-900">{gbp !== null ? fmtGbp(gbp) : '—'}</div>
+          <div className="text-sm font-semibold text-amber-600 min-h-[1.25rem]">{uah !== null ? `≈ ${fmtUah(uah)}` : ''}</div>
+          <div className="text-xs text-slate-500 mt-1">
             {ship !== null
               ? isUk ? `+ доставка в Україну ${fmtGbp(ship)}` : `+ delivery ${fmtGbp(ship)}`
               : isUk ? '+ доставка (рахуємо окремо)' : '+ delivery (quoted)'}

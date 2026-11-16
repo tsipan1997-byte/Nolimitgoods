@@ -23,19 +23,19 @@ Phone: +44 7426 826595`;
   };
 
   return (
-    <section id="contacts" className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-slate-900 border-t border-slate-800 scroll-mt-20">
+    <section id="contacts" className="relative w-full py-20 px-4 sm:px-6 lg:px-8 bg-white border-t border-slate-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto space-y-12">
         
         {/* Заголовок */}
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800 border border-slate-700 text-slate-300 text-xs font-bold uppercase tracking-wider">
-            <Building2 className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-300 text-slate-600 text-xs font-bold uppercase tracking-wider">
+            <Building2 className="w-3.5 h-3.5 text-emerald-600" />
             {isUk ? 'Офіційні реквізити юрособи UK' : 'Official UK Legal Entity Details'}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             {isUk ? 'Контакти та реєстрація компанії' : 'Company Contacts & Registration'}
           </h2>
-          <p className="max-w-2xl mx-auto text-slate-400 text-sm sm:text-base">
+          <p className="max-w-2xl mx-auto text-slate-500 text-sm sm:text-base">
             {isUk 
               ? 'Працюємо як британська компанія: договір, інвойс і всі документи для митного оформлення.'
               : 'We operate as a UK company: contract, invoice and full customs paperwork.'}
@@ -46,83 +46,83 @@ Phone: +44 7426 826595`;
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Склад і комунікація */}
-          <div className="bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 space-y-6">
+            <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-red-500" />
               {isUk ? 'Склад і звʼязок' : 'Warehouse & Hub'}
             </h3>
             
-            <div className="space-y-4 text-sm text-slate-300">
+            <div className="space-y-4 text-sm text-slate-600">
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-slate-500 shrink-0 mt-1" />
                 <div>
-                  <div className="font-bold text-white">374 Hipsell Highway, Coventry</div>
-                  <div className="text-slate-400">West Midlands, CV2 5FR, United Kingdom</div>
+                  <div className="font-bold text-slate-900">374 Hipsell Highway, Coventry</div>
+                  <div className="text-slate-500">West Midlands, CV2 5FR, United Kingdom</div>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-slate-500 shrink-0" />
-                <a href="tel:+447426826595" className="hover:text-white transition-colors">
+                <a href="tel:+447426826595" className="hover:text-slate-900 transition-colors">
                   +44 7426 826595 (WhatsApp / Direct)
                 </a>
               </div>
 
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-slate-500 shrink-0" />
-                <a href="mailto:sales@nolimitgoods.co.uk" className="text-white hover:text-red-400 font-semibold transition-colors">
+                <a href="mailto:sales@nolimitgoods.co.uk" className="text-slate-900 hover:text-red-600 font-semibold transition-colors">
                   sales@nolimitgoods.co.uk
                 </a>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-800/80 flex items-center gap-2 text-xs text-emerald-400">
+            <div className="pt-4 border-t border-slate-200 flex items-center gap-2 text-xs text-emerald-600">
               <ShieldCheck className="w-4 h-4 shrink-0" />
               <span>{isUk ? 'Прямий експортер запчастин з UK' : 'Verified UK Spare Parts Exporter'}</span>
             </div>
           </div>
 
           {/* Юридичні реєстраційні дані */}
-          <div className="bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 space-y-6 flex flex-col justify-between">
+          <div className="bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 space-y-6 flex flex-col justify-between">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-amber-500" />
                   NoLimitGoods Limited
                 </h3>
-                <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-[11px] font-mono font-bold text-slate-300">
+                <span className="px-2.5 py-1 rounded bg-white border border-slate-200 text-[11px] font-mono font-bold text-slate-600">
                   Active
                 </span>
               </div>
 
-              <div className="space-y-2 text-xs font-mono text-slate-300">
-                <div className="flex justify-between py-1 border-b border-slate-900">
+              <div className="space-y-2 text-xs font-mono text-slate-600">
+                <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500">Company No:</span>
-                  <span className="text-white font-bold">13146899</span>
+                  <span className="text-slate-900 font-bold">13146899</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-900">
+                <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500">VAT ID:</span>
-                  <span className="text-white font-bold">GB 372 6541 87</span>
+                  <span className="text-slate-900 font-bold">GB 372 6541 87</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-900">
+                <div className="flex justify-between py-1 border-b border-slate-200">
                   <span className="text-slate-500">EORI Number:</span>
-                  <span className="text-white font-bold">GB079878335000</span>
+                  <span className="text-slate-900 font-bold">GB079878335000</span>
                 </div>
               </div>
             </div>
 
             <button
               onClick={copyDetails}
-              className="w-full mt-4 py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+              className="w-full mt-4 py-2.5 px-4 rounded-xl bg-white hover:bg-slate-200 border border-slate-300 text-slate-900 text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
             >
               {copied ? (
                 <>
-                  <Check className="w-4 h-4 text-emerald-400" />
+                  <Check className="w-4 h-4 text-emerald-600" />
                   <span>{isUk ? 'Реквізити скопійовано!' : 'Details Copied!'}</span>
                 </>
               ) : (
                 <>
-                  <Copy className="w-4 h-4 text-slate-400" />
+                  <Copy className="w-4 h-4 text-slate-500" />
                   <span>{isUk ? 'Скопіювати повні реквізити для договору' : 'Copy Full Company Details'}</span>
                 </>
               )}

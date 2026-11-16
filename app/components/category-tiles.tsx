@@ -29,17 +29,17 @@ export default function CategoryTiles() {
               <Link
                 key={c.id}
                 href={`/catalog?cat=${c.id}`}
-                className="group relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 hover:border-red-500/60 p-4 sm:p-5 transition-colors"
+                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white hover:border-red-500/60 p-4 sm:p-5 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div className="w-11 h-11 rounded-xl bg-red-600/15 border border-red-600/30 flex items-center justify-center">
-                    <Icon className="w-5 h-5 text-red-400" />
+                    <Icon className="w-5 h-5 text-red-600" />
                   </div>
-                  <ArrowUpRight className="w-5 h-5 text-slate-500 group-hover:text-white group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
+                  <ArrowUpRight className="w-5 h-5 text-slate-500 group-hover:text-slate-900 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
                 </div>
-                <div className="mt-4 text-base sm:text-lg font-black text-white">{isUk ? c.uk : c.en}</div>
-                <div className="text-xs text-slate-400 mt-1 leading-snug">{isUk ? c.hintUk : c.hintEn}</div>
-                <div className="text-xs font-bold text-red-400 mt-3">
+                <div className="mt-4 text-base sm:text-lg font-black text-slate-900">{isUk ? c.uk : c.en}</div>
+                <div className="text-xs text-slate-500 mt-1 leading-snug">{isUk ? c.hintUk : c.hintEn}</div>
+                <div className="text-xs font-bold text-red-600 mt-3">
                   {isUk ? `${n} позицій з цінами →` : `${n} priced items →`}
                 </div>
               </Link>

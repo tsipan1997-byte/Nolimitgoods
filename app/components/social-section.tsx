@@ -23,7 +23,7 @@ export default function SocialSection() {
       ];
 
   return (
-    <section id="social" className="py-16 sm:py-20 bg-slate-950 border-t border-slate-800">
+    <section id="social" className="py-16 sm:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl border border-slate-800 bg-gradient-to-br from-slate-900 via-slate-900 to-[#1a0b14] p-6 sm:p-10 lg:p-12">
           <div

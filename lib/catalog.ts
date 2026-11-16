@@ -204,6 +204,63 @@ export const CATALOG: CatalogItem[] = [
     fitsUk: 'Підбір за VIN', fitsEn: 'Matched by VIN',
     type: 'analog', supplierPrice: 21.99, currency: 'GBP', supplierIncVat: true, weightKg: 1.5,
     sourceUrl: 'https://www.autodoc.co.uk/bosch/7627120', checkedAt: D },
+
+  // ───────────── ЛЕГКОВІ: ТОП ІМПОРТОВАНИХ В УКРАЇНУ МОДЕЛЕЙ ─────────────
+  { id: 'tesla-1188341-00-c', category: 'cars', group: 'chassis', brand: 'Tesla', partNumber: '1188341-00-C',
+    titleUk: 'Важіль передній нижній (передній)', titleEn: 'Front lower control arm (front position)',
+    fitsUk: 'Tesla Model Y 2020–2023', fitsEn: 'Tesla Model Y 2020–2023',
+    type: 'new', supplierPrice: 139.95, currency: 'USD', supplierIncVat: false, weightKg: 3,
+    sourceUrl: 'https://evannex.com/products/front-lower-front-position-control-arm-for-tesla-model-y', checkedAt: D },
+  { id: 'tesla-1044354-00-a', category: 'cars', group: 'chassis', brand: 'Tesla (аналог)', partNumber: '1044354-00-A',
+    titleUk: 'Важелі передні нижні з кульовою, пара', titleEn: 'Front lower control arms with ball joint, pair',
+    fitsUk: 'Tesla Model 3 2017–2023, Model Y 2020–2023', fitsEn: 'Tesla Model 3 2017–2023, Model Y 2020–2023',
+    type: 'analog', supplierPrice: 109.73, currency: 'USD', supplierIncVat: false, weightKg: 5,
+    sourceUrl: 'https://www.fridayparts.com/front-left-right-lower-control-arm-ball-joint-1044354-00-a-1044351-00-c-for-2017-2023-tesla-model-3-y', checkedAt: D },
+  { id: 'tesla-1107681-00-c', category: 'cars', group: 'filters', brand: 'Tesla', partNumber: '1107681-00-C',
+    titleUk: 'Фільтр салону HVAC (комплект)', titleEn: 'HVAC cabin filter set',
+    fitsUk: 'Tesla Model 3, Model Y', fitsEn: 'Tesla Model 3, Model Y',
+    type: 'original', supplierPrice: 31, currency: 'USD', supplierIncVat: false, weightKg: 0.6,
+    sourceUrl: 'https://evolutionparts.net/products/new-oem-tesla-model-3-y-hvac-combination-filter-1107681-00-c-1', checkedAt: D },
+  { id: 'nissan-31728-28x0a', category: 'cars', group: 'hydraulics', brand: 'Nissan', partNumber: '31728-28X0A',
+    titleUk: 'Фільтр варіатора CVT у зборі', titleEn: 'CVT transmission filter assembly',
+    fitsUk: 'Nissan Rogue 2021+, X-Trail T33', fitsEn: 'Nissan Rogue 2021+, X-Trail T33',
+    type: 'original', supplierPrice: 52.35, currency: 'USD', supplierIncVat: false, weightKg: 0.6,
+    sourceUrl: 'https://www.z1offroad.com/auto-transmission/nissan/oem-21-nissan-rogue-transmission-filter-assembly-p-58781.html', checkedAt: D },
+  { id: 'vw-5q0698151aj', category: 'cars', group: 'chassis', brand: 'Volkswagen', partNumber: '5Q0698151AJ',
+    titleUk: 'Гальмівні колодки передні', titleEn: 'Front brake pads',
+    fitsUk: 'VW Tiguan / Tiguan Allspace 2016–2020, 2.0 TDI', fitsEn: 'VW Tiguan / Tiguan Allspace 2016–2020, 2.0 TDI',
+    type: 'original', supplierPrice: 150.7, currency: 'GBP', supplierIncVat: false, weightKg: 1.8,
+    sourceUrl: 'https://coxmotorparts.co.uk/tiguan-allspace-2016-2020-2-0l-diesel-brakes/genuine-vw-tiguan-allspace-2016-2020-front-brake-pads-2-0l-tdi-5q0698151aj', checkedAt: D },
+  { id: 'febi-106513', category: 'cars', group: 'engine', brand: 'Febi Bilstein', partNumber: '106513',
+    titleUk: 'Комплект ланцюга ГРМ 2.0 TSI', titleEn: 'Timing chain kit 2.0 TSI',
+    fitsUk: 'VW Tiguan 2009–2017, Passat, Jetta, Golf GTI 2.0 TSI', fitsEn: 'VW Tiguan 2009–2017, Passat, Jetta, Golf GTI 2.0 TSI',
+    type: 'analog', supplierPrice: 349.89, currency: 'USD', supplierIncVat: false, weightKg: 3,
+    sourceUrl: 'https://www.shopdap.com/timing-chain-kit-febi-vw-audi-2-0t-tsi.html', checkedAt: D },
+  { id: 'mazda-pe01-14-302b', category: 'cars', group: 'filters', brand: 'Mazda', partNumber: 'PE01-14-302B',
+    titleUk: 'Масляний фільтр', titleEn: 'Oil filter',
+    fitsUk: 'Mazda CX-5, CX-3, 3, 6, MX-5 (1.5–2.5 бензин)', fitsEn: 'Mazda CX-5, CX-3, 3, 6, MX-5 (1.5–2.5 petrol)',
+    type: 'original', supplierPrice: 16.11, currency: 'EUR', supplierIncVat: false, weightKg: 0.3,
+    sourceUrl: 'https://www.vag247.com/en_US/p/Genuine-oil-filter-MAZDA-2-3-6-CX-3-CX-5-MX-5-1.5L-2.0L-2.5L/6712', checkedAt: D },
+  { id: 'lemforder-38960-01', category: 'cars', group: 'chassis', brand: 'Lemförder', partNumber: '38960 01',
+    titleUk: 'Важіль передній нижній лівий', titleEn: 'Front lower control arm, left',
+    fitsUk: 'BMW X5 F15, X6 F16 (2013–2018)', fitsEn: 'BMW X5 F15, X6 F16 (2013–2018)',
+    type: 'analog', supplierPrice: 137.99, currency: 'GBP', supplierIncVat: true, weightKg: 4,
+    sourceUrl: 'https://www.autodoc.co.uk/lemforder/12795700', checkedAt: D },
+  { id: 'hyundai-24321-2e010', category: 'cars', group: 'engine', brand: 'Hyundai / Kia', partNumber: '24321-2E010',
+    titleUk: 'Ланцюг ГРМ', titleEn: 'Timing chain',
+    fitsUk: 'Hyundai Kona, Elantra, Veloster; Kia Soul, Forte (2.0)', fitsEn: 'Hyundai Kona, Elantra, Veloster; Kia Soul, Forte (2.0)',
+    type: 'original', supplierPrice: 128.94, currency: 'USD', supplierIncVat: false, weightKg: 1,
+    sourceUrl: 'https://www.hyundaipartsdeal.com/genuine/hyundai-chain-timing~24321-2e010.html', checkedAt: D },
+  { id: 'hyundai-54500-c1000', category: 'cars', group: 'chassis', brand: 'Hyundai', partNumber: '54500-C1000',
+    titleUk: 'Важіль передній нижній лівий', titleEn: 'Front lower control arm, left',
+    fitsUk: 'Hyundai Sonata LF (2015–2019)', fitsEn: 'Hyundai Sonata LF (2015–2019)',
+    type: 'original', supplierPrice: 443.49, currency: 'USD', supplierIncVat: false, weightKg: 4,
+    sourceUrl: 'https://www.group1autoparts.com/oem-parts/hyundai-lower-control-arm-54500c1000', checkedAt: D },
+  { id: 'kyb-339702', category: 'cars', group: 'chassis', brand: 'KYB', partNumber: '339702',
+    titleUk: 'Амортизатор передній правий Excel-G', titleEn: 'Front right shock absorber Excel-G',
+    fitsUk: 'Opel Astra H, Zafira B', fitsEn: 'Opel Astra H, Zafira B',
+    type: 'analog', supplierPrice: 71.99, currency: 'GBP', supplierIncVat: true, weightKg: 3,
+    sourceUrl: 'https://www.autodoc.co.uk/kyb/827489', checkedAt: D },
 ];
 
 export const FEATURED = CATALOG.filter((i) => i.featured);
@@ -256,4 +313,26 @@ export function illustrationFor(item: CatalogItem): string {
   ];
   const hit = map.find(([re]) => re.test(t));
   return `/illustrations/${hit ? hit[1] : 'generic'}.svg`;
+}
+
+// ───────────── SEO-СТОРІНКИ ПІД ПОПУЛЯРНІ В УКРАЇНІ МОДЕЛІ ─────────────
+// Топ імпорту вживаних авто в Україну 2026 (Укравтопром): Tiguan, Q5, Rogue, Escape, CX-5, Qashqai, X3, Model Y, X5, Q7.
+export interface ModelPage {
+  slug: string;
+  name: string;
+  match: RegExp;
+  introUk: string;
+}
+export const MODEL_PAGES: ModelPage[] = [
+  { slug: 'tesla-model-y', name: 'Tesla Model Y', match: /model y/i, introUk: 'Важелі підвіски, фільтри салону, гальма та кузовні деталі Tesla Model Y. Оригінал і якісні аналоги зі складів США та Європи.' },
+  { slug: 'tesla-model-3', name: 'Tesla Model 3', match: /model 3/i, introUk: 'Ходова, фільтри, гальмівна система та кузов Tesla Model 3. Привеземо навіть те, чого немає в наявності в Україні.' },
+  { slug: 'vw-tiguan', name: 'Volkswagen Tiguan', match: /tiguan/i, introUk: 'Гальмівні колодки, ланцюги ГРМ, фільтри та ходова VW Tiguan і Tiguan Allspace. Підбір за VIN.' },
+  { slug: 'audi-q5', name: 'Audi Q5', match: /q5/i, introUk: 'Запчастини Audi Q5: ГРМ, підвіска, фільтри, гальма. Оригінал VAG і перевірені аналоги.' },
+  { slug: 'nissan-rogue', name: 'Nissan Rogue', match: /rogue|x-trail/i, introUk: 'Фільтри та деталі варіатора CVT, ходова і гальма Nissan Rogue / X-Trail з США.' },
+  { slug: 'mazda-cx-5', name: 'Mazda CX-5', match: /cx-5/i, introUk: 'Оригінальні фільтри, ходова та гальма Mazda CX-5. Оригінал Mazda і аналоги.' },
+  { slug: 'bmw-x5', name: 'BMW X5', match: /x5|f15/i, introUk: 'Важелі, сайлентблоки, гальма та фільтри BMW X5 (F15, G05). Lemförder, Meyle, оригінал BMW.' },
+  { slug: 'hyundai-kia', name: 'Hyundai / Kia', match: /hyundai|kia/i, introUk: 'Оригінал Mobis і аналоги для Hyundai Tucson, Kona, Sonata, Kia Sportage, Ceed, Niro: ГРМ, ходова, фільтри.' },
+];
+export function itemsForModel(m: ModelPage): CatalogItem[] {
+  return CATALOG.filter((i) => m.match.test(`${i.fitsUk} ${i.fitsEn} ${i.titleEn}`));
 }

@@ -18,6 +18,7 @@ import {
   Car,
   Wrench,
   Tag,
+  Gavel,
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import B2BRegisterModal from './b2b-register-modal';
@@ -41,6 +42,7 @@ export default function Header() {
     { href: '/catalog?cat=construction', icon: HardHat, uk: 'Спецтехніка', en: 'Construction' },
     { href: '/catalog?cat=trucks', icon: Truck, uk: 'Вантажівки', en: 'Trucks' },
     { href: '/catalog?cat=cars', icon: Car, uk: 'Легкові авто', en: 'Cars' },
+    { href: '/aukciony', icon: Gavel, uk: 'Аукціони', en: 'Auctions' },
     { href: '/#diagram', icon: Wrench, uk: 'Схема двигуна', en: 'Engine diagram' },
     { href: '/#prices', icon: Tag, uk: 'Приклади цін', en: 'Price examples' },
   ];

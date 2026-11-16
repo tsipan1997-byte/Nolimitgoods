@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ShieldCheck,
   ArrowRight,
@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
+import { clientPriceGbp, fmtGbp, fmtUah, loadRates, shippingGbp, type Priced, type Rates } from '@/lib/pricing';
 
 declare global {
   interface Window {
@@ -808,6 +809,71 @@ function SafeImage({
   );
 }
 
+
+// ─────────────────────────────────────────────────────────────
+// ОРІЄНТОВНІ ЦІНИ НА КАРТКАХ БРЕНДІВ («від …»)
+// Ціна постачальника з відкритих джерел на 16.11.2026 → без VAT → × націнка (lib/site-config.ts).
+// Картки без запису тут показують «Ціна на запит».
+// sourceUrl — лише для вас, клієнтам не показується.
+// ─────────────────────────────────────────────────────────────
+type CardPrice = Priced & { weightKg: number; perUnit?: boolean; sourceUrl: string };
+const P = (supplierPrice: number, currency: Priced['currency'], supplierIncVat: boolean, weightKg: number, sourceUrl: string, perUnit = false): CardPrice =>
+  ({ supplierPrice, currency, supplierIncVat, weightKg, sourceUrl, perUnit });
+const CARD_PRICES: Record<string, CardPrice> = {
+  'jcb-pump': P(831.89, 'USD', false, 17, 'https://www.ebay.de/itm/187412407211'),
+  'sub-hyd-jcb': P(831.89, 'USD', false, 17, 'https://www.ebay.de/itm/187412407211'),
+  'cab-case-compressor': P(513.55, 'USD', false, 8.2, 'https://parts.southeasternequip.com/products/47773024-oem-compressor-air-cond-case-construction'),
+  'sub-cab-accuboom': P(513.55, 'USD', false, 8.2, 'https://parts.southeasternequip.com/products/47773024-oem-compressor-air-cond-case-construction'),
+  'sub-cab-cat-lock': P(158.96, 'USD', false, 1.4, 'https://bigrigworld.com/cabin-door-lock-280-7548.html'),
+  'perkins-cr': P(1547.66, 'USD', false, 0.6, 'https://dieselpartsdirect.com/2645a747', true),
+  'sub-eng-perkins': P(1547.66, 'USD', false, 0.6, 'https://dieselpartsdirect.com/2645a747', true),
+  'sub-eng-cat': P(416.33, 'USD', false, 1, 'https://www.fridayparts.com/fuel-injector-387-9427-for-caterpillar-cat-engine-c7-c7-2-excavator-324d-325d-326dl-328dlcr-329dln-loader-950h-962h-966e-skidder-525c-535c-545c', true),
+  'donaldson-filter': P(17.64, 'GBP', true, 1.2, 'https://ricoeurope.com/gb/donaldson-engine-and-vehicle-fuel-filters/47901-donaldson-p558000-fuel-filter-water-separator-spin-on-twistdrain.html'),
+  'sub-filt-donaldson': P(17.64, 'GBP', true, 1.2, 'https://ricoeurope.com/gb/donaldson-engine-and-vehicle-fuel-filters/47901-donaldson-p558000-fuel-filter-water-separator-spin-on-twistdrain.html'),
+  'sub-filt-fleetguard': P(15.5, 'USD', false, 1, 'https://bigrigworld.com/separator-fuel-water-fs1280.html'),
+  'sub-filt-mann': P(28.1, 'GBP', true, 1.5, 'https://www.tayna.co.uk/filters/air-filters/mann-c23610/'),
+  'pall-featured': P(50.6, 'USD', false, 1, 'https://www.imssupply.com/catalog/pall/hc9600fkp8h.html'),
+  'pall-hydraulics': P(50.6, 'USD', false, 1, 'https://www.imssupply.com/catalog/pall/hc9600fkp8h.html'),
+  'sub-filt-pall': P(50.6, 'USD', false, 1, 'https://www.imssupply.com/catalog/pall/hc9600fkp8h.html'),
+  'kyb-monroe-featured': P(71.99, 'GBP', true, 3, 'https://www.autodoc.co.uk/kyb/827489'),
+  'susp-kyb-excelg': P(71.99, 'GBP', true, 3, 'https://www.autodoc.co.uk/kyb/827489'),
+  'korea-spec-featured': P(3640.23, 'USD', false, 120, 'https://www.fridayparts.com/hydraulic-pump-31n6-10060-for-hyundai-excavator-r215-7-r215lc-7'),
+  'korea-spec-pump': P(3640.23, 'USD', false, 120, 'https://www.fridayparts.com/hydraulic-pump-31n6-10060-for-hyundai-excavator-r215-7-r215lc-7'),
+  'korea-spec-roller': P(713.56, 'USD', false, 40, 'https://www.fridayparts.com/lower-bottom-roller-e181-2002bg-for-hyundai-excavator-r210lc-9s-r220lc-7-r250lc-7-samsung-mx8lc-2-se200-se210-poclain-case-101ck-115ck-1188ck'),
+  'korea-car-optics': P(264.61, 'USD', false, 6, 'https://www.kiapartsnow.com/oem-kia-sorento-headlight.html'),
+  'korea-car-suspension': P(443.49, 'USD', false, 4, 'https://www.group1autoparts.com/oem-parts/hyundai-lower-control-arm-54500c1000'),
+  'korea-car-engine': P(128.94, 'USD', false, 1, 'https://www.hyundaipartsdeal.com/genuine/hyundai-chain-timing~24321-2e010.html'),
+};
+
+function CardPriceLine({ id, rates, isUk }: { id: string; rates: Rates | null; isUk: boolean }) {
+  const p = CARD_PRICES[id];
+  if (!p) {
+    return (
+      <div className="pt-2 border-t border-slate-100">
+        <div className="text-sm font-bold text-slate-700">{isUk ? 'Ціна на запит' : 'Price on request'}</div>
+        <div className="text-[11px] text-slate-400">{isUk ? 'Порахуємо оригінал, аналог і б/у' : 'Genuine, aftermarket and used quoted'}</div>
+      </div>
+    );
+  }
+  const gbp = clientPriceGbp(p, rates);
+  const ship = shippingGbp(p.weightKg);
+  return (
+    <div className="pt-2 border-t border-slate-100">
+      <div className="flex items-baseline gap-1.5 flex-wrap">
+        <span className="text-[11px] text-slate-400">{isUk ? 'від' : 'from'}</span>
+        <span className="text-xl font-black text-slate-900">{gbp !== null ? fmtGbp(gbp) : '…'}</span>
+        {p.perUnit && <span className="text-[11px] text-slate-400">{isUk ? '/ шт' : '/ pc'}</span>}
+        {gbp !== null && rates && <span className="text-sm font-bold text-amber-600">≈ {fmtUah(gbp * rates.uah.GBP)}</span>}
+      </div>
+      <div className="text-[11px] text-slate-500">
+        {ship !== null
+          ? isUk ? `+ доставка в Україну ${fmtGbp(ship)}` : `+ delivery ${fmtGbp(ship)}`
+          : isUk ? '+ доставка (вантаж, рахуємо окремо)' : '+ freight (quoted)'}
+      </div>
+    </div>
+  );
+}
+
 export default function BrandsCatalog({
   onSelectOem,
 }: {
@@ -817,6 +883,10 @@ export default function BrandsCatalog({
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [activeTab, setActiveTab] = useState<string>('all');
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [rates, setRates] = useState<Rates | null>(null);
+  useEffect(() => {
+    loadRates().then(setRates);
+  }, []);
 
   const placeholderText = isUk ? 'Фото готується' : 'Photo coming soon';
 
@@ -1389,6 +1459,8 @@ export default function BrandsCatalog({
                           ))}
                         </div>
                       </div>
+
+                      <CardPriceLine id={item.id} rates={rates} isUk={isUk} />
 
                       <button
                         type="button"

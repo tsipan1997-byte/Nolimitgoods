@@ -6,6 +6,7 @@ import HeroSection from './components/hero-section';
 import RFQSection from './components/rfq-section';
 import PriceShowcase from './components/price-showcase';
 import CategoryTiles from './components/category-tiles';
+import AuctionsTeaser from './components/auctions-teaser';
 import InteractiveDiagram from './components/interactive-diagram';
 import QuoteCart from './components/quote-cart';
 import SocialSection from './components/social-section';
@@ -30,6 +31,9 @@ export default function HomePage() {
 
       {/* Плитки категорій каталогу */}
       <CategoryTiles />
+
+      {/* Аукціони спецтехніки Великої Британії */}
+      <AuctionsTeaser />
 
       {/* Приклади реальних цін з живим курсом гривні */}
       <PriceShowcase />

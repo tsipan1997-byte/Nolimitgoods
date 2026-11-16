@@ -67,27 +67,32 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2 text-[11px]">
               <li>
-                <a href="#parts-calculator" className="hover:text-white transition-colors">
+                <a href="/aukciony" className="hover:text-white transition-colors font-semibold text-slate-300">
+                  {isUk ? 'Аукціони спецтехніки Великої Британії' : 'UK machinery auctions'}
+                </a>
+              </li>
+              <li>
+                <a href="/#parts-calculator" className="hover:text-white transition-colors">
                   {isUk ? 'Запит ціни' : 'Get a Quote'}
                 </a>
               </li>
               <li>
-                <a href="#prices" className="hover:text-white transition-colors">
+                <a href="/#prices" className="hover:text-white transition-colors">
                   {isUk ? 'Приклади цін' : 'Price examples'}
                 </a>
               </li>
               <li>
-                <a href="#catalog" className="hover:text-white transition-colors">
+                <a href="/#catalog" className="hover:text-white transition-colors">
                   {isUk ? 'Каталог вузлів OEM' : 'OEM Catalog'}
                 </a>
               </li>
               <li>
-                <a href="#deliveries" className="hover:text-white transition-colors">
+                <a href="/#deliveries" className="hover:text-white transition-colors">
                   {isUk ? 'Відео відвантажень' : 'Live Dispatch'}
                 </a>
               </li>
               <li>
-                <a href="#contacts" className="hover:text-white transition-colors">
+                <a href="/#contacts" className="hover:text-white transition-colors">
                   {isUk ? 'Юридичні реквізити' : 'Legal & Contacts'}
                 </a>
               </li>

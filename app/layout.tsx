@@ -124,7 +124,7 @@ export default function RootLayout({
             } catch (e) {
               fbq('consent', 'revoke');
             }
-            fbq('init', '2306915906774402');
+            fbq('init', '1667641475157850');
             fbq('track', 'PageView');
           `}
         </Script>

@@ -11,6 +11,9 @@ const nextConfig = {
       },
     ];
   },
+  async headers() {
+    return [{ source: '/ads/:file*', headers: [{ key: 'Access-Control-Allow-Origin', value: '*' }] }];
+  },
   images: {
     remotePatterns: [
       {

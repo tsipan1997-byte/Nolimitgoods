@@ -14,7 +14,7 @@
 import type { Currency } from './pricing';
 
 export type CategoryId = 'agro' | 'construction' | 'trucks' | 'cars';
-export type GroupId = 'filters' | 'engine' | 'hydraulics' | 'electrics' | 'chassis' | 'cab' | 'climate';
+export type GroupId = 'filters' | 'engine' | 'hydraulics' | 'electrics' | 'chassis' | 'cab' | 'climate' | 'wear';
 export type PartType = 'original' | 'analog' | 'new' | 'used';
 
 export const CATEGORIES: { id: CategoryId; uk: string; en: string; hintUk: string; hintEn: string; image: string }[] = [
@@ -32,6 +32,7 @@ export const GROUPS: { id: GroupId; uk: string; en: string }[] = [
   { id: 'chassis', uk: 'Ходова і гальма', en: 'Chassis & brakes' },
   { id: 'cab', uk: 'Кабіна і кузов', en: 'Cab & body' },
   { id: 'climate', uk: 'Кондиціонування', en: 'Air conditioning' },
+  { id: 'wear', uk: 'Ковші і зуби', en: 'Buckets & teeth' },
 ];
 
 export const TYPE_LABEL: Record<PartType, { uk: string; en: string; cls: string }> = {
@@ -54,14 +55,15 @@ export interface CatalogItem {
   type: PartType;
   image?: string;
   imageIllustrative?: boolean;
+  alt?: string; // інший запис того ж номера (напр. JCB без префікса JC) — для пошуку
   supplierPrice: number;
   currency: Currency;
   supplierIncVat: boolean;
   weightKg: number;
   oversized?: boolean;
   featured?: boolean;
-  sourceUrl: string;
-  checkedAt: string;
+  sourceUrl?: string;
+  checkedAt?: string;
 }
 
 const D = '2026-11-16';
@@ -205,3 +207,19 @@ export const CATALOG: CatalogItem[] = [
 ];
 
 export const FEATURED = CATALOG.filter((i) => i.featured);
+
+// Повний каталог: вибрані позиції вище + знімок цін Kramp (public/data/catalog-kramp.json).
+// Файл великий, тому вантажимо його тільки на сторінці каталогу.
+let fullPromise: Promise<CatalogItem[]> | null = null;
+export function loadFullCatalog(): Promise<CatalogItem[]> {
+  if (!fullPromise) {
+    fullPromise = fetch('/data/catalog-kramp.json')
+      .then((r) => (r.ok ? r.json() : []))
+      .then((extra: CatalogItem[]) => {
+        const ids = new Set(CATALOG.map((i) => i.id));
+        return [...CATALOG, ...extra.filter((i) => !ids.has(i.id))];
+      })
+      .catch(() => CATALOG);
+  }
+  return fullPromise;
+}

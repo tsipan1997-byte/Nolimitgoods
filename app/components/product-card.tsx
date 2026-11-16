@@ -15,7 +15,7 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
   const group = GROUPS.find((g) => g.id === item.group);
 
   const add = () => {
-    addToCart(item.id);
+    addToCart(item);
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
   };

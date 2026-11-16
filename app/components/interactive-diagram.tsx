@@ -74,7 +74,7 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
           <button
             type="button"
             onClick={() => {
-              addToCart(item.id);
+              addToCart(item);
               setAdded(true);
               setTimeout(() => setAdded(false), 1500);
             }}

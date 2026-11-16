@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { ShoppingCart, X, Trash2, Loader2, CheckCircle2, Minus, Plus } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { CATALOG } from '@/lib/catalog';
+import type { CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, loadRates, shippingGbp, type Rates } from '@/lib/pricing';
 
 // ============================================================================
@@ -11,15 +11,15 @@ import { clientPriceGbp, fmtGbp, loadRates, shippingGbp, type Rates } from '@/li
 // і весь список приходить вам у Telegram одним запитом через /api/lead.
 // ============================================================================
 
-type CartLine = { id: string; qty: number };
-const KEY = 'nlg_quote_cart_v1';
+type CartLine = { id: string; qty: number; item: CatalogItem };
+const KEY = 'nlg_quote_cart_v2';
 const EVT = 'nlg:cart-changed';
 
 function read(): CartLine[] {
   try {
     const raw = window.localStorage.getItem(KEY);
     const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed.filter((l) => CATALOG.some((c) => c.id === l.id)) : [];
+    return Array.isArray(parsed) ? parsed.filter((l) => l && l.item && l.item.partNumber) : [];
   } catch {
     return [];
   }
@@ -37,10 +37,10 @@ function write(lines: CartLine[]) {
 
 let memory: CartLine[] | null = null;
 
-export function addToCart(id: string) {
+export function addToCart(item: CatalogItem) {
   const lines = memory ?? read();
-  const found = lines.find((l) => l.id === id);
-  write(found ? lines.map((l) => (l.id === id ? { ...l, qty: l.qty + 1 } : l)) : [...lines, { id, qty: 1 }]);
+  const found = lines.find((l) => l.id === item.id);
+  write(found ? lines.map((l) => (l.id === item.id ? { ...l, qty: l.qty + 1 } : l)) : [...lines, { id: item.id, qty: 1, item }]);
 }
 
 export function useCart() {
@@ -76,9 +76,7 @@ export default function QuoteCart() {
     return () => window.removeEventListener('nlg:open-cart', openCart);
   }, []);
 
-  const items = lines
-    .map((l) => ({ line: l, item: CATALOG.find((c) => c.id === l.id)! }))
-    .filter((x) => x.item);
+  const items = lines.map((l) => ({ line: l, item: l.item }));
   const count = lines.reduce((a, l) => a + l.qty, 0);
 
   const partsTotal = items.reduce((acc, { line, item }) => {

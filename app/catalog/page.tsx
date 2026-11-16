@@ -10,7 +10,7 @@ import QuoteCart from '../components/quote-cart';
 import ProductCard from '../components/product-card';
 import InteractiveDiagram from '../components/interactive-diagram';
 import { useLanguage } from '@/lib/language-context';
-import { CATALOG, CATEGORIES, GROUPS, TYPE_LABEL, type CategoryId, type GroupId, type PartType } from '@/lib/catalog';
+import { CATALOG, CATEGORIES, GROUPS, TYPE_LABEL, loadFullCatalog, type CatalogItem, type CategoryId, type GroupId, type PartType } from '@/lib/catalog';
 import { clientPriceGbp, loadRates, type Rates } from '@/lib/pricing';
 
 type Sort = 'popular' | 'price-asc' | 'price-desc';
@@ -24,9 +24,12 @@ export default function CatalogPage() {
   const [type, setType] = useState<PartType | 'all'>('all');
   const [q, setQ] = useState('');
   const [sort, setSort] = useState<Sort>('popular');
+  const [all, setAll] = useState<CatalogItem[]>(CATALOG);
+  const [limit, setLimit] = useState(48);
 
   useEffect(() => {
     loadRates().then(setRates);
+    loadFullCatalog().then(setAll);
     // Параметри з посилання: /catalog?cat=agro&q=jcb
     try {
       const p = new URLSearchParams(window.location.search);
@@ -52,21 +55,24 @@ export default function CatalogPage() {
 
   const filtered = useMemo(() => {
     const nq = norm(q);
-    const list = CATALOG.filter(
+    const list = all.filter(
       (i) =>
         (cat === 'all' || i.category === cat) &&
         (group === 'all' || i.group === group) &&
         (type === 'all' || i.type === type) &&
         (!nq ||
-          norm(`${i.partNumber} ${i.brand} ${i.titleUk} ${i.titleEn} ${i.fitsUk} ${i.fitsEn}`).includes(nq))
+          norm(`${i.partNumber} ${i.alt || ''} ${i.brand} ${i.titleUk} ${i.titleEn} ${i.fitsUk} ${i.fitsEn}`).includes(nq))
     );
     if (sort === 'popular') return list;
-    const price = (i: (typeof CATALOG)[number]) => clientPriceGbp(i, rates) ?? Number.MAX_SAFE_INTEGER;
+    const price = (i: CatalogItem) => clientPriceGbp(i, rates) ?? Number.MAX_SAFE_INTEGER;
     return [...list].sort((a, b) => (sort === 'price-asc' ? price(a) - price(b) : price(b) - price(a)));
-  }, [cat, group, type, q, sort, rates]);
+  }, [all, cat, group, type, q, sort, rates]);
 
-  const countIn = (c: CategoryId) => CATALOG.filter((i) => i.category === c).length;
-  const groupsHere = GROUPS.filter((g) => CATALOG.some((i) => i.group === g.id && (cat === 'all' || i.category === cat)));
+  // Нові фільтри — знову з першої сторінки
+  useEffect(() => setLimit(48), [cat, group, type, q, sort]);
+
+  const countIn = (c: CategoryId) => all.filter((i) => i.category === c).length;
+  const groupsHere = GROUPS.filter((g) => all.some((i) => i.group === g.id && (cat === 'all' || i.category === cat)));
 
   const chip = (on: boolean) =>
     `px-3.5 py-2 rounded-full text-sm font-semibold border whitespace-nowrap transition-colors ${
@@ -168,11 +174,20 @@ export default function CatalogPage() {
         </div>
 
         {filtered.length ? (
+          <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-            {filtered.map((item) => (
+            {filtered.slice(0, limit).map((item) => (
               <ProductCard key={item.id} item={item} rates={rates} isUk={isUk} />
             ))}
           </div>
+          {filtered.length > limit && (
+            <div className="mt-8 text-center">
+              <button type="button" onClick={() => setLimit((l) => l + 48)} className="px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-sm">
+                {isUk ? `Показати ще (${filtered.length - limit})` : `Show more (${filtered.length - limit})`}
+              </button>
+            </div>
+          )}
+          </>
         ) : (
           <div className="p-8 rounded-2xl border border-dashed border-slate-700 text-center">
             <PackageSearch className="w-10 h-10 mx-auto text-slate-500" />

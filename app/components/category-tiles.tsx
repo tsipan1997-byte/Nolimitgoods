@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowUpRight, Tractor, HardHat, Truck, Car } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { CATALOG, CATEGORIES, type CategoryId } from '@/lib/catalog';
+import { KRAMP_COUNTS } from '@/lib/catalog-stats';
 
 const ICONS: Record<CategoryId, React.ComponentType<{ className?: string }>> = {
   agro: Tractor,
@@ -23,7 +24,7 @@ export default function CategoryTiles() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           {CATEGORIES.map((c) => {
             const Icon = ICONS[c.id];
-            const n = CATALOG.filter((i) => i.category === c.id).length;
+            const n = CATALOG.filter((i) => i.category === c.id).length + (KRAMP_COUNTS[c.id] || 0);
             return (
               <Link
                 key={c.id}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, RefreshCw, Info } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { FEATURED, CATALOG } from '@/lib/catalog';
+import { KRAMP_COUNTS } from '@/lib/catalog-stats';
 import { loadRates, type Rates } from '@/lib/pricing';
 import ProductCard from './product-card';
 
@@ -59,7 +60,7 @@ export default function PriceShowcase() {
           <article className="flex flex-col justify-between rounded-2xl p-5 sm:p-6 bg-gradient-to-br from-red-600 to-red-700 text-white">
             <div>
               <h3 className="text-xl font-black leading-tight">
-                {isUk ? `Ще ${CATALOG.length - FEATURED.length}+ позицій у каталозі` : `${CATALOG.length - FEATURED.length}+ more in the catalog`}
+                {(() => { const n = CATALOG.length + Object.values(KRAMP_COUNTS).reduce((a, b) => a + b, 0) - FEATURED.length; return isUk ? `Ще ${n}+ позицій у каталозі` : `${n}+ more in the catalog`; })()}
               </h3>
               <p className="text-sm text-red-50/90 mt-3 leading-relaxed">
                 {isUk

@@ -125,7 +125,7 @@ export default function CatalogPage() {
                   type="button"
                   onClick={() => { setCat(on ? 'all' : c.id); setGroup('all'); }}
                   className={`relative overflow-hidden text-left p-4 rounded-2xl border transition-colors ${
-                    on ? 'border-red-500 bg-red-600/15' : 'border-slate-800 bg-slate-900/70 hover:border-slate-600'
+                    on ? 'border-red-500 bg-red-600/15' : 'border-slate-200 bg-white hover:border-slate-400'
                   }`}
                 >
                   <div className="text-base font-black text-slate-900">{isUk ? c.uk : c.en}</div>
@@ -219,7 +219,7 @@ export default function CatalogPage() {
               {isUk ? 'Будь-який бренд і артикул — від одного фільтра до палети.' : 'Any brand or part number — from one filter to a pallet.'}
             </p>
           </div>
-          <Link href="/#parts-calculator" className="shrink-0 px-6 py-3.5 rounded-xl bg-slate-900 text-red-700 font-extrabold uppercase text-sm tracking-wide text-center">
+          <Link href="/#parts-calculator" className="shrink-0 px-6 py-3.5 rounded-xl bg-white text-red-700 font-extrabold uppercase text-sm tracking-wide text-center">
             {isUk ? 'Надіслати свій список' : 'Send your list'}
           </Link>
         </div>

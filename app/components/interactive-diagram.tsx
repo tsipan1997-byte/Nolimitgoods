@@ -121,7 +121,7 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
         </div>
 
         <div className="grid lg:grid-cols-[minmax(0,1fr)_380px] gap-8 items-start">
-          <div className="relative mx-auto w-full max-w-[640px] rounded-2xl overflow-hidden border border-slate-200 bg-slate-900">
+          <div className="relative mx-auto w-full max-w-[640px] rounded-2xl overflow-hidden border border-slate-200 bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={diagram.image} alt={isUk ? diagram.titleUk : diagram.titleEn} width={diagram.width} height={diagram.height} className="w-full h-auto block" />
             {diagram.hotspots.map((h) => {
@@ -169,7 +169,7 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
                   type="button"
                   onClick={() => setActive(h)}
                   className={`text-left px-3 py-2 rounded-xl text-xs font-semibold border transition-colors ${
-                    active?.id === h.id ? 'bg-red-600 border-red-600 text-white' : 'bg-slate-900 border-slate-800 text-slate-300 hover:border-slate-600'
+                    active?.id === h.id ? 'bg-red-600 border-red-600 text-white' : 'bg-white border-slate-200 text-slate-700 hover:border-slate-400'
                   }`}
                 >
                   {isUk ? h.uk : h.en}

@@ -142,7 +142,7 @@ export default function QuoteCart() {
         >
           <ShoppingCart className="w-5 h-5" />
           <span>{isUk ? 'Запит' : 'Quote'}</span>
-          <span className="min-w-6 h-6 px-1.5 rounded-full bg-slate-900 text-red-600 text-xs font-black flex items-center justify-center">{count}</span>
+          <span className="min-w-6 h-6 px-1.5 rounded-full bg-white text-red-600 text-xs font-black flex items-center justify-center">{count}</span>
         </button>
       )}
 

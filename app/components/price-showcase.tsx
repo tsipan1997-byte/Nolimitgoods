@@ -70,7 +70,7 @@ export default function PriceShowcase() {
             </div>
             <Link
               href="/catalog"
-              className="mt-6 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 text-red-700 text-sm font-extrabold uppercase tracking-wide hover:bg-red-50 transition-colors"
+              className="mt-6 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white text-red-700 text-sm font-extrabold uppercase tracking-wide hover:bg-red-50 transition-colors"
             >
               <span>{isUk ? 'Відкрити каталог' : 'Open catalog'}</span>
               <ArrowRight className="w-4 h-4" />

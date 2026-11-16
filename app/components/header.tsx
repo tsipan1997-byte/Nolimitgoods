@@ -19,20 +19,21 @@ export default function Header() {
   };
 
   const navLinks = [
-    { href: '#prices', labelUk: 'Ціни', labelEn: 'Prices' },
-    { href: '#parts-calculator', labelUk: 'Запит ціни', labelEn: 'Get a Quote' },
-    { href: '#catalog', labelUk: 'Каталог брендів', labelEn: 'Brands' },
-    { href: '#deliveries', labelUk: 'Відео відвантажень', labelEn: 'Live Dispatch' },
-    { href: '#contacts', labelUk: 'Юридичні реквізити', labelEn: 'Legal & Contacts' },
+    { href: '/catalog', labelUk: 'Каталог і ціни', labelEn: 'Catalog & prices' },
+    { href: '/#diagram', labelUk: 'Схема двигуна', labelEn: 'Engine diagram' },
+    { href: '/#parts-calculator', labelUk: 'Запит ціни', labelEn: 'Get a Quote' },
+    { href: '/#deliveries', labelUk: 'Відвантаження', labelEn: 'Dispatch' },
+    { href: '/#contacts', labelUk: 'Контакти', labelEn: 'Contacts' },
   ];
 
   const scrollToCalculator = () => {
-    const el = document.getElementById('parts-calculator') || document.querySelector('input[type="text"]');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const input = el.tagName === 'INPUT' ? (el as HTMLInputElement) : el.querySelector('input');
-      input?.focus();
+    const el = document.getElementById('parts-calculator');
+    if (!el) {
+      window.location.href = '/#parts-calculator';
+      return;
     }
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(() => el.querySelector('input')?.focus({ preventScroll: true }), 500);
   };
 
   return (

@@ -5,6 +5,9 @@ import Header from './components/header';
 import HeroSection from './components/hero-section';
 import RFQSection from './components/rfq-section';
 import PriceShowcase from './components/price-showcase';
+import CategoryTiles from './components/category-tiles';
+import InteractiveDiagram from './components/interactive-diagram';
+import QuoteCart from './components/quote-cart';
 import SocialSection from './components/social-section';
 import BrandsCatalog from './components/BrandsCatalog';
 import DeliveriesSection from './components/deliveries-section';
@@ -24,11 +27,17 @@ export default function HomePage() {
 
       <HeroSection />
 
+      {/* Плитки категорій каталогу */}
+      <CategoryTiles />
+
       {/* Приклади реальних цін з живим курсом гривні */}
       <PriceShowcase />
 
       {/* Форма запиту одразу під головним екраном: сюди ведуть усі кнопки «Зробити замовлення» */}
       <RFQSection />
+
+      {/* Інтерактивна схема двигуна з цінами */}
+      <InteractiveDiagram />
 
       <BrandsCatalog onSelectOem={handleSelectOem} />
 
@@ -44,6 +53,7 @@ export default function HomePage() {
 
       <Footer />
       <FloatingContact />
+      <QuoteCart />
     </div>
   );
 }

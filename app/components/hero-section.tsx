@@ -18,12 +18,12 @@ export default function HeroSection() {
     }
   };
 
-  const scrollToPrices = () => {
-    document.getElementById('prices')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const openCatalog = () => {
+    window.location.href = '/catalog';
   };
 
   return (
-    <div className="relative min-h-[640px] lg:min-h-[720px] flex items-center justify-center overflow-hidden bg-[#06090E] pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+    <div className="relative min-h-[640px] lg:min-h-[720px] flex items-center justify-center overflow-hidden bg-[#06090E] pt-24 pb-20 px-4 sm:px-6 lg:px-8">
       {/* 1. ФОН: СВІТІННЯ + ІНЖЕНЕРНА СІТКА + ГЛОБУС З МАРШРУТАМИ */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
         {/* Кольорове світіння */}
@@ -209,11 +209,11 @@ export default function HeroSection() {
           </button>
 
           <button
-            onClick={scrollToPrices}
+            onClick={openCatalog}
             className="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white font-bold text-sm tracking-wider uppercase border border-slate-700/80 transition-all flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer active:scale-95"
           >
             <Tag className="w-4 h-4 text-amber-400" />
-            <span>{isUk ? 'Приклади цін' : 'See prices'}</span>
+            <span>{isUk ? 'Каталог і ціни' : 'Catalog & prices'}</span>
           </button>
         </motion.div>
 

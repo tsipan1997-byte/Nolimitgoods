@@ -10,7 +10,19 @@ import QuoteCart from '../components/quote-cart';
 import ProductCard from '../components/product-card';
 import InteractiveDiagram from '../components/interactive-diagram';
 import { useLanguage } from '@/lib/language-context';
-import { CATALOG, CATEGORIES, GROUPS, TYPE_LABEL, loadFullCatalog, MODEL_PAGES, type CatalogItem, type CategoryId, type GroupId, type PartType } from '@/lib/catalog';
+import { CATALOG, CATEGORIES, GROUPS, TYPE_LABEL, loadFullCatalog, type CatalogItem, type CategoryId, type GroupId, type PartType } from '@/lib/catalog';
+
+const POPULAR_BRANDS: [string, string][] = [
+  ['jcb', 'JCB'],
+  ['manitou', 'Manitou'],
+  ['caterpillar', 'Caterpillar'],
+  ['john-deere', 'John Deere'],
+  ['new-holland', 'New Holland'],
+  ['case-ih', 'Case IH'],
+  ['komatsu', 'Komatsu'],
+  ['volvo-ce', 'Volvo CE'],
+  ['perkins', 'Perkins'],
+];
 import { clientPriceGbp, loadRates, type Rates } from '@/lib/pricing';
 
 type Sort = 'popular' | 'price-asc' | 'price-desc';
@@ -138,15 +150,18 @@ export default function CatalogPage() {
         </div>
       </section>
 
-      {/* Популярні моделі авто (SEO-сторінки) */}
+      {/* Популярні бренди техніки (сторінки розділу «Спецтехніка») */}
       <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mr-1">{isUk ? 'Популярні авто:' : 'Popular cars:'}</span>
-          {MODEL_PAGES.map((m) => (
-            <Link key={m.slug} href={`/zapchastyny/${m.slug}`} className="px-3 py-1.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:border-red-500 hover:text-red-600">
-              {m.name}
+          <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mr-1">{isUk ? 'Популярна техніка:' : 'Popular brands:'}</span>
+          {POPULAR_BRANDS.map(([slug, name]) => (
+            <Link key={slug} href={`/spectehnika/${slug}`} className="px-3 py-1.5 rounded-full border border-slate-200 text-sm font-semibold text-slate-700 hover:border-red-500 hover:text-red-600">
+              {name}
             </Link>
           ))}
+          <Link href="/spectehnika" className="px-3 py-1.5 rounded-full bg-slate-900 text-white text-sm font-semibold hover:bg-slate-800">
+            {isUk ? 'Усі бренди' : 'All brands'}
+          </Link>
         </div>
       </section>
 

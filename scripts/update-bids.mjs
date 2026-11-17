@@ -43,7 +43,7 @@ for (const a of open) {
       return res;
     });
     const keys = Object.keys(got);
-    if (!keys.length) break;
+    if (!keys.length) { console.log('EMPTY', from, await page.title(), (await page.evaluate(() => document.body.innerText.slice(0, 300))).replace(/\s+/g, ' ')); break; }
     for (const k of keys) if (want.has(k)) out[`${a.id}:${k}`] = got[k];
     console.log(a.id, 'from', from, keys.length, 'cards');
     if (keys.length < 30) break;

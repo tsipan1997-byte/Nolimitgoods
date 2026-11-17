@@ -11,7 +11,7 @@ export const SOCIAL = {
 
 // Український номер (WhatsApp/Viber). Впишіть повністю, напр. '+380 XX XXX 0245' —
 // і WhatsApp/Viber по всьому сайту перейдуть на нього. Поки порожньо — на англійському.
-const PHONE_UA = '';
+const PHONE_UA = '+380 50 140 0245';
 const PHONE_UK = '+44 7426 826595';
 const digits = (p: string) => p.replace(/[^0-9]/g, '');
 const WA_NUMBER = digits(PHONE_UA || PHONE_UK);

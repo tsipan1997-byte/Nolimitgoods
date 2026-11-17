@@ -39,7 +39,7 @@ export default function Header() {
 
   const categories = [
     { href: '/catalog?cat=agro', icon: Tractor, uk: 'Агро і трактори', en: 'Farm & tractors' },
-    { href: '/catalog?cat=construction', icon: HardHat, uk: 'Спецтехніка', en: 'Construction' },
+    { href: '/spectehnika', icon: HardHat, uk: 'Спецтехніка', en: 'Construction' },
     { href: '/catalog?cat=trucks', icon: Truck, uk: 'Вантажівки', en: 'Trucks' },
     { href: '/catalog?cat=cars', icon: Car, uk: 'Легкові авто', en: 'Cars' },
     { href: '/aukciony', icon: Gavel, uk: 'Аукціони', en: 'Auctions' },

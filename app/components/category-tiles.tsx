@@ -6,6 +6,7 @@ import { ArrowUpRight, Tractor, HardHat, Truck, Car } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { CATALOG, CATEGORIES, type CategoryId } from '@/lib/catalog';
 import { KRAMP_COUNTS } from '@/lib/catalog-stats';
+import { pozytsiy } from '@/lib/plural';
 
 const ICONS: Record<CategoryId, React.ComponentType<{ className?: string }>> = {
   agro: Tractor,
@@ -40,7 +41,7 @@ export default function CategoryTiles() {
                 <div className="mt-4 text-base sm:text-lg font-black text-slate-900">{isUk ? c.uk : c.en}</div>
                 <div className="text-xs text-slate-500 mt-1 leading-snug">{isUk ? c.hintUk : c.hintEn}</div>
                 <div className="text-xs font-bold text-red-600 mt-3">
-                  {isUk ? `${n} позицій з цінами →` : `${n} priced items →`}
+                  {isUk ? `${n} ${pozytsiy(n)} з цінами →` : `${n} priced items →`}
                 </div>
               </Link>
             );

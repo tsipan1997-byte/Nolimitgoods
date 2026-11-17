@@ -45,6 +45,7 @@ import {
   type AuctionLot,
 } from '@/lib/auction-lots';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
+import { lotiv, stavok } from '@/lib/plural';
 
 const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
   energy: Zap,
@@ -214,7 +215,7 @@ export default function AuctionsPage() {
           <div className="mt-8 grid gap-3 sm:grid-cols-3 max-w-4xl">
             <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
               <div className="text-xs text-slate-400 font-semibold uppercase">На сторінці зараз</div>
-              <div className="mt-1 text-2xl font-black">{AUCTION_LOTS.length} лотів</div>
+              <div className="mt-1 text-2xl font-black">{AUCTION_LOTS.length} {lotiv(AUCTION_LOTS.length)}</div>
               <div className="text-sm text-slate-400">з {AUCTIONS.length} аукціонів, з фото</div>
             </div>
             <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
@@ -565,7 +566,7 @@ function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) {
           <span className="text-xl font-black">£{p.bid.toLocaleString('en-GB')}</span>
         </div>
         <div className="text-[11px] text-slate-400">
-          {p.bids} {p.bids === 1 ? 'ставка' : p.bids >= 2 && p.bids <= 4 ? 'ставки' : 'ставок'}
+          {p.bids} {stavok(p.bids)}
           {updated && ` · оновлено ${updated} (Київ)`} · без збору аукціону, комісії і доставки
         </div>
       </div>

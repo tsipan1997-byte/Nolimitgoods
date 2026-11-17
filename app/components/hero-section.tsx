@@ -5,6 +5,11 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ShieldCheck, Truck, ArrowRight, Camera, Search, Tag, Star } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { CATALOG } from '@/lib/catalog';
+import { KRAMP_COUNTS } from '@/lib/catalog-stats';
+
+// Скільки позицій з цінами реально в каталозі (округлено вниз до сотень)
+const CATALOG_TOTAL_ROUNDED = Math.floor((CATALOG.length + Object.values(KRAMP_COUNTS).reduce((a, b) => a + b, 0)) / 100) * 100;
 
 // Головний екран у стилі великого магазину: світлий, з фото справжньої відправки.
 export default function HeroSection() {
@@ -129,7 +134,7 @@ export default function HeroSection() {
             <div className="absolute left-4 bottom-4 right-4 flex items-end justify-between text-white">
               <div>
                 <div className="text-xs uppercase tracking-wider text-white/80">{isUk ? 'Каталог' : 'Catalog'}</div>
-                <div className="text-lg font-black">{isUk ? '790+ позицій з цінами' : '790+ priced parts'}</div>
+                <div className="text-lg font-black">{isUk ? `${CATALOG_TOTAL_ROUNDED}+ позицій з цінами` : `${CATALOG_TOTAL_ROUNDED}+ priced parts`}</div>
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur text-xs font-bold">£ + ₴</div>
             </div>

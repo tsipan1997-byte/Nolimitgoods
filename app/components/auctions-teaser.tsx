@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Gavel, ArrowRight } from 'lucide-react';
 import { AUCTIONS, AUCTION_LOTS, FEE } from '@/lib/auction-lots';
+import { lotiv } from '@/lib/plural';
 
 // Блок на головній: веде на сторінку аукціонів спецтехніки
 const PREVIEW = ['ea-leeds-nov', 'rb-nov', 'rb-agri-dec']
@@ -22,7 +23,7 @@ export default function AuctionsTeaser() {
             Спецтехніка з аукціонів Англії — купуємо під ваше замовлення
           </h2>
           <p className="mt-3 text-slate-300">
-            {AUCTION_LOTS.length} лотів з {AUCTIONS.map((a) => a.house).filter((v, i, arr) => arr.indexOf(v) === i).join(' та ')}:
+            {AUCTION_LOTS.length} {lotiv(AUCTION_LOTS.length)} з {AUCTIONS.map((a) => a.house).filter((v, i, arr) => arr.indexOf(v) === i).join(' та ')}:
             екскаватори, JCB 3CX, телескопи, трактори, генератори. Ставимо за вашим лімітом, комісія {FEE.highPct}–{FEE.lowPct}%,
             доставка в Україну.
           </p>

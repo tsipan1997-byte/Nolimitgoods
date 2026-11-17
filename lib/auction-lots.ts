@@ -177,8 +177,10 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
  }
 ];
 
-// Наша комісія: 4% якщо ціна лота до £40 000 (мінімум £150), 2% якщо дорожче
-export const FEE = { threshold: 40000, lowPct: 4, highPct: 2, minGbp: 150 };
+// Наша комісія: 2,99% якщо ціна лота до £40 000 (мінімум £150), 1,99% якщо дорожче
+export const FEE = { threshold: 40000, lowPct: 2.99, highPct: 1.99, minGbp: 150 };
+// Відсоток українською: 2.99 → «2,99»
+export const pct = (n: number) => String(n).replace('.', ',');
 export function ourFee(hammerGbp: number) {
   const pct = hammerGbp > FEE.threshold ? FEE.highPct : FEE.lowPct;
   return Math.max(FEE.minGbp, Math.round((hammerGbp * pct) / 100));

@@ -39,6 +39,7 @@ import {
   AUCTION_META,
   CATEGORY_LABELS,
   FEE,
+  pct,
   ourFee,
   rbFee,
   type AuctionCategory,
@@ -96,7 +97,7 @@ const FAQ: [string, string][] = [
   ],
   [
     'Скільки коштує ваша послуга?',
-    `${FEE.lowPct}% від ціни лота, якщо лот коштує до ${gbp(FEE.threshold)} (мінімум ${gbp(FEE.minGbp)}), і ${FEE.highPct}% — якщо дорожче. До цього додається комісія самого аукціону, експортні документи та доставка. Усе фіксуємо в інвойсі до оплати.`,
+    `${pct(FEE.lowPct)}% від ціни лота, якщо лот коштує до ${gbp(FEE.threshold)} (мінімум ${gbp(FEE.minGbp)}), і ${pct(FEE.highPct)}% — якщо дорожче. До цього додається комісія самого аукціону, експортні документи та доставка. Усе фіксуємо в інвойсі до оплати.`,
   ],
   [
     'Що буде, якщо лот не виграємо?',
@@ -221,7 +222,7 @@ export default function AuctionsPage() {
             <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
               <div className="text-xs text-slate-400 font-semibold uppercase">Наша комісія</div>
               <div className="mt-1 text-2xl font-black">
-                {FEE.highPct}–{FEE.lowPct}%
+                {pct(FEE.highPct)}–{pct(FEE.lowPct)}%
               </div>
               <div className="text-sm text-slate-400">від ціни лота, без прихованих доплат</div>
             </div>
@@ -431,11 +432,11 @@ export default function AuctionsPage() {
             </div>
             <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
               <div className="rounded-xl bg-slate-50 p-4">
-                <div className="font-black text-lg">{FEE.lowPct}%</div>
+                <div className="font-black text-lg">{pct(FEE.lowPct)}%</div>
                 <div className="text-slate-600">наша послуга, якщо лот до {gbp(FEE.threshold)} (мінімум {gbp(FEE.minGbp)})</div>
               </div>
               <div className="rounded-xl bg-slate-50 p-4">
-                <div className="font-black text-lg">{FEE.highPct}%</div>
+                <div className="font-black text-lg">{pct(FEE.highPct)}%</div>
                 <div className="text-slate-600">наша послуга, якщо лот дорожче {gbp(FEE.threshold)}</div>
               </div>
               <div className="rounded-xl bg-slate-50 p-4">
@@ -791,7 +792,7 @@ function RequestModal({ lot, onClose }: { lot: AuctionLot | null; onClose: () =>
                   <b>{isRb ? gbp(rbFee(bid)) : 'за тарифом аукціону'}</b>
                 </div>
                 <div className="flex justify-between">
-                  <span>Наша послуга ({bid > FEE.threshold ? FEE.highPct : FEE.lowPct}%{ourFee(bid) === FEE.minGbp ? ', мінімум' : ''})</span>
+                  <span>Наша послуга ({pct(bid > FEE.threshold ? FEE.highPct : FEE.lowPct)}%{ourFee(bid) === FEE.minGbp ? ', мінімум' : ''})</span>
                   <b>{gbp(ourFee(bid))}</b>
                 </div>
                 <div className="flex justify-between"><span>Експортні документи</span><b>~{gbp(AUCTION_META.exportDocsGbp)}</b></div>

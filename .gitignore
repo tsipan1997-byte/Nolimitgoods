@@ -2,3 +2,4 @@
 scripts/node_modules
 scripts/package.json
 .prices.tmp.json
+__pycache__/

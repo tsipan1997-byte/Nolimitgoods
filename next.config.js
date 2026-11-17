@@ -12,7 +12,16 @@ const nextConfig = {
     ];
   },
   async headers() {
-    return [{ source: '/ads/:file*', headers: [{ key: 'Access-Control-Allow-Origin', value: '*' }] }];
+    const longCache = [{ key: 'Cache-Control', value: 'public, max-age=604800, stale-while-revalidate=86400' }];
+    return [
+      { source: '/ads/:file*', headers: [{ key: 'Access-Control-Allow-Origin', value: '*' }, ...longCache] },
+      { source: '/parts/:file*', headers: longCache },
+      { source: '/images/:file*', headers: longCache },
+      { source: '/illustrations/:file*', headers: longCache },
+      { source: '/testimonial-video-1.mp4', headers: longCache },
+      { source: '/testimonial-video-2.mp4', headers: longCache },
+      { source: '/og-image.png', headers: longCache },
+    ];
   },
   images: {
     remotePatterns: [

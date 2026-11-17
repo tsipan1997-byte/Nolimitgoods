@@ -1,1 +1,4 @@
 .prices.tmp.json
+scripts/node_modules
+scripts/package.json
+.prices.tmp.json

@@ -14,7 +14,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - name: Install Playwright (isolated from the site deps)
+        working-directory: scripts
+        run: npm init -y >/dev/null && npm i --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
       - run: node scripts/update-bids.mjs
       - name: Commit if changed
         run: |

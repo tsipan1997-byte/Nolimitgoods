@@ -44,6 +44,7 @@ import {
   type AuctionCategory,
   type AuctionLot,
 } from '@/lib/auction-lots';
+import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 
 const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
   energy: Zap,
@@ -551,6 +552,32 @@ function isClosed(l: AuctionLot, now: number) {
   return l.live ? l.endsAt + 10 * 3_600_000 <= now : l.endsAt <= now;
 }
 
+const updatedFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+
+function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) {
+  const p = lotPrice(lot.auction, lot.lot);
+  const updated = PRICES_UPDATED_AT ? updatedFmt.format(new Date(PRICES_UPDATED_AT)) : null;
+  if (p && p.bid) {
+    return (
+      <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
+        <div className="flex items-baseline justify-between gap-2">
+          <span className="text-xs text-slate-500">{closed ? 'Остання ставка' : 'Поточна ставка'}</span>
+          <span className="text-xl font-black">£{p.bid.toLocaleString('en-GB')}</span>
+        </div>
+        <div className="text-[11px] text-slate-400">
+          {p.bids} {p.bids === 1 ? 'ставка' : p.bids >= 2 && p.bids <= 4 ? 'ставки' : 'ставок'}
+          {updated && ` · оновлено ${updated} (Київ)`} · без збору аукціону, комісії і доставки
+        </div>
+      </div>
+    );
+  }
+  return (
+    <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-500">
+      {lot.live ? 'Ставки — в день живих торгів. Ваш ліміт подаємо заздалегідь.' : 'Ставок ще немає — можна зайти з мінімальної ціни.'}
+    </div>
+  );
+}
+
 function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number | null; onRequest: () => void }) {
   const Icon = CATEGORY_ICONS[lot.category];
   const a = AUCTION_BY_ID[lot.auction];
@@ -613,7 +640,9 @@ function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number | null;
 
         {lot.specs && <p className="mt-2 text-sm text-slate-500 line-clamp-3">{lot.specs}</p>}
 
-        <div className={`mt-4 flex items-start gap-2 text-sm font-semibold ${closed ? 'text-slate-500' : urgent ? 'text-red-600' : 'text-slate-700'}`}>
+        <PriceBox lot={lot} closed={closed} />
+
+        <div className={`mt-3 flex items-start gap-2 text-sm font-semibold ${closed ? 'text-slate-500' : urgent ? 'text-red-600' : 'text-slate-700'}`}>
           <Clock className="w-4 h-4 mt-0.5 shrink-0" />
           {closed ? (
             'Торги завершено'

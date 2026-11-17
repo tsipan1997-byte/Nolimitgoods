@@ -1,0 +1,26 @@
+name: Update auction bids
+on:
+  schedule:
+    - cron: '47 7,17 * * *'   # 07:47 і 17:47 UTC (взимку = час UK)
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  bids:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm i --no-save --no-package-lock playwright@1.48.2 && npx playwright install --with-deps chromium
+      - run: node scripts/update-bids.mjs
+      - name: Commit if changed
+        run: |
+          if git diff --quiet lib/auction-prices.json; then echo "no changes"; exit 0; fi
+          git config user.name "nlg-bids-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add lib/auction-prices.json
+          git commit -m "Auctions: bid update $(date -u +'%Y-%m-%d %H:%M') UTC"
+          git push

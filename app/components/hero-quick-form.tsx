@@ -172,7 +172,7 @@ export default function HeroQuickForm() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder={isUk ? 'VIN, номер деталі або що шукаєте' : 'VIN, part number or what you need'}
+          placeholder={isUk ? 'VIN або номер деталі' : 'VIN, part number or what you need'}
           className="flex-1 min-w-0 h-12 px-4 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-base focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
           aria-label={isUk ? 'VIN або номер деталі' : 'VIN or part number'}
         />
@@ -223,7 +223,7 @@ export default function HeroQuickForm() {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           placeholder={isUk ? 'Ваш телефон (Viber / WhatsApp)' : 'Your phone (WhatsApp / Viber)'}
-          className="flex-1 min-w-0 h-12 px-4 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-base focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+          className="w-full sm:flex-1 min-w-0 h-12 shrink-0 px-4 rounded-xl border border-slate-300 bg-white text-slate-900 placeholder:text-slate-400 text-base focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
           aria-label={isUk ? 'Телефон' : 'Phone'}
         />
         <button

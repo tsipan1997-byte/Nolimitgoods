@@ -14,7 +14,7 @@ export default function FloatingContact() {
   const phoneDisplay = CONTACT.phoneUk;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 print:hidden">
+    <div className="hidden md:flex fixed bottom-6 right-6 z-50 flex-col items-end gap-3 print:hidden">
       {/* Меню з кнопками месенджерів при кліку */}
       {isOpen && (
         <div className="flex flex-col gap-2.5 bg-slate-900 border border-slate-700/80 p-3.5 rounded-2xl shadow-2xl backdrop-blur-md animate-in fade-in slide-in-from-bottom-4 duration-200 min-w-[210px]">

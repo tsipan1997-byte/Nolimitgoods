@@ -4,18 +4,31 @@ import Script from 'next/script';
 import './globals.css';
 import { LanguageProvider } from '@/lib/language-context';
 import CookieConsent from './cookie-consent';
-import { CONTACT } from '@/lib/site-config';
+import MobileContactBar from './components/mobile-contact-bar';
+import { CONTACT, SOCIAL } from '@/lib/site-config';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
-const SITE_TITLE = 'NoLimitGoods Ltd';
+const SITE_TITLE = 'Запчастини для спецтехніки, сільгосптехніки та авто з Англії — NoLimitGoods';
 const SITE_DESCRIPTION =
-  'NoLimitGoods Ltd — знайдемо і привеземо запчастини для спецтехніки, сільгосптехніки та авто: оригінал, аналог або б/у. Хаб у Великій Британії, доставка в Україну 5–14 робочих днів.';
+  'Знайдемо і привеземо запчастини для спецтехніки (JCB, Caterpillar, Komatsu, Volvo, Manitou), тракторів, вантажівок і авто: оригінал, якісний аналог або б/у. Підбір за VIN, номером чи фото. Хаб у Великій Британії, доставка в Україну 5–14 робочих днів.';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.nolimitgoods.com'),
   title: SITE_TITLE,
   description: SITE_DESCRIPTION,
+  keywords: [
+    'запчастини для спецтехніки',
+    'запчастини JCB',
+    'запчастини Caterpillar',
+    'запчастини для тракторів',
+    'запчастини з Англії',
+    'оригінальні запчастини',
+    'б/у запчастини',
+    'аналоги запчастин',
+    'NoLimitGoods',
+  ],
+  robots: { index: true, follow: true },
   openGraph: {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
@@ -49,6 +62,14 @@ const ORGANIZATION_JSON_LD = {
   logo: 'https://www.nolimitgoods.com/logo.png',
   email: CONTACT.email,
   telephone: CONTACT.phoneUk.replace(/\s/g, ''),
+  contactPoint: [
+    { '@type': 'ContactPoint', telephone: CONTACT.phoneUk.replace(/\s/g, ''), contactType: 'sales', areaServed: ['GB', 'UA'], availableLanguage: ['uk', 'en'] },
+    ...(CONTACT.phoneUa
+      ? [{ '@type': 'ContactPoint', telephone: CONTACT.phoneUa.replace(/\s/g, ''), contactType: 'customer service', areaServed: 'UA', availableLanguage: ['uk'] }]
+      : []),
+  ],
+  sameAs: [SOCIAL.instagram, SOCIAL.facebook].filter(Boolean),
+  areaServed: ['UA', 'GB'],
   vatID: 'GB372654187',
   address: {
     '@type': 'PostalAddress',
@@ -105,7 +126,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} bg-white text-slate-900 antialiased selection:bg-red-600 selection:text-white`}>
+      <body className={`${inter.className} pb-14 md:pb-0 bg-white text-slate-900 antialiased selection:bg-red-600 selection:text-white`}>
         {/* Meta Pixel Code */}
         <Script id="facebook-pixel" strategy="afterInteractive">
           {`
@@ -153,6 +174,7 @@ export default function RootLayout({
 
         <LanguageProvider>
           {children}
+          <MobileContactBar />
           <CookieConsent />
         </LanguageProvider>
       </body>

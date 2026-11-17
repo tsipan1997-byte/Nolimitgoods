@@ -20,7 +20,7 @@ export default function WhatsAppButton() {
   const viberUrl = CONTACT.viber;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="hidden md:flex fixed bottom-6 right-6 z-50 flex-col items-end">
       {/* Спливаюче меню месенджерів */}
       {open && (
         <div className="mb-3 w-72 rounded-2xl bg-slate-900/95 border border-slate-700/80 p-4 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-bottom-4 duration-200 text-white">

@@ -139,7 +139,7 @@ export default function QuoteCart() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="fixed bottom-5 left-5 z-50 flex items-center gap-2 pl-4 pr-5 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-bold shadow-[0_10px_30px_rgba(220,38,38,0.5)] transition-colors"
+          className="fixed bottom-20 md:bottom-5 left-5 z-50 flex items-center gap-2 pl-4 pr-5 py-3 rounded-full bg-red-600 hover:bg-red-500 text-white font-bold shadow-[0_10px_30px_rgba(220,38,38,0.5)] transition-colors"
         >
           <ShoppingCart className="w-5 h-5" />
           <span>{isUk ? 'Запит' : 'Quote'}</span>

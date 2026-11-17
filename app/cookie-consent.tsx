@@ -37,7 +37,7 @@ export default function CookieConsent() {
   if (accepted) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-slate-900/95 border border-slate-800 text-slate-200 p-4 rounded-2xl shadow-2xl backdrop-blur-md z-50 flex flex-col gap-3">
+    <div className="fixed bottom-20 md:bottom-4 left-4 right-4 md:left-auto md:right-6 md:max-w-md bg-slate-900/95 border border-slate-800 text-slate-200 p-4 rounded-2xl shadow-2xl backdrop-blur-md z-50 flex flex-col gap-3">
       <p className="text-xs leading-relaxed text-slate-300">
         {isUk
           ? 'Ми використовуємо файли cookie для оптимізації роботи сайту, аналітики та точного розрахунку специфікацій.'

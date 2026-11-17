@@ -7,6 +7,7 @@ import { ShieldCheck, Truck, ArrowRight, Camera, Search, Tag, Star } from 'lucid
 import { useLanguage } from '@/lib/language-context';
 import { CATALOG } from '@/lib/catalog';
 import { KRAMP_COUNTS } from '@/lib/catalog-stats';
+import HeroQuickForm from './hero-quick-form';
 
 // Скільки позицій з цінами реально в каталозі (округлено вниз до сотень)
 const CATALOG_TOTAL_ROUNDED = Math.floor((CATALOG.length + Object.values(KRAMP_COUNTS).reduce((a, b) => a + b, 0)) / 100) * 100;
@@ -104,19 +105,15 @@ export default function HeroSection() {
             ))}
           </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
-            <button
-              onClick={scrollToCalculator}
-              className="h-14 px-8 rounded-xl bg-red-600 hover:bg-red-700 text-white font-extrabold text-sm tracking-wider uppercase shadow-[0_12px_30px_rgba(220,38,38,0.30)] flex items-center justify-center gap-2 active:scale-[0.98]"
-            >
-              {isUk ? 'Отримати ціну' : 'Get a quote'} <ArrowRight className="w-4 h-4" />
-            </button>
-            <Link
-              href="/catalog"
-              className="h-14 px-7 rounded-xl bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-900 font-bold text-sm tracking-wider uppercase flex items-center justify-center gap-2"
-            >
+          <HeroQuickForm />
+
+          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+            <Link href="/catalog" className="inline-flex items-center gap-1.5 font-bold text-slate-900 hover:text-red-600">
               <Tag className="w-4 h-4 text-red-600" /> {isUk ? 'Каталог і ціни' : 'Catalog & prices'}
             </Link>
+            <button type="button" onClick={scrollToCalculator} className="inline-flex items-center gap-1.5 font-bold text-slate-900 hover:text-red-600">
+              <ArrowRight className="w-4 h-4 text-red-600" /> {isUk ? 'Кілька деталей одразу' : 'Several parts at once'}
+            </button>
           </div>
         </div>
 

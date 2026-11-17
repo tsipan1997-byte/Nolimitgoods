@@ -3,20 +3,21 @@
 import React, { useState } from 'react';
 import { MessageSquare, Phone, X, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { CONTACT } from '@/lib/site-config';
 
 export default function WhatsAppButton() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [open, setOpen] = useState(false);
 
-  const phone = '+447426826595';
+  const phone = CONTACT.phoneUk.replace(/\s/g, '');
   const defaultMsg = isUk
     ? 'Доброго дня! Цікавить наявність та ціна запчастин зі складу в Ковентрі.'
     : 'Hello! I need a quote and availability for heavy equipment parts from your UK stock.';
 
-  const waUrl = `https://wa.me/447426826595?text=${encodeURIComponent(defaultMsg)}`;
-  const tgUrl = 'https://t.me/+447426826595';
-  const viberUrl = 'viber://chat?number=%2B447426826595';
+  const waUrl = `https://wa.me/${CONTACT.waNumber}?text=${encodeURIComponent(defaultMsg)}`;
+  const tgUrl = CONTACT.telegram;
+  const viberUrl = CONTACT.viber;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
@@ -55,7 +56,7 @@ export default function WhatsAppButton() {
               className="flex items-center gap-2.5 w-full py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-colors shadow-md"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>WhatsApp (+44 7426 826595)</span>
+              <span>WhatsApp ({CONTACT.waDisplay})</span>
             </a>
 
             <a

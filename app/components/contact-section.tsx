@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Building2, Check, Copy, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { CONTACT } from '@/lib/site-config';
 
 export default function ContactSection() {
   const { language } = useLanguage();
@@ -15,8 +16,8 @@ Company No: 13146899
 VAT ID: GB 372 6541 87
 EORI: GB079878335000
 Address: 374 Hipswell Highway, Coventry, West Midlands, CV2 5FR, United Kingdom
-Email: sales@nolimitgoods.co.uk
-Phone: +44 7426 826595`;
+Email: ${CONTACT.email}
+Phone: ${CONTACT.phoneUk}${CONTACT.phoneUa ? `\nWhatsApp/Viber: ${CONTACT.phoneUa}` : ''}`;
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
@@ -63,15 +64,31 @@ Phone: +44 7426 826595`;
 
               <div className="flex items-center gap-3">
                 <Phone className="w-4 h-4 text-slate-500 shrink-0" />
-                <a href="tel:+447426826595" className="hover:text-slate-900 transition-colors">
-                  +44 7426 826595 (WhatsApp / Direct)
+                <a href={`tel:${CONTACT.phoneUk.replace(/\s/g, '')}`} className="hover:text-slate-900 transition-colors">
+                  {CONTACT.phoneUk} ({CONTACT.phoneUa ? (isUk ? 'дзвінки / Telegram' : 'Calls / Telegram') : 'WhatsApp / Telegram / Direct'})
+                </a>
+              </div>
+
+              {CONTACT.phoneUa && (
+                <div className="flex items-center gap-3">
+                  <Phone className="w-4 h-4 text-slate-500 shrink-0" />
+                  <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-slate-900 transition-colors">
+                    {CONTACT.phoneUa} (WhatsApp / Viber)
+                  </a>
+                </div>
+              )}
+
+              <div className="flex items-center gap-3">
+                <Mail className="w-4 h-4 text-slate-500 shrink-0" />
+                <a href={`mailto:${CONTACT.email}`} className="text-slate-900 hover:text-red-600 font-semibold transition-colors">
+                  {CONTACT.email}
                 </a>
               </div>
 
               <div className="flex items-center gap-3">
                 <Mail className="w-4 h-4 text-slate-500 shrink-0" />
-                <a href="mailto:sales@nolimitgoods.co.uk" className="text-slate-900 hover:text-red-600 font-semibold transition-colors">
-                  sales@nolimitgoods.co.uk
+                <a href={`mailto:${CONTACT.personalEmail}`} className="hover:text-slate-900 transition-colors">
+                  {CONTACT.personalEmail} <span className="text-slate-400">({CONTACT.personName})</span>
                 </a>
               </div>
             </div>

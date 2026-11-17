@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { CONTACT } from '@/lib/site-config';
 
 export const metadata: Metadata = {
   title: 'Політика конфіденційності | NoLimitGoods Ltd',
@@ -30,8 +31,8 @@ export default function PrivacyPage() {
               Контролер персональних даних: <strong className="text-white">NoLimitGoods Limited</strong>,
               зареєстрована в Англії та Уельсі, Company No: 13146899, адреса: 374 Hipswell Highway, Coventry,
               CV2 5FR, United Kingdom. Email для питань щодо даних:{' '}
-              <a href="mailto:sales@nolimitgoods.co.uk" className="underline underline-offset-4 text-white">
-                sales@nolimitgoods.co.uk
+              <a href={`mailto:${CONTACT.email}`} className="underline underline-offset-4 text-white">
+                {CONTACT.email}
               </a>
               .
             </p>
@@ -124,8 +125,8 @@ export default function PrivacyPage() {
               Відповідно до UK GDPR ви маєте право: отримати доступ до своїх даних, виправити їх, видалити,
               обмежити обробку, заперечити проти обробки, отримати копію даних у зручному форматі та відкликати
               згоду. Щоб скористатися правами, напишіть нам на{' '}
-              <a href="mailto:sales@nolimitgoods.co.uk" className="underline underline-offset-4 text-white">
-                sales@nolimitgoods.co.uk
+              <a href={`mailto:${CONTACT.email}`} className="underline underline-offset-4 text-white">
+                {CONTACT.email}
               </a>
               .
             </p>
@@ -153,8 +154,8 @@ export default function PrivacyPage() {
               platforms, logistics). You have rights under UK GDPR, including access, correction, deletion and
               withdrawal of consent. You can change your cookie choice any time via “Налаштування cookie” in the
               site footer. Contact:{' '}
-              <a href="mailto:sales@nolimitgoods.co.uk" className="underline underline-offset-4 text-white">
-                sales@nolimitgoods.co.uk
+              <a href={`mailto:${CONTACT.email}`} className="underline underline-offset-4 text-white">
+                {CONTACT.email}
               </a>
               . You may complain to the ICO (ico.org.uk).
             </p>

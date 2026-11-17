@@ -17,6 +17,7 @@ import {
   BadgeCheck,
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { CONTACT } from '@/lib/site-config';
 
 interface RFQItemInput {
   id: string;
@@ -33,7 +34,7 @@ interface PhotoItem {
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
 
-const WHATSAPP_NUMBER = '447426826595';
+const WHATSAPP_NUMBER = CONTACT.waNumber;
 const MAX_ITEMS = 10;
 const MAX_PHOTOS = 3;
 
@@ -337,7 +338,7 @@ export default function RFQSection() {
         <span>WhatsApp</span>
       </a>
       <a
-        href="https://t.me/+447426826595"
+        href={CONTACT.telegram}
         target="_blank"
         rel="noopener noreferrer"
         className="flex items-center justify-center gap-1.5 bg-[#229ED9] hover:bg-[#1d87b9] text-white font-bold py-3 px-3 rounded-xl transition-all text-sm active:scale-95"
@@ -346,7 +347,7 @@ export default function RFQSection() {
         <span>Telegram</span>
       </a>
       <a
-        href="viber://chat?number=%2B447426826595"
+        href={CONTACT.viber}
         className="flex items-center justify-center gap-1.5 bg-[#7360F2] hover:bg-[#6350e0] text-white font-bold py-3 px-3 rounded-xl transition-all text-sm active:scale-95"
       >
         <MessageSquare className="w-4 h-4" />
@@ -706,8 +707,8 @@ export default function RFQSection() {
               </button>
               <p className="text-center text-xs text-slate-500 mt-3">
                 {isUk
-                  ? 'Зручніше в месенджері? Пишіть у WhatsApp, Telegram чи Viber: +44 7426 826595'
-                  : 'Prefer a messenger? WhatsApp, Telegram or Viber: +44 7426 826595'}
+                  ? `Зручніше в месенджері? WhatsApp / Viber: ${CONTACT.waDisplay}, Telegram: ${CONTACT.phoneUk}`
+                  : `Prefer a messenger? WhatsApp / Viber: ${CONTACT.waDisplay}, Telegram: ${CONTACT.phoneUk}`}
               </p>
             </form>
           )}

@@ -9,11 +9,25 @@ export const SOCIAL = {
   facebook: 'https://www.facebook.com/profile.php?id=61595405257258',
 };
 
+// Український номер (WhatsApp/Viber). Впишіть повністю, напр. '+380 XX XXX 0245' —
+// і WhatsApp/Viber по всьому сайту перейдуть на нього. Поки порожньо — на англійському.
+const PHONE_UA = '';
+const PHONE_UK = '+44 7426 826595';
+const digits = (p: string) => p.replace(/[^0-9]/g, '');
+const WA_NUMBER = digits(PHONE_UA || PHONE_UK);
+
 export const CONTACT = {
-  phone: '+44 7426 826595',
-  whatsapp: 'https://wa.me/447426826595',
-  telegram: 'https://t.me/+447426826595',
-  email: 'sales@nolimitgoods.co.uk',
+  phone: PHONE_UK,            // англійський: дзвінки + Telegram
+  phoneUk: PHONE_UK,
+  phoneUa: PHONE_UA,          // український: WhatsApp / Viber
+  waNumber: WA_NUMBER,
+  waDisplay: PHONE_UA || PHONE_UK,
+  whatsapp: `https://wa.me/${WA_NUMBER}`,
+  viber: `viber://chat?number=%2B${WA_NUMBER}`,
+  telegram: `https://t.me/+${digits(PHONE_UK)}`,
+  email: 'sales@nolimitgoods.com',
+  personalEmail: 'ivan.tsipan@nolimitgoods.com',
+  personName: 'Іван Ціпан',
 };
 
 // Наша націнка на ціну постачальника без VAT (1.25 = +25%)

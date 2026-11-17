@@ -4,6 +4,7 @@ import Script from 'next/script';
 import './globals.css';
 import { LanguageProvider } from '@/lib/language-context';
 import CookieConsent from './cookie-consent';
+import { CONTACT } from '@/lib/site-config';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
@@ -46,8 +47,8 @@ const ORGANIZATION_JSON_LD = {
   legalName: 'NoLimitGoods Limited',
   url: 'https://www.nolimitgoods.com',
   logo: 'https://www.nolimitgoods.com/logo.png',
-  email: 'sales@nolimitgoods.co.uk',
-  telephone: '+447426826595',
+  email: CONTACT.email,
+  telephone: CONTACT.phoneUk.replace(/\s/g, ''),
   vatID: 'GB372654187',
   address: {
     '@type': 'PostalAddress',

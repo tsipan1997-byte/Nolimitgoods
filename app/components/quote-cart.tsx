@@ -5,6 +5,7 @@ import { ShoppingCart, X, Trash2, Loader2, CheckCircle2, Minus, Plus } from 'luc
 import { useLanguage } from '@/lib/language-context';
 import type { CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, loadRates, shippingGbp, type Rates } from '@/lib/pricing';
+import { CONTACT } from '@/lib/site-config';
 
 // ============================================================================
 // КОШИК ЗАПИТУ (B2B): клієнт додає деталі з каталогу, лишає контакт —
@@ -228,7 +229,7 @@ export default function QuoteCart() {
                       className="w-full px-4 py-3 bg-white text-slate-900 placeholder-slate-400 border border-slate-300 rounded-xl text-base sm:text-sm focus:border-red-500 outline-none"
                     />
                     {status === 'error' && (
-                      <p className="text-xs text-amber-600">{isUk ? 'Не вдалося надіслати. Спробуйте ще раз або напишіть у WhatsApp +44 7426 826595.' : 'Could not send. Try again or WhatsApp +44 7426 826595.'}</p>
+                      <p className="text-xs text-amber-600">{isUk ? `Не вдалося надіслати. Спробуйте ще раз або напишіть у WhatsApp ${CONTACT.waDisplay}.` : `Could not send. Try again or WhatsApp ${CONTACT.waDisplay}.`}</p>
                     )}
                     <button
                       type="button"

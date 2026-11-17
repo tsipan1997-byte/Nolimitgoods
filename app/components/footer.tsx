@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
-import { SOCIAL } from '@/lib/site-config';
+import { SOCIAL, CONTACT } from '@/lib/site-config';
 import { InstagramIcon, FacebookIcon } from './social-icons';
 import { useLanguage } from '@/lib/language-context';
 
@@ -111,11 +111,21 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                <span>+44 7426 826595</span>
+                <a href={`tel:${CONTACT.phoneUk.replace(/\s/g, '')}`} className="hover:text-white">{CONTACT.phoneUk} <span className="text-slate-500">(UK, Telegram)</span></a>
+              </li>
+              {CONTACT.phoneUa && (
+                <li className="flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                  <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">{CONTACT.phoneUa} <span className="text-slate-500">(UA, WhatsApp / Viber)</span></a>
+                </li>
+              )}
+              <li className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-red-500 shrink-0" />
+                <a href={`mailto:${CONTACT.email}`} className="hover:text-white">{CONTACT.email}</a>
               </li>
               <li className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-red-500 shrink-0" />
-                <span>sales@nolimitgoods.co.uk</span>
+                <a href={`mailto:${CONTACT.personalEmail}`} className="hover:text-white">{CONTACT.personalEmail}</a>
               </li>
             </ul>
           </div>

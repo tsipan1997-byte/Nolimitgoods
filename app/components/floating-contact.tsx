@@ -3,14 +3,15 @@
 import React, { useState } from 'react';
 import { MessageCircle, Phone, X, Send } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { CONTACT } from '@/lib/site-config';
 
 export default function FloatingContact() {
   const [isOpen, setIsOpen] = useState(false);
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
-  const phoneRaw = '+447426826595';
-  const phoneDisplay = '+44 7426 826595';
+  const phoneRaw = CONTACT.phoneUk.replace(/\s/g, '');
+  const phoneDisplay = CONTACT.phoneUk;
 
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 print:hidden">
@@ -23,7 +24,7 @@ export default function FloatingContact() {
 
           {/* 1. WHATSAPP */}
           <a
-            href={`https://wa.me/${phoneRaw.replace('+', '')}?text=${encodeURIComponent(
+            href={`https://wa.me/${CONTACT.waNumber}?text=${encodeURIComponent(
               isUk ? 'Вітаю! Потрібна консультація щодо запчастин.' : 'Hello! I need assistance with spare parts.'
             )}`}
             target="_blank"
@@ -31,12 +32,12 @@ export default function FloatingContact() {
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow-sm active:scale-95"
           >
             <MessageCircle className="w-4 h-4" />
-            <span>WhatsApp UK</span>
+            <span>WhatsApp</span>
           </a>
 
           {/* 2. TELEGRAM */}
           <a
-            href="https://t.me/+447426826595"
+            href={CONTACT.telegram}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#229ED9] hover:bg-[#1d8dbf] text-white text-xs font-bold transition-all shadow-sm active:scale-95"
@@ -47,7 +48,7 @@ export default function FloatingContact() {
 
           {/* 3. VIBER */}
           <a
-            href="viber://chat?number=%2B447426826595"
+            href={CONTACT.viber}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2.5 px-3 py-2 rounded-xl bg-[#7360F2] hover:bg-[#6350e0] text-white text-xs font-bold transition-all shadow-sm active:scale-95"

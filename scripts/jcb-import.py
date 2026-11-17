@@ -10,7 +10,7 @@ import re
 import sys
 import datetime
 
-SRC = sys.argv[1]
+SRC = sys.argv[1] if __name__ == '__main__' and len(sys.argv) > 1 else ''
 CAT = 'public/data/catalog-kramp.json'
 TODAY = datetime.date.today().isoformat()
 

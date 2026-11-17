@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Додає оригінальні позиції JCB (номер, назва, ціна без ПДВ з parts.jcb.com) у public/data/catalog-kramp.json.
 
-Використання: python3 scripts/jcb-import.py <jcb.json>
-Вхід: {"400/24843": {"pn": "...", "title": "...", "price": 27.44, "avail": "Available"}, ...}
+Використання: python3 scripts/jcb-import.py part1.txt,part2.txt
+Вхід: рядки «номер|ціна|назва».
 Беремо тільки факти (номер, назва, ціна). Фото й описи JCB не копіюємо.
 """
 import json
@@ -16,6 +16,48 @@ TODAY = datetime.date.today().isoformat()
 
 # Порядок важливий: від конкретного до загального
 TITLE_MAP = [
+    (r'service kit|hour kit', 'Сервісний комплект ТО'),
+    (r'injection pump', 'ПНВТ (паливний насос високого тиску)'),
+    (r'leak-off', 'Зворотка форсунок'),
+    (r'charge air cooler', 'Інтеркулер'),
+    (r'engine fan|\bfan\b(?! belt)', 'Вентилятор / привід вентилятора'),
+    (r'contactor', 'Контактор'),
+    (r'input shaft', 'Вхідний вал'),
+    (r'chisel', 'Долото гідромолота'),
+    (r'arm link|link assembly', 'Тяга'),
+    (r'air-spring|air spring', 'Пневмоподушка сидіння'),
+    (r'pto shaft', 'Вал відбору потужності'),
+    (r'high.pressure pipe', 'Трубки високого тиску'),
+    (r'friction plate|counter plate|brake plate|plate', 'Диск / пластина'),
+    (r'\bcoil\b', 'Котушка соленоїда'),
+    (r'mirror arm', 'Кронштейн дзеркала'),
+    (r'cooler jet', 'Форсунка охолодження поршня'),
+    (r'idler|sprocket', 'Натяжне колесо / зірочка ходової'),
+    (r'top roller|bottom roller', 'Каток ходової'),
+    (r'taper roller|needle roller|roller bearing|thrust bearing', 'Підшипник'),
+    (r'strainer', 'Сітчастий фільтр гідравліки'),
+    (r'steer mode valve|steering valve|steer valve|orbitrol', 'Клапан рульового керування'),
+    (r'counterbalance', 'Клапан противаги'),
+    (r'gas strut', 'Газовий упор'),
+    (r'coupling', 'Муфта / з\'єднання'),
+    (r'track rod|tie rod|drag link', 'Рульова тяга'),
+    (r'ball joint', 'Кульова опора'),
+    (r'accumulator', 'Гідроакумулятор'),
+    (r'gear ?box', 'Редуктор'),
+    (r'flow divider', 'Дільник потоку'),
+    (r'wash pump', 'Насос омивача'),
+    (r'piston ring|ring piston', 'Поршневе кільце'),
+    (r'piston rod', 'Шток'),
+    (r'crown wheel|pinion', 'Головна пара'),
+    (r'master cylinder', 'Головний гальмівний циліндр'),
+    (r'fuse', 'Блок запобіжників'),
+    (r'gauge', 'Покажчик / датчик рівня'),
+    (r'heater unit|hvac|a/c', 'Блок обігріву / кондиціонера'),
+    (r'joystick', 'Джойстик / деталь джойстика'),
+    (r'latch|lock', 'Замок / защіпка'),
+    (r'hinge', 'Петля'),
+    (r'stub axle|steering knuckle', 'Поворотний кулак / цапфа'),
+    (r'oil cooler|water cooler|transmission oil cooler', 'Охолоджувач'),
     (r'transmission.*filter|filter.*transmission', 'Фільтр трансмісії'),
     (r'oil filter.*by-pass|by-pass', 'Масляний фільтр байпасний'),
     (r'oil filter|lube filter', 'Масляний фільтр'),
@@ -96,6 +138,18 @@ GROUP_MAP = [
 
 WEIGHT = {'filters': 1.0, 'hydraulics': 5.0, 'electrics': 3.0, 'chassis': 4.0, 'cab': 6.0, 'wear': 4.0, 'engine': 3.0}
 
+# Реалістична вага важких вузлів (кг) — від неї залежить доставка
+WEIGHT_RX = [
+    (r'rubber track', 120, True), (r'radiator(?! (cap|hose|rubber))|charge air cooler|condenser', 25, True),
+    (r'\bdoor\b(?!.*(handle|hinge|latch|seal|key|glass))', 40, True), (r'seat(?!.*(cover|switch|belt|harness|knob))', 30, True),
+    (r'glass|window(?!.*(seal|latch|lock|strut|stay|catch))', 20, True), (r'drive ?shaft|driveshaft', 18, False),
+    (r'turbo(?!.*(gasket|pipe|o ring|link))', 10, False), (r'injection pump|main pump|variable displacement|triple pump|tandem', 25, False),
+    (r'swing gear box|flow divider|rotary coupling', 40, True), (r'\bram\b(?!.*seal)|cylinder(?! head)', 35, True),
+    (r'alternator(?!.*(pulley|lever|bracket))|starter motor(?!.*(cable|harness|bracket|solenoid))', 8, False),
+    (r'heater unit|hvac|a/c and heater', 20, True), (r'fuel tank black', 25, True), (r'cutting edge|chisel', 25, True),
+]
+EXCLUDE_RX = r'\bbattery\b(?!.*(isolator|cable|relay|warning|glow))|wet battery|lead acid|charger'
+
 
 def title_uk(t: str) -> str:
     tl = t.lower()
@@ -118,7 +172,12 @@ def slug(pn: str, brand: str) -> str:
 
 
 def main():
-    src = json.load(open(SRC))
+    src = {}
+    for path in SRC.split(','):
+        for line in open(path):
+            parts = line.rstrip('\n').split('|', 2)
+            if len(parts) == 3:
+                src[parts[0]] = {'pn': parts[0], 'price': parts[1], 'title': parts[2]}
     cat = json.load(open(CAT))
     have = {slug(i['partNumber'], i['brand']) for i in cat}
     added = 0
@@ -129,8 +188,14 @@ def main():
         s = slug(pn, 'JCB')
         if s in have:
             continue
+        if re.search(EXCLUDE_RX, title, re.I):
+            continue
         g = group_of(title)
-        heavy = price > 800 and g in ('hydraulics', 'engine', 'chassis', 'cab')
+        weight, oversized = WEIGHT[g], False
+        for rx, w, ov in WEIGHT_RX:
+            if re.search(rx, title, re.I):
+                weight, oversized = w, ov
+                break
         cat.append({
             'id': 'jcbp-' + re.sub(r'[^a-z0-9]+', '-', pn.lower()).strip('-'),
             'category': 'construction',
@@ -146,8 +211,8 @@ def main():
             'supplierPrice': round(price, 2),
             'currency': 'GBP',
             'supplierIncVat': False,
-            'weightKg': WEIGHT[g] * (4 if heavy else 1),
-            'sourceUrl': 'https://parts.jcb.com/uk/product/' + pn.replace('/', '-'),
+            'weightKg': weight,
+            **({'oversized': True} if oversized else {}),
             'checkedAt': TODAY,
         })
         have.add(s)

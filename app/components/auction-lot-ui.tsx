@@ -13,6 +13,7 @@ import { CONTACT } from '@/lib/site-config';
 import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, rbFee, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
+import { lotPhotoUrl } from '@/lib/lot-photos';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
 
 export const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
@@ -91,20 +92,24 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
   const closed = now !== null && isClosed(lot, now);
   const left = now !== null && !lot.live ? timeLeft(lot.endsAt, now) : null;
   const urgent = now !== null && !closed && lot.endsAt - now < 24 * 3_600_000;
-  const [imgOk, setImgOk] = useState(Boolean(lot.img));
+  const soldBid = closed ? lotPrice(lot.auction, lot.lot)?.bid ?? null : null;
+  // Фото: наша копія у сховищі → оригінал з аукціону → іконка
+  const photos = [lotPhotoUrl(lot.auction, lot.item), lot.img].filter(Boolean) as string[];
+  const [photoIdx, setPhotoIdx] = useState(0);
+  const imgOk = photoIdx < photos.length;
 
   return (
-    <article className={`flex flex-col rounded-xl sm:rounded-2xl border bg-white overflow-hidden transition-shadow hover:shadow-lg ${closed ? 'opacity-60' : 'border-slate-200'}`}>
+    <article className={`flex flex-col rounded-xl sm:rounded-2xl border bg-white overflow-hidden transition-shadow hover:shadow-lg border-slate-200 ${closed ? 'bg-slate-50' : ''}`}>
       <div className="relative aspect-[4/3] bg-slate-100">
         {imgOk ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={lot.img}
+            src={photos[photoIdx]}
             alt={`${lot.title}${lot.year ? `, ${lot.year}` : ''} — аукціон ${a?.house ?? ''}, Велика Британія`}
             loading="lazy"
             decoding="async"
             referrerPolicy="no-referrer"
-            onError={() => setImgOk(false)}
+            onError={() => setPhotoIdx((n) => n + 1)}
             className="absolute inset-0 w-full h-full object-cover"
           />
         ) : (
@@ -155,7 +160,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
         <div className={`mt-1.5 sm:mt-3 flex items-start gap-1.5 sm:gap-2 text-[11px] sm:text-sm font-semibold ${closed ? 'text-slate-500' : urgent ? 'text-red-600' : 'text-slate-700'}`}>
           <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 shrink-0" />
           {closed ? (
-            'Торги завершено'
+            soldBid ? <span>Продано за <b className="text-slate-900">£{soldBid.toLocaleString('en-GB')}</b></span> : 'Торги завершено'
           ) : (
             <span>
               {lotWhen(lot)}
@@ -168,10 +173,9 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           <button
             type="button"
             onClick={onRequest}
-            disabled={closed}
-            className="w-full h-9 sm:h-11 rounded-lg sm:rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-slate-300 text-white font-bold text-xs sm:text-sm"
+            className={`w-full h-9 sm:h-11 rounded-lg sm:rounded-xl text-white font-bold text-xs sm:text-sm ${closed ? 'bg-slate-900 hover:bg-slate-800' : 'bg-red-600 hover:bg-red-700'}`}
           >
-            {closed ? 'Лот закрито' : 'Хочу цей лот'}
+            {closed ? 'Хочу схожий' : 'Хочу цей лот'}
           </button>
         </div>
       </div>

@@ -21,15 +21,15 @@ export default function PriceShowcase() {
   }, []);
 
   return (
-    <section id="prices" className="relative py-20 sm:py-24 bg-slate-50 border-b border-slate-200 scroll-mt-20">
+    <section id="prices" className="relative py-8 sm:py-16 bg-slate-50 border-b border-slate-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-5 sm:mb-10">
           <div className="max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-600 mb-3">{isUk ? 'Приклади цін' : 'Price examples'}</p>
-            <h2 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+            <h2 className="text-2xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
               {isUk ? 'Скільки це коштує насправді' : 'What parts really cost'}
             </h2>
-            <p className="mt-4 text-slate-500 text-base sm:text-lg">
+            <p className="mt-2 sm:mt-4 text-slate-500 text-sm sm:text-lg">
               {isUk
                 ? 'Реальні позиції, які ми возимо. Ціна вже з нашою комісією, у фунтах і в гривнях за сьогоднішнім курсом, плюс доставка в Україну за вагою.'
                 : 'Real items we supply. Prices include our fee, in pounds and hryvnia at today’s rate, plus delivery by weight.'}
@@ -53,7 +53,7 @@ export default function PriceShowcase() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-5">
           {FEATURED.map((item) => (
             <ProductCard key={item.id} item={item} rates={rates} isUk={isUk} />
           ))}
@@ -65,7 +65,7 @@ export default function PriceShowcase() {
               </h3>
               <p className="text-sm text-red-50/90 mt-3 leading-relaxed">
                 {isUk
-                  ? 'Агро, спецтехніка, вантажівки, легкові. А якщо потрібної деталі немає — знайдемо під запит: оригінал, аналог або б/у.'
+                  ? 'Агро, спецтехніка, вантажівки, легкові. Немає потрібної деталі в списку — знайдемо оригінал, аналог або б/у і назвемо ціну.'
                   : 'Farm, construction, trucks, cars. Not listed? We source it on request: genuine, aftermarket or used.'}
               </p>
             </div>

@@ -11,18 +11,13 @@ import InteractiveDiagram from './components/interactive-diagram';
 import QuoteCart from './components/quote-cart';
 import SocialSection from './components/social-section';
 import TrustSection from './components/trust-section';
-import BrandsCatalog from './components/BrandsCatalog';
+import BrandsStrip from './components/brands-strip';
 import DeliveriesSection from './components/deliveries-section';
 import ContactSection from './components/contact-section';
 import Footer from './components/footer';
 import FloatingContact from './components/floating-contact';
 
 export default function HomePage() {
-  // Клік по артикулу в каталозі: підставляємо його у форму запиту і гортаємо до неї
-  const handleSelectOem = (oem: string, brand: string) => {
-    window.dispatchEvent(new CustomEvent('nlg:select-part', { detail: { oem, brand } }));
-  };
-
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-red-500 selection:text-white">
       <Header />
@@ -45,7 +40,8 @@ export default function HomePage() {
       {/* Інтерактивна схема двигуна з цінами */}
       <InteractiveDiagram />
 
-      <BrandsCatalog onSelectOem={handleSelectOem} />
+      {/* Бренди: веде на сторінки марок з цінами (замість каталогу OEM-кодів без цін) */}
+      <BrandsStrip />
 
       <div id="deliveries">
         <DeliveriesSection />

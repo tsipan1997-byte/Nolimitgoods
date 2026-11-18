@@ -133,32 +133,32 @@ export default function AuctionsPage() {
       <Header />
 
       {/* ГОЛОВНИЙ ЕКРАН */}
-      <section className="bg-slate-950 text-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 md:py-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-600/15 border border-red-500/30 text-red-300 text-xs font-bold uppercase tracking-wide">
+      <section className="bg-slate-50 border-b border-slate-200 text-slate-900">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-50 border border-red-200 text-red-700 text-xs font-bold uppercase tracking-wide">
             <Gavel className="w-4 h-4" /> Аукціони спецтехніки Великої Британії
           </div>
-          <h1 className="mt-4 text-3xl md:text-5xl font-black leading-tight max-w-4xl">
+          <h1 className="mt-3 text-[26px] md:text-5xl font-black leading-tight max-w-4xl">
             Купуємо спецтехніку на аукціонах Англії — під ваше замовлення, з доставкою в Україну
           </h1>
-          <p className="mt-4 text-slate-300 text-base md:text-lg max-w-3xl">
+          <p className="mt-4 text-slate-600 text-base md:text-lg max-w-3xl">
             Екскаватори, JCB 3CX, телескопічні навантажувачі, трактори John Deere і New Holland, генератори, гідромолоти.
             Ви обираєте лот і називаєте максимальну ціну — ми ставимо за вас на Ritchie Bros, Euro Auctions та інших аукціонах,
             викуповуємо, оформлюємо експорт і доставляємо.
           </p>
 
           <div className="mt-8 grid gap-3 sm:grid-cols-3 max-w-4xl">
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-              <div className="text-xs text-slate-400 font-semibold uppercase">На сторінці зараз</div>
+            <div className="rounded-2xl bg-white border border-slate-200 p-4">
+              <div className="text-xs text-slate-500 font-semibold uppercase">На сторінці зараз</div>
               <div className="mt-1 text-2xl font-black">{AUCTION_LOTS.length} {lotiv(AUCTION_LOTS.length)}</div>
-              <div className="text-sm text-slate-400">з {AUCTIONS.length} аукціонів, з фото</div>
+              <div className="text-sm text-slate-500">з {AUCTIONS.length} аукціонів, з фото</div>
             </div>
-            <div className="rounded-2xl bg-white/5 border border-white/10 p-4">
-              <div className="text-xs text-slate-400 font-semibold uppercase">Наша комісія</div>
+            <div className="rounded-2xl bg-white border border-slate-200 p-4">
+              <div className="text-xs text-slate-500 font-semibold uppercase">Наша комісія</div>
               <div className="mt-1 text-2xl font-black">
                 {pct(FEE.highPct)}–{pct(FEE.lowPct)}%
               </div>
-              <div className="text-sm text-slate-400">від ціни лота, без прихованих доплат</div>
+              <div className="text-sm text-slate-500">від ціни лота, без прихованих доплат</div>
             </div>
             <div className="rounded-2xl bg-red-600 p-4">
               <div className="text-xs text-red-100 font-semibold uppercase">Найближче закриття</div>
@@ -174,16 +174,19 @@ export default function AuctionsPage() {
           </div>
 
           <div className="mt-8 flex flex-wrap gap-3">
-            <a href="#lots" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 font-bold">
+            <a href="#lots" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold">
               Дивитися лоти <ArrowRight className="w-4 h-4" />
             </a>
             <button
               type="button"
               onClick={() => openForm(null)}
-              className="inline-flex items-center gap-2 h-12 px-6 rounded-xl border border-white/20 hover:bg-white/10 font-bold"
+              className="inline-flex items-center gap-2 h-12 px-6 rounded-xl border border-slate-300 bg-white hover:border-red-300 font-bold"
             >
               Підібрати техніку під мене
             </button>
+            <Link href="/rezultaty-aukcioniv" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl border border-slate-300 bg-white hover:border-red-300 font-bold">
+              Результати: за скільки продали
+            </Link>
           </div>
         </div>
       </section>
@@ -458,12 +461,12 @@ export default function AuctionsPage() {
               </details>
             ))}
           </div>
-          <div className="mt-8 rounded-2xl bg-slate-950 text-white p-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
+          <div className="mt-8 rounded-2xl bg-slate-50 border border-slate-200 text-slate-900 p-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
             <div>
               <div className="font-black text-lg">Не знайшли потрібну техніку?</div>
-              <div className="text-sm text-slate-300">Опишіть, що шукаєте, — підберемо лот на найближчих аукціонах.</div>
+              <div className="text-sm text-slate-600">Опишіть, що шукаєте, — підберемо лот на найближчих аукціонах.</div>
             </div>
-            <button type="button" onClick={() => openForm(null)} className="h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 font-bold">
+            <button type="button" onClick={() => openForm(null)} className="h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold">
               Підібрати техніку
             </button>
           </div>

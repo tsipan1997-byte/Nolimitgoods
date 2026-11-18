@@ -73,6 +73,11 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <a href="/rezultaty-aukcioniv" className="hover:text-white transition-colors">
+                  {isUk ? 'Результати аукціонів: за скільки продали' : 'Auction results'}
+                </a>
+              </li>
+              <li>
                 <a href="/#parts-calculator" className="hover:text-white transition-colors">
                   {isUk ? 'Запит ціни' : 'Get a Quote'}
                 </a>
@@ -83,8 +88,8 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/#catalog" className="hover:text-white transition-colors">
-                  {isUk ? 'Каталог вузлів OEM' : 'OEM Catalog'}
+                <a href="/catalog" className="hover:text-white transition-colors">
+                  {isUk ? 'Каталог запчастин з цінами' : 'Parts catalogue'}
                 </a>
               </li>
               <li>

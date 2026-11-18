@@ -14,3 +14,4 @@ node_modules/
 package-lock.json
 scripts/auto-bids/node_modules/
 scripts/auto-bids/*.log
+.env.cron.local

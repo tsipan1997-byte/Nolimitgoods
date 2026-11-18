@@ -53,18 +53,18 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
         )}
       </Link>
 
-      <div className="flex flex-col flex-1 p-4">
+      <div className="flex flex-col flex-1 p-3 sm:p-4">
         <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{item.brand}</div>
         <div className="font-mono text-sm text-slate-900 mt-0.5">{item.partNumber}</div>
-        <h3 className="text-sm font-semibold text-slate-700 mt-2 leading-snug">
+        <h3 className="text-[13px] sm:text-sm font-semibold text-slate-700 mt-1.5 sm:mt-2 leading-snug line-clamp-3">
           <Link href={href} className="hover:text-red-600 hover:underline">{isUk ? item.titleUk : item.titleEn}</Link>
         </h3>
-        <div className="text-xs text-slate-500 mt-1">{isUk ? item.fitsUk : item.fitsEn}</div>
+        <div className="hidden sm:block text-xs text-slate-500 mt-1">{isUk ? item.fitsUk : item.fitsEn}</div>
 
-        <div className="mt-auto pt-4">
-          <div className="text-2xl font-black text-slate-900">{gbp !== null ? fmtGbp(gbp) : '—'}</div>
-          <div className="text-sm font-semibold text-amber-600 min-h-[1.25rem]">{uah !== null ? `≈ ${fmtUah(uah)}` : ''}</div>
-          <div className="text-xs text-slate-500 mt-1">
+        <div className="mt-auto pt-3 sm:pt-4">
+          <div className="text-xl sm:text-2xl font-black text-slate-900">{gbp !== null ? fmtGbp(gbp) : '—'}</div>
+          <div className="text-xs sm:text-sm font-semibold text-amber-600 min-h-[1.25rem]">{uah !== null ? `≈ ${fmtUah(uah)}` : ''}</div>
+          <div className="text-[11px] sm:text-xs text-slate-500 mt-1">
             {ship !== null
               ? isUk ? `+ доставка в Україну ${fmtGbp(ship)}` : `+ delivery ${fmtGbp(ship)}`
               : isUk ? '+ доставка (рахуємо окремо)' : '+ delivery (quoted)'}
@@ -72,12 +72,12 @@ export default function ProductCard({ item, rates, isUk }: { item: CatalogItem; 
           <button
             type="button"
             onClick={add}
-            className={`mt-3 w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold transition-colors border ${
+            className={`mt-2.5 sm:mt-3 w-full inline-flex items-center justify-center gap-1.5 px-2 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-colors border ${
               added ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-slate-800 hover:bg-red-600 border-slate-700 hover:border-red-600 text-white'
             }`}
           >
             {added ? <Check className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />}
-            <span>{added ? (isUk ? 'Додано в запит' : 'Added') : isUk ? 'Додати в запит' : 'Add to quote'}</span>
+            <span>{added ? (isUk ? 'Додано' : 'Added') : isUk ? 'Замовити' : 'Order'}</span>
           </button>
         </div>
       </div>

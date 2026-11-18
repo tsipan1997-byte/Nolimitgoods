@@ -2,10 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ShieldCheck, Truck, ArrowRight, Camera, Search, Tag, Star } from 'lucide-react';
+import { ShieldCheck, Truck, ArrowRight, Camera, Search, Tag } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { CATALOG } from '@/lib/catalog';
+import { AUCTION_LOTS } from '@/lib/auction-lots';
 import { KRAMP_COUNTS } from '@/lib/catalog-stats';
 import HeroQuickForm from './hero-quick-form';
 
@@ -38,76 +38,54 @@ export default function HeroSection() {
       ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white">
-      {/* делікатна сітка і червоне світіння */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage:
-            'radial-gradient(ellipse 60% 50% at 85% 10%, rgba(220,38,38,0.10), transparent 60%),' +
-            'linear-gradient(rgba(15,23,42,0.04) 1px, transparent 1px),' +
-            'linear-gradient(90deg, rgba(15,23,42,0.04) 1px, transparent 1px)',
-          backgroundSize: 'auto, 48px 48px, 48px 48px',
-          maskImage: 'linear-gradient(to bottom, black 60%, transparent)',
-          WebkitMaskImage: 'linear-gradient(to bottom, black 60%, transparent)',
-        }}
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-14 lg:pt-16 lg:pb-20 grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-center">
+    <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white border-b border-slate-200">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-6 lg:pt-12 lg:pb-12 grid lg:grid-cols-[1.1fr_0.9fr] gap-6 lg:gap-10 items-center">
         <div>
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm text-xs sm:text-sm font-semibold text-slate-700"
-          >
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-700">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            {isUk ? 'NoLimitGoods Ltd • хаб у Ковентрі, Велика Британія' : 'NoLimitGoods Ltd • hub in Coventry, UK'}
-          </motion.div>
+            {isUk ? 'NoLimitGoods Ltd · Ковентрі, Велика Британія' : 'NoLimitGoods Ltd · Coventry, UK'}
+          </div>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.05 }}
-            className="mt-5 text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.05]"
-          >
+          <h1 className="mt-3 text-[28px] sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.08]">
             {isUk ? (
               <>
-                Знайдемо і привеземо <span className="text-red-600">будь-яку запчастину</span>
+                Запчастини і техніка з Англії — <span className="text-red-600">з реальними цінами</span>
               </>
             ) : (
               <>
-                We find it and deliver it. <span className="text-red-600">Any part.</span>
+                Parts and machinery from the UK — <span className="text-red-600">with real prices</span>
               </>
             )}
-          </motion.h1>
+          </h1>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mt-5 max-w-xl text-slate-600 text-base sm:text-lg leading-relaxed"
-          >
+          <p className="mt-3 max-w-xl text-slate-600 text-[15px] sm:text-lg leading-relaxed">
             {isUk
-              ? 'Спецтехніка, сільгосптехніка, вантажівки й легкові авто. Шукаємо по складах Великої Британії, Європи та США і доставляємо в Україну — від одного фільтра до палети.'
-              : 'Construction and farm machinery, trucks and cars. We search UK, EU and US stock and deliver to your door — from one filter to a pallet.'}
-          </motion.p>
+              ? 'Запчастини до спецтехніки, сільгосптехніки, вантажівок і авто — та викуп техніки з аукціонів Великої Британії. Доставка в Україну.'
+              : 'Parts for construction, farm machinery, trucks and cars — plus buying machinery at UK auctions. Delivery to Ukraine.'}
+          </p>
 
-          <div className="mt-5 flex flex-wrap items-center gap-2">
-            {(isUk
-              ? [['Оригінал', 'bg-emerald-50 text-emerald-700 border-emerald-200'], ['Якісний аналог', 'bg-sky-50 text-sky-700 border-sky-200'], ['Б/у', 'bg-amber-50 text-amber-700 border-amber-200']]
-              : [['Genuine OEM', 'bg-emerald-50 text-emerald-700 border-emerald-200'], ['Aftermarket', 'bg-sky-50 text-sky-700 border-sky-200'], ['Used', 'bg-amber-50 text-amber-700 border-amber-200']]
-            ).map(([label, cls]) => (
-              <span key={label} className={`px-3.5 py-1.5 rounded-full border text-sm font-semibold ${cls}`}>{label}</span>
-            ))}
+          {/* Лічильники (варіант A) */}
+          <div className="mt-4 grid grid-cols-3 gap-2 max-w-xl">
+            <Link href="/catalog" className="rounded-2xl border border-slate-200 bg-white p-3 hover:border-red-300">
+              <div className="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500">{isUk ? 'Позицій з цінами' : 'Priced parts'}</div>
+              <div className="font-mono text-lg sm:text-2xl font-bold text-slate-900">{CATALOG_TOTAL_ROUNDED}+</div>
+            </Link>
+            <Link href="/aukciony" className="rounded-2xl border border-slate-200 bg-white p-3 hover:border-red-300">
+              <div className="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500">{isUk ? 'Лотів аукціонів' : 'Auction lots'}</div>
+              <div className="font-mono text-lg sm:text-2xl font-bold text-slate-900">{AUCTION_LOTS.length}</div>
+            </Link>
+            <div className="rounded-2xl bg-red-600 p-3 text-white">
+              <div className="text-[10px] sm:text-[11px] font-semibold uppercase text-red-100">{isUk ? 'Доставка' : 'Delivery'}</div>
+              <div className="font-mono text-lg sm:text-2xl font-bold whitespace-nowrap">5–14 {isUk ? 'дн' : 'd'}</div>
+            </div>
           </div>
 
           <HeroQuickForm />
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
             <Link href="/catalog" className="inline-flex items-center gap-1.5 font-bold text-slate-900 hover:text-red-600">
               <Tag className="w-4 h-4 text-red-600" /> {isUk ? 'Каталог і ціни' : 'Catalog & prices'}
             </Link>
@@ -117,48 +95,34 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Фото справжньої відправки */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.97 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="relative"
-        >
+        {/* Фото справжньої відправки — тільки на великих екранах, щоб на телефоні форма була одразу */}
+        <div className="relative hidden lg:block">
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-[0_30px_60px_-20px_rgba(15,23,42,0.35)] ring-1 ring-slate-200 bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/hero-collage.jpg" alt={isUk ? 'Запчастини NoLimitGoods' : 'NoLimitGoods parts'} className="w-full h-full object-cover" />
             <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-slate-900/70 to-transparent" />
             <div className="absolute left-4 bottom-4 right-4 flex items-end justify-between text-white">
               <div>
-                <div className="text-xs uppercase tracking-wider text-white/80">{isUk ? 'Каталог' : 'Catalog'}</div>
+                <div className="text-xs uppercase tracking-wider text-white/80">{isUk ? 'Оригінал, аналог, б/у' : 'Genuine, aftermarket, used'}</div>
                 <div className="text-lg font-black">{isUk ? `${CATALOG_TOTAL_ROUNDED}+ позицій з цінами` : `${CATALOG_TOTAL_ROUNDED}+ priced parts`}</div>
               </div>
               <div className="px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur text-xs font-bold">£ + ₴</div>
             </div>
           </div>
-          <div className="absolute -left-4 sm:-left-6 top-6 hidden sm:flex items-center gap-3 px-4 py-3 rounded-2xl bg-white shadow-xl ring-1 ring-slate-200">
-            <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
-              <Star className="w-5 h-5 text-red-600" />
-            </div>
-            <div>
-              <div className="text-sm font-black text-slate-900">{isUk ? 'Оригінал, аналог, б/у' : 'Genuine, aftermarket, used'}</div>
-              <div className="text-xs text-slate-500">{isUk ? 'рахуємо всі варіанти' : 'we quote every option'}</div>
-            </div>
-          </div>
-        </motion.div>
+        </div>
       </div>
 
       {/* Переваги */}
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
           {benefits.map((b) => (
-            <div key={b.title} className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <div className="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shrink-0">
-                <b.icon className="w-5 h-5 text-white" />
+            <div key={b.title} className="flex items-start gap-2.5 p-3 sm:p-4 rounded-2xl bg-white border border-slate-200">
+              <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+                <b.icon className="w-4 h-4 text-red-600" />
               </div>
               <div>
-                <div className="text-sm sm:text-base font-black text-slate-900">{b.title}</div>
-                <div className="text-xs text-slate-500 leading-snug mt-0.5">{b.text}</div>
+                <div className="text-sm font-black text-slate-900">{b.title}</div>
+                <div className="text-[11px] sm:text-xs text-slate-500 leading-snug mt-0.5">{b.text}</div>
               </div>
             </div>
           ))}

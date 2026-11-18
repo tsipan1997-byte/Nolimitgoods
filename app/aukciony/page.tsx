@@ -8,6 +8,7 @@ import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
 import { AUCTIONS, AUCTION_CALENDAR, AUCTION_LOTS, AUCTION_META, CATEGORY_LABELS, FEE, pct, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotiv } from '@/lib/plural';
+import TelegramChannelCta from '../components/telegram-channel-cta';
 import { CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
 
 
@@ -340,6 +341,10 @@ export default function AuctionsPage() {
           </>
         )}
       </section>
+
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-8">
+        <TelegramChannelCta />
+      </div>
 
       {/* ЯК ЦЕ ПРАЦЮЄ + ЦІНА */}
       <section id="how" className="scroll-mt-28 bg-slate-50 border-y border-slate-200">

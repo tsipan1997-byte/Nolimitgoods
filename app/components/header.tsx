@@ -95,6 +95,9 @@ export default function Header() {
                   <FacebookIcon className="w-3.5 h-3.5" />
                 </a>
               )}
+              <a href={SOCIAL.telegramChannel} target="_blank" rel="noopener noreferrer" className="hover:text-white font-semibold text-[#5fc0ee]">
+                {isUk ? 'Канал з лотами' : 'Lots channel'}
+              </a>
               <button type="button" onClick={toggleLanguage} className="flex items-center gap-1 hover:text-white">
                 <Globe className="w-3.5 h-3.5" /> {isUk ? 'UA' : 'EN'}
               </button>

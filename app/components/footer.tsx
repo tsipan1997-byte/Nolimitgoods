@@ -3,7 +3,7 @@
 import React from 'react';
 import { LANDINGS } from '@/lib/landings';
 import Link from 'next/link';
-import { Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, ShieldCheck, Send } from 'lucide-react';
 import { SOCIAL, CONTACT } from '@/lib/site-config';
 import { InstagramIcon, FacebookIcon } from './social-icons';
 import { useLanguage } from '@/lib/language-context';
@@ -58,6 +58,10 @@ export default function Footer() {
                   <FacebookIcon className="w-4 h-4" />
                 </a>
               )}
+              <a href={SOCIAL.telegramChannel} target="_blank" rel="noopener noreferrer" aria-label="Telegram-канал з лотами"
+                className="h-9 px-3 rounded-xl bg-[#229ED9] hover:bg-[#1d8fc4] flex items-center gap-1.5 text-white text-xs font-bold transition-colors">
+                <Send className="w-3.5 h-3.5" /> {SOCIAL.telegramChannelHandle}
+              </a>
             </div>
           </div>
 

@@ -6,6 +6,7 @@ import Header from '../components/header';
 import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
 import LandingLots, { LandingRequestButton } from '../components/landing-lots';
+import TelegramChannelCta from '../components/telegram-channel-cta';
 import { LANDINGS, LANDING_BY_SLUG, type Landing } from '@/lib/landings';
 import { AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
 import { CONTACT } from '@/lib/site-config';
@@ -151,6 +152,9 @@ export default function LandingPage({ params }: { params: { landing: string } })
           )}
         </div>
         <LandingLots lots={lots} page={`/${l.slug}`} topic={l.topic} />
+        <div className="mt-6">
+          <TelegramChannelCta topic={l.topic} />
+        </div>
       </section>
 
       {/* ЗА СКІЛЬКИ ПРОДАВАЛИ */}

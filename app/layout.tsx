@@ -68,7 +68,7 @@ const ORGANIZATION_JSON_LD = {
       ? [{ '@type': 'ContactPoint', telephone: CONTACT.phoneUa.replace(/\s/g, ''), contactType: 'customer service', areaServed: 'UA', availableLanguage: ['uk'] }]
       : []),
   ],
-  sameAs: [SOCIAL.instagram, SOCIAL.facebook].filter(Boolean),
+  sameAs: [SOCIAL.instagram, SOCIAL.facebook, SOCIAL.telegramChannel].filter(Boolean),
   areaServed: ['UA', 'GB'],
   vatID: 'GB372654187',
   address: {

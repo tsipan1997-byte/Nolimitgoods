@@ -2,7 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Gavel, ArrowRight, Clock } from 'lucide-react';
+import { Gavel, ArrowRight, Clock, Send } from 'lucide-react';
+import { SOCIAL } from '@/lib/site-config';
 import { AUCTIONS, AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
 import { lotiv } from '@/lib/plural';
 
@@ -152,6 +153,9 @@ export default function AuctionsTeaser() {
             <Link href="/aukciony" className="mt-4 h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold inline-flex w-full items-center justify-center gap-2">
               Перейти до аукціонів <ArrowRight className="w-4 h-4" />
             </Link>
+            <a href={SOCIAL.telegramChannel} target="_blank" rel="noopener noreferrer" className="mt-2 h-11 rounded-xl bg-[#229ED9] hover:bg-[#1d8fc4] text-white font-bold inline-flex w-full items-center justify-center gap-2 text-sm">
+              <Send className="w-4 h-4" /> Нові лоти щодня в Telegram
+            </a>
           </div>
         </div>
       </div>

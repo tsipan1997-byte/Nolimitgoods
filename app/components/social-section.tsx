@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowUpRight, Video, Camera, Truck } from 'lucide-react';
+import { ArrowUpRight, Video, Camera, Truck, Send } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { SOCIAL, REELS } from '@/lib/site-config';
 import { InstagramIcon, FacebookIcon } from './social-icons';
@@ -91,6 +91,23 @@ export default function SocialSection() {
                   <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
               )}
+
+              <a
+                href={SOCIAL.telegramChannel}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center gap-4 p-5 rounded-2xl bg-[#229ED9] text-white transition-transform hover:-translate-y-0.5"
+              >
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+                  <Send className="w-6 h-6" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-lg font-black">{isUk ? 'Telegram-канал' : 'Telegram channel'}</div>
+                  <div className="text-sm text-white/85 truncate">{isUk ? 'Нові лоти з аукціонів щодня' : 'New auction lots daily'} · {SOCIAL.telegramChannelHandle}</div>
+                </div>
+                <span className="hidden sm:inline text-sm font-bold">{isUk ? 'Підписатись' : 'Join'}</span>
+                <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </a>
             </div>
           </div>
           {REELS.length > 0 && (

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { LANDINGS } from '@/lib/landings';
 import Link from 'next/link';
 import { Mail, Phone, MapPin, ShieldCheck } from 'lucide-react';
 import { SOCIAL, CONTACT } from '@/lib/site-config';
@@ -96,6 +97,16 @@ export default function Footer() {
                   {isUk ? 'Юридичні реквізити' : 'Legal & Contacts'}
                 </a>
               </li>
+            </ul>
+            <h4 className="pt-3 text-white font-bold text-xs uppercase tracking-wider">
+              {isUk ? 'Техніка з аукціонів Англії' : 'From UK auctions'}
+            </h4>
+            <ul className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px]">
+              {LANDINGS.map((l) => (
+                <li key={l.slug}>
+                  <a href={`/${l.slug}`} className="hover:text-white transition-colors">{l.kicker}</a>
+                </li>
+              ))}
             </ul>
           </div>
 

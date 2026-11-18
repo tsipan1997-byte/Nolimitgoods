@@ -116,7 +116,7 @@ export default function PartView({
                   </div>
                 </>
               ) : (
-                <div className="text-2xl font-black">Ціна на запит</div>
+                <div className="text-2xl font-black text-slate-400">Рахуємо ціну…</div>
               )}
               <div className="mt-4 grid sm:grid-cols-2 gap-2">
                 <button
@@ -176,7 +176,7 @@ export default function PartView({
                   <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">{r.brand}</div>
                   <div className="font-mono text-sm font-semibold mt-0.5">{r.partNumber}</div>
                   <div className="text-sm text-slate-700 mt-1 line-clamp-2">{r.titleUk}</div>
-                  <div className="mt-2 font-black">{r.price !== null ? fmtGbp(r.price) : 'Ціна на запит'}</div>
+                  <div className="mt-2 font-black">{r.price !== null ? fmtGbp(r.price) : '…'}</div>
                 </Link>
               ))}
             </div>

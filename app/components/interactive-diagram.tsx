@@ -124,7 +124,7 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
           <div className="relative mx-auto w-full max-w-[640px] rounded-2xl overflow-hidden border border-slate-200 bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={diagram.image} alt={isUk ? diagram.titleUk : diagram.titleEn} width={diagram.width} height={diagram.height} className="w-full h-auto block" />
-            {diagram.hotspots.map((h) => {
+            {diagram.hotspots.filter((h) => h.catalogId).map((h) => {
               const on = active?.id === h.id;
               return (
                 <button
@@ -158,8 +158,8 @@ export default function InteractiveDiagram({ diagram = JCB_444_ENGINE }: { diagr
             {panel || (
               <div className="p-5 rounded-2xl bg-white border border-dashed border-slate-300 text-slate-500 text-sm">
                 {isUk
-                  ? 'Оберіть деталь на схемі. Точки з «£» мають ціну в каталозі, з «+» — рахуємо під запит.'
-                  : 'Pick a part on the diagram. “£” dots have a catalog price; “+” dots are quoted on request.'}
+                  ? 'Оберіть деталь на схемі — побачите ціну з доставкою в Україну.'
+                  : 'Pick a part on the diagram to see its price with delivery.'}
               </div>
             )}
             <div className="grid grid-cols-2 gap-2">

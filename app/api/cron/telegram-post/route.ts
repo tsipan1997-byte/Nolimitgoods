@@ -26,14 +26,23 @@ async function postedKeys(): Promise<Set<string>> {
   return out;
 }
 
-// Різні категорії по черзі, свіжіші роки першими, без несправних
+// Пріоритетні категорії по черзі, свіжіші роки першими, без несправних і без лотів, що закриваються менше ніж за добу
+const CATEGORY_PRIORITY = ['pickups', 'excavators', 'telehandlers', 'agro', 'trucks', 'energy'];
 function pickLots(done: Set<string>, now: number): AuctionLot[] {
-  const open = AUCTION_LOTS.filter((l) => l.img && !l.inoperable && l.endsAt > now && !done.has(marker(lotPost(l).key)));
-  const byCat = new Map<string, AuctionLot[]>();
-  for (const l of open.sort((a, b) => (b.year ?? 0) - (a.year ?? 0))) byCat.set(l.category, [...(byCat.get(l.category) || []), l]);
+  const open = AUCTION_LOTS.filter(
+    (l) => l.img && !l.inoperable && l.endsAt > now + 24 * 3_600_000 && CATEGORY_PRIORITY.includes(l.category) && !done.has(marker(lotPost(l).key))
+  );
+  const byCat = new Map<string, AuctionLot[]>(CATEGORY_PRIORITY.map((c) => [c, []]));
+  for (const l of open.sort((a, b) => (b.year ?? 0) - (a.year ?? 0))) byCat.get(l.category)!.push(l);
+  // День тижня зсуває старт, щоб щодня першою була інша категорія
+  const shift = new Date(now).getUTCDay() % CATEGORY_PRIORITY.length;
+  const order = [...CATEGORY_PRIORITY.slice(shift), ...CATEGORY_PRIORITY.slice(0, shift)];
   const out: AuctionLot[] = [];
-  while (out.length < LOTS_PER_RUN && [...byCat.values()].some((v) => v.length)) {
-    for (const v of byCat.values()) if (v.length && out.length < LOTS_PER_RUN) out.push(v.shift()!);
+  while (out.length < LOTS_PER_RUN && order.some((c) => byCat.get(c)!.length)) {
+    for (const c of order) {
+      const v = byCat.get(c)!;
+      if (v.length && out.length < LOTS_PER_RUN) out.push(v.shift()!);
+    }
   }
   return out;
 }

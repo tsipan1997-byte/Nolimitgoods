@@ -12,3 +12,5 @@ node_modules/
 .claude/
 .DS_Store
 package-lock.json
+scripts/auto-bids/node_modules/
+scripts/auto-bids/*.log

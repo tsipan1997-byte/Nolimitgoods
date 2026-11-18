@@ -1,0 +1,9 @@
+{
+  "name": "nlg-auto-bids",
+  "private": true,
+  "type": "module",
+  "description": "Автооновлення ставок Ritchie Bros з домашнього ПК (див. README.md)",
+  "dependencies": {
+    "playwright-core": "1.48.2"
+  }
+}

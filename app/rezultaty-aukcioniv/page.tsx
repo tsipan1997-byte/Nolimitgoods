@@ -13,6 +13,7 @@ export const metadata: Metadata = {
   description:
     'Реальні ціни продажу техніки на аукціонах Великої Британії: трактори, екскаватори, телескопи, генератори, пікапи. Ціна молотка, рік, мотогодини, повна ціна з комісіями.',
   alternates: { canonical: '/rezultaty-aukcioniv' },
+  robots: { index: false, follow: true }, // поки немає перевірених результатів
 };
 
 const gbp = (n: number) => `£${n.toLocaleString('en-GB')}`;
@@ -64,6 +65,17 @@ export default function ResultsPage() {
           </div>
         </div>
       </section>
+
+      {results.length === 0 && (
+        <section className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
+          <div className="rounded-2xl border-2 border-dashed border-slate-200 p-6 text-center">
+            <p className="font-black text-lg">Перевірені результати торгів з'являться тут найближчим часом</p>
+            <p className="text-sm text-slate-600 mt-1">
+              Ми додаємо лише фінальні ціни, підтверджені аукціоном. Хочете знати, за скільки йде конкретна модель, — напишіть, підкажемо по останніх торгах.
+            </p>
+          </div>
+        </section>
+      )}
 
       {stats.length > 0 && (
         <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">

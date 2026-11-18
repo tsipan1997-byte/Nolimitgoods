@@ -63,7 +63,7 @@ export function isClosed(l: AuctionLot, now: number) {
 const updatedFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
 export function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) {
-  const p = lotPrice(lot.auction, lot.lot);
+  const p = closed ? null : lotPrice(lot.auction, lot.lot);
   const updated = PRICES_UPDATED_AT ? updatedFmt.format(new Date(PRICES_UPDATED_AT)) : null;
   if (p && p.bid) {
     return (
@@ -81,7 +81,11 @@ export function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) 
   }
   return (
     <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-500">
-      {lot.live ? 'Ставки — в день живих торгів. Ваш ліміт подаємо заздалегідь.' : 'Ставок ще немає — можна зайти з мінімальної ціни.'}
+      {closed
+        ? 'Торги завершено. Підберемо схожий лот на найближчих аукціонах.'
+        : lot.live
+          ? 'Ставки — в день живих торгів. Ваш ліміт подаємо заздалегідь.'
+          : 'Ставок ще немає — можна зайти з мінімальної ціни.'}
     </div>
   );
 }
@@ -92,7 +96,6 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
   const closed = now !== null && isClosed(lot, now);
   const left = now !== null && !lot.live ? timeLeft(lot.endsAt, now) : null;
   const urgent = now !== null && !closed && lot.endsAt - now < 24 * 3_600_000;
-  const soldBid = closed ? lotPrice(lot.auction, lot.lot)?.bid ?? null : null;
   // Фото: наша копія у сховищі → оригінал з аукціону → іконка
   const photos = [lotPhotoUrl(lot.auction, lot.item), lot.img].filter(Boolean) as string[];
   const [photoIdx, setPhotoIdx] = useState(0);
@@ -160,7 +163,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
         <div className={`mt-1.5 sm:mt-3 flex items-start gap-1.5 sm:gap-2 text-[11px] sm:text-sm font-semibold ${closed ? 'text-slate-500' : urgent ? 'text-red-600' : 'text-slate-700'}`}>
           <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 mt-0.5 shrink-0" />
           {closed ? (
-            soldBid ? <span>Продано за <b className="text-slate-900">£{soldBid.toLocaleString('en-GB')}</b></span> : 'Торги завершено'
+            'Торги завершено'
           ) : (
             <span>
               {lotWhen(lot)}

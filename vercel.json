@@ -1,3 +1,6 @@
 {
-  "crons": [{ "path": "/api/cron/mirror-photos", "schedule": "0 4 * * *" }]
+  "crons": [
+    { "path": "/api/cron/mirror-photos", "schedule": "0 4 * * *" },
+    { "path": "/api/cron/telegram-post", "schedule": "0 8 * * *" }
+  ]
 }

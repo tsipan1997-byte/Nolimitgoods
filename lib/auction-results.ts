@@ -31,7 +31,14 @@ function closed(l: AuctionLot, now: number) {
   return l.live ? l.endsAt + 10 * 3_600_000 <= now : l.endsAt <= now;
 }
 
+// УВАГА: ставки з auction-prices.json — проміжні (знімаються під час торгів), фінальну ціну
+// Ritchie Bros показує лише зареєстрованим покупцям. Тому автоматично з них результати НЕ рахуємо:
+// вони занижені (напр. JCB 540-140 «£45» при 69 реальних ставках). Результати додаємо в архів
+// лише перевірені вручну (з поля verified: true).
+export const LIVE_RESULTS_ENABLED = false;
+
 export function liveResults(now = Date.now()): AuctionResult[] {
+  if (!LIVE_RESULTS_ENABLED) return [];
   const out: AuctionResult[] = [];
   for (const l of AUCTION_LOTS) {
     if (!closed(l, now)) continue;
@@ -61,7 +68,7 @@ export function liveResults(now = Date.now()): AuctionResult[] {
 
 export function allResults(now = Date.now()): AuctionResult[] {
   const map = new Map<string, AuctionResult>();
-  for (const r of archive as AuctionResult[]) map.set(`${r.auction}:${r.item}`, r);
+  for (const r of archive as (AuctionResult & { verified?: boolean })[]) if (r.verified) map.set(`${r.auction}:${r.item}`, r);
   for (const r of liveResults(now)) map.set(`${r.auction}:${r.item}`, r);
   return [...map.values()].sort((a, b) => b.closedAt - a.closedAt || b.bid - a.bid);
 }

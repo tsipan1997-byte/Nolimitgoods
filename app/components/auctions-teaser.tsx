@@ -152,9 +152,6 @@ export default function AuctionsTeaser() {
             <Link href="/aukciony" className="mt-4 h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold inline-flex w-full items-center justify-center gap-2">
               Перейти до аукціонів <ArrowRight className="w-4 h-4" />
             </Link>
-            <Link href="/rezultaty-aukcioniv" className="mt-2 h-11 rounded-xl border border-slate-300 hover:border-red-300 text-slate-900 font-bold inline-flex w-full items-center justify-center gap-2 text-sm">
-              За скільки продали на минулих торгах
-            </Link>
           </div>
         </div>
       </div>

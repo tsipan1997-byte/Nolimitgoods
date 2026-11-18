@@ -184,9 +184,6 @@ export default function AuctionsPage() {
             >
               Підібрати техніку під мене
             </button>
-            <Link href="/rezultaty-aukcioniv" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl border border-slate-300 bg-white hover:border-red-300 font-bold">
-              Результати: за скільки продали
-            </Link>
           </div>
         </div>
       </section>

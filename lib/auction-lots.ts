@@ -1,8 +1,10 @@
+import { VEHICLE_LOTS } from './auction-vehicles';
+
 // Лоти з аукціонів спецтехніки Великої Британії, відібрані під попит в Україні.
 // Згенеровано 16.11.2026 з каталогів Ritchie Bros і Euro Auctions. Ставки тут не зберігаються:
 // вони змінюються щохвилини, актуальну ставку менеджер називає при заявці.
 
-export type AuctionCategory = 'energy' | 'breakers' | 'attachments' | 'excavators' | 'telehandlers' | 'agro';
+export type AuctionCategory = 'energy' | 'breakers' | 'attachments' | 'excavators' | 'telehandlers' | 'agro' | 'pickups' | 'trucks';
 
 export type AuctionLot = {
   auction: string; // id аукціону з AUCTIONS
@@ -13,6 +15,7 @@ export type AuctionLot = {
   category: AuctionCategory;
   year: number | null;
   hours: number | null; // мотогодини
+  miles?: number | null; // пробіг, км (для авто)
   specs: string;
   unused: boolean; // нове, не використовувалось
   inoperable: boolean; // несправне
@@ -199,9 +202,11 @@ export const CATEGORY_LABELS: Record<AuctionCategory, string> = {
   excavators: 'Екскаватори, навантажувачі, бульдозери',
   telehandlers: 'Телескопічні навантажувачі',
   agro: 'Трактори, сільгосп і лісова техніка',
+  pickups: 'Пікапи та позашляховики',
+  trucks: 'Вантажівки та самоскиди',
 };
 
-export const AUCTION_LOTS: AuctionLot[] = [
+const BASE_LOTS: AuctionLot[] = [
  {
   "auction": "rb-nov",
   "lot": "62",
@@ -5639,3 +5644,5 @@ export const AUCTION_LOTS: AuctionLot[] = [
   "url": "https://www.rbauction.co.uk/pdp/2021-komatsu-931xc-wheel-harvester/15560887"
  }
 ];
+
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS];

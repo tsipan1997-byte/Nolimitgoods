@@ -2,93 +2,20 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import {
-  Gavel,
-  Zap,
-  Hammer,
-  Wrench,
-  HardHat,
-  Forklift,
-  Tractor,
-  Search,
-  Clock,
-  MapPin,
-  Gauge,
-  Calendar,
-  X,
-  CheckCircle2,
-  ShieldCheck,
-  Truck,
-  FileText,
-  Wallet,
-  Sparkles,
-  ArrowRight,
-  Send,
-  Eye,
-  Radio,
-  ChevronDown,
-} from 'lucide-react';
+import { Gavel, Search, ShieldCheck, Truck, FileText, Wallet, ArrowRight, Eye, ChevronDown } from 'lucide-react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
-import { CONTACT } from '@/lib/site-config';
-import {
-  AUCTIONS,
-  AUCTION_CALENDAR,
-  AUCTION_LOTS,
-  AUCTION_META,
-  CATEGORY_LABELS,
-  FEE,
-  pct,
-  ourFee,
-  rbFee,
-  type AuctionCategory,
-  type AuctionLot,
-} from '@/lib/auction-lots';
-import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
-import { lotiv, stavok } from '@/lib/plural';
-import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
+import { AUCTIONS, AUCTION_CALENDAR, AUCTION_LOTS, AUCTION_META, CATEGORY_LABELS, FEE, pct, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
+import { lotiv } from '@/lib/plural';
+import { CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
 
-const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
-  energy: Zap,
-  breakers: Hammer,
-  attachments: Wrench,
-  excavators: HardHat,
-  telehandlers: Forklift,
-  agro: Tractor,
-};
 
-const CATEGORY_ORDER: AuctionCategory[] = ['excavators', 'telehandlers', 'agro', 'energy', 'breakers', 'attachments'];
-const AUCTION_BY_ID = Object.fromEntries(AUCTIONS.map((a) => [a.id, a]));
+const CATEGORY_ORDER: AuctionCategory[] = ['excavators', 'telehandlers', 'agro', 'pickups', 'trucks', 'energy', 'breakers', 'attachments'];
 const PAGE_SIZE = 24;
 
 type SortKey = 'closing' | 'newest' | 'hours';
 
-// Час показуємо за Києвом: так зручніше клієнтам в Україні
-const kyivFmt = new Intl.DateTimeFormat('uk-UA', {
-  timeZone: 'Europe/Kyiv',
-  weekday: 'short',
-  day: 'numeric',
-  month: 'long',
-  hour: '2-digit',
-  minute: '2-digit',
-});
-const kyivDayFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', weekday: 'short', day: 'numeric', month: 'long' });
-const formatKyiv = (ms: number) => kyivFmt.format(new Date(ms));
-const lotWhen = (l: AuctionLot) =>
-  l.live ? `торги ${kyivDayFmt.format(new Date(l.endsAt))} (живий аукціон)` : `закриття ${formatKyiv(l.endsAt)}`;
-
-function timeLeft(ms: number, now: number) {
-  const diff = ms - now;
-  if (diff <= 0) return null;
-  const h = Math.floor(diff / 3_600_000);
-  const m = Math.floor((diff % 3_600_000) / 60_000);
-  if (h >= 48) return `${Math.floor(h / 24)} дн. ${h % 24} год`;
-  if (h >= 1) return `${h} год ${m} хв`;
-  return `${m} хв`;
-}
-
-const gbp = (n: number) => `£${n.toLocaleString('uk-UA')}`;
 
 // Питання й відповіді: показуються на сторінці та йдуть у розмітку FAQPage для Google
 const FAQ: [string, string][] = [
@@ -138,6 +65,12 @@ export default function AuctionsPage() {
     setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(t);
+  }, []);
+
+  // Посилання з тематичних сторінок: /aukciony?cat=pickups#lots
+  useEffect(() => {
+    const c = new URLSearchParams(window.location.search).get('cat');
+    if (c && c in CATEGORY_LABELS) setCat(c as AuctionCategory);
   }, []);
 
   useEffect(() => setShown(PAGE_SIZE), [cat, auction, q, sort, onlyUnused]);
@@ -388,7 +321,7 @@ export default function AuctionsPage() {
           </div>
         ) : (
           <>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-6 grid grid-cols-2 gap-2.5 sm:gap-4 lg:grid-cols-3">
               {lots.slice(0, shown).map((l) => (
                 <LotCard key={l.auction + l.item} lot={l} now={now} onRequest={() => openForm(l)} />
               ))}
@@ -546,319 +479,6 @@ export default function AuctionsPage() {
       <FloatingContact />
 
       {formOpen && <RequestModal lot={selected} onClose={() => setFormOpen(false)} />}
-    </div>
-  );
-}
-
-function isClosed(l: AuctionLot, now: number) {
-  // Для живих торгів лот вважаємо закритим після кінця дня торгів
-  return l.live ? l.endsAt + 10 * 3_600_000 <= now : l.endsAt <= now;
-}
-
-const updatedFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-
-function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) {
-  const p = lotPrice(lot.auction, lot.lot);
-  const updated = PRICES_UPDATED_AT ? updatedFmt.format(new Date(PRICES_UPDATED_AT)) : null;
-  if (p && p.bid) {
-    return (
-      <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
-        <div className="flex items-baseline justify-between gap-2">
-          <span className="text-xs text-slate-500">{closed ? 'Остання ставка' : 'Поточна ставка'}</span>
-          <span className="text-xl font-black">£{p.bid.toLocaleString('en-GB')}</span>
-        </div>
-        <div className="text-[11px] text-slate-400">
-          {p.bids} {stavok(p.bids)}
-          {updated && ` · оновлено ${updated} (Київ)`} · без збору аукціону, комісії і доставки
-        </div>
-      </div>
-    );
-  }
-  return (
-    <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs text-slate-500">
-      {lot.live ? 'Ставки — в день живих торгів. Ваш ліміт подаємо заздалегідь.' : 'Ставок ще немає — можна зайти з мінімальної ціни.'}
-    </div>
-  );
-}
-
-function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number | null; onRequest: () => void }) {
-  const Icon = CATEGORY_ICONS[lot.category];
-  const a = AUCTION_BY_ID[lot.auction];
-  const closed = now !== null && isClosed(lot, now);
-  const left = now !== null && !lot.live ? timeLeft(lot.endsAt, now) : null;
-  const urgent = now !== null && !closed && lot.endsAt - now < 24 * 3_600_000;
-  const [imgOk, setImgOk] = useState(Boolean(lot.img));
-
-  return (
-    <article className={`flex flex-col rounded-2xl border bg-white overflow-hidden transition-shadow hover:shadow-lg ${closed ? 'opacity-60' : 'border-slate-200'}`}>
-      <div className="relative aspect-[4/3] bg-slate-100">
-        {imgOk ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={lot.img}
-            alt={`${lot.title}${lot.year ? `, ${lot.year}` : ''} — аукціон ${a?.house ?? ''}, Велика Британія`}
-            loading="lazy"
-            decoding="async"
-            referrerPolicy="no-referrer"
-            onError={() => setImgOk(false)}
-            className="absolute inset-0 w-full h-full object-cover"
-          />
-        ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-slate-300">
-            <Icon className="w-16 h-16" />
-          </div>
-        )}
-        <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
-          <span className="px-2 py-1 rounded-md bg-slate-900/85 text-white text-[11px] font-black">{a?.house}</span>
-          {lot.lot && <span className="px-2 py-1 rounded-md bg-white/90 text-slate-900 text-[11px] font-black">Лот {lot.lot}</span>}
-        </div>
-        <div className="absolute top-2 right-2 flex flex-wrap justify-end gap-1.5">
-          {lot.unused && (
-            <span className="px-2 py-1 rounded-md bg-emerald-500 text-white text-[11px] font-bold inline-flex items-center gap-1">
-              <Sparkles className="w-3 h-3" /> Нове
-            </span>
-          )}
-          {lot.inoperable && <span className="px-2 py-1 rounded-md bg-amber-500 text-white text-[11px] font-bold">Несправний</span>}
-          {lot.live && (
-            <span className="px-2 py-1 rounded-md bg-red-600 text-white text-[11px] font-bold inline-flex items-center gap-1">
-              <Radio className="w-3 h-3" /> Живі торги
-            </span>
-          )}
-        </div>
-      </div>
-
-      <div className="flex flex-col flex-1 p-5">
-        <h3 className="font-black leading-snug">{lot.title}</h3>
-        <p className="text-xs text-slate-400 mt-0.5 line-clamp-1">{lot.original}</p>
-
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-700">
-          {lot.year && (
-            <span className="inline-flex items-center gap-1"><Calendar className="w-4 h-4 text-slate-400" /> {lot.year} р.</span>
-          )}
-          {lot.hours !== null && (
-            <span className="inline-flex items-center gap-1"><Gauge className="w-4 h-4 text-slate-400" /> {lot.hours.toLocaleString('uk-UA')} мотогод.</span>
-          )}
-          <span className="inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {lot.location}</span>
-        </div>
-
-        {lot.specs && <p className="mt-2 text-sm text-slate-500 line-clamp-3">{lot.specs}</p>}
-
-        <PriceBox lot={lot} closed={closed} />
-
-        <div className={`mt-3 flex items-start gap-2 text-sm font-semibold ${closed ? 'text-slate-500' : urgent ? 'text-red-600' : 'text-slate-700'}`}>
-          <Clock className="w-4 h-4 mt-0.5 shrink-0" />
-          {closed ? (
-            'Торги завершено'
-          ) : (
-            <span>
-              {lotWhen(lot)}
-              {left && <span className="font-black"> · {left}</span>}
-            </span>
-          )}
-        </div>
-
-        <div className="mt-auto pt-4">
-          <button
-            type="button"
-            onClick={onRequest}
-            disabled={closed}
-            className="w-full h-11 rounded-xl bg-red-600 hover:bg-red-700 disabled:bg-slate-300 text-white font-bold text-sm"
-          >
-            {closed ? 'Лот закрито' : 'Хочу цей лот'}
-          </button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-function RequestModal({ lot, onClose }: { lot: AuctionLot | null; onClose: () => void }) {
-  const [contact, setContact] = useState('');
-  const [maxBid, setMaxBid] = useState('');
-  const [comment, setComment] = useState('');
-  const [hp, setHp] = useState('');
-  const [contactError, setContactError] = useState(false);
-  const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
-  const a = lot ? AUCTION_BY_ID[lot.auction] : null;
-  const bid = parseInt(maxBid || '0', 10) || 0;
-  const isRb = a?.house === 'Ritchie Bros';
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onClose]);
-
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!isPhoneOrTelegram(contact)) {
-      setContactError(true);
-      return;
-    }
-    setStatus('sending');
-    const leadId = `NLG-A${Date.now().toString().slice(-6)}`;
-    const lines = lot && a
-      ? [
-          `АУКЦІОН ${a.house}: ${a.name} (${a.dates})`,
-          `${lot.lot ? `Лот ${lot.lot}: ` : ''}${lot.title}`,
-          `Оригінал: ${lot.original} (ID ${lot.item})`,
-          `Торги: ${lotWhen(lot)} (Київ)`,
-          `Максимальна ціна клієнта: ${bid ? gbp(bid) : 'не вказав'}${bid ? ` · наша комісія ${gbp(ourFee(bid))}` : ''}`,
-          `Посилання: ${lot.url}`,
-        ]
-      : ['ЗАПИТ НА ПІДБІР ТЕХНІКИ З АУКЦІОНІВ', `Бюджет: ${bid ? gbp(bid) : 'не вказав'}`];
-    if (comment.trim()) lines.push(`Коментар: ${comment.trim()}`);
-
-    const fd = new FormData();
-    fd.append('leadId', leadId);
-    fd.append('contact', contact.trim());
-    fd.append('comment', lines.join('\n'));
-    fd.append('partType', 'Викуп з аукціону');
-    fd.append('source', 'Сторінка аукціонів');
-    fd.append('page', '/aukciony');
-    fd.append('website_hp', hp);
-    if (lot) {
-      fd.append('items', JSON.stringify([{ partNumber: lot.lot ? `Лот ${lot.lot}` : `ID ${lot.item}`, machineModel: lot.title, quantity: 1 }]));
-    }
-
-    try {
-      const res = await fetch('/api/lead', { method: 'POST', body: fd });
-      if (res.ok) {
-        const w = window as any;
-        if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
-        if (typeof w.fbq === 'function') w.fbq('track', 'Lead', { content_name: 'Auction lot', value: bid || undefined, currency: 'GBP' });
-      }
-      setStatus(res.ok ? 'done' : 'error');
-    } catch {
-      setStatus('error');
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-950/60 p-0 sm:p-4" onClick={onClose}>
-      <div
-        role="dialog"
-        aria-modal="true"
-        className="w-full sm:max-w-lg max-h-[92vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-white p-6"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0">
-            <div className="text-xs font-bold uppercase text-red-600">
-              {lot ? `${a?.house}${lot.lot ? ` · лот ${lot.lot}` : ''}` : 'Підбір техніки'}
-            </div>
-            <h3 className="mt-1 text-xl font-black">{lot ? lot.title : 'Знайдемо техніку на аукціонах під вас'}</h3>
-            {lot && <p className="text-sm text-slate-500 mt-1">{lotWhen(lot)} (Київ)</p>}
-          </div>
-          <button type="button" onClick={onClose} aria-label="Закрити" className="p-2 rounded-xl hover:bg-slate-100 shrink-0">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
-
-        {status === 'done' ? (
-          <div className="mt-6 text-center py-6">
-            <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
-            <p className="mt-3 font-black text-lg">Заявку отримали</p>
-            <p className="mt-1 text-sm text-slate-600">
-              Менеджер напише вам найближчим часом з актуальною ставкою і повною ціною до України.
-            </p>
-            <button type="button" onClick={onClose} className="mt-5 h-11 px-6 rounded-xl bg-slate-900 text-white font-bold text-sm">
-              Добре
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={submit} className="mt-5 space-y-4">
-            <label className="block">
-              <span className="text-sm font-bold">{CONTACT_LABEL}</span>
-              <input
-                required
-                type="tel"
-                autoComplete="tel"
-                value={contact}
-                onChange={(e) => {
-                  setContact(e.target.value);
-                  if (contactError) setContactError(false);
-                }}
-                placeholder={CONTACT_PLACEHOLDER}
-                aria-invalid={contactError}
-                className={`mt-1 w-full h-12 px-4 rounded-xl border-2 outline-none ${contactError ? 'border-red-500' : 'border-slate-200 focus:border-red-500'}`}
-              />
-              {contactError && <span className="mt-1 block text-xs font-semibold text-red-600">{CONTACT_ERROR}</span>}
-            </label>
-            <label className="block">
-              <span className="text-sm font-bold">{lot ? 'Ваша максимальна ціна лота, £' : 'Бюджет, £'}</span>
-              <input
-                inputMode="numeric"
-                value={maxBid}
-                onChange={(e) => setMaxBid(e.target.value.replace(/[^0-9]/g, ''))}
-                placeholder="Наприклад, 25000"
-                className="mt-1 w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-red-500 outline-none"
-              />
-            </label>
-
-            {lot && bid > 0 && (
-              <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm space-y-1">
-                <div className="flex justify-between"><span>Ціна лота (максимум)</span><b>{gbp(bid)}</b></div>
-                <div className="flex justify-between">
-                  <span>Комісія аукціону</span>
-                  <b>{isRb ? gbp(rbFee(bid)) : 'за тарифом аукціону'}</b>
-                </div>
-                <div className="flex justify-between">
-                  <span>Наша послуга ({pct(bid > FEE.threshold ? FEE.highPct : FEE.lowPct)}%{ourFee(bid) === FEE.minGbp ? ', мінімум' : ''})</span>
-                  <b>{gbp(ourFee(bid))}</b>
-                </div>
-                <div className="flex justify-between"><span>Експортні документи</span><b>~{gbp(AUCTION_META.exportDocsGbp)}</b></div>
-                <div className="flex justify-between text-slate-500"><span>Доставка в Україну</span><span>порахуємо під габарит</span></div>
-                {isRb && (
-                  <div className="pt-2 mt-2 border-t border-slate-200 flex justify-between font-black">
-                    <span>Разом без доставки</span>
-                    <span>{gbp(bid + rbFee(bid) + ourFee(bid) + AUCTION_META.exportDocsGbp)}</span>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <label className="block">
-              <span className="text-sm font-bold">{lot ? 'Коментар' : 'Що шукаєте?'}</span>
-              <textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-                rows={3}
-                placeholder={lot ? 'Куди доставити, потрібен огляд перед ставкою…' : 'Наприклад: JCB 3CX 2015+, до 6000 мотогодин, доставка в Київ'}
-                className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-red-500 outline-none"
-              />
-            </label>
-            <input
-              type="text"
-              tabIndex={-1}
-              autoComplete="off"
-              value={hp}
-              onChange={(e) => setHp(e.target.value)}
-              className="hidden"
-              aria-hidden="true"
-              name="website_hp"
-            />
-            {status === 'error' && (
-              <p className="text-sm text-red-600 font-semibold">
-                Не вдалося надіслати. Напишіть нам напряму:{' '}
-                <a href={CONTACT.telegram} className="underline" target="_blank" rel="noopener noreferrer">Telegram</a> або{' '}
-                <a href={CONTACT.whatsapp} className="underline" target="_blank" rel="noopener noreferrer">WhatsApp</a>.
-              </p>
-            )}
-            <button
-              type="submit"
-              disabled={status === 'sending'}
-              className="w-full h-12 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white font-bold inline-flex items-center justify-center gap-2"
-            >
-              <Send className="w-4 h-4" /> {status === 'sending' ? 'Надсилаємо…' : 'Надіслати заявку'}
-            </button>
-            <p className="text-xs text-slate-500 text-center">
-              Ставку робимо лише після передоплати. Не виграли — повертаємо гроші повністю.{' '}
-              <Link href="/privacy" className="underline">Конфіденційність</Link>
-            </p>
-          </form>
-        )}
-      </div>
     </div>
   );
 }

@@ -25,6 +25,8 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/language-context';
+import Link from 'next/link';
+import { AUCTION_LOTS } from '@/lib/auction-lots';
 import { clientPriceGbp, fmtGbp, fmtUah, loadRates, shippingGbp, type Priced, type Rates } from '@/lib/pricing';
 
 declare global {
@@ -864,6 +866,38 @@ function CardPriceLine({ id, rates, isUk }: { id: string; rates: Rates | null; i
   );
 }
 
+// Плитки «Техніка з аукціонів»: стають на місце карток без ціни, щоб у каталозі не було «Ціна на запит»
+const AUCTION_PROMOS = [
+  { href: '/pikapy-z-anglii', titleUk: 'Пікапи з аукціонів Англії', titleEn: 'Pickups from UK auctions', noteUk: 'Hilux, L200, Navara, Ranger', pick: (o: string) => /Hilux/.test(o) },
+  { href: '/heneratory-z-anglii', titleUk: 'Генератори 20–500 кВА', titleEn: 'Generators 20–500 kVA', noteUk: 'FG Wilson, Cat, SDMO', pick: (o: string) => /Generator/.test(o) && /\d{4}/.test(o) },
+  { href: '/samoskydy-z-anglii', titleUk: 'Самоскиди 8x4', titleEn: 'Tipper trucks 8x4', noteUk: 'Scania, Volvo, DAF', pick: (o: string) => /Tipper Lorry/.test(o) && /^202/.test(o) },
+  { href: '/traktory-z-anglii', titleUk: 'Трактори з британських ферм', titleEn: 'Tractors from UK farms', noteUk: 'John Deere, Massey, Claas', pick: (o: string) => /Tractor/.test(o) && /^20(1|2)/.test(o) },
+  { href: '/jcb-3cx-z-anglii', titleUk: 'JCB 3CX з аукціонів', titleEn: 'JCB 3CX from auctions', noteUk: 'екскаватори-навантажувачі', pick: (o: string) => /3CX/.test(o) },
+  { href: '/teleskopichni-navantazhuvachi-z-anglii', titleUk: 'Телескопи JCB, Manitou, Merlo', titleEn: 'Telehandlers', noteUk: 'з прокату Британії', pick: (o: string) => /Telehandler/.test(o) },
+  { href: '/pikapy-dlia-zsu', titleUk: 'Пікапи для ЗСУ', titleEn: 'Pickups for volunteers', noteUk: 'документи під гуманітарку', pick: (o: string) => /Navara|L200/.test(o) },
+  { href: '/ekskavatory-z-anglii', titleUk: 'Екскаватори 13–50 т', titleEn: 'Excavators', noteUk: 'Hitachi, Volvo, Komatsu', pick: (o: string) => /Excavator/.test(o) },
+].map((p) => ({ ...p, img: AUCTION_LOTS.find((l) => l.img && p.pick(l.original))?.img }));
+
+function AuctionPromoCard({ promo, isUk }: { promo: (typeof AUCTION_PROMOS)[number]; isUk: boolean }) {
+  return (
+    <Link href={promo.href} className="group relative rounded-2xl overflow-hidden bg-slate-900 text-white min-h-[22rem] flex flex-col justify-end shadow-xs hover:shadow-md transition-all">
+      {promo.img && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={promo.img} alt={isUk ? promo.titleUk : promo.titleEn} loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover opacity-80 group-hover:scale-105 transition-transform duration-500" />
+      )}
+      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent" />
+      <div className="relative p-4 space-y-2">
+        <span className="inline-flex px-2.5 py-1 rounded-full bg-red-600 text-[10px] font-black uppercase tracking-wider">{isUk ? 'Нове · аукціони UK' : 'New · UK auctions'}</span>
+        <h3 className="text-lg font-black leading-tight">{isUk ? promo.titleUk : promo.titleEn}</h3>
+        <p className="text-xs text-slate-300">{promo.noteUk} · {isUk ? 'комісія від 1,99%' : 'fee from 1.99%'}</p>
+        <span className="mt-1 w-full py-2 px-3 rounded-xl bg-white text-slate-900 font-bold text-[11px] tracking-wider uppercase flex items-center justify-center gap-1.5">
+          {isUk ? 'Дивитися лоти з фото' : 'See lots'} <ArrowRight className="w-3.5 h-3.5" />
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 export default function BrandsCatalog({
   onSelectOem,
 }: {
@@ -1020,7 +1054,7 @@ export default function BrandsCatalog({
   ];
 
   const mainTabs = [
-    { id: 'all', labelUk: 'Всі ключові вузли (Топ-12)', labelEn: 'All Key Assemblies (Top 12)', icon: Layers },
+    { id: 'all', labelUk: 'Ключові вузли з цінами', labelEn: 'Key assemblies with prices', icon: Layers },
     { id: 'tractors', labelUk: 'Трактори та Агро (6 марок)', labelEn: 'Tractors & Agri (6 Brands)', icon: Tractor },
     { id: 'pall', labelUk: 'Pall Corporation (Авіа / Нафта)', labelEn: 'Pall Corporation (Aero / Oil)', icon: Plane },
     { id: 'spec-korea', labelUk: 'Спецтехніка з Кореї (Hyundai)', labelEn: 'Korea Heavy Equipment (Hyundai)', icon: HardHat },
@@ -1033,10 +1067,17 @@ export default function BrandsCatalog({
     { id: 'undercarriage', labelUk: 'Мости та редуктори', labelEn: 'Axles & Transmission', icon: Wrench },
   ];
 
-  const displayedList =
-    activeTab === 'all'
-      ? SHOWCASE_FEATURED
-      : SUBGROUP_PARTS.filter((p) => p.category === activeTab);
+  // Показуємо лише картки з ціною; вільні місця в рядку займають плитки аукціонів
+  const displayedList = (activeTab === 'all' ? SHOWCASE_FEATURED : SUBGROUP_PARTS.filter((p) => p.category === activeTab)).filter(
+    (p) => CARD_PRICES[p.id]
+  );
+  const promoCount = activeTab === 'all' ? Math.max(4, (4 - (displayedList.length % 4)) % 4) : (4 - (displayedList.length % 4)) % 4 || 0;
+  const promoOffset = Math.max(0, mainTabs.findIndex((t) => t.id === activeTab));
+  const promos = Array.from({ length: promoCount }, (_, i) => AUCTION_PROMOS[(i + promoOffset * 2) % AUCTION_PROMOS.length]);
+  // Вкладки, де немає жодної картки з ціною, не показуємо (крім «Всі» і «Трактори»)
+  const visibleTabs = mainTabs.filter(
+    (t) => t.id === 'all' || t.id === 'tractors' || SUBGROUP_PARTS.some((p) => p.category === t.id && CARD_PRICES[p.id])
+  );
 
   return (
     <section
@@ -1066,7 +1107,7 @@ export default function BrandsCatalog({
 
         {/* Головні таби категорій */}
         <div className="flex flex-wrap items-center justify-center gap-2">
-          {mainTabs.map((tab) => {
+          {visibleTabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
             return (
@@ -1457,10 +1498,15 @@ export default function BrandsCatalog({
                         onClick={() => selectOem(item.oem, item.brand)}
                         className="w-full mt-1 py-2 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-[11px] tracking-wider uppercase transition-colors flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-98"
                       >
-                        <span>{isUk ? 'Дізнатися ціну' : 'Get Quote'}</span>
+                        <span>{isUk ? 'Замовити' : 'Order'}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
+                  </motion.div>
+                ))}
+                {promos.map((promo) => (
+                  <motion.div key={`promo-${promo.href}`} layout initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+                    <AuctionPromoCard promo={promo} isUk={isUk} />
                   </motion.div>
                 ))}
               </AnimatePresence>

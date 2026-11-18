@@ -116,10 +116,8 @@ async function main() {
   if (!got.length) { log('0 bids collected — leaving site unchanged'); process.exitCode = 1; return; }
 
   const prev = fs.existsSync(PRICES) ? JSON.parse(fs.readFileSync(PRICES, 'utf8')) : { prices: {} };
-  const updatedIds = new Set(targets.map((t) => t.id));
-  const prices = {};
-  // ставки інших аукціонів лишаємо як були; оновлені аукціони перезаписуємо
-  for (const [k, v] of Object.entries(prev.prices || {})) if (!updatedIds.has(k.split(':')[0])) prices[k] = v;
+  // зливаємо: свіжі ставки поверх старих; лот, який цього разу не прочитався, зберігає попередню ставку
+  const prices = { ...(prev.prices || {}) };
   for (const [k, v] of got) prices[k] = { bid: v.bid, bids: v.bids };
 
   const changed = JSON.stringify(prices) !== JSON.stringify(prev.prices || {});

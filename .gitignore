@@ -3,3 +3,12 @@ scripts/node_modules
 scripts/package.json
 .prices.tmp.json
 __pycache__/
+
+# Local dev (Node, Next.js build, settings)
+node_modules/
+.next/
+.env
+.env.local
+.claude/
+.DS_Store
+package-lock.json

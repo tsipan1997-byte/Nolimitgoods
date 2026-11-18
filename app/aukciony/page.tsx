@@ -47,6 +47,7 @@ import {
 } from '@/lib/auction-lots';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { lotiv, stavok } from '@/lib/plural';
+import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
 
 const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
   energy: Zap,
@@ -676,6 +677,7 @@ function RequestModal({ lot, onClose }: { lot: AuctionLot | null; onClose: () =>
   const [maxBid, setMaxBid] = useState('');
   const [comment, setComment] = useState('');
   const [hp, setHp] = useState('');
+  const [contactError, setContactError] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const a = lot ? AUCTION_BY_ID[lot.auction] : null;
   const bid = parseInt(maxBid || '0', 10) || 0;
@@ -689,7 +691,10 @@ function RequestModal({ lot, onClose }: { lot: AuctionLot | null; onClose: () =>
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contact.trim()) return;
+    if (!isPhoneOrTelegram(contact)) {
+      setContactError(true);
+      return;
+    }
     setStatus('sending');
     const leadId = `NLG-A${Date.now().toString().slice(-6)}`;
     const lines = lot && a
@@ -764,14 +769,21 @@ function RequestModal({ lot, onClose }: { lot: AuctionLot | null; onClose: () =>
         ) : (
           <form onSubmit={submit} className="mt-5 space-y-4">
             <label className="block">
-              <span className="text-sm font-bold">Телефон, Telegram або email *</span>
+              <span className="text-sm font-bold">{CONTACT_LABEL}</span>
               <input
                 required
+                type="tel"
+                autoComplete="tel"
                 value={contact}
-                onChange={(e) => setContact(e.target.value)}
-                placeholder="+380… або @username"
-                className="mt-1 w-full h-12 px-4 rounded-xl border-2 border-slate-200 focus:border-red-500 outline-none"
+                onChange={(e) => {
+                  setContact(e.target.value);
+                  if (contactError) setContactError(false);
+                }}
+                placeholder={CONTACT_PLACEHOLDER}
+                aria-invalid={contactError}
+                className={`mt-1 w-full h-12 px-4 rounded-xl border-2 outline-none ${contactError ? 'border-red-500' : 'border-slate-200 focus:border-red-500'}`}
               />
+              {contactError && <span className="mt-1 block text-xs font-semibold text-red-600">{CONTACT_ERROR}</span>}
             </label>
             <label className="block">
               <span className="text-sm font-bold">{lot ? 'Ваша максимальна ціна лота, £' : 'Бюджет, £'}</span>

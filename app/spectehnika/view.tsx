@@ -23,6 +23,7 @@ import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
 import { CONTACT } from '@/lib/site-config';
 import { MACHINE_BRANDS, MACHINE_GROUPS, type MachineBrand, type MachineGroupId } from '@/lib/spectehnika';
+import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
 
 const GROUP_ICON: Record<MachineGroupId, React.ComponentType<{ className?: string }>> = {
   construction: HardHat,
@@ -39,11 +40,16 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
   const [contact, setContact] = useState('');
   const [comment, setComment] = useState('');
   const [hp, setHp] = useState('');
+  const [contactError, setContactError] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!contact.trim() || (!part.trim() && !comment.trim())) return;
+    if (!part.trim() && !comment.trim()) return;
+    if (!isPhoneOrTelegram(contact)) {
+      setContactError(true);
+      return;
+    }
     setStatus('sending');
     const leadId = `NLG-S${Date.now().toString().slice(-6)}`;
     const fd = new FormData();
@@ -123,8 +129,21 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
         <textarea value={comment} onChange={(e) => setComment(e.target.value)} rows={2} placeholder="Що зламалось, кількість, терміновість" className="mt-1 w-full px-4 py-3 rounded-xl border-2 border-slate-200 focus:border-red-500 outline-none text-slate-900 placeholder-slate-400" />
       </label>
       <label className="block">
-        <span className="text-sm font-bold text-slate-800">Телефон, Telegram або email *</span>
-        <input required value={contact} onChange={(e) => setContact(e.target.value)} placeholder="+380… або @username" className={input} />
+        <span className="text-sm font-bold text-slate-800">{CONTACT_LABEL}</span>
+        <input
+          required
+          type="tel"
+          autoComplete="tel"
+          value={contact}
+          onChange={(e) => {
+            setContact(e.target.value);
+            if (contactError) setContactError(false);
+          }}
+          placeholder={CONTACT_PLACEHOLDER}
+          aria-invalid={contactError}
+          className={contactError ? input.replace('border-slate-200 focus:border-red-500', 'border-red-500') : input}
+        />
+        {contactError && <span className="mt-1 block text-xs font-semibold text-red-600">{CONTACT_ERROR}</span>}
       </label>
       <input type="text" tabIndex={-1} autoComplete="off" value={hp} onChange={(e) => setHp(e.target.value)} className="hidden" aria-hidden="true" name="website_hp" />
       <button type="submit" disabled={status === 'sending'} className="w-full py-3.5 rounded-xl bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white font-black flex items-center justify-center gap-2">

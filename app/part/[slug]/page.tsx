@@ -29,7 +29,7 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   const title = `${item.partNumber} ${item.brand} — ${item.titleUk}: ціна, доставка в Україну`;
   const description =
     `${item.titleUk} ${item.brand} ${item.partNumber}${item.alt ? ` (${item.alt})` : ''}, ${type}.` +
-    (price !== null ? ` Ціна від £${price.toFixed(2)} з доставкою в Україну.` : ' Ціна під запит.') +
+    (price !== null ? ` Ціна від £${price.toFixed(2)} з доставкою в Україну.` : ' Ціна та доставка — на сторінці.') +
     ' Також підберемо аналог або б/у. Відправка з Великої Британії, 5–14 робочих днів.';
   return {
     title,

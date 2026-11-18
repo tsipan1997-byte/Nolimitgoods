@@ -2,7 +2,7 @@
 # Запуск: правою кнопкою на PowerShell -> "Запустити від імені адміністратора", далі:
 #   Set-ExecutionPolicy -Scope Process Bypass; .\setup.ps1
 $ErrorActionPreference = 'Stop'
-$Repo = 'https://github.com/tsipan1997-byte/nolimitgoods.git'
+$Repo = 'https://github.com/tsipan1997-byte/Nolimitgoods.git'
 $Dir  = "$env:USERPROFILE\nolimitgoods"
 
 Write-Host '1/5 Встановлюю Git, Node.js і Chrome (якщо ще немає)...'

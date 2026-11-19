@@ -1,3 +1,4 @@
+import { MARKUP } from '@/lib/site-config';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { CATEGORIES, GROUPS, TYPE_LABEL, partSlug } from '@/lib/catalog';
@@ -65,12 +66,16 @@ export default function Page({ params }: { params: { slug: string } }) {
     image: `https://www.nolimitgoods.com${item.image ?? '/images/hero-collage.jpg'}`,
     itemCondition: item.type === 'used' ? 'https://schema.org/UsedCondition' : 'https://schema.org/NewCondition',
   };
-  if (price !== null) {
+  // Для деталей у USD/EUR курсу НБУ під час збірки немає — віддаємо ціну у валюті постачальника (з нашою націнкою),
+  // щоб Google завжди бачив offers (інакше помилка «Either offers, review or aggregateRating should be specified»).
+  const offerCurrency = price !== null ? 'GBP' : item.currency;
+  const offerPrice = price !== null ? price : (item.supplierIncVat ? item.supplierPrice / 1.2 : item.supplierPrice) * MARKUP;
+  if (offerPrice > 0) {
     jsonLd.offers = {
       '@type': 'Offer',
       url,
-      priceCurrency: 'GBP',
-      price: price.toFixed(2),
+      priceCurrency: offerCurrency,
+      price: offerPrice.toFixed(2),
       availability: 'https://schema.org/BackOrder',
       seller: { '@type': 'Organization', name: 'NoLimitGoods Ltd' },
       ...(ship !== null && {

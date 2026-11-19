@@ -11,6 +11,7 @@ import { AUCTION_LOTS, type AuctionLot } from '@/lib/auction-lots';
 import { allResults } from '@/lib/auction-results';
 import { lotPost, soldPost, type TgPost } from '@/lib/telegram-post';
 
+// Крон запускає пост 3 рази на день (vercel.json): ранок 2 лоти, обід 1, вечір 2. Вручну можна ?n=1..4
 const LOTS_PER_RUN = 4;
 const SOLD_PER_RUN = 2;
 const marker = (key: string) => `state/tg/${key.replace(/[^a-zA-Z0-9-]/g, '_')}`;
@@ -28,7 +29,7 @@ async function postedKeys(): Promise<Set<string>> {
 
 // Пріоритетні категорії по черзі, свіжіші роки першими, без несправних і без лотів, що закриваються менше ніж за добу
 const CATEGORY_PRIORITY = ['pickups', 'excavators', 'telehandlers', 'agro', 'trucks', 'energy'];
-function pickLots(done: Set<string>, now: number): AuctionLot[] {
+function pickLots(done: Set<string>, now: number, limit = LOTS_PER_RUN): AuctionLot[] {
   const open = AUCTION_LOTS.filter(
     (l) => l.img && !l.inoperable && l.endsAt > now + 24 * 3_600_000 && CATEGORY_PRIORITY.includes(l.category) && !done.has(marker(lotPost(l).key))
   );
@@ -38,10 +39,10 @@ function pickLots(done: Set<string>, now: number): AuctionLot[] {
   const shift = new Date(now).getUTCDay() % CATEGORY_PRIORITY.length;
   const order = [...CATEGORY_PRIORITY.slice(shift), ...CATEGORY_PRIORITY.slice(0, shift)];
   const out: AuctionLot[] = [];
-  while (out.length < LOTS_PER_RUN && order.some((c) => byCat.get(c)!.length)) {
+  while (out.length < limit && order.some((c) => byCat.get(c)!.length)) {
     for (const c of order) {
       const v = byCat.get(c)!;
-      if (v.length && out.length < LOTS_PER_RUN) out.push(v.shift()!);
+      if (v.length && out.length < limit) out.push(v.shift()!);
     }
   }
   return out;
@@ -68,7 +69,11 @@ export async function GET(req: Request) {
   if (!secret || req.headers.get('authorization') !== `Bearer ${secret}`) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
-  const dry = new URL(req.url).searchParams.get('dry') === '1';
+  const params = new URL(req.url).searchParams;
+  const dry = params.get('dry') === '1';
+  const hour = new Date().getUTCHours();
+  const byHour = hour >= 11 && hour < 15 ? 1 : 2;
+  const n = Math.min(4, Math.max(1, Number(params.get('n')) || byHour));
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chat = process.env.TELEGRAM_CHANNEL_ID;
   if (!dry && (!token || !chat)) return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN or TELEGRAM_CHANNEL_ID is not set' }, { status: 500 });
@@ -76,7 +81,7 @@ export async function GET(req: Request) {
   const now = Date.now();
   const done = await postedKeys();
   const posts: TgPost[] = [
-    ...pickLots(done, now).map(lotPost),
+    ...pickLots(done, now, n).map(lotPost),
     ...allResults(now)
       .filter((r) => r.img && now - r.closedAt < 7 * 86_400_000)
       .map(soldPost)

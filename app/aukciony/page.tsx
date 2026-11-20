@@ -106,6 +106,12 @@ export default function AuctionsPage() {
     return AUCTION_LOTS.filter((l) => !isClosed(l, now)).sort((a, b) => a.endsAt - b.endsAt)[0] ?? null;
   }, [now]);
 
+  // Лічильник на головному екрані — тільки лоти, торги яких ще не закінчились
+  const openStats = useMemo(() => {
+    const open = now ? AUCTION_LOTS.filter((l) => !isClosed(l, now)) : AUCTION_LOTS;
+    return { lots: open.length, auctions: new Set(open.map((l) => l.auction)).size };
+  }, [now]);
+
   const openForm = (lot: AuctionLot | null) => {
     setSelected(lot);
     setFormOpen(true);
@@ -151,8 +157,8 @@ export default function AuctionsPage() {
           <div className="mt-8 grid gap-3 sm:grid-cols-3 max-w-4xl">
             <div className="rounded-2xl bg-white border border-slate-200 p-4">
               <div className="text-xs text-slate-500 font-semibold uppercase">На сторінці зараз</div>
-              <div className="mt-1 text-2xl font-black">{AUCTION_LOTS.length} {lotiv(AUCTION_LOTS.length)}</div>
-              <div className="text-sm text-slate-500">з {AUCTIONS.length} аукціонів, з фото</div>
+              <div className="mt-1 text-2xl font-black">{openStats.lots} {lotiv(openStats.lots)}</div>
+              <div className="text-sm text-slate-500">з {openStats.auctions} аукціонів, з фото</div>
             </div>
             <div className="rounded-2xl bg-white border border-slate-200 p-4">
               <div className="text-xs text-slate-500 font-semibold uppercase">Наша комісія</div>

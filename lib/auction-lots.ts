@@ -61,8 +61,8 @@ export const AUCTIONS: AuctionInfo[] = [
   "place": "Мальтбі (Англія), Шотландія",
   "dates": "1 грудня 2026",
   "format": "Онлайн-торги з таймером",
-  "totalLots": 68,
-  "unreserved": true,
+  "totalLots": 69,
+  "unreserved": false,
   "url": "https://www.rbauction.co.uk/heavy-equipment-auctions/maltby-gbr-2026672"
  }
 ];
@@ -134,7 +134,7 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "house": "Ritchie Bros",
   "title": "Сільгосптехніка: трактори, телескопи, сівалки",
   "place": "Мальтбі, Англія",
-  "lots": "68 лотів",
+  "lots": "69 лотів",
   "onSite": true,
   "auction": "rb-agri-dec"
  },

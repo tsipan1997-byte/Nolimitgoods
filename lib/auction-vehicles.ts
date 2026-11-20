@@ -162,7 +162,7 @@ function translate(desc: string): { specs: string; miles: number | null; inopera
 // Живі торги в Лідсі: пікапи й вантажівки йдуть у перший день, 25 листопада
 const LEEDS_DAY1 = Date.UTC(2026, 10, 25, 8, 0, 0);
 
-export const VEHICLE_LOTS: AuctionLot[] = RAW.map(([category, item, img, original, desc]) => {
+const ALL_VEHICLE_LOTS: AuctionLot[] = RAW.map(([category, item, img, original, desc]) => {
   const year = Number(original.slice(0, 4)) || null;
   const model = original.replace(/^\d{4}\s+/, '');
   const t = translate(desc);
@@ -187,3 +187,19 @@ export const VEHICLE_LOTS: AuctionLot[] = RAW.map(([category, item, img, origina
     url: `https://www.euroauctions.com/en/equipment-search/product/${item}/0/`,
   };
 });
+
+// Пікапи в Україні беруть переважно на фронт: потрібні старі й недорогі (до 2017 р. включно)
+// або биті / несправні — під відновлення чи на запчастини. Нові праворульні не показуємо,
+// крім одного для прикладу ціни.
+export const PICKUP_MAX_YEAR = 2017;
+const SHOWCASE_PICKUPS = new Set(['140544858']); // 2024 Toyota Hilux Invincible X
+const DAMAGED = /Category [SN]|Non Runner|Engine Fault|Engine Issues|Parts Missing|Scrapped/i;
+
+export const VEHICLE_LOTS: AuctionLot[] = ALL_VEHICLE_LOTS.filter(
+  (l) =>
+    l.category !== 'pickups' ||
+    SHOWCASE_PICKUPS.has(l.item) ||
+    (l.year ?? 0) <= PICKUP_MAX_YEAR ||
+    l.inoperable ||
+    DAMAGED.test(l.original)
+);

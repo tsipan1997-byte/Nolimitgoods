@@ -27,11 +27,11 @@ async function postedKeys(): Promise<Set<string>> {
   return out;
 }
 
-// Пріоритетні категорії по черзі, свіжіші роки першими, без несправних і без лотів, що закриваються менше ніж за добу
+// Пріоритетні категорії по черзі, свіжіші роки першими, без несправних (крім пікапів — биті на запчастини теж потрібні) і без лотів, що закриваються менше ніж за добу
 const CATEGORY_PRIORITY = ['pickups', 'excavators', 'telehandlers', 'agro', 'trucks', 'energy', 'breakers', 'attachments'];
 function pickLots(done: Set<string>, now: number, limit = LOTS_PER_RUN): AuctionLot[] {
   const open = AUCTION_LOTS.filter(
-    (l) => l.img && !l.inoperable && l.endsAt > now + 24 * 3_600_000 && CATEGORY_PRIORITY.includes(l.category) && !done.has(marker(lotPost(l).key))
+    (l) => l.img && (!l.inoperable || l.category === 'pickups') && l.endsAt > now + 24 * 3_600_000 && CATEGORY_PRIORITY.includes(l.category) && !done.has(marker(lotPost(l).key))
   );
   const byCat = new Map<string, AuctionLot[]>(CATEGORY_PRIORITY.map((c) => [c, []]));
   for (const l of open.sort((a, b) => (b.year ?? 0) - (a.year ?? 0))) byCat.get(l.category)!.push(l);

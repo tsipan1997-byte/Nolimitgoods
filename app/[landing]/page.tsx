@@ -44,7 +44,7 @@ export function generateMetadata({ params }: { params: { landing: string } }): M
       type: 'website',
       locale: 'uk_UA',
       siteName: 'NoLimitGoods Ltd',
-      images: og ? [{ url: og, alt: l.h1 }] : [{ url: '/ads/og_aukciony.jpg', width: 1200, height: 630 }],
+      images: og ? [{ url: og, alt: l.h1 }] : [{ url: '/ads/og_aukciony_nlg.jpg', width: 1200, height: 630 }],
     },
   };
 }

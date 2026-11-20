@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'uk_UA',
     siteName: 'NoLimitGoods Ltd',
-    images: [{ url: '/ads/og_aukciony.jpg', width: 1200, height: 630, alt: 'Аукціони спецтехніки Великої Британії — NoLimitGoods' }],
+    images: [{ url: '/ads/og_aukciony_nlg.jpg', width: 1200, height: 630, alt: 'Аукціони спецтехніки Великої Британії — NoLimitGoods' }],
   },
 };
 

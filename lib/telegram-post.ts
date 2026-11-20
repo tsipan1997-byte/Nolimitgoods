@@ -6,6 +6,8 @@ import type { AuctionResult } from './auction-results';
 import { LANDINGS } from './landings';
 import { CONTACT } from './site-config';
 import { lotPhotoUrl } from './lot-photos';
+import { lotPrice } from './auction-prices';
+import { markupText, turnkeyGbp, turnkeyText } from './turnkey';
 
 const SITE = 'https://www.nolimitgoods.com';
 const AUCTION_BY_ID = Object.fromEntries(AUCTIONS.map((a) => [a.id, a]));
@@ -27,6 +29,20 @@ const HASHTAGS: Record<string, string> = {
 
 const phones = () => `📞 ${CONTACT.phoneUk} (UK, Telegram) · ${CONTACT.phoneUa} (UA, WhatsApp/Viber)`;
 
+// Орієнтовна ціна під ключ: від оцінки аукціону або поточної ставки; якщо ціни ще немає — формула надбавки
+export function priceLine(l: AuctionLot): string {
+  const est = l.specs?.match(/оцінка аукціону ≈ £([\d\s\u00a0]+)/);
+  if (est) {
+    const g = Number(est[1].replace(/\D/g, ''));
+    if (g) return `💰 Оцінка аукціону £${g.toLocaleString('uk-UA').replace(/\u00a0/g, ' ')} → під ключ в Україні ${turnkeyText(turnkeyGbp(l, g))}`;
+  }
+  const p = lotPrice(l.auction, l.lot);
+  if (p?.bid && p.bids >= 5 && p.bid >= 1000) {
+    return `💰 Зараз ставка £${p.bid.toLocaleString('uk-UA').replace(/\u00a0/g, ' ')} → при такій ціні під ключ в Україні ${turnkeyText(turnkeyGbp(l, p.bid))}`;
+  }
+  return `💰 Під ключ в Україні: ${markupText(l)}`;
+}
+
 export function lotPost(l: AuctionLot) {
   const a = AUCTION_BY_ID[l.auction];
   const facts = [
@@ -44,14 +60,15 @@ export function lotPost(l: AuctionLot) {
     l.specs ? esc(l.specs.slice(0, 220)) : '',
     '',
     `📍 ${esc(a?.house ?? '')}, ${esc(l.location)} — ${when}`,
-    `💷 Ставимо за ваш ліміт. Комісія ${pct(FEE.highPct)}–${pct(FEE.lowPct)}%, не виграли — повертаємо передоплату.`,
+    esc(priceLine(l)),
+    `💷 Ставимо за ваш ліміт. Комісія ${pct(FEE.highPct)}–${pct(FEE.lowPct)}%, не виграли — повертаємо передоплату. Точну ціну під ключ рахуємо до торгів.`,
     '',
     phones(),
     HASHTAGS[l.category] ? `${HASHTAGS[l.category]} #аукціонианглії` : '#аукціонианглії',
   ]
     .filter((x, i, arr) => x !== '' || (arr[i - 1] !== '' && i > 0))
     .join('\n');
-  return { key: `lot:${l.auction}:${l.item}`, photo: lotPhotoUrl(l.auction, l.item) || l.img, caption, url, button: 'Хочу цей лот' };
+  return { key: `lot:${l.auction}:${l.item}`, photo: lotPhotoUrl(l.auction, l.item) || l.img, caption, url, button: 'Хочу цей лот', title: l.original as string | undefined };
 }
 
 export function soldPost(r: AuctionResult) {
@@ -69,7 +86,7 @@ export function soldPost(r: AuctionResult) {
   ]
     .filter((x, i, arr) => x !== '' || (arr[i - 1] !== '' && i > 0))
     .join('\n');
-  return { key: `sold:${r.auction}:${r.item}`, photo: lotPhotoUrl(r.auction, r.item) || r.img, caption, url, button: 'Усі результати' };
+  return { key: `sold:${r.auction}:${r.item}`, photo: lotPhotoUrl(r.auction, r.item) || r.img, caption, url, button: 'Усі результати', title: undefined as string | undefined };
 }
 
 export type TgPost = ReturnType<typeof lotPost>;

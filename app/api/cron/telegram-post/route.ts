@@ -39,6 +39,16 @@ function pickLots(done: Set<string>, now: number, limit = LOTS_PER_RUN): Auction
   const shift = new Date(now).getUTCDay() % CATEGORY_PRIORITY.length;
   const order = [...CATEGORY_PRIORITY.slice(shift), ...CATEGORY_PRIORITY.slice(0, shift)];
   const out: AuctionLot[] = [];
+  // Однакові лоти (напр. кілька нових однакових гідромолотів) не постимо повторно
+  const seen = new Set<string>();
+  for (const [c, v] of byCat) {
+    byCat.set(c, v.filter((l) => {
+      const t = marker(`title:${l.original}`);
+      if (done.has(t) || seen.has(t)) return false;
+      seen.add(t);
+      return true;
+    }));
+  }
   while (out.length < limit && order.some((c) => byCat.get(c)!.length)) {
     for (const c of order) {
       const v = byCat.get(c)!;
@@ -98,6 +108,7 @@ export async function GET(req: Request) {
     try {
       await send(token!, chat!, p);
       await put(marker(p.key), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
+      if (p.title) await put(marker(`title:${p.title}`), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
       sent.push(p.key);
       await new Promise((r) => setTimeout(r, 3000)); // не спамимо: пауза між постами
     } catch (e) {

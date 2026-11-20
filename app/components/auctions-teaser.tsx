@@ -148,7 +148,7 @@ export default function AuctionsTeaser() {
             <ul className="mt-3 space-y-1.5 text-sm text-slate-600">
               <li>Не виграли — повертаємо передоплату повністю</li>
               <li>Огляд перед ставкою: склад у Ковентрі</li>
-              <li>Британський VAT при експорті не платите</li>
+              <li>Під ключ: доставка і розмитнення в Україні</li>
             </ul>
             <Link href="/aukciony" className="mt-4 h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold inline-flex w-full items-center justify-center gap-2">
               Перейти до аукціонів <ArrowRight className="w-4 h-4" />

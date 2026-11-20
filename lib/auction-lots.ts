@@ -1,5 +1,7 @@
 import { VEHICLE_LOTS } from './auction-vehicles';
 import { WILSONS_LOTS } from './auction-wilsons';
+import { CHEFFINS_LOTS } from './auction-cheffins';
+import { BRIGHTWELLS_LOTS } from './auction-brightwells';
 
 // Лоти з аукціонів спецтехніки Великої Британії, відібрані під попит в Україні.
 // Згенеровано 16.11.2026 з каталогів Ritchie Bros і Euro Auctions. Ставки тут не зберігаються:
@@ -76,6 +78,72 @@ export const AUCTIONS: AuctionInfo[] = [
   "totalLots": 131,
   "unreserved": false,
   "url": "https://www.wilsonsauctions.com/auctions/plant-machinery-commercial-auction-6275"
+ },
+ {
+  "id": "bw-nov",
+  "house": "Brightwells",
+  "name": "Small Plant, Groundworks & Workshop Equipment",
+  "place": "Медлі, Герефордшир, Англія",
+  "dates": "25–26 листопада 2026",
+  "format": "Онлайн-торги з таймером",
+  "totalLots": 1531,
+  "unreserved": false,
+  "url": "https://www.brightwells.com/department/plant-machinery/sale/6092"
+ },
+ {
+  "id": "ch-rayleigh",
+  "house": "Cheffins",
+  "name": "Lord Rayleigh's Farms Ltd",
+  "place": "Гетфілд-Певерел, Ессекс, Англія",
+  "dates": "до 1 грудня 2026",
+  "format": "Онлайн-торги з таймером",
+  "totalLots": 179,
+  "unreserved": false,
+  "url": "https://www.cheffins.co.uk/machinery-vintage-auctions.htm"
+ },
+ {
+  "id": "ch-redhill",
+  "house": "Cheffins",
+  "name": "Red Hill Farm & F C Palmer & Son",
+  "place": "Кембриджшир та інші ферми, Англія",
+  "dates": "26 листопада – 3 грудня 2026",
+  "format": "Онлайн-торги з таймером",
+  "totalLots": 227,
+  "unreserved": false,
+  "url": "https://www.cheffins.co.uk/machinery-vintage-auctions.htm"
+ },
+ {
+  "id": "ch-cms-dec",
+  "house": "Cheffins",
+  "name": "Cambridge Machinery Sale",
+  "place": "Саттон біля Ілі, Кембриджшир, Англія",
+  "dates": "7–8 грудня 2026",
+  "format": "Живі торги + онлайн-ставки",
+  "totalLots": 649,
+  "unreserved": false,
+  "url": "https://www.cheffins.co.uk/machinery-vintage-auctions.htm"
+ },
+ {
+  "id": "ch-strutt",
+  "house": "Cheffins",
+  "name": "Strutt & Parker (Farms) Ltd",
+  "place": "Ферми Strutt & Parker, Англія",
+  "dates": "1–9 грудня 2026",
+  "format": "Онлайн-торги з таймером",
+  "totalLots": 62,
+  "unreserved": false,
+  "url": "https://www.cheffins.co.uk/machinery-vintage-auctions.htm"
+ },
+ {
+  "id": "bw-dec",
+  "house": "Brightwells",
+  "name": "Plant & Machinery Auction",
+  "place": "Медлі, Герефордшир, Англія",
+  "dates": "10–11 грудня 2026",
+  "format": "Онлайн-торги з таймером",
+  "totalLots": 426,
+  "unreserved": false,
+  "url": "https://www.brightwells.com/department/plant-machinery/sale/6093"
  }
 ];
 
@@ -109,14 +177,6 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "onSite": false
  },
  {
-  "date": "до 26 лист.",
-  "house": "Sweeney Kincaid",
-  "title": "Щомісячний збірний аукціон техніки",
-  "place": "Глазго, Шотландія",
-  "lots": "",
-  "onSite": false
- },
- {
   "date": "24 лист.",
   "house": "Wilsons Auctions",
   "title": "Техніка, пікапи і навісне",
@@ -135,6 +195,23 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "auction": "ea-leeds-nov"
  },
  {
+  "date": "25–26 лист.",
+  "house": "Brightwells",
+  "title": "Мала техніка, генератори, гідромолоти",
+  "place": "Медлі, Англія",
+  "lots": "1 531 лот",
+  "onSite": true,
+  "auction": "bw-nov"
+ },
+ {
+  "date": "до 26 лист.",
+  "house": "Sweeney Kincaid",
+  "title": "Щомісячний збірний аукціон техніки",
+  "place": "Глазго, Шотландія",
+  "lots": "",
+  "onSite": false
+ },
+ {
   "date": "26 лист.",
   "house": "Wilsons Auctions",
   "title": "Техніка муніципалітетів і будівельна техніка",
@@ -143,12 +220,30 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "onSite": false
  },
  {
+  "date": "26 лист. – 3 груд.",
+  "house": "Cheffins",
+  "title": "Розпродаж Red Hill Farm: комбайн, трактори, навісне",
+  "place": "Кембриджшир, Англія",
+  "lots": "227 лотів",
+  "onSite": true,
+  "auction": "ch-redhill"
+ },
+ {
   "date": "28 лист.",
   "house": "Watts & Associates",
   "title": "Спецтехніка, трактори, причепи",
   "place": "Барнслі, Англія",
   "lots": "",
   "onSite": false
+ },
+ {
+  "date": "до 1 груд.",
+  "house": "Cheffins",
+  "title": "Розпродаж ферми Lord Rayleigh's: трактори, картопляна техніка",
+  "place": "Ессекс, Англія",
+  "lots": "179 лотів",
+  "onSite": true,
+  "auction": "ch-rayleigh"
  },
  {
   "date": "1 груд.",
@@ -160,6 +255,15 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "auction": "rb-agri-dec"
  },
  {
+  "date": "1–9 груд.",
+  "house": "Cheffins",
+  "title": "Розпродаж техніки Strutt & Parker (Farms)",
+  "place": "Різні ферми, Англія",
+  "lots": "62 лоти",
+  "onSite": true,
+  "auction": "ch-strutt"
+ },
+ {
   "date": "3 груд.",
   "house": "Wilsons Auctions",
   "title": "Техніка і комерційний транспорт",
@@ -168,20 +272,22 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "onSite": false
  },
  {
-  "date": "1–9 груд.",
-  "house": "Cheffins",
-  "title": "Розпродаж техніки Strutt & Parker (Farms)",
-  "place": "Різні ферми, Англія",
-  "lots": "",
-  "onSite": false
- },
- {
   "date": "7–8 груд.",
   "house": "Cheffins",
-  "title": "Щомісячний аукціон сільгосптехніки",
+  "title": "Щомісячний аукціон: трактори, телескопи, техніка",
   "place": "Саттон біля Кембриджа",
-  "lots": "",
-  "onSite": false
+  "lots": "649 лотів",
+  "onSite": true,
+  "auction": "ch-cms-dec"
+ },
+ {
+  "date": "10–11 груд.",
+  "house": "Brightwells",
+  "title": "Будівельна і сільгосптехніка",
+  "place": "Медлі, Англія",
+  "lots": "426 лотів",
+  "onSite": true,
+  "auction": "bw-dec"
  },
  {
   "date": "11–12 груд.",
@@ -5674,4 +5780,4 @@ const BASE_LOTS: AuctionLot[] = [
  }
 ];
 
-export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS];
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS];

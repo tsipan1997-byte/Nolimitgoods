@@ -35,9 +35,14 @@ function readSiteData() {
   const auctions = JSON.parse(aJson);
   // лоти: беремо пари auction/lot/endsAt регулярками (файл великий, але структура стабільна)
   const lots = [];
-  const re = /"auction":\s*"([^"]+)",\s*"lot":\s*"([^"]*)"[\s\S]*?"endsAt":\s*(\d+)/g;
-  let m;
-  while ((m = re.exec(src))) lots.push({ auction: m[1], lot: m[2], endsAt: +m[3] });
+  // лоти лежать у lib/auction-lots.ts і в окремих файлах lib/auction-<дім>.ts (у тому ж форматі)
+  const files = fs.readdirSync(path.join(ROOT, 'lib')).filter((f) => /^auction-[a-z0-9-]+\.ts$/.test(f));
+  for (const f of files) {
+    const text = fs.readFileSync(path.join(ROOT, 'lib', f), 'utf8');
+    const re = /"auction":\s*"([^"]+)",\s*"lot":\s*"([^"]*)"[\s\S]*?"endsAt":\s*(\d+)/g;
+    let m;
+    while ((m = re.exec(text))) lots.push({ auction: m[1], lot: m[2], endsAt: +m[3] });
+  }
   return { auctions, lots };
 }
 
@@ -85,15 +90,34 @@ async function main() {
     .filter((a) => a.house === 'Ritchie Bros' && /heavy-equipment-auctions\/([^/?#]+)/.test(a.url))
     .map((a) => ({ id: a.id, slug: a.url.match(/heavy-equipment-auctions\/([^/?#]+)/)[1] }))
     .filter((a) => lots.some((l) => l.auction === a.id && l.endsAt > now - 3600e3));
-  if (!targets.length) { log('no active Ritchie Bros auctions — nothing to do'); return; }
+  // Brightwells: ставки віддає їхній відкритий API, браузер не потрібен
+  const bwTargets = auctions
+    .filter((a) => a.house === 'Brightwells' && /\/sale\/(\d+)/.test(a.url))
+    .map((a) => ({ id: a.id, sale: a.url.match(/\/sale\/(\d+)/)[1], url: a.url }))
+    .filter((a) => lots.some((l) => l.auction === a.id && l.endsAt > now - 3600e3));
+  const fresh = {};
+  for (const t of bwTargets) {
+    try {
+      const r = await fetch(`https://api.brightwells.com/api/1/sales/${t.sale}/lots/data`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Origin: 'https://www.brightwells.com', Referer: t.url },
+        body: JSON.stringify({ page: 1, perPage: 2000 }),
+      });
+      const j = await r.json();
+      let n = 0;
+      for (const l of j.lots || []) { fresh[`${t.id}:${l.lotNo}`] = { bid: l.currentBid || null, bids: l.countOfBids || 0 }; n++; }
+      log(t.id, 'brightwells sale', t.sale, 'lots read:', n);
+    } catch (e) { log(t.id, 'brightwells ERROR', e.message); }
+  }
 
-  const browser = await chromium.launch({
+  if (!targets.length) log('no active Ritchie Bros auctions');
+
+  const browser = !targets.length ? null : await chromium.launch({
     channel: 'chrome', // справжній Chrome, встановлений на комп'ютері
     headless: false, // Akamai часто блокує headless; вікно відкривається за межами екрана
     args: ['--window-position=-2400,0', '--window-size=1300,900', '--mute-audio'],
   });
-  const fresh = {};
-  try {
+  if (browser) try {
     const ctx = await browser.newContext({ locale: 'en-GB', viewport: { width: 1300, height: 900 } });
     const page = await ctx.newPage();
     for (const t of targets) {

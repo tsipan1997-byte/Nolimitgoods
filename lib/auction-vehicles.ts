@@ -195,11 +195,13 @@ export const PICKUP_MAX_YEAR = 2017;
 const SHOWCASE_PICKUPS = new Set(['140544858']); // 2024 Toyota Hilux Invincible X
 const DAMAGED = /Category [SN]|Non Runner|Engine Fault|Engine Issues|Parts Missing|Scrapped/i;
 
-export const VEHICLE_LOTS: AuctionLot[] = ALL_VEHICLE_LOTS.filter(
-  (l) =>
-    l.category !== 'pickups' ||
-    SHOWCASE_PICKUPS.has(l.item) ||
-    (l.year ?? 0) <= PICKUP_MAX_YEAR ||
-    l.inoperable ||
-    DAMAGED.test(l.original)
-);
+// Фільтр застосовується до лотів усіх аукціонів (див. AUCTION_LOTS)
+export const keepPickup = (l: AuctionLot): boolean =>
+  l.category !== 'pickups' ||
+  SHOWCASE_PICKUPS.has(l.item) ||
+  (l.year ?? 0) <= PICKUP_MAX_YEAR ||
+  l.inoperable ||
+  DAMAGED.test(l.original) ||
+  DAMAGED.test(l.specs ?? '');
+
+export const VEHICLE_LOTS: AuctionLot[] = ALL_VEHICLE_LOTS.filter(keepPickup);

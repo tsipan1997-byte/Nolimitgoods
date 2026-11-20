@@ -1,4 +1,4 @@
-import { VEHICLE_LOTS } from './auction-vehicles';
+import { VEHICLE_LOTS, keepPickup } from './auction-vehicles';
 import { WILSONS_LOTS } from './auction-wilsons';
 import { CHEFFINS_LOTS } from './auction-cheffins';
 import { BRIGHTWELLS_LOTS } from './auction-brightwells';
@@ -5780,4 +5780,4 @@ const BASE_LOTS: AuctionLot[] = [
  }
 ];
 
-export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS];
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS].filter(keepPickup);

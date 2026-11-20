@@ -11,7 +11,7 @@ import { AUCTION_LOTS, type AuctionLot } from '@/lib/auction-lots';
 import { allResults } from '@/lib/auction-results';
 import { lotPost, soldPost, type TgPost } from '@/lib/telegram-post';
 
-// Крон запускає пост 3 рази на день (vercel.json): ранок 2 лоти, обід 1, вечір 2. Вручну можна ?n=1..4
+// Крон запускає пост щогодини у робочий час (vercel.json: 07–14 UTC = 9:00–16:00 за Києвом), по 1 лоту — 8 лотів на день. Вручну можна ?n=1..4
 const LOTS_PER_RUN = 4;
 const SOLD_PER_RUN = 2;
 const marker = (key: string) => `state/tg/${key.replace(/[^a-zA-Z0-9-]/g, '_')}`;
@@ -28,7 +28,7 @@ async function postedKeys(): Promise<Set<string>> {
 }
 
 // Пріоритетні категорії по черзі, свіжіші роки першими, без несправних і без лотів, що закриваються менше ніж за добу
-const CATEGORY_PRIORITY = ['pickups', 'excavators', 'telehandlers', 'agro', 'trucks', 'energy'];
+const CATEGORY_PRIORITY = ['pickups', 'excavators', 'telehandlers', 'agro', 'trucks', 'energy', 'breakers', 'attachments'];
 function pickLots(done: Set<string>, now: number, limit = LOTS_PER_RUN): AuctionLot[] {
   const open = AUCTION_LOTS.filter(
     (l) => l.img && !l.inoperable && l.endsAt > now + 24 * 3_600_000 && CATEGORY_PRIORITY.includes(l.category) && !done.has(marker(lotPost(l).key))
@@ -71,9 +71,7 @@ export async function GET(req: Request) {
   }
   const params = new URL(req.url).searchParams;
   const dry = params.get('dry') === '1';
-  const hour = new Date().getUTCHours();
-  const byHour = hour >= 11 && hour < 15 ? 1 : 2;
-  const n = Math.min(4, Math.max(1, Number(params.get('n')) || byHour));
+  const n = Math.min(4, Math.max(1, Number(params.get('n')) || 1));
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chat = process.env.TELEGRAM_CHANNEL_ID;
   if (!dry && (!token || !chat)) return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN or TELEGRAM_CHANNEL_ID is not set' }, { status: 500 });

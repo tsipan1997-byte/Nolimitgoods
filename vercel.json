@@ -1,8 +1,40 @@
 {
   "crons": [
-    { "path": "/api/cron/mirror-photos", "schedule": "0 4 * * *" },
-    { "path": "/api/cron/telegram-post", "schedule": "0 7 * * *" },
-    { "path": "/api/cron/telegram-post", "schedule": "0 12 * * *" },
-    { "path": "/api/cron/telegram-post", "schedule": "0 17 * * *" }
+    {
+      "path": "/api/cron/mirror-photos",
+      "schedule": "0 4 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 7 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 8 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 9 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 10 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 11 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 12 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 13 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post",
+      "schedule": "0 14 * * *"
+    }
   ]
 }

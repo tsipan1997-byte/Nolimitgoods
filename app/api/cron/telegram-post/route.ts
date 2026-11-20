@@ -72,6 +72,9 @@ export async function GET(req: Request) {
   const params = new URL(req.url).searchParams;
   const dry = params.get('dry') === '1';
   const n = Math.min(4, Math.max(1, Number(params.get('n')) || 1));
+  // Разовий запуск лише в указану дату (?only=YYYY-MM-DD) — для додаткових постів у конкретний день
+  const only = params.get('only');
+  if (only && only !== new Date().toISOString().slice(0, 10)) return NextResponse.json({ skipped: `only ${only}` });
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chat = process.env.TELEGRAM_CHANNEL_ID;
   if (!dry && (!token || !chat)) return NextResponse.json({ error: 'TELEGRAM_BOT_TOKEN or TELEGRAM_CHANNEL_ID is not set' }, { status: 500 });

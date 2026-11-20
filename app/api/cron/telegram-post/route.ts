@@ -104,5 +104,6 @@ export async function GET(req: Request) {
       failed.push(`${p.key}: ${(e as Error).message}`);
     }
   }
+  console.log('[tg-post]', JSON.stringify({ n, picked: posts.length, sent, failed }));
   return NextResponse.json({ sent, failed });
 }

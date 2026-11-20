@@ -1,4 +1,5 @@
 import { VEHICLE_LOTS } from './auction-vehicles';
+import { WILSONS_LOTS } from './auction-wilsons';
 
 // Лоти з аукціонів спецтехніки Великої Британії, відібрані під попит в Україні.
 // Згенеровано 16.11.2026 з каталогів Ritchie Bros і Euro Auctions. Ставки тут не зберігаються:
@@ -64,6 +65,17 @@ export const AUCTIONS: AuctionInfo[] = [
   "totalLots": 69,
   "unreserved": false,
   "url": "https://www.rbauction.co.uk/heavy-equipment-auctions/maltby-gbr-2026672"
+ },
+ {
+  "id": "wilsons-belfast-nov",
+  "house": "Wilsons Auctions",
+  "name": "Plant, Machinery & Commercial Auction",
+  "place": "Белфаст, Північна Ірландія",
+  "dates": "24 листопада 2026",
+  "format": "Живі торги + онлайн-ставки",
+  "totalLots": 131,
+  "unreserved": false,
+  "url": "https://www.wilsonsauctions.com/auctions/plant-machinery-commercial-auction-6275"
  }
 ];
 
@@ -105,6 +117,15 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "onSite": false
  },
  {
+  "date": "24 лист.",
+  "house": "Wilsons Auctions",
+  "title": "Техніка, пікапи і навісне",
+  "place": "Белфаст, Північна Ірландія",
+  "lots": "131 лот",
+  "onSite": true,
+  "auction": "wilsons-belfast-nov"
+ },
+ {
   "date": "25–28 лист.",
   "house": "Euro Auctions",
   "title": "Найбільший аукціон спецтехніки Британії",
@@ -137,6 +158,14 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "lots": "69 лотів",
   "onSite": true,
   "auction": "rb-agri-dec"
+ },
+ {
+  "date": "3 груд.",
+  "house": "Wilsons Auctions",
+  "title": "Техніка і комерційний транспорт",
+  "place": "Портадаун, Північна Ірландія",
+  "lots": "",
+  "onSite": false
  },
  {
   "date": "1–9 груд.",
@@ -5645,4 +5674,4 @@ const BASE_LOTS: AuctionLot[] = [
  }
 ];
 
-export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS];
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS];

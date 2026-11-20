@@ -28,7 +28,7 @@ async function postedKeys(): Promise<Set<string>> {
 }
 
 // Пріоритетні категорії по черзі, свіжіші роки першими, без несправних (крім пікапів — биті на запчастини теж потрібні) і без лотів, що закриваються менше ніж за добу
-const CATEGORY_PRIORITY = ['pickups', 'excavators', 'telehandlers', 'agro', 'trucks', 'energy', 'breakers', 'attachments'];
+const CATEGORY_PRIORITY = ['excavators', 'telehandlers', 'agro', 'trucks', 'energy', 'breakers', 'attachments', 'pickups'];
 function pickLots(done: Set<string>, now: number, limit = LOTS_PER_RUN): AuctionLot[] {
   const open = AUCTION_LOTS.filter(
     (l) => l.img && (!l.inoperable || l.category === 'pickups') && l.endsAt > now + 24 * 3_600_000 && CATEGORY_PRIORITY.includes(l.category) && !done.has(marker(lotPost(l).key))
@@ -38,6 +38,8 @@ function pickLots(done: Set<string>, now: number, limit = LOTS_PER_RUN): Auction
   // День тижня зсуває старт, щоб щодня першою була інша категорія
   const shift = new Date(now).getUTCDay() % CATEGORY_PRIORITY.length;
   const order = [...CATEGORY_PRIORITY.slice(shift), ...CATEGORY_PRIORITY.slice(0, shift)];
+  // Пікапи — не частіше ніж через день (Іван: основне — техніка, пікапів 1–2, не більше)
+  if (Math.floor(now / 86_400_000) % 2 === 1) byCat.set('pickups', []);
   const out: AuctionLot[] = [];
   // Однакові лоти (напр. кілька нових однакових гідромолотів) не постимо повторно
   const seen = new Set<string>();

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="robots" content="noindex">
+<title>NLG slides</title>
+<style>
+*{margin:0;box-sizing:border-box}
+html,body{width:100vw;height:100vh;overflow:hidden;background:#0b1426;font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;color:#fff}
+.s{position:fixed;inset:0;display:none}
+.s.on{display:block}
+.ph{position:absolute;top:0;bottom:0;left:0;width:56%;background:#111 center/cover no-repeat}
+.ph:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,20,38,0) 60%,#0b1426)}
+.pn{position:absolute;top:0;bottom:0;right:0;width:48%;padding:5vh 6vw 5vh 2vw;display:flex;flex-direction:column;justify-content:center}
+.logo{position:absolute;left:3vw;top:4vh;background:#fff;border-radius:2vh;padding:1.2vh 1.6vh;z-index:3}
+.logo img{height:8vh;display:block}
+.num{position:absolute;right:6vw;top:4vh;background:#e11d2e;border-radius:99px;padding:1vh 2.2vh;font-weight:800;font-size:2.6vh}
+.kick{color:#ff5a66;font-weight:800;font-size:2.8vh;letter-spacing:.05em;text-transform:uppercase}
+h1{font-size:6vh;line-height:1.08;font-weight:900;margin:1.4vh 0}
+h2{font-size:5.2vh;line-height:1.1;font-weight:900;margin:1vh 0 .6vh}
+.meta{font-size:2.8vh;color:#a3b1c6}
+.price{margin-top:3vh;background:#13203a;border-radius:2.4vh;padding:2.4vh 3vh}
+.price .a{font-size:2.6vh;color:#a3b1c6}
+.price .b{font-size:6.4vh;font-weight:900;margin:.4vh 0}
+.price .c{font-size:2.4vh;color:#a3b1c6}
+.note{margin-top:2vh;font-size:2.2vh;color:#8b99ae}
+.cover .ph{width:100%}
+.cover .ph:after{background:linear-gradient(90deg,rgba(11,20,38,.92) 0,rgba(11,20,38,.75) 45%,rgba(11,20,38,.1) 80%)}
+.cover .pn{left:0;right:auto;width:60%;padding-left:6vw}
+.cta .pn{left:0;right:0;width:auto;padding:0 12vw;align-items:center;text-align:center}
+.steps{display:flex;gap:2vw;margin:3vh 0}
+.st{flex:1;background:#13203a;border-radius:2.4vh;padding:2.4vh;font-size:2.6vh;line-height:1.3;text-align:left}
+.st b{display:block;color:#ff5a66;font-size:4vh}
+.btn{display:inline-block;background:#e11d2e;border-radius:99px;padding:1.8vh 4vh;font-weight:800;font-size:3.2vh;margin-top:1vh}
+.ct{font-size:2.6vh;color:#c3cede;margin-top:2vh}
+</style></head><body>
+<script>
+const B='https://hao6bdm3abc6m7at.public.blob.vercel-storage.com/lots/ea-leeds-nov-';
+const LOGO='/logo.png';
+const lots=[
+ {img:B+'140575817.jpg',kick:'Euro Auctions · Лідс · 26.11',name:'JCB 3CX Sitemaster Plus',meta:'2021 р. · Powershift · гідролінія · кондиціонер',ham:'£35 000',tk:'$65–76 тис.'},
+ {img:B+'140569566.jpg',kick:'Euro Auctions · Лідс · 27.11',name:'Телескоп JCB 540-180 Hi Viz',meta:'2022 р. · 18 м · джойстик',ham:'£40 000',tk:'$73–82 тис.'},
+ {img:B+'140573432.jpg',kick:'Euro Auctions · Лідс · 25.11',name:'Трактор John Deere 6145R',meta:'2019 р. · 4WD · передня навіска і ВВП',ham:'£45 000',tk:'$80–92 тис.'},
+ {img:B+'140566769.jpg',kick:'Euro Auctions · Лідс · 27.11',name:'Телескоп Manitou MT1033 Easy',meta:'2023 р. · 864 мотогод. · 10 м',ham:'£45 000',tk:'$80–91 тис.'},
+ {img:'https://assets.wilsonsauctions.com///lots_1794557858-image.jpg_3900247/1000x800.jpeg',kick:'Wilsons · Белфаст · 24.11',name:'Міні-екскаватор Kubota U27-4',meta:'2016 р. · 2 291 мотогод. · 3 ковші + гідромолот',ham:'£12 000',tk:'$23–27 тис.'},
+];
+const n=+(new URLSearchParams(location.search).get('s')||1);
+const total=lots.length+2;
+let h='';
+if(n===1){h=`<div class="s on cover"><div class="ph" style="background-image:url(${lots[0].img})"></div><div class="logo"><img src="${LOGO}"></div><div class="num">1/${total}</div><div class="pn"><div class="kick">Аукціони Англії → Україна</div><h1>Скільки коштує техніка з Англії під ключ?</h1><div class="meta">Рахуємо на реальних лотах цього тижня: ціна молотка + доставка + розмитнення + усі збори.</div><div class="note">Гортайте →</div></div></div>`}
+else if(n<=lots.length+1){const l=lots[n-2];h=`<div class="s on"><div class="ph" style="background-image:url(${l.img})"></div><div class="logo"><img src="${LOGO}"></div><div class="num">${n}/${total}</div><div class="pn"><div class="kick">${l.kick}</div><h2>${l.name}</h2><div class="meta">${l.meta}</div><div class="price"><div class="a">якщо молоток ${l.ham}</div><div class="b">${l.tk}</div><div class="c">під ключ в Україні: доставка, ПДВ 20%, мито, збори, наша комісія</div></div><div class="note">Приклад розрахунку. Фінальна ціна залежить від торгів.</div></div></div>`}
+else{h=`<div class="s on cta"><div class="logo"><img src="${LOGO}"></div><div class="num">${n}/${total}</div><div class="pn"><div class="kick">Як ми працюємо</div><h1>Ви називаєте ліміт — ми ставимо</h1><div class="steps"><div class="st"><b>1</b>Обираєте лот або пишете модель і бюджет</div><div class="st"><b>2</b>Рахуємо ціну під ключ до торгів — безкоштовно</div><div class="st"><b>3</b>Виграли — веземо й розмитнюємо. Ні — повертаємо передоплату</div></div><div class="btn">nolimitgoods.com/aukciony</div><div class="ct">Telegram t.me/nolimitgoods · +44 7426 826595 · +380 50 140 0245</div></div></div>`}
+document.write(h);
+</script>
+</body></html>

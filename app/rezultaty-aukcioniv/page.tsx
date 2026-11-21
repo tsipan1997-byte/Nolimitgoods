@@ -41,11 +41,12 @@ const rnd = (n: number) => Math.round(n / (n > 20000 ? 500 : 100)) * (n > 20000 
 const money = (n: number, sym: string) => `${sym}${sp(rnd(n))}`;
 const range = (r: [number, number], sym: string, k = 1) => `${sym}${sp(rnd(r[0] * k))}–${sp(Math.max(rnd(r[1] * k), rnd(r[0] * k)))}`;
 const dayFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: 'numeric', month: 'long', year: 'numeric' });
-const ORDER: AuctionCategory[] = ['excavators', 'telehandlers', 'agro', 'pickups', 'trucks', 'energy', 'breakers', 'attachments'];
+// Показуємо лише техніку: людям цікаво, за скільки пішли трактори й екскаватори, а не ковші, молоти чи генератори
+const ORDER: AuctionCategory[] = ['agro', 'excavators', 'telehandlers', 'trucks', 'pickups'];
 
 export default async function ResultsPage() {
   const rates = await getRates();
-  const results = allResults();
+  const results = allResults().filter((r) => ORDER.includes(r.category));
   const stats = priceStats(results).filter((s) => s.count >= 2).slice(0, 24);
   const byCat = ORDER.map((c) => ({ c, rs: results.filter((r) => r.category === c) })).filter((g) => g.rs.length);
   const total = results.reduce((s, r) => s + r.bid, 0);

@@ -4,6 +4,7 @@ import React, { useRef, useState } from 'react';
 import { Camera, Loader2, CheckCircle2, X, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { CONTACT } from '@/lib/site-config';
+import { getFbc, trackLead } from '@/lib/meta-client';
 
 // Швидка заявка на першому екрані: VIN / номер деталі, фото, телефон.
 // Шле в той самий /api/lead, що й велика форма, тож заявка падає в Telegram і таблицю.
@@ -100,6 +101,7 @@ export default function HeroQuickForm() {
 
     const fd = new FormData();
     fd.append('leadId', id);
+    fd.append('fbc', getFbc());
     fd.append('contact', phone.trim());
     fd.append('comment', query.trim());
     fd.append('country', isUk ? 'Україна' : 'Ukraine');
@@ -115,7 +117,7 @@ export default function HeroQuickForm() {
       if (!res.ok) throw new Error(String(res.status));
       const w = window as any;
       if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
-      if (typeof w.fbq === 'function') w.fbq('track', 'Lead', { content_name: 'Hero form' });
+      trackLead(id, { content_name: 'Hero form' });
       setStatus('success');
     } catch {
       setStatus('error');

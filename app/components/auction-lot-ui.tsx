@@ -15,6 +15,7 @@ import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
 import { lotPhotoUrl } from '@/lib/lot-photos';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
+import { getFbc, trackLead } from '@/lib/meta-client';
 
 export const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
   energy: Zap,
@@ -225,6 +226,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
 
     const fd = new FormData();
     fd.append('leadId', leadId);
+    fd.append('fbc', getFbc());
     fd.append('contact', contact.trim());
     fd.append('comment', lines.join('\n'));
     fd.append('partType', 'Викуп з аукціону');
@@ -240,7 +242,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
       if (res.ok) {
         const w = window as any;
         if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
-        if (typeof w.fbq === 'function') w.fbq('track', 'Lead', { content_name: 'Auction lot', value: bid || undefined, currency: 'GBP' });
+        trackLead(leadId, { content_name: 'Auction lot', value: bid || undefined, currency: 'GBP' });
       }
       setStatus(res.ok ? 'done' : 'error');
     } catch {

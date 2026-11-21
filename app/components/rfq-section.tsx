@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { CONTACT } from '@/lib/site-config';
+import { getFbc, trackLead } from '@/lib/meta-client';
 
 interface RFQItemInput {
   id: string;
@@ -200,15 +201,13 @@ export default function RFQSection() {
 
   const activeItems = items.filter((it) => it.partNumber.trim() !== '');
 
-  const trackConversion = () => {
+  const trackConversion = (id: string) => {
     if (typeof window === 'undefined') return;
     const w = window as any;
     if (typeof w.gtag === 'function') {
       w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
     }
-    if (typeof w.fbq === 'function') {
-      w.fbq('track', 'Lead', { content_name: 'RFQ', num_items: activeItems.length });
-    }
+    trackLead(id, { content_name: 'RFQ', num_items: activeItems.length });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -237,6 +236,7 @@ export default function RFQSection() {
 
     const fd = new FormData();
     fd.append('leadId', id);
+    fd.append('fbc', getFbc());
     fd.append('contact', contact.trim());
     fd.append('comment', comment.trim());
     fd.append('country', country.trim());
@@ -280,7 +280,7 @@ export default function RFQSection() {
         }).catch(() => {});
       }
 
-      trackConversion();
+      trackConversion(id);
       setStatus('success');
     } catch (err) {
       console.error('Lead submit error:', err);

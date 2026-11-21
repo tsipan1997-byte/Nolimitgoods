@@ -24,6 +24,7 @@ import FloatingContact from '../components/floating-contact';
 import { CONTACT } from '@/lib/site-config';
 import { MACHINE_BRANDS, MACHINE_GROUPS, type MachineBrand, type MachineGroupId } from '@/lib/spectehnika';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
+import { getFbc, trackLead } from '@/lib/meta-client';
 
 const GROUP_ICON: Record<MachineGroupId, React.ComponentType<{ className?: string }>> = {
   construction: HardHat,
@@ -54,6 +55,7 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
     const leadId = `NLG-S${Date.now().toString().slice(-6)}`;
     const fd = new FormData();
     fd.append('leadId', leadId);
+    fd.append('fbc', getFbc());
     fd.append('contact', contact.trim());
     fd.append('partType', `Спецтехніка: ${kind}`);
     fd.append(
@@ -72,7 +74,7 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
       const res = await fetch('/api/lead', { method: 'POST', body: fd });
       if (res.ok) {
         const w = window as any;
-        if (typeof w.fbq === 'function') w.fbq('track', 'Lead', { content_name: brand ? `Spec ${brand.name}` : 'Spec parts' });
+        trackLead(leadId, { content_name: brand ? `Spec ${brand.name}` : 'Spec parts' });
         if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
       }
       setStatus(res.ok ? 'done' : 'error');

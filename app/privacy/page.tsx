@@ -22,7 +22,7 @@ export default function PrivacyPage() {
         <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight mb-2">
           Політика конфіденційності
         </h1>
-        <p className="text-sm text-slate-500 mb-10">Оновлено: 28 жовтня 2026 / Last updated: 28 October 2026</p>
+        <p className="text-sm text-slate-500 mb-10">Оновлено: 21 листопада 2026 / Last updated: 21 November 2026</p>
 
         <div className="space-y-8 text-sm sm:text-base leading-relaxed">
           <section>
@@ -53,6 +53,10 @@ export default function PrivacyPage() {
                 джерело переходу (наприклад, рекламне оголошення). Вони збираються за допомогою піксель Meta
                 (Facebook) та Google Ads, лише якщо ви дали на це згоду.
               </li>
+              <li>
+                Дані для вимірювання реклами без cookie: коли ви надсилаєте запит або натискаєте кнопку
+                месенджера чи телефону, наш сервер повідомляє Meta про цю дію (див. розділ 5).
+              </li>
             </ul>
           </section>
 
@@ -62,8 +66,8 @@ export default function PrivacyPage() {
               <li>Щоб обробити ваш запит, перевірити наявність деталей, розрахувати вартість і звʼязатися з вами.</li>
               <li>Щоб оформити замовлення, поставку та супровідні документи, якщо ви вирішите купувати.</li>
               <li>
-                Щоб вимірювати ефективність реклами та показувати релевантну рекламу (лише за вашою згодою
-                на cookie).
+                Щоб вимірювати ефективність реклами та показувати релевантну рекламу (через cookie — лише за
+                вашою згодою; без cookie — лише факт заявки чи кліку, див. розділ 5).
               </li>
               <li>Щоб виконувати вимоги законодавства (облік, податки, експортні документи).</li>
             </ul>
@@ -74,7 +78,9 @@ export default function PrivacyPage() {
             <p>
               Обробка запиту та замовлення ґрунтується на необхідності для укладення й виконання договору та на
               нашому законному інтересі відповідати на звернення. Cookie та рекламні піксель працюють лише на
-              підставі вашої згоди, яку можна відкликати будь-коли. Дотримання законодавства ґрунтується на
+              підставі вашої згоди, яку можна відкликати будь-коли. Повідомлення Meta про заявку чи клік з
+              нашого сервера (без cookie) ґрунтується на нашому законному інтересі вимірювати, чи приводить
+              реклама звернення; ви можете заперечити проти цього, написавши нам. Дотримання законодавства ґрунтується на
               юридичному обовʼязку.
             </p>
           </section>
@@ -91,13 +97,22 @@ export default function PrivacyPage() {
               можете видалити cookie в налаштуваннях браузера та керувати рекламними вподобаннями в
               налаштуваннях вашого акаунта Meta і Google.
             </p>
+            <p className="mt-2">
+              Незалежно від cookie, коли ви надсилаєте запит через форму або натискаєте кнопку Telegram,
+              WhatsApp, Viber, телефону чи email, наш сервер передає Meta (Conversions API) лише факт цієї дії:
+              тип події, сторінку, IP-адресу, тип браузера, ідентифікатор рекламного кліку (якщо ви прийшли з
+              реклами Meta) і, для заявок, ваш телефон або email у захешованому вигляді (SHA-256, необоротне
+              перетворення). Ми не записуємо для цього жодних cookie на ваш пристрій. Meta використовує ці дані,
+              щоб порахувати, скільки звернень дала реклама. Щоб ми не передавали ваші дані таким чином,
+              напишіть нам на email, вказаний нижче.
+            </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-white mb-2">6. Кому ми передаємо дані</h2>
             <p className="mb-2">Ми не продаємо ваші дані. Вони можуть оброблятися нашими постачальниками послуг:</p>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li>Meta Platforms та Google (реклама і вимірювання, лише за згодою);</li>
+              <li>Meta Platforms та Google (реклама і вимірювання: через cookie — лише за згодою; факт заявки чи кліку — див. розділ 5);</li>
               <li>хостинг-провайдер сайту (Vercel) та сервіси зберігання даних;</li>
               <li>сервіси звʼязку та внутрішніх сповіщень (Telegram, WhatsApp, Viber, email);</li>
               <li>
@@ -149,7 +164,12 @@ export default function PrivacyPage() {
             <p>
               NoLimitGoods Limited (Company No: 13146899, 374 Hipswell Highway, Coventry, CV2 5FR, UK) is the data
               controller. We collect the contact details and parts enquiry information you submit, and, only with
-              your consent, cookie and pixel data (Meta and Google Ads) to measure and improve advertising. We do
+              your consent, cookie and pixel data (Meta and Google Ads) to measure and improve advertising. Without
+              using cookies, our server also tells Meta (Conversions API) when you submit an enquiry or tap a
+              messenger, phone or email button: the event type, page, IP address, browser type, the ad click ID if
+              you came from a Meta ad and, for enquiries, your phone or email in hashed (SHA-256) form. This is
+              based on our legitimate interest in measuring which ads bring enquiries; you can object by emailing
+              us. We do
               not sell your data. Service providers may process it on our behalf (hosting, messaging, advertising
               platforms, logistics). You have rights under UK GDPR, including access, correction, deletion and
               withdrawal of consent. You can change your cookie choice any time via “Налаштування cookie” in the

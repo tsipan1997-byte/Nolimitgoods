@@ -6,6 +6,7 @@ import { useLanguage } from '@/lib/language-context';
 import type { CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, loadRates, shippingGbp, type Rates } from '@/lib/pricing';
 import { CONTACT } from '@/lib/site-config';
+import { getFbc, trackLead } from '@/lib/meta-client';
 
 // ============================================================================
 // КОШИК ЗАПИТУ (B2B): клієнт додає деталі з каталогу, лишає контакт —
@@ -99,6 +100,7 @@ export default function QuoteCart() {
     setStatus('sending');
     const fd = new FormData();
     fd.append('leadId', id);
+    fd.append('fbc', getFbc());
     fd.append('contact', contact.trim());
     fd.append('country', isUk ? 'Україна' : 'Ukraine');
     fd.append('partType', 'Кошик з каталогу');
@@ -122,7 +124,7 @@ export default function QuoteCart() {
       if (!res.ok) throw new Error(String(res.status));
       const w = window as any;
       if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
-      if (typeof w.fbq === 'function') w.fbq('track', 'Lead', { content_name: 'Catalog cart', num_items: count });
+      trackLead(id, { content_name: 'Catalog cart', num_items: count });
       write([]);
       setStatus('done');
     } catch {

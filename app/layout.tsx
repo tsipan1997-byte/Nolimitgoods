@@ -5,6 +5,7 @@ import './globals.css';
 import { LanguageProvider } from '@/lib/language-context';
 import CookieConsent from './cookie-consent';
 import MobileContactBar from './components/mobile-contact-bar';
+import MetaTracking from './components/meta-tracking';
 import { CONTACT, SOCIAL } from '@/lib/site-config';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
@@ -152,25 +153,8 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Відстеження кліків по контактах у Meta */}
-        <Script id="meta-contact-tracking" strategy="afterInteractive">
-          {`
-            document.addEventListener('click', function (e) {
-              var el = e.target && e.target.closest ? e.target.closest('a') : null;
-              if (!el) return;
-              var href = el.getAttribute('href') || '';
-              var method = null;
-              if (href.indexOf('wa.me') > -1 || href.indexOf('whatsapp') > -1) method = 'whatsapp';
-              else if (href.indexOf('t.me') > -1) method = 'telegram';
-              else if (href.indexOf('viber://') === 0) method = 'viber';
-              else if (href.indexOf('tel:') === 0) method = 'phone';
-              else if (href.indexOf('mailto:') === 0) method = 'email';
-              if (method && window.fbq) {
-                window.fbq('track', 'Contact', { contact_method: method });
-              }
-            }, true);
-          `}
-        </Script>
+        {/* Кліки по контактах → Meta (піксель + сервер /api/track) */}
+        <MetaTracking />
 
         <LanguageProvider>
           {children}

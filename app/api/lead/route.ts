@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 export const maxDuration = 30;
 
 import { NextResponse } from 'next/server';
+import { sendMetaEvent } from '@/lib/meta-capi';
 
 // ============================================================================
 // ПРИЙОМ ЗАЯВОК RFQ
@@ -199,6 +200,18 @@ export async function POST(request: Request) {
     if (!telegramOk && !sheetOk) {
       return NextResponse.json({ error: 'delivery_failed' }, { status: 502 });
     }
+
+    // ---------- 3. Подія Lead у Meta з сервера (працює і без згоди на cookie) ----------
+    // event_id = leadId, той самий, що піксель отримує в eventID → Meta не задвоює.
+    await sendMetaEvent({
+      eventName: 'Lead',
+      eventId: leadId,
+      page,
+      request,
+      fbc: cut(String(form.get('fbc') || ''), 300),
+      contact,
+      customData: { content_name: partType || source || 'Lead', num_items: items.length || undefined },
+    });
 
     return NextResponse.json({ success: true, leadId });
   } catch (error: any) {

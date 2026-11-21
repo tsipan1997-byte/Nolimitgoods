@@ -35,18 +35,6 @@
     {
       "path": "/api/cron/telegram-post?slot=14",
       "schedule": "0 14 * * *"
-    },
-    {
-      "path": "/api/cron/telegram-post?n=4&only=2026-11-20&x=0",
-      "schedule": "0 19 * * *"
-    },
-    {
-      "path": "/api/cron/telegram-post?n=3&only=2026-11-20&x=1",
-      "schedule": "20 19 * * *"
-    },
-    {
-      "path": "/api/cron/telegram-post?n=3&only=2026-11-20&x=2",
-      "schedule": "40 19 * * *"
     }
   ],
   "headers": [

@@ -12,7 +12,6 @@ import { allResults } from '@/lib/auction-results';
 import { lotPost, soldPost, type TgPost } from '@/lib/telegram-post';
 
 // Крон запускає пост щогодини у робочий час (vercel.json: 07–14 UTC = 9:00–16:00 за Києвом), по 1 лоту — 8 лотів на день. Вручну можна ?n=1..4
-const LOTS_PER_RUN = 4;
 const SOLD_PER_RUN = 2;
 const marker = (key: string) => `state/tg/${key.replace(/[^a-zA-Z0-9-]/g, '_')}`;
 
@@ -27,34 +26,45 @@ async function postedKeys(): Promise<Set<string>> {
   return out;
 }
 
-// Пріоритетні категорії по черзі, свіжіші роки першими, без несправних (крім пікапів — биті на запчастини теж потрібні) і без лотів, що закриваються менше ніж за добу
-const CATEGORY_PRIORITY = ['excavators', 'telehandlers', 'agro', 'trucks', 'energy', 'breakers', 'attachments', 'pickups'];
-function pickLots(done: Set<string>, now: number, limit = LOTS_PER_RUN): AuctionLot[] {
+// План на день по годинах (UTC). Іван: більше екскаваторів, гідромолотів/навісного — мінімум.
+// 4 слоти з 8 — екскаватори/екскаватори-навантажувачі; одна «додаткова» година по черзі віддається
+// навісному, гідромолотам, генераторам або пікапам (кожне — раз на 4 дні).
+const SLOT_PLAN: Record<number, string> = {
+  7: 'excavators', 8: 'telehandlers', 9: 'excavators', 10: 'agro',
+  11: 'excavators', 12: 'trucks', 13: 'excavators', 14: 'extra',
+};
+const EXTRA_ROTATION = ['pickups', 'attachments', 'energy', 'breakers'];
+const ALL_CATS = ['excavators', 'telehandlers', 'agro', 'trucks', 'pickups', 'energy', 'attachments', 'breakers'];
+
+// Ключ моделі: «Unused 2026 JWB JWB2000 — Hydraulic Breaker…» → «jwb jwb2000».
+// Однакові моделі (5 однакових нових гідромолотів, 3 однакові JCB 3CX) постимо лише раз.
+function modelKey(original: string): string {
+  const head = original.split(' — ')[0].replace(/\bunused\b/gi, '').replace(/\b(19|20)\d{2}\b/g, '');
+  const words = head.toLowerCase().replace(/[^a-z0-9а-яіїєґ\s]/gi, ' ').split(/\s+/).filter(Boolean);
+  return words.slice(0, 2).join(' ') || original.toLowerCase();
+}
+
+function categoryFor(slot: number, now: number): string {
+  const c = SLOT_PLAN[slot] ?? 'excavators';
+  if (c !== 'extra') return c;
+  return EXTRA_ROTATION[Math.floor(now / 86_400_000) % EXTRA_ROTATION.length];
+}
+
+function pickLots(done: Set<string>, now: number, slot: number, limit = 1): AuctionLot[] {
+  const used = new Set<string>();
   const open = AUCTION_LOTS.filter(
-    (l) => l.img && (!l.inoperable || l.category === 'pickups') && l.endsAt > now + 24 * 3_600_000 && CATEGORY_PRIORITY.includes(l.category) && !done.has(marker(lotPost(l).key))
+    (l) => l.img && (!l.inoperable || l.category === 'pickups') && l.endsAt > now + 24 * 3_600_000 && ALL_CATS.includes(l.category)
+      && !done.has(marker(lotPost(l).key)) && !done.has(marker(`title:${l.original}`)) && !done.has(marker(`model:${modelKey(l.original)}`))
   );
-  const byCat = new Map<string, AuctionLot[]>(CATEGORY_PRIORITY.map((c) => [c, []]));
-  for (const l of open.sort((a, b) => (b.year ?? 0) - (a.year ?? 0))) byCat.get(l.category)!.push(l);
-  // День тижня зсуває старт, щоб щодня першою була інша категорія
-  const shift = new Date(now).getUTCDay() % CATEGORY_PRIORITY.length;
-  const order = [...CATEGORY_PRIORITY.slice(shift), ...CATEGORY_PRIORITY.slice(0, shift)];
-  // Пікапи — не частіше ніж через день (Іван: основне — техніка, пікапів 1–2, не більше)
-  if (Math.floor(now / 86_400_000) % 2 === 1) byCat.set('pickups', []);
+  // Спершу живі (б/у) машини, нові «Unused» — після; всередині — свіжіші роки
+  open.sort((a, b) => Number(a.unused) - Number(b.unused) || (b.year ?? 0) - (a.year ?? 0));
   const out: AuctionLot[] = [];
-  // Однакові лоти (напр. кілька нових однакових гідромолотів) не постимо повторно
-  const seen = new Set<string>();
-  for (const [c, v] of byCat) {
-    byCat.set(c, v.filter((l) => {
-      const t = marker(`title:${l.original}`);
-      if (done.has(t) || seen.has(t)) return false;
-      seen.add(t);
-      return true;
-    }));
-  }
-  while (out.length < limit && order.some((c) => byCat.get(c)!.length)) {
-    for (const c of order) {
-      const v = byCat.get(c)!;
-      if (v.length && out.length < limit) out.push(v.shift()!);
+  for (let i = 0; out.length < limit && i < 8; i++) {
+    const cat = categoryFor(((slot - 7 + i) % 8) + 7, now);
+    // якщо в категорії порожньо — екскаватори, потім будь-що
+    for (const c of [cat, 'excavators', ...ALL_CATS]) {
+      const l = open.find((x) => x.category === c && !used.has(modelKey(x.original)));
+      if (l) { used.add(modelKey(l.original)); out.push(l); break; }
     }
   }
   return out;
@@ -94,7 +104,7 @@ export async function GET(req: Request) {
   const now = Date.now();
   const done = await postedKeys();
   const posts: TgPost[] = [
-    ...pickLots(done, now, n).map(lotPost),
+    ...pickLots(done, now, Number(params.get('slot')) || new Date(now).getUTCHours(), n).map(lotPost),
     ...allResults(now)
       .filter((r) => r.img && now - r.closedAt < 7 * 86_400_000)
       .map(soldPost)
@@ -110,7 +120,10 @@ export async function GET(req: Request) {
     try {
       await send(token!, chat!, p);
       await put(marker(p.key), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
-      if (p.title) await put(marker(`title:${p.title}`), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
+      if (p.title) {
+        await put(marker(`title:${p.title}`), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
+        await put(marker(`model:${modelKey(p.title)}`), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
+      }
       sent.push(p.key);
       await new Promise((r) => setTimeout(r, 3000)); // не спамимо: пауза між постами
     } catch (e) {

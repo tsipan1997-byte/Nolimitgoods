@@ -75,7 +75,10 @@ export function allResults(now = Date.now()): AuctionResult[] {
 
 // «JCB 3CX», «Caterpillar 320», «Toyota Hilux» — для зведеної таблиці цін
 export function modelKey(original: string) {
-  const name = original.replace(/^(Unused\s+)?\d{4}\s+/i, '').replace(/\s+—.*$/, '');
+  const name = original
+    .replace(/^Quantity of\s*\(\d+\)\s*/i, '')
+    .replace(/^(Unused\s+)?\d{4}\s+/i, '')
+    .replace(/\s+—.*$/, '');
   return name.split(/\s+/).slice(0, 2).join(' ');
 }
 

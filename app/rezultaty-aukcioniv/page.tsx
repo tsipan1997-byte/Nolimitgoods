@@ -100,25 +100,30 @@ export default async function ResultsPage() {
         <section className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
           <h2 className="text-xl md:text-2xl font-black">Ціни за моделями</h2>
           <p className="text-sm text-slate-500 mt-1">
-            Ціна продажу на аукціоні (мін. / медіана / макс.) і медіана під ключ в Україні. 1 £ = {rates.gbpEur.toFixed(2)} € = {rates.gbpUsd.toFixed(2)} $.
+            «Типова ціна» — середня з усіх проданих лотів моделі: половина пішла дешевше, половина дорожче. 1 £ = {rates.gbpEur.toFixed(2)} € = {rates.gbpUsd.toFixed(2)} $.
           </p>
           <div className="mt-4 overflow-x-auto rounded-2xl border border-slate-200">
             <table className="w-full text-sm">
               <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
                 <tr>
-                  <th className="px-3 py-2.5">Модель</th>
+                  <th className="px-3 py-2.5" colSpan={2}>Модель</th>
                   <th className="hidden sm:table-cell px-3 py-2.5">Роки</th>
                   <th className="hidden sm:table-cell px-3 py-2.5 text-right">Лотів</th>
                   <th className="hidden sm:table-cell px-3 py-2.5 text-right">Мін.</th>
-                  <th className="px-3 py-2.5 text-right">Медіана</th>
+                  <th className="px-3 py-2.5 text-right">Ціна на аукціоні<div className="normal-case font-normal text-[10px]">(типова)</div></th>
                   <th className="hidden sm:table-cell px-3 py-2.5 text-right">Макс.</th>
-                  <th className="px-3 py-2.5 text-right">Під ключ (медіана)</th>
+                  <th className="px-3 py-2.5 text-right">Під ключ в Україні<div className="normal-case font-normal text-[10px]">(орієнтовно)</div></th>
                 </tr>
               </thead>
               <tbody>
                 {stats.map((s) => (
                   <tr key={s.key} className="border-t border-slate-100">
-                    <td className="px-3 py-2.5 font-bold">{s.key}<div className="sm:hidden text-[11px] font-normal text-slate-500">{s.years} · {s.count} лоти</div></td>
+                    <td className="pl-3 py-2.5 w-16 sm:w-20">
+                      <div className="relative w-14 h-11 sm:w-20 sm:h-14 rounded-lg overflow-hidden bg-slate-100">
+                        <LotPhoto auction={s.sample.auction} item={s.sample.item} src={s.sample.img} alt={`${s.key} — продано на аукціоні`} />
+                      </div>
+                    </td>
+                    <td className="px-3 py-2.5 font-bold">{s.key}<div className="sm:hidden text-[11px] font-normal text-slate-500">{[s.years, `${s.count} ${s.count < 5 ? 'лоти' : 'лотів'}`].filter(Boolean).join(' · ')}</div></td>
                     <td className="hidden sm:table-cell px-3 py-2.5 text-slate-500 whitespace-nowrap">{s.years}</td>
                     <td className="hidden sm:table-cell px-3 py-2.5 text-right">{s.count}</td>
                     <td className="hidden sm:table-cell px-3 py-2.5 text-right font-mono">{gbp(s.min)}</td>

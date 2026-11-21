@@ -11,8 +11,11 @@ import { AUCTION_LOTS, type AuctionLot } from '@/lib/auction-lots';
 import { allResults } from '@/lib/auction-results';
 import { lotPost, soldPost, summaryPost, type TgPost } from '@/lib/telegram-post';
 
-// Крон запускає пост щогодини у робочий час (vercel.json: 07–14 UTC = 9:00–16:00 за Києвом), по 1 лоту — 8 лотів на день. Вручну можна ?n=1..4
-const SOLD_SLOTS = [10, 13]; // UTC
+// Крон щогодини 07–16 UTC (9:00–18:00 за Києвом), 10 постів на день, по черзі:
+// непарні години — лот на торгах (5 на день), парні — «продано за £X» (5 на день). Лише техніка: без гідромолотів, навісного, пікапів.
+// Вручну можна ?n=1..4
+const LOT_SLOTS = [7, 9, 11, 13, 15];
+const SOLD_SLOTS = [8, 10, 12, 14, 16]; // UTC
 const marker = (key: string) => `state/tg/${key.replace(/[^a-zA-Z0-9-]/g, '_')}`;
 
 async function postedKeys(): Promise<Set<string>> {
@@ -30,11 +33,14 @@ async function postedKeys(): Promise<Set<string>> {
 // 4 слоти з 8 — екскаватори/екскаватори-навантажувачі; одна «додаткова» година по черзі віддається
 // навісному, гідромолотам, генераторам або пікапам (кожне — раз на 4 дні).
 const SLOT_PLAN: Record<number, string> = {
-  7: 'excavators', 8: 'telehandlers', 9: 'excavators', 10: 'agro',
-  11: 'excavators', 12: 'trucks', 13: 'excavators', 14: 'extra',
+  7: 'excavators', 9: 'telehandlers', 11: 'excavators', 13: 'extra', 15: 'excavators',
 };
-const EXTRA_ROTATION = ['pickups', 'attachments', 'energy', 'breakers'];
-const ALL_CATS = ['excavators', 'telehandlers', 'agro', 'trucks', 'pickups', 'energy', 'attachments', 'breakers'];
+const EXTRA_ROTATION = ['agro', 'trucks', 'energy'];
+const ALL_CATS = ['excavators', 'telehandlers', 'agro', 'trucks', 'energy'];
+// «Продано»: яку категорію шукати першою в кожну парну годину
+const SOLD_PLAN: Record<number, string[]> = {
+  8: ['excavators'], 10: ['telehandlers', 'excavators'], 12: ['excavators'], 14: ['agro', 'trucks', 'energy', 'telehandlers'], 16: ['excavators', 'telehandlers'],
+};
 
 // Ключ моделі: «Unused 2026 JWB JWB2000 — Hydraulic Breaker…» → «jwb jwb2000».
 // Однакові моделі (5 однакових нових гідромолотів, 3 однакові JCB 3CX) постимо лише раз.
@@ -53,14 +59,14 @@ function categoryFor(slot: number, now: number): string {
 function pickLots(done: Set<string>, now: number, slot: number, limit = 1): AuctionLot[] {
   const used = new Set<string>();
   const open = AUCTION_LOTS.filter(
-    (l) => l.img && (!l.inoperable || l.category === 'pickups') && l.endsAt > now + 24 * 3_600_000 && ALL_CATS.includes(l.category)
+    (l) => l.img && !l.inoperable && l.endsAt > now + 24 * 3_600_000 && ALL_CATS.includes(l.category)
       && !done.has(marker(lotPost(l).key)) && !done.has(marker(`title:${l.original}`)) && !done.has(marker(`model:${modelKey(l.original)}`))
   );
   // Спершу живі (б/у) машини, нові «Unused» — після; всередині — свіжіші роки
   open.sort((a, b) => Number(a.unused) - Number(b.unused) || (b.year ?? 0) - (a.year ?? 0));
   const out: AuctionLot[] = [];
-  for (let i = 0; out.length < limit && i < 8; i++) {
-    const cat = categoryFor(((slot - 7 + i) % 8) + 7, now);
+  for (let i = 0; out.length < limit && i < 5; i++) {
+    const cat = categoryFor(LOT_SLOTS[(Math.max(0, LOT_SLOTS.indexOf(slot)) + i) % 5], now);
     // якщо в категорії порожньо — екскаватори, потім будь-що
     for (const c of [cat, 'excavators', ...ALL_CATS]) {
       const l = open.find((x) => x.category === c && !used.has(modelKey(x.original)));
@@ -147,8 +153,21 @@ export async function GET(req: Request) {
   const failed: string[] = [];
 
   // Лоти: беремо кілька кандидатів; якщо Telegram не бере фото — пробуємо оригінальне фото, далі наступний лот
-  const cands = pickLots(done, now, slot, n + 3);
-  if (dry) return NextResponse.json({ dry: true, slot, lots: cands.map((l) => l.original) });
+  const forced = params.get('n') !== null;
+  const cands = LOT_SLOTS.includes(slot) || forced ? pickLots(done, now, slot, n + 3) : [];
+  const soldCand = () => {
+    const order = [...(SOLD_PLAN[slot] ?? []), ...ALL_CATS];
+    const pool = allResults(now).filter(
+      (r) => r.img && now - r.closedAt < 30 * 86_400_000 && ALL_CATS.includes(r.category)
+        && !done.has(marker(soldPost(r).key)) && !done.has(marker(`soldmodel:${modelKey(r.original)}`))
+    );
+    for (const c of order) {
+      const r = pool.filter((x) => x.category === c).sort((a, b) => b.closedAt - a.closedAt || b.bid - a.bid)[0];
+      if (r) return r;
+    }
+    return undefined;
+  };
+  if (dry) return NextResponse.json({ dry: true, slot, lots: cands.map((l) => l.original), sold: SOLD_SLOTS.includes(slot) ? soldCand()?.original : null });
   let okLots = 0;
   for (const l of cands) {
     if (okLots >= n) break;
@@ -169,16 +188,17 @@ export async function GET(req: Request) {
     }
   }
 
-  // «Продано за £X»: лише 2 на день (о 12:00 і 15:00 за Києвом), по одному, без гідромолотів/навісного і без повторів моделі
+  // «Продано за £X»: 5 на день у парні години, лише техніка, без повторів моделі
   if (SOLD_SLOTS.includes(slot)) {
-    const r = allResults(now)
-      .filter((r) => r.img && now - r.closedAt < 7 * 86_400_000 && !['breakers', 'attachments'].includes(r.category))
-      .sort((a, b) => ALL_CATS.indexOf(a.category) - ALL_CATS.indexOf(b.category))
-      .find((r) => !done.has(marker(soldPost(r).key)) && !done.has(marker(`soldmodel:${modelKey(r.original)}`)));
+    const r = soldCand();
     if (r) {
       const p = soldPost(r);
       try {
-        await send(token!, chat!, p);
+        try { await send(token!, chat!, p); }
+        catch (e) {
+          if (!r.img || r.img === p.photo) throw e;
+          await send(token!, chat!, { ...p, photo: r.img });
+        }
         await mark(p.key); await mark(`soldmodel:${modelKey(r.original)}`);
         sent.push(p.key);
       } catch (e) {

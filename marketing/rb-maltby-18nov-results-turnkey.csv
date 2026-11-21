@@ -1,0 +1,148 @@
+lot,item,category,year,hours,hammer_gbp,rb_fee_gbp,our_fee_gbp,turnkey_ua_from_gbp,turnkey_ua_to_gbp
+62,2022 Merlo ROTO50.35 S Plus CVT Telehandler,telehandlers,2022,603,157500,4198,3134,201900.0,214100.0
+63,2022 JCB 540-200 Telehandler,telehandlers,2022,2512,45000,1555,896,61000.0,66200.0
+64,2022 JCB 540-180 Telehandler,telehandlers,2022,2480,42000,1484,836,57300.0,62300.0
+65,2022 JCB 540-180 Telehandler,telehandlers,2022,2401,40000,1437,1196,55200.0,60200.0
+70,2023 JCB 540-140 Telehandler,telehandlers,2023,4710,31000,1226,927,43900.0,48200.0
+71,2022 JCB 540-140 Telehandler,telehandlers,2022,1881,33000,1273,987,46400.0,50900.0
+72,2022 JCB 540-140 Telehandler,telehandlers,2022,2102,33000,1273,987,46400.0,50900.0
+73,2022 JCB 540-140 Telehandler,telehandlers,2022,2140,32000,1249,957,45100.0,49600.0
+74,2022 JCB 540-140 Telehandler,telehandlers,2022,4581,30000,1202,897,42600.0,46900.0
+75,2022 JCB 540-140 Telehandler,telehandlers,2022,3387,28000,1155,837,40100.0,44200.0
+81,2022 Manitou MT1335 Telehandler,telehandlers,2022,2254,30000,1202,897,42600.0,46900.0
+87,2022 Manitou MT933 Telehandler,telehandlers,2022,803,31000,1226,927,43900.0,48200.0
+88,2022 JCB 560-80 Telehandler,telehandlers,2022,2082,45000,1555,896,61000.0,66200.0
+90,2023 Manitou MT625H Telehandler,telehandlers,2023,1228,34000,1296,1017,47700.0,52200.0
+91,2022 JCB 531-70 Telehandler,telehandlers,2022,804,30000,1202,897,42600.0,46900.0
+93,2024 Manitou MT420 Telehandler,telehandlers,2024,291,37000,1367,1106,51500.0,56200.0
+116,2017 JCB 3CX Compact Backhoe Loader,excavators,2017,4736,20000,967,598,30600.0,35500.0
+117,2002 JCB 3CX 4x4 Backhoe Loader,excavators,2002,,,,,,
+148,2019 Cat D6K2 LGP Crawler Dozer,excavators,2019,9439,,,,,
+157,2013 Volvo EC480DL Tracked Excavator,excavators,2013,14447,41000,1461,816,56600.0,62900.0
+158,2012 Komatsu PC450LC-8 Tracked Excavator,excavators,2012,4196,40000,1437,1196,55800.0,62100.0
+159,2019 JCB JS370LC Tracked Excavator,excavators,2019,5729,36000,1343,1076,50800.0,56800.0
+160,2021 Hitachi ZX300LC-7 Tracked Excavator,excavators,2021,5306,64000,2001,1274,87800.0,95600.0
+161,2001 Volvo EC240LC Tracked Excavator,excavators,2001,15172,7500,674,224,14800.0,18900.0
+162,2021 Doosan DX225LC-5 Tracked Excavator,excavators,2021,5970,36000,1343,1076,50800.0,56800.0
+163,2021 Kobelco SK210LC-10 Tracked Excavator,excavators,2021,5470,38000,1390,1136,53300.0,59400.0
+164,2021 Kobelco SK210LC-10 Tracked Excavator,excavators,2021,5757,39000,1414,1166,54600.0,60700.0
+165,2019 JCB 220XL4F Tracked Excavator,excavators,2019,9432,20500,979,613,31200.0,36200.0
+166,2018 JCB 220X L Tracked Excavator,excavators,2018,5263,,,,,
+167,2016 Hitachi ZX210LC-5B Tracked Excavator,excavators,2016,9717,21500,1002,643,32500.0,37500.0
+168,2024 Doosan DX140LCR-7 Tracked Excavator,excavators,2024,3332,42000,1484,836,57900.0,64200.0
+169,2024 Doosan DX140LCR-7 Tracked Excavator,excavators,2024,3298,43000,1508,856,59100.0,65500.0
+170,2024 Sany SY155U Tracked Excavator,excavators,2024,1567,45000,1555,896,61600.0,68100.0
+171,2023 Sany SY135C Tracked Excavator,excavators,2023,388,44000,1531,876,60400.0,66800.0
+172,2023 Volvo EC140EL Tracked Excavator,excavators,2023,4939,60000,1907,1194,80400.0,87900.0
+173,2022 Volvo EC140EL Tracked Excavator,excavators,2022,6886,35000,1320,1047,49500.0,55400.0
+174,2021 Doosan DX140LC-5 Tracked Excavator,excavators,2021,3455,30000,1202,897,43200.0,48800.0
+175,2021 Cat 313GC Tracked Excavator,excavators,2021,3163,39000,1414,1166,54600.0,60700.0
+176,2021 Cat 313GC Tracked Excavator,excavators,2021,3488,38000,1390,1136,53300.0,59400.0
+177,2021 Kobelco SK130LC-11 Tracked Excavator,excavators,2021,2130,35000,1320,1047,49500.0,55400.0
+178,2021 Kobelco SK130LC-11 Tracked Excavator,excavators,2021,5335,29000,1179,867,41900.0,47500.0
+179,2018 Komatsu PC138US-11 Tracked Excavator,excavators,2018,6800,21500,1002,643,32500.0,37500.0
+180,2018 LiuGong CLG915E Tracked Excavator,excavators,2018,6261,16500,885,493,26100.0,30900.0
+181,2014 Volvo EC140DL Tracked Excavator,excavators,2014,8976,20000,967,598,30600.0,35500.0
+182,2023 Doosan DX85R-7 Tracked Excavator,excavators,2023,1212,36000,1343,1076,50800.0,56800.0
+183,2023 Komatsu PC80MR-5 Tracked Excavator,excavators,2023,1669,31000,1226,927,44500.0,50100.0
+184,2022 Volvo ECR88D Tracked Excavator,excavators,2022,3382,28000,1155,837,40700.0,46100.0
+185,2021 Volvo ECR88D Tracked Excavator,excavators,2021,3638,26000,1108,777,38100.0,43500.0
+186,2021 Volvo ECR88D Tracked Excavator,excavators,2021,3986,23000,1038,688,34400.0,39500.0
+187,2021 Volvo ECR88D Tracked Excavator,excavators,2021,4211,22500,1026,673,33700.0,38800.0
+188,2021 Kubota KX080-4a2 Tracked Excavator,excavators,2021,2947,32000,1249,957,45700.0,51400.0
+189,2021 Kubota KX080-4a2 Tracked Excavator,excavators,2021,3769,26000,1108,777,38100.0,43500.0
+190,2021 Kubota KX080-4a2 Tracked Excavator,excavators,2021,4023,25000,1085,748,36900.0,42200.0
+191,2021 Kubota KX080-4a2 Tracked Excavator,excavators,2021,4477,23000,1038,688,34400.0,39500.0
+192,2015 Kubota KX080-4 Tracked Excavator,excavators,2015,7373,18000,920,538,28000.0,32900.0
+193,2015 Kubota KX080-4 Tracked Excavator,excavators,2015,8223,14500,838,434,23600.0,28200.0
+194,2013 Kubota KX080-3 Tracked Excavator,excavators,2013,7658,14500,838,434,23600.0,28200.0
+195,2012 Kubota KX080-3 Tracked Excavator,excavators,2012,6186,15000,850,448,24200.0,28900.0
+264,2024 New Holland T7.300 4WD Tractor,agro,2024,4362,75000,2260,1492,98600.0,106300.0
+265,2022 New Holland T7-195 S 4WD Tractor,agro,2022,1917,61000,1931,1214,81100.0,87900.0
+266,2015 Massey Ferguson 7618 Dyna VT 4WD Tractor,agro,2015,,,,,,
+438,100 kVA Containerized 10ft Generator Set,energy,,,2300,230,150,5500.0,7900.0
+439,Containerized 10ft Generator Set,energy,,,1600,160,150,4600.0,7000.0
+440,60 kVA Containerized 10ft Generator Set,energy,,,3500,350,150,7100.0,9600.0
+441,2023 Inmesol IIRN 165 165 kVA Skid-Mounted Generator Set,energy,2023,6910,5250,525,157,9400.0,12000.0
+442,2014 Cat GEP150 Generator Set,energy,2014,45,6000,600,179,10400.0,13100.0
+443,Sdmo R110 Skid-Mounted Generator Set,energy,,15889,4750,475,150,8700.0,11300.0
+444,Sdmo R220 Skid-Mounted Generator Set,energy,,11735,6000,600,179,10400.0,13100.0
+445,2022 Brino GX114K 110 kVA Skid-Mounted Generator Set,energy,2022,,6250,625,187,10800.0,13500.0
+446,2024 JCB G60RS 58 kVA Skid-Mounted Generator Set (Inoperable),energy,2024,,5250,525,157,9400.0,12000.0
+447,R44 44 kVA Skid-Mounted Generator Set,energy,,40265,1500,150,150,4400.0,6800.0
+448,Stephill SSD6000 6 kVA Mobile Generator Set,energy,,4191,750,75,150,3500.0,5800.0
+449,2021 MHM MGTP 6000 SS-Y 6 kVA Generator Set,energy,2021,,1000,100,150,3800.0,6100.0
+450,MHM LWA89 Mobile Generator Set,energy,,3972,250,25,150,2800.0,5100.0
+451,Skid-Mounted Battery Energy Storage System,energy,,,5250,525,157,9400.0,12000.0
+452,Skid-Mounted Battery Energy Storage System,energy,,,5250,525,157,9400.0,12000.0
+453,Quantity of (2) Belle G3401S Mobile Generator Set,energy,,,400,40,150,3000.0,5300.0
+454,Quantity of (2) Belle G3401S Generator Set,energy,,,425,42,150,3000.0,5300.0
+455,Quantity of (2) Belle G3401S Mobile Generator Set,energy,,,425,42,150,3000.0,5300.0
+456,Quantity of (2) Belle G3401S Mobile Generator Set,energy,,,425,42,150,3000.0,5300.0
+457,Quantity of (2) Stephill Generator Set,energy,,,190,19,150,2700.0,5000.0
+458,Quantity of (2) Belle G3401S Mobile Generator Set,energy,,,325,32,150,2900.0,5200.0
+459,Quantity of (2) Belle G3401S Skid-Mounted Generator Set,energy,,,375,38,150,3000.0,5300.0
+460,Generator Set,energy,,,80,8,150,2600.0,4900.0
+461,Rato 2 kVA Mobile Generator Set,energy,,,90,9,150,2600.0,4900.0
+462,Quantity of (2) Portable Gen Set,energy,,,65,6,150,2500.0,4800.0
+463,Quantity of (2) Belle G5001WS Generator Set,energy,,,550,55,150,3200.0,5500.0
+464,Quantity of (2) Belle G5001WS Generator Set,energy,,,700,70,150,3400.0,5700.0
+465,Quantity of (2) Belle G5001WS Mobile Generator Set,energy,,,850,85,150,3600.0,5900.0
+480,2022 Ingenium SX10/15 10 kVA / 15 kWh Battery Energy Storage System (Unused),energy,2022,,4000,400,150,7700.0,10300.0
+481,2022 Ingenium SX10/15 10 kVA / 15 kWh Battery Energy Storage System (Unused),energy,2022,,4000,400,150,7700.0,10300.0
+482,2022 Ingenium SX10/15 10 kVA / 15 kWh Battery Energy Storage System (Unused),energy,2022,,5250,525,157,9400.0,12000.0
+483,2022 Ingenium SX10/15 10 kVA / 15 kWh Battery Energy Storage System (Unused),energy,2022,,5500,550,164,9700.0,12400.0
+750,2022 JCB HM26 Hydraulic Breaker,breakers,2022,,80,8,150,1400.0,2600.0
+933,2026 AORLES ALS1550B Hydraulic Breaker (Unused),breakers,2026,,2300,230,150,4300.0,5700.0
+934,2026 AORLES ALS1400B Hydraulic Breaker (Unused),breakers,2026,,1800,180,150,3600.0,5000.0
+935,2026 AORLES ALS1400B Hydraulic Breaker (Unused),breakers,2026,,1900,190,150,3800.0,5100.0
+936,2026 HW Titan Series HBT140S Hydraulic Breaker (Unused),breakers,2026,,2100,210,150,4000.0,5400.0
+937,2026 AORLES ALS1000B Hydraulic Breaker (Unused),breakers,2026,,1400,140,150,3100.0,4400.0
+938,2026 AORLES ALS1000B Hydraulic Breaker (Unused),breakers,2026,,1600,160,150,3400.0,4700.0
+939,2026 AORLES ALS1000B Hydraulic Breaker (Unused),breakers,2026,,1500,150,150,3200.0,4600.0
+940,2026 AORLES ALS1000B Hydraulic Breaker (Unused),breakers,2026,,1500,150,150,3200.0,4600.0
+941,2026 AORLES ALS450B Hydraulic Breaker (Unused),breakers,2026,,950,95,150,2500.0,3800.0
+942,2026 AORLES ALS450B Hydraulic Breaker (Unused),breakers,2026,,700,70,150,2200.0,3500.0
+943,2026 AORLES ALS530B Hydraulic Breaker (Unused),breakers,2026,,900,90,150,2500.0,3700.0
+944,2026 AORLES ALS530B Hydraulic Breaker (Unused),breakers,2026,,800,80,150,2300.0,3600.0
+945,2026 AORLES ALS680B Hydraulic Breaker (Unused),breakers,2026,,800,80,150,2300.0,3600.0
+946,2026 AORLES ALS680B Hydraulic Breaker (Unused),breakers,2026,,950,95,150,2500.0,3800.0
+947,2026 AORLES ALS750B Hydraulic Breaker (Unused),breakers,2026,,750,75,150,2300.0,3500.0
+948,2026 AORLES ALS750B Hydraulic Breaker (Unused),breakers,2026,,900,90,150,2500.0,3700.0
+949,2026 AORLES ALS680BH Backhoe Hydraulic Breaker (Unused),breakers,2026,,1400,140,150,3100.0,4400.0
+950,2026 AORLES ALS680BH Backhoe Hydraulic Breaker (Unused),breakers,2026,,1300,130,150,3000.0,4300.0
+951,2019 Prodem PRB300 Hydraulic Breaker,breakers,2019,,3750,375,150,6200.0,7700.0
+952,Prodem PRB300 Hydraulic Breaker,breakers,,,4250,425,150,6900.0,8400.0
+953,Indeco HP2500 Hydraulic Breaker,breakers,,,2100,210,150,4000.0,5400.0
+954,Hydraulic Breaker,breakers,,,325,32,150,1700.0,2900.0
+955,Hydraulic Breaker,breakers,,,850,85,150,2400.0,3700.0
+956,Hydraulic Breaker,breakers,,,275,28,150,1600.0,2900.0
+957,2018 Epiroc SB152 1100 mm Hydraulic Breaker,breakers,2018,,1800,180,150,3600.0,5000.0
+958,2019 Epiroc SB152 1150 mm Hydraulic Breaker,breakers,2019,,1800,180,150,3600.0,5000.0
+959,Anross 1140 mm Hydraulic Breaker,breakers,,,1000,100,150,2600.0,3900.0
+960,Soosan 2000 mm Hydraulic Breaker,breakers,,,1500,150,150,3200.0,4600.0
+961,Hydraulic Breaker,breakers,,,550,55,150,2000.0,3300.0
+1010,2023 Atlas GRP-OP-800 Rotating 800L Excavator Grapple (Unused),attachments,2023,,8750,703,262,12700.0,14500.0
+1011,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,10000,732,299,14300.0,16200.0
+1012,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,10500,744,314,15000.0,16900.0
+1013,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,11500,768,344,16200.0,18200.0
+1014,2023 Atlas E200-1000 Rotating Excavator Grapple (Unused),attachments,2023,,6250,625,187,9600.0,11200.0
+1015,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,9500,720,284,13700.0,15500.0
+1016,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,8250,691,247,12100.0,13900.0
+1017,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,13000,803,389,18100.0,20200.0
+1018,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,10500,744,314,15000.0,16900.0
+1019,2023 Atlas E771-4 Rotating 800L Excavator Grapple (Unused),attachments,2023,,10500,744,314,15000.0,16900.0
+1020,2022 Atlas E94.51-4 Rotating 1100L Excavator Grapple (Unused),attachments,2022,,13500,814,404,18700.0,20800.0
+1021,2026 AORLES EOG50 Excavator Grapple (Unused),attachments,2026,,1800,180,150,3600.0,5000.0
+1022,2026 HW HWHG60 Excavator Grapple (Unused),attachments,2026,,1600,160,150,3400.0,4700.0
+1026,2026 AORLES DP80 Demolition Pulverizer (Unused),attachments,2026,,2750,275,150,4900.0,6300.0
+1027,2026 HW Titan Series HWT150RT Demolition Shear (Unused),attachments,2026,,4000,400,150,6500.0,8000.0
+1028,2026 HW Titan Series HWT280RT Demolition Shear (Unused),attachments,2026,,5500,550,164,8500.0,10100.0
+1029,2026 HW Titan Series HWT80RT Demolition Shear (Unused),attachments,2026,,4250,425,150,6900.0,8400.0
+1031,2026 HW Titan Series HWTDP150 Demolition Pulverizer (Unused),attachments,2026,,4000,400,150,6500.0,8000.0
+1032,2026 HW Titan Series HWTDP280 Demolition Pulverizer (Unused),attachments,2026,,3250,325,150,5600.0,7000.0
+1045,RP16 Rotating Demolition Pulverizer,attachments,,,650,65,150,2100.0,3400.0
+1046,Rotating Demolition Pulverizer,attachments,,,3750,375,150,6200.0,7700.0
+1100,2026 HW BKT32034CRUSH 860 mm Excavator Crusher Bucket (Unused),attachments,2026,,3250,325,150,5600.0,7000.0
+1101,2026 HW BKT32034CRUSH-B 900 mm Excavator Crusher Bucket (Unused),attachments,2026,,6750,656,202,10200.0,11900.0
+1102,900 mm Excavator Crusher Bucket,attachments,,,12500,791,374,17500.0,19500.0

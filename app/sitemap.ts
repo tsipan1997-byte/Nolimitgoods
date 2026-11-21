@@ -11,6 +11,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: base, lastModified: now, changeFrequency: 'weekly', priority: 1 },
     { url: `${base}/catalog`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${base}/aukciony`, lastModified: now, changeFrequency: 'daily', priority: 0.8 },
+    { url: `${base}/rezultaty-aukcioniv`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
     ...LANDINGS.map((l) => ({ url: `${base}/${l.slug}`, lastModified: now, changeFrequency: 'daily' as const, priority: 0.8 })),
     { url: `${base}/spectehnika`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },
     ...MACHINE_BRANDS.map((b) => ({ url: `${base}/spectehnika/${b.slug}`, lastModified: now, changeFrequency: 'weekly' as const, priority: 0.8 })),

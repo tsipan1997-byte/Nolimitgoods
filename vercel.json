@@ -35,6 +35,10 @@
     {
       "path": "/api/cron/telegram-post?slot=14",
       "schedule": "0 14 * * *"
+    },
+    {
+      "path": "/api/cron/telegram-post?kind=summary&auction=rb-nov&only=2026-11-21",
+      "schedule": "0 16 * * *"
     }
   ],
   "headers": [

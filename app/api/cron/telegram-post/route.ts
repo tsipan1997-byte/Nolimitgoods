@@ -9,7 +9,7 @@ import { NextResponse } from 'next/server';
 import { list, put } from '@vercel/blob';
 import { AUCTION_LOTS, type AuctionLot } from '@/lib/auction-lots';
 import { allResults } from '@/lib/auction-results';
-import { lotPost, soldPost, type TgPost } from '@/lib/telegram-post';
+import { lotPost, soldPost, summaryPost, type TgPost } from '@/lib/telegram-post';
 
 // Крон запускає пост щогодини у робочий час (vercel.json: 07–14 UTC = 9:00–16:00 за Києвом), по 1 лоту — 8 лотів на день. Вручну можна ?n=1..4
 const SOLD_PER_RUN = 2;
@@ -70,6 +70,27 @@ function pickLots(done: Set<string>, now: number, slot: number, limit = 1): Auct
   return out;
 }
 
+// Зведений пост «за скільки пішла техніка» (?kind=summary&auction=rb-nov). Лоти — вручну.
+const SUMMARY_PICKS: Record<string, string[]> = {
+  'rb-nov': ['160', '172', '170', '175', '164', '188', '116', '64', '90', '72', '264', '442'],
+};
+
+async function sendText(token: string, chat: string, p: { text: string; url: string; button: string }) {
+  const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chat,
+      text: p.text.slice(0, 4096),
+      parse_mode: 'HTML',
+      link_preview_options: { is_disabled: true },
+      reply_markup: { inline_keyboard: [[{ text: p.button, url: p.url }]] },
+    }),
+  });
+  const j = await res.json().catch(() => ({}));
+  if (!res.ok || !j.ok) throw new Error(j.description || `HTTP ${res.status}`);
+}
+
 async function send(token: string, chat: string, p: TgPost) {
   const res = await fetch(`https://api.telegram.org/bot${token}/sendPhoto`, {
     method: 'POST',
@@ -103,6 +124,22 @@ export async function GET(req: Request) {
 
   const now = Date.now();
   const done = await postedKeys();
+
+  if (params.get('kind') === 'summary') {
+    const auction = params.get('auction') || 'rb-nov';
+    const p = summaryPost(allResults(now), auction, SUMMARY_PICKS[auction] || []);
+    if (dry) return NextResponse.json({ dry: true, post: p });
+    if (done.has(marker(p.key))) return NextResponse.json({ skipped: `already posted ${p.key}` });
+    try {
+      await sendText(token!, chat!, p);
+      await put(marker(p.key), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
+      console.log('[tg-post]', JSON.stringify({ sent: [p.key] }));
+      return NextResponse.json({ sent: [p.key] });
+    } catch (e) {
+      console.log('[tg-post]', JSON.stringify({ failed: [`${p.key}: ${(e as Error).message}`] }));
+      return NextResponse.json({ failed: [`${p.key}: ${(e as Error).message}`] }, { status: 500 });
+    }
+  }
   const posts: TgPost[] = [
     ...pickLots(done, now, Number(params.get('slot')) || new Date(now).getUTCHours(), n).map(lotPost),
     ...allResults(now)

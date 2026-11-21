@@ -90,3 +90,41 @@ export function soldPost(r: AuctionResult) {
 }
 
 export type TgPost = ReturnType<typeof lotPost>;
+
+// Зведений пост «за скільки пішла техніка + ціна під ключ в Україні» по одному аукціону.
+// picks — номери лотів у порядку показу (вибрані вручну: популярні моделі, різні категорії).
+const SUMMARY_GROUPS: [string, string[]][] = [
+  ['🚜 <b>Екскаватори</b>', ['excavators']],
+  ['🏗 <b>Телескопічні навантажувачі</b>', ['telehandlers']],
+  ['🌾 <b>Трактори</b>', ['agro']],
+  ['⚡ <b>Генератори</b>', ['energy']],
+];
+
+export function summaryPost(results: AuctionResult[], auction: string, picks: string[]) {
+  const a = AUCTION_BY_ID[auction];
+  const byLot = new Map(results.filter((r) => r.auction === auction).map((r) => [r.lot, r]));
+  const chosen = picks.map((p) => byLot.get(p)).filter(Boolean) as AuctionResult[];
+  const total = results.filter((r) => r.auction === auction).length;
+  const line = (r: AuctionResult) => {
+    const name = r.original.replace(/^(Unused\s+)?\d{4}\s+/i, '').replace(/\s+(Tracked Excavator|Telehandler|4WD Tractor|Generator Set|Backhoe Loader)$/i, '');
+    const facts = [r.year, r.hours && `${r.hours.toLocaleString('uk-UA').replace(/ /g, ' ')} м/г`].filter(Boolean).join(', ');
+    return `• ${esc(name)}${facts ? ` (${esc(String(facts))})` : ''} — <b>£${r.bid.toLocaleString('uk-UA').replace(/\u00a0/g, ' ')}</b> → під ключ ${esc(turnkeyText(turnkeyGbp(r, r.bid)))}`;
+  };
+  const blocks = SUMMARY_GROUPS.map(([head, cats]) => {
+    const rs = chosen.filter((r) => cats.includes(r.category));
+    return rs.length ? [head, ...rs.map(line)].join('\n') : '';
+  }).filter(Boolean);
+  const text = [
+    `📊 <b>За скільки пішла техніка: ${esc(a?.house ?? '')}, ${esc(a?.dates ?? '')}</b>`,
+    'Ціна молотка на аукціоні в Англії → орієнтовна ціна під ключ в Україні (збір аукціону, наша комісія, документи, доставка, мито і ПДВ 20% — усе включено).',
+    '',
+    blocks.join('\n\n'),
+    '',
+    `Аукціон без резервних цін — усе продано за ці ставки. Повний список ${total} результатів — за кнопкою.`,
+    'Хочете таку техніку? Назвіть модель і ліміт — поставимо на найближчому аукціоні. Не виграли — повертаємо передоплату.',
+    '',
+    phones(),
+    '#результатиаукціонів #аукціонианглії #спецтехніка',
+  ].join('\n');
+  return { key: `summary:${auction}`, text, url: utm('/rezultaty-aukcioniv', `summary-${auction}`), button: 'Усі результати' };
+}

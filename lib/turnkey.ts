@@ -2,7 +2,7 @@
 // + доставка до України + розмитнення (мито, ПДВ 20%) + брокер. Це орієнтир для клієнта, а не оферта:
 // точний розрахунок робимо під конкретний лот перед торгами.
 
-import { AUCTION_META, FEE, rbFee, type AuctionLot } from './auction-lots';
+import { AUCTION_META, FEE, ourFee, rbFee, type AuctionLot } from './auction-lots';
 
 export const GBP_USD = 1.3; // орієнтовний курс для постів, округлюємо результат
 
@@ -52,7 +52,7 @@ function premium(auction: string, hammer: number): Range {
 
 // Ціна під ключ в Україні, £ (від–до)
 export function turnkeyGbp(l: Pick<AuctionLot, 'auction' | 'category' | 'title' | 'original'>, hammer: number): Range {
-  const fee = Math.max(FEE.minGbp, (hammer * (hammer > FEE.threshold ? FEE.highPct : FEE.lowPct)) / 100);
+  const fee = ourFee(hammer);
   const [p0, p1] = premium(l.auction, hammer);
   const [t0, t1] = transportGbp(l);
   const { duty, excise } = customs(l);

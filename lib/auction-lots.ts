@@ -315,13 +315,26 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
  }
 ];
 
-// Наша комісія: 2,99% якщо ціна лота до £40 000 (мінімум £150), 1,99% якщо дорожче
-export const FEE = { threshold: 40000, lowPct: 2.99, highPct: 1.99, minGbp: 150 };
+// Наша комісія: 2,99% якщо ціна лота до £40 000, 1,99% якщо дорожче.
+// Мінімум за лот — 3 сходинки: лот до £5 000 → £150; до £10 000 → £299; від £10 000 → £799.
+// Береться більше з двох: відсоток або мінімум.
+export const FEE = {
+  threshold: 40000,
+  lowPct: 2.99,
+  highPct: 1.99,
+  minGbp: 150, // найменший мінімум (для коротких підписів «від £150»)
+};
 // Відсоток українською: 2.99 → «2,99»
 export const pct = (n: number) => String(n).replace('.', ',');
+// Мінімальна комісія для лота: до £5 000 включно — £150, до £10 000 — £299, від £10 000 — £799
+export function minFee(hammerGbp: number) {
+  if (hammerGbp <= 5000) return 150;
+  if (hammerGbp < 10000) return 299;
+  return 799;
+}
 export function ourFee(hammerGbp: number) {
   const pct = hammerGbp > FEE.threshold ? FEE.highPct : FEE.lowPct;
-  return Math.max(FEE.minGbp, Math.round((hammerGbp * pct) / 100));
+  return Math.max(minFee(hammerGbp), Math.round((hammerGbp * pct) / 100));
 }
 // Комісія Ritchie Bros для покупця у Британії: 10% до £6 500, далі £650 + 2.35% від суми понад £6 500
 export function rbFee(hammerGbp: number) {

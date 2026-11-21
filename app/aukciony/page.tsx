@@ -26,7 +26,7 @@ const FAQ: [string, string][] = [
   ],
   [
     'Скільки коштує ваша послуга?',
-    `${pct(FEE.lowPct)}% від ціни лота, якщо лот коштує до ${gbp(FEE.threshold)} (мінімум ${gbp(FEE.minGbp)}), і ${pct(FEE.highPct)}% — якщо дорожче. До цього додається комісія самого аукціону, експортні документи та доставка. Усе фіксуємо в інвойсі до оплати.`,
+    `${pct(FEE.lowPct)}% від ціни лота, якщо лот коштує до ${gbp(FEE.threshold)}, і ${pct(FEE.highPct)}% — якщо дорожче. Мінімальна комісія за лот: £150 — якщо лот до £5 000, £299 — до £10 000, £799 — від £10 000. Береться більша сума: відсоток або мінімум. До цього додається комісія самого аукціону, експортні документи та доставка. Усе фіксуємо в інвойсі до оплати.`,
   ],
   [
     'Що буде, якщо лот не виграємо?',
@@ -378,11 +378,20 @@ export default function AuctionsPage() {
             <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
               <div className="rounded-xl bg-slate-50 p-4">
                 <div className="font-black text-lg">{pct(FEE.lowPct)}%</div>
-                <div className="text-slate-600">наша послуга, якщо лот до {gbp(FEE.threshold)} (мінімум {gbp(FEE.minGbp)})</div>
+                <div className="text-slate-600">наша послуга, якщо лот до {gbp(FEE.threshold)}</div>
               </div>
               <div className="rounded-xl bg-slate-50 p-4">
                 <div className="font-black text-lg">{pct(FEE.highPct)}%</div>
                 <div className="text-slate-600">наша послуга, якщо лот дорожче {gbp(FEE.threshold)}</div>
+              </div>
+              <div className="rounded-xl bg-slate-50 p-4 md:col-span-3">
+                <div className="font-bold">Мінімальна комісія за лот</div>
+                <div className="mt-1 grid grid-cols-3 gap-2 text-slate-600">
+                  <div><b className="text-slate-900">£150</b><br />лот до £5 000</div>
+                  <div><b className="text-slate-900">£299</b><br />лот £5 000–10 000</div>
+                  <div><b className="text-slate-900">£799</b><br />лот від £10 000</div>
+                </div>
+                <div className="mt-2 text-xs text-slate-500">Береться більша сума: відсоток або мінімум.</div>
               </div>
               <div className="rounded-xl bg-slate-50 p-4">
                 <div className="font-black text-lg">+ аукціон і доставка</div>

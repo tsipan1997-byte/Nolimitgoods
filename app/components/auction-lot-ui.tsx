@@ -10,7 +10,7 @@ import {
   CheckCircle2, Sparkles, Send, Radio,
 } from 'lucide-react';
 import { CONTACT } from '@/lib/site-config';
-import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, rbFee, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
+import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
 import { lotPhotoUrl } from '@/lib/lot-photos';
@@ -320,7 +320,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
                   <b>{isRb ? gbp(rbFee(bid)) : 'за тарифом аукціону'}</b>
                 </div>
                 <div className="flex justify-between">
-                  <span>Наша послуга ({pct(bid > FEE.threshold ? FEE.highPct : FEE.lowPct)}%{ourFee(bid) === FEE.minGbp ? ', мінімум' : ''})</span>
+                  <span>Наша послуга ({pct(bid > FEE.threshold ? FEE.highPct : FEE.lowPct)}%{ourFee(bid) === minFee(bid) ? `, мінімум для лота ${bid <= 5000 ? 'до £5 000' : bid < 10000 ? 'до £10 000' : 'від £10 000'}` : ''})</span>
                   <b>{gbp(ourFee(bid))}</b>
                 </div>
                 <div className="flex justify-between"><span>Експортні документи</span><b>~{gbp(AUCTION_META.exportDocsGbp)}</b></div>

@@ -138,11 +138,14 @@ export default function AuctionsTeaser() {
             <div className="mt-3 grid grid-cols-2 gap-3">
               <div>
                 <div className="font-mono text-2xl font-bold text-slate-900">{pct(FEE.lowPct)}%</div>
-                <div className="text-xs text-slate-500">лот до £{FEE.threshold.toLocaleString('en-GB')} (мін. £{FEE.minGbp})</div>
+                <div className="text-xs text-slate-500">лот до £{FEE.threshold.toLocaleString('en-GB')}</div>
               </div>
               <div>
                 <div className="font-mono text-2xl font-bold text-slate-900">{pct(FEE.highPct)}%</div>
                 <div className="text-xs text-slate-500">лот дорожче £{FEE.threshold.toLocaleString('en-GB')}</div>
+              </div>
+              <div className="col-span-2 text-xs text-slate-500">
+                Мінімум за лот: <b className="text-slate-900">£150</b> до £5 000 · <b className="text-slate-900">£299</b> до £10 000 · <b className="text-slate-900">£799</b> від £10 000
               </div>
             </div>
             <ul className="mt-3 space-y-1.5 text-sm text-slate-600">

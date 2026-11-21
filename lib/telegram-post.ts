@@ -61,7 +61,7 @@ export function lotPost(l: AuctionLot) {
     '',
     `📍 ${esc(a?.house ?? '')}, ${esc(l.location)} — ${when}`,
     esc(priceLine(l)),
-    `💷 Ставимо за ваш ліміт. Комісія ${pct(FEE.highPct)}–${pct(FEE.lowPct)}%, не виграли — повертаємо передоплату. Точну ціну під ключ рахуємо до торгів.`,
+    `💷 Ставимо за ваш ліміт. Комісія ${pct(FEE.highPct)}–${pct(FEE.lowPct)}% (мінімум £150 / £299 / £799 залежно від ціни лота), не виграли — повертаємо передоплату. Точну ціну під ключ рахуємо до торгів.`,
     '',
     phones(),
     HASHTAGS[l.category] ? `${HASHTAGS[l.category]} #аукціонианглії` : '#аукціонианглії',

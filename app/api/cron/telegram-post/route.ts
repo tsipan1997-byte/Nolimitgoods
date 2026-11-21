@@ -12,7 +12,7 @@ import { allResults } from '@/lib/auction-results';
 import { lotPost, soldPost, summaryPost, type TgPost } from '@/lib/telegram-post';
 
 // Крон запускає пост щогодини у робочий час (vercel.json: 07–14 UTC = 9:00–16:00 за Києвом), по 1 лоту — 8 лотів на день. Вручну можна ?n=1..4
-const SOLD_PER_RUN = 2;
+const SOLD_SLOTS = [10, 13]; // UTC
 const marker = (key: string) => `state/tg/${key.replace(/[^a-zA-Z0-9-]/g, '_')}`;
 
 async function postedKeys(): Promise<Set<string>> {
@@ -140,33 +140,53 @@ export async function GET(req: Request) {
       return NextResponse.json({ failed: [`${p.key}: ${(e as Error).message}`] }, { status: 500 });
     }
   }
-  const posts: TgPost[] = [
-    ...pickLots(done, now, Number(params.get('slot')) || new Date(now).getUTCHours(), n).map(lotPost),
-    ...allResults(now)
-      .filter((r) => r.img && now - r.closedAt < 7 * 86_400_000)
-      .map(soldPost)
-      .filter((p) => !done.has(marker(p.key)))
-      .slice(0, SOLD_PER_RUN),
-  ];
-
-  if (dry) return NextResponse.json({ dry: true, count: posts.length, posts });
-
+  const slot = Number(params.get('slot')) || new Date(now).getUTCHours();
+  const stamp = () => new Date().toISOString();
+  const mark = (k: string) => put(marker(k), stamp(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
   const sent: string[] = [];
   const failed: string[] = [];
-  for (const p of posts) {
+
+  // Лоти: беремо кілька кандидатів; якщо Telegram не бере фото — пробуємо оригінальне фото, далі наступний лот
+  const cands = pickLots(done, now, slot, n + 3);
+  if (dry) return NextResponse.json({ dry: true, slot, lots: cands.map((l) => l.original) });
+  let okLots = 0;
+  for (const l of cands) {
+    if (okLots >= n) break;
+    const p = lotPost(l);
     try {
-      await send(token!, chat!, p);
-      await put(marker(p.key), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
-      if (p.title) {
-        await put(marker(`title:${p.title}`), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
-        await put(marker(`model:${modelKey(p.title)}`), new Date().toISOString(), { access: 'public', addRandomSuffix: false, contentType: 'text/plain' });
+      try { await send(token!, chat!, p); }
+      catch (e) {
+        if (!/HTTP URL|wrong file|IMAGE_PROCESS|failed to get/i.test((e as Error).message) || !l.img || l.img === p.photo) throw e;
+        await send(token!, chat!, { ...p, photo: l.img });
       }
-      sent.push(p.key);
-      await new Promise((r) => setTimeout(r, 3000)); // не спамимо: пауза між постами
+      await mark(p.key);
+      if (p.title) { await mark(`title:${p.title}`); await mark(`model:${modelKey(p.title)}`); }
+      sent.push(p.key); okLots++;
+      await new Promise((r) => setTimeout(r, 3000));
     } catch (e) {
       failed.push(`${p.key}: ${(e as Error).message}`);
+      await mark(p.key); // битий лот більше не пробуємо
     }
   }
-  console.log('[tg-post]', JSON.stringify({ n, picked: posts.length, sent, failed }));
+
+  // «Продано за £X»: лише 2 на день (о 12:00 і 15:00 за Києвом), по одному, без гідромолотів/навісного і без повторів моделі
+  if (SOLD_SLOTS.includes(slot)) {
+    const r = allResults(now)
+      .filter((r) => r.img && now - r.closedAt < 7 * 86_400_000 && !['breakers', 'attachments'].includes(r.category))
+      .sort((a, b) => ALL_CATS.indexOf(a.category) - ALL_CATS.indexOf(b.category))
+      .find((r) => !done.has(marker(soldPost(r).key)) && !done.has(marker(`soldmodel:${modelKey(r.original)}`)));
+    if (r) {
+      const p = soldPost(r);
+      try {
+        await send(token!, chat!, p);
+        await mark(p.key); await mark(`soldmodel:${modelKey(r.original)}`);
+        sent.push(p.key);
+      } catch (e) {
+        failed.push(`${p.key}: ${(e as Error).message}`);
+        await mark(p.key);
+      }
+    }
+  }
+  console.log('[tg-post]', JSON.stringify({ n, slot, sent, failed }));
   return NextResponse.json({ sent, failed });
 }

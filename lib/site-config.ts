@@ -6,7 +6,7 @@ export const SOCIAL = {
   instagramHandle: '@nolimit_goods',
   // Telegram-канал: щодня нові лоти з аукціонів Англії (автопостинг з сайту)
   telegramChannel: 'https://t.me/nolimitgoods',
-  telegramChannelHandle: '@nolimitgoods',
+  telegramChannelHandle: 't.me/nolimitgoods',
   // Вставте посилання на сторінку Facebook — і кнопка зʼявиться автоматично.
   // Поки порожньо, кнопка Facebook на сайті не показується.
   facebook: 'https://www.facebook.com/profile.php?id=61595405257258',

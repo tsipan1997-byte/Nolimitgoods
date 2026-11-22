@@ -27,7 +27,9 @@ export const CONTACT = {
   waDisplay: PHONE_UA || PHONE_UK,
   whatsapp: `https://wa.me/${WA_NUMBER}`,
   viber: `viber://chat?number=%2B${WA_NUMBER}`,
-  telegram: `https://t.me/+${digits(PHONE_UK)}`,
+  // Кнопки «Telegram» ведуть у канал: посилання за номером (t.me/+44...) не відкривається,
+  // якщо в налаштуваннях Telegram заборонено пошук за номером.
+  telegram: 'https://t.me/nolimitgoods',
   email: 'sales@nolimitgoods.com',
   personalEmail: 'ivan.tsipan@nolimitgoods.com',
   personName: 'Іван Ціпан',

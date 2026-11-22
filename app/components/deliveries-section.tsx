@@ -69,10 +69,10 @@ export default function DeliveriesSection() {
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 mb-0.5">
-                    {isUk ? 'Оригінальні пломби OEM' : 'OEM Factory Seals'}
+                    {isUk ? 'Купуємо техніку на аукціонах Англії' : 'We bid at UK auctions for you'}
                   </h4>
                   <p className="text-xs text-slate-500">
-                    {isUk ? 'Заводські палети P535114, P535115' : 'Verified batch and part numbers'}
+                    {isUk ? 'Ritchie Bros, Euro Auctions, Cheffins' : 'Ritchie Bros, Euro Auctions, Cheffins'}
                   </p>
                 </div>
               </div>
@@ -81,10 +81,10 @@ export default function DeliveriesSection() {
                 <Truck className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 mb-0.5">
-                    {isUk ? 'Палетна та експрес-доставка' : 'Pallet Freight Corridor'}
+                    {isUk ? 'Доставка під ключ в Україну' : 'Turnkey delivery to Ukraine'}
                   </h4>
                   <p className="text-xs text-slate-500">
-                    {isUk ? 'Щотижневі прямі рейси UK ➔ UA' : 'Weekly UK ➔ UA Freight'}
+                    {isUk ? 'Від аукціону до вашого двору' : 'From the auction yard to your door'}
                   </p>
                 </div>
               </div>

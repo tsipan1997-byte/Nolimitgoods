@@ -24,7 +24,7 @@ import FloatingContact from '../components/floating-contact';
 import { CONTACT } from '@/lib/site-config';
 import { MACHINE_BRANDS, MACHINE_GROUPS, type MachineBrand, type MachineGroupId } from '@/lib/spectehnika';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
-import { getFbc, trackLead } from '@/lib/meta-client';
+import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
 
 const GROUP_ICON: Record<MachineGroupId, React.ComponentType<{ className?: string }>> = {
   construction: HardHat,
@@ -67,7 +67,7 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
     if (part.trim()) {
       fd.append('items', JSON.stringify([{ partNumber: part.trim(), machineModel: machine.trim(), quantity: 1 }]));
     }
-    fd.append('source', brand ? `Спецтехніка — ${brand.name}` : 'Спецтехніка');
+    fd.append('source', `${brand ? `Спецтехніка — ${brand.name}` : 'Спецтехніка'} ${trafficTag()}`.trim());
     fd.append('page', brand ? `/spectehnika/${brand.slug}` : '/spectehnika');
     fd.append('website_hp', hp);
     try {

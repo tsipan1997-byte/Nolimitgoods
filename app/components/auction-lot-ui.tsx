@@ -15,7 +15,7 @@ import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
 import { lotPhotoUrl } from '@/lib/lot-photos';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
-import { getFbc, trackLead } from '@/lib/meta-client';
+import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
 
 export const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
   energy: Zap,
@@ -230,7 +230,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
     fd.append('contact', contact.trim());
     fd.append('comment', lines.join('\n'));
     fd.append('partType', 'Викуп з аукціону');
-    fd.append('source', source);
+    fd.append('source', `${source} ${trafficTag()}`.trim());
     fd.append('page', page);
     fd.append('website_hp', hp);
     if (lot) {

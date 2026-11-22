@@ -6,7 +6,7 @@ import { useLanguage } from '@/lib/language-context';
 import type { CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, loadRates, shippingGbp, type Rates } from '@/lib/pricing';
 import { CONTACT } from '@/lib/site-config';
-import { getFbc, trackLead } from '@/lib/meta-client';
+import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
 
 // ============================================================================
 // КОШИК ЗАПИТУ (B2B): клієнт додає деталі з каталогу, лишає контакт —
@@ -113,7 +113,7 @@ export default function QuoteCart() {
         .filter(Boolean)
         .join('\n')
     );
-    fd.append('source', 'catalog-cart');
+    fd.append('source', `catalog-cart ${trafficTag()}`.trim());
     fd.append('page', window.location.pathname);
     fd.append(
       'items',

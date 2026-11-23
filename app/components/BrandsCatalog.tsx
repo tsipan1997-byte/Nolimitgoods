@@ -878,7 +878,7 @@ const AUCTION_PROMOS = [
   { href: '/traktory-z-anglii', titleUk: 'Трактори з британських ферм', titleEn: 'Tractors from UK farms', noteUk: 'John Deere, Massey, Claas', pick: (o: string) => /Tractor/.test(o) && /^20(1|2)/.test(o) },
   { href: '/jcb-3cx-z-anglii', titleUk: 'JCB 3CX з аукціонів', titleEn: 'JCB 3CX from auctions', noteUk: 'екскаватори-навантажувачі', pick: (o: string) => /3CX/.test(o) },
   { href: '/teleskopichni-navantazhuvachi-z-anglii', titleUk: 'Телескопи JCB, Manitou, Merlo', titleEn: 'Telehandlers', noteUk: 'з прокату Британії', pick: (o: string) => /Telehandler/.test(o) },
-  { href: '/silhosptekhnika-z-anglii', titleUk: 'Сільгосптехніка з Англії', titleEn: 'Farm machinery', noteUk: 'Cheffins, Ritchie Bros', pick: (o: string) => /Harvester|Sprayer|Drill|Tractor/.test(o) && /^202/.test(o) },
+  { href: '/silhosptekhnika-z-anglii', titleUk: 'Сільгосптехніка з Англії', titleEn: 'Farm machinery', noteUk: 'Cheffins, Brightwells', pick: (o: string) => /Harvester|Sprayer|Drill|Tractor/.test(o) && /^202/.test(o) },
   { href: '/ekskavatory-z-anglii', titleUk: 'Екскаватори 13–50 т', titleEn: 'Excavators', noteUk: 'Hitachi, Volvo, Komatsu', pick: (o: string) => /Excavator/.test(o) },
 ].map((p) => ({ ...p, img: AUCTION_LOTS.find((l) => l.img && p.pick(l.original))?.img }));
 

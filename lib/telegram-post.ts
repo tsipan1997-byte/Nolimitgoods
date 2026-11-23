@@ -8,6 +8,7 @@ import { CONTACT } from './site-config';
 import { lotPhotoUrl } from './lot-photos';
 import { lotPrice } from './auction-prices';
 import { markupText, turnkeyGbp, turnkeyText } from './turnkey';
+import { publicPlace } from './auction-public';
 
 const SITE = 'https://www.nolimitgoods.com';
 const AUCTION_BY_ID = Object.fromEntries(AUCTIONS.map((a) => [a.id, a]));
@@ -59,7 +60,7 @@ export function lotPost(l: AuctionLot) {
     facts.length ? esc(facts.join(' · ')) : '',
     l.specs ? esc(l.specs.slice(0, 220)) : '',
     '',
-    `📍 ${esc(a?.house ?? '')}, ${esc(l.location)} — ${when}`,
+    `📍 ${esc(publicPlace(l.location))} — ${when}`,
     esc(priceLine(l)),
     `💷 Ставимо за ваш ліміт. Комісія ${pct(FEE.highPct)}–${pct(FEE.lowPct)}% (мінімум £150 / £299 / £799 залежно від ціни лота), не виграли — повертаємо передоплату. Точну ціну під ключ рахуємо до торгів.`,
     '',
@@ -78,7 +79,7 @@ export function soldPost(r: AuctionResult) {
     `✅ <b>Продано: ${esc(r.title)}</b>`,
     facts.length ? esc(facts.join(' · ')) : '',
     '',
-    `💷 Продано за <b>£${r.bid.toLocaleString('en-GB')}</b>${r.bids ? ` (${r.bids} ставок)` : ''} — ${esc(r.house)}, ${dayFmt.format(new Date(r.closedAt))}`,
+    `💷 Продано за <b>£${r.bid.toLocaleString('en-GB')}</b>${r.bids ? ` (${r.bids} ставок)` : ''} — торги ${dayFmt.format(new Date(r.closedAt))}`,
     esc(`💰 Така сама під ключ в Україні ${turnkeyText(turnkeyGbp(r, r.bid))}`),
     'Хочете таку саму техніку? Назвіть модель і ліміт — поставимо на найближчому аукціоні.',
     '',
@@ -116,7 +117,7 @@ export function summaryPost(results: AuctionResult[], auction: string, picks: st
     return rs.length ? [head, ...rs.map(line)].join('\n') : '';
   }).filter(Boolean);
   const text = [
-    `📊 <b>За скільки пішла техніка: ${esc(a?.house ?? '')}, ${esc(a?.dates ?? '')}</b>`,
+    `📊 <b>За скільки пішла техніка: аукціон в Англії, ${esc(a?.dates ?? '')}</b>`,
     'Ціна молотка на аукціоні в Англії → орієнтовна ціна під ключ в Україні (збір аукціону, наша комісія, документи, доставка, мито і ПДВ 20% — усе включено).',
     '',
     blocks.join('\n\n'),

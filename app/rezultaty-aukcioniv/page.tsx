@@ -162,7 +162,7 @@ export default async function ResultsPage() {
             {rs.map((r) => (
               <article key={r.auction + r.item} className="rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden flex flex-col">
                 <div className="relative aspect-[4/3] bg-slate-100">
-                  <LotPhoto auction={r.auction} item={r.item} src={r.img} alt={`${r.title} ${r.year ?? ''} — продано на аукціоні ${r.house}`} />
+                  <LotPhoto auction={r.auction} item={r.item} src={r.img} alt={`${r.title} ${r.year ?? ''} — продано на аукціоні в Англії`} />
                   <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[11px] font-bold">
                     {r.unreserved ? 'Продано' : 'Остання ставка'}
                   </span>
@@ -193,7 +193,7 @@ export default async function ResultsPage() {
                       );
                     })()}
                     <div className="text-[11px] text-slate-400 mt-0.5 inline-flex items-center gap-1">
-                      <Gavel className="w-3 h-3" /> {r.house}, {dayFmt.format(new Date(r.closedAt))}
+                      <Gavel className="w-3 h-3" /> Торги {dayFmt.format(new Date(r.closedAt))}
                     </div>
                   </div>
                 </div>

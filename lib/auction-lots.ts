@@ -147,46 +147,33 @@ export const AUCTIONS: AuctionInfo[] = [
  }
 ];
 
-export type CalendarItem = { date: string; house: string; title: string; place: string; lots: string; onSite: boolean; auction?: string };
+export type CalendarItem = { date: string; until: string; house: string; title: string; place: string; lots: string; onSite: boolean; auction?: string };
 
 // Найближчі аукціони техніки у Британії (місяць уперед)
 export const AUCTION_CALENDAR: CalendarItem[] = [
  {
-  "date": "18–19 лист.",
-  "house": "Ritchie Bros",
-  "title": "Будівельна техніка, генератори, навісне",
-  "place": "Мальтбі, Англія",
-  "lots": "1 241 лот",
-  "onSite": true,
-  "auction": "rb-nov"
- },
- {
-  "date": "19 лист.",
-  "house": "Manheim",
-  "title": "Щомісячний аукціон техніки",
-  "place": "Англія",
-  "lots": "",
-  "onSite": false
- },
- {
-  "date": "21 лист.",
-  "house": "Malcolm Harrison",
-  "title": "Розпродаж парку прокатної компанії Arrowhaul",
-  "place": "Бертлі, Англія",
-  "lots": "",
-  "onSite": false
- },
- {
   "date": "24 лист.",
+  "until": "2026-11-24",
   "house": "Wilsons Auctions",
   "title": "Техніка, пікапи і навісне",
   "place": "Белфаст, Північна Ірландія",
-  "lots": "131 лот",
+  "lots": "",
   "onSite": true,
   "auction": "wilsons-belfast-nov"
  },
  {
+  "date": "25–26 лист.",
+  "until": "2026-11-26",
+  "house": "Brightwells",
+  "title": "Мала техніка",
+  "place": "Медлі, Англія",
+  "lots": "",
+  "onSite": true,
+  "auction": "bw-nov"
+ },
+ {
   "date": "25–28 лист.",
+  "until": "2026-11-28",
   "house": "Euro Auctions",
   "title": "Найбільший аукціон спецтехніки Британії",
   "place": "Лідс, Англія",
@@ -195,16 +182,190 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "auction": "ea-leeds-nov"
  },
  {
-  "date": "25–26 лист.",
-  "house": "Brightwells",
-  "title": "Мала техніка, генератори, гідромолоти",
-  "place": "Медлі, Англія",
-  "lots": "1 531 лот",
+  "date": "26 лист. – 3 груд.",
+  "until": "2026-12-03",
+  "house": "Cheffins",
+  "title": "Розпродаж ферми: комбайн, трактори",
+  "place": "Англія",
+  "lots": "",
   "onSite": true,
-  "auction": "bw-nov"
+  "auction": "ch-redhill"
  },
  {
-  "date": "до 26 лист.",
+  "date": "до 1 груд.",
+  "until": "2026-12-01",
+  "house": "Cheffins",
+  "title": "Розпродаж ферми: трактори, картопляна техніка",
+  "place": "Англія",
+  "lots": "",
+  "onSite": true,
+  "auction": "ch-rayleigh"
+ },
+ {
+  "date": "1–9 груд.",
+  "until": "2026-12-09",
+  "house": "Cheffins",
+  "title": "Розпродаж техніки агрохолдингу",
+  "place": "Англія",
+  "lots": "",
+  "onSite": true,
+  "auction": "ch-strutt"
+ },
+ {
+  "date": "2–3 груд.",
+  "until": "2026-12-03",
+  "house": "H+H",
+  "title": "Онлайн-аукціон сільгосптехніки",
+  "place": "Карлайл, Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "3 груд.",
+  "until": "2026-12-03",
+  "house": "Wilsons Auctions",
+  "title": "Техніка і комерційний транспорт",
+  "place": "Портадаун, Північна Ірландія",
+  "lots": "",
+  "onSite": false,
+  "auction": "wilsons-portadown-dec"
+ },
+ {
+  "date": "3 груд.",
+  "until": "2026-12-03",
+  "house": "Manheim Truck & Plant",
+  "title": "Вантажівки і спецтехніка",
+  "place": "Глостер, Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "3–14 груд.",
+  "until": "2026-12-14",
+  "house": "Brown & Co",
+  "title": "Онлайн-аукціон сучасної сільгосптехніки",
+  "place": "Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "7–8 груд.",
+  "until": "2026-12-08",
+  "house": "Cheffins",
+  "title": "Щомісячний аукціон: трактори, телескопи, будівельна техніка",
+  "place": "Кембридж, Англія",
+  "lots": "",
+  "onSite": true,
+  "auction": "ch-cms-dec"
+ },
+ {
+  "date": "8 груд.",
+  "until": "2026-12-08",
+  "house": "Wilsons Auctions",
+  "title": "Будівельна техніка і вантажівки",
+  "place": "Белфаст, Північна Ірландія",
+  "lots": "",
+  "onSite": false,
+  "auction": "wilsons-belfast-dec"
+ },
+ {
+  "date": "8 груд.",
+  "until": "2026-12-08",
+  "house": "Shoreham Vehicle Auctions",
+  "title": "Вантажівки і техніка",
+  "place": "Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "9 груд.",
+  "until": "2026-12-09",
+  "house": "Morris Leslie",
+  "title": "Техніка і комерційний транспорт",
+  "place": "Еррол, Шотландія",
+  "lots": "",
+  "onSite": false,
+  "auction": "ml-errol-dec"
+ },
+ {
+  "date": "9 груд.",
+  "until": "2026-12-09",
+  "house": "Wilsons Auctions",
+  "title": "Вантажівки і техніка",
+  "place": "Ньюкасл, Англія",
+  "lots": "",
+  "onSite": false,
+  "auction": "wilsons-newcastle-dec"
+ },
+ {
+  "date": "10–11 груд.",
+  "until": "2026-12-11",
+  "house": "Brightwells",
+  "title": "Будівельна і сільгосптехніка",
+  "place": "Медлі, Англія",
+  "lots": "",
+  "onSite": true,
+  "auction": "bw-dec"
+ },
+ {
+  "date": "11–12 груд.",
+  "until": "2026-12-12",
+  "house": "Euro Auctions",
+  "title": "Будівельна техніка і вантажівки",
+  "place": "Дромор, Північна Ірландія",
+  "lots": "",
+  "onSite": false,
+  "auction": "ea-dromore-dec"
+ },
+ {
+  "date": "12 груд.",
+  "until": "2026-12-12",
+  "house": "Malcolm Harrison",
+  "title": "Техніка, трактори, вантажівки",
+  "place": "Прис, Англія",
+  "lots": "",
+  "onSite": false,
+  "auction": "mh-prees-dec"
+ },
+ {
+  "date": "12–13 груд.",
+  "until": "2026-12-13",
+  "house": "Hennessy Auctioneers",
+  "title": "Трактори і сільгосптехніка",
+  "place": "Порт-Лішь, Ірландія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "14 груд. – 14 січ.",
+  "until": "2027-01-14",
+  "house": "Cheffins",
+  "title": "Онлайн-аукціон сільгосптехніки",
+  "place": "Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "17–18 груд.",
+  "until": "2026-12-18",
+  "house": "Brightwells",
+  "title": "Мала техніка",
+  "place": "Медлі, Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "щотижня",
+  "until": "2099-01-01",
+  "house": "BPI Auctions",
+  "title": "Онлайн-торги: екскаватори, навантажувачі, пікапи",
+  "place": "Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "31 груд.",
+  "until": "2026-12-31",
   "house": "Sweeney Kincaid",
   "title": "Щомісячний збірний аукціон техніки",
   "place": "Глазго, Шотландія",
@@ -212,105 +373,48 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "onSite": false
  },
  {
-  "date": "26 лист.",
-  "house": "Wilsons Auctions",
-  "title": "Техніка муніципалітетів і будівельна техніка",
-  "place": "Далрі, Шотландія",
+  "date": "11–12 січ.",
+  "until": "2027-01-12",
+  "house": "Cheffins",
+  "title": "Щомісячний аукціон: трактори, телескопи, будівельна техніка",
+  "place": "Кембридж, Англія",
   "lots": "",
   "onSite": false
  },
  {
-  "date": "26 лист. – 3 груд.",
-  "house": "Cheffins",
-  "title": "Розпродаж Red Hill Farm: комбайн, трактори, навісне",
-  "place": "Кембриджшир, Англія",
-  "lots": "227 лотів",
-  "onSite": true,
-  "auction": "ch-redhill"
- },
- {
-  "date": "28 лист.",
-  "house": "Watts & Associates",
-  "title": "Спецтехніка, трактори, причепи",
-  "place": "Барнслі, Англія",
-  "lots": "",
-  "onSite": false
- },
- {
-  "date": "до 1 груд.",
-  "house": "Cheffins",
-  "title": "Розпродаж ферми Lord Rayleigh's: трактори, картопляна техніка",
-  "place": "Ессекс, Англія",
-  "lots": "179 лотів",
-  "onSite": true,
-  "auction": "ch-rayleigh"
- },
- {
-  "date": "1 груд.",
-  "house": "Ritchie Bros",
-  "title": "Сільгосптехніка: трактори, телескопи, сівалки",
-  "place": "Мальтбі, Англія",
-  "lots": "69 лотів",
-  "onSite": true,
-  "auction": "rb-agri-dec"
- },
- {
-  "date": "1–9 груд.",
-  "house": "Cheffins",
-  "title": "Розпродаж техніки Strutt & Parker (Farms)",
-  "place": "Різні ферми, Англія",
-  "lots": "62 лоти",
-  "onSite": true,
-  "auction": "ch-strutt"
- },
- {
-  "date": "3 груд.",
-  "house": "Wilsons Auctions",
-  "title": "Техніка і комерційний транспорт",
-  "place": "Портадаун, Північна Ірландія",
-  "lots": "",
-  "onSite": false
- },
- {
-  "date": "7–8 груд.",
-  "house": "Cheffins",
-  "title": "Щомісячний аукціон: трактори, телескопи, техніка",
-  "place": "Саттон біля Кембриджа",
-  "lots": "649 лотів",
-  "onSite": true,
-  "auction": "ch-cms-dec"
- },
- {
-  "date": "10–11 груд.",
+  "date": "15 січ.",
+  "until": "2027-01-15",
   "house": "Brightwells",
   "title": "Будівельна і сільгосптехніка",
   "place": "Медлі, Англія",
-  "lots": "426 лотів",
-  "onSite": true,
-  "auction": "bw-dec"
- },
- {
-  "date": "11–12 груд.",
-  "house": "Euro Auctions",
-  "title": "Будівельна техніка і вантажівки",
-  "place": "Дромор, Північна Ірландія",
   "lots": "",
   "onSite": false
  },
  {
-  "date": "14 груд. – 14 січ.",
-  "house": "Cheffins",
-  "title": "Онлайн-аукціон сільгосптехніки",
-  "place": "Кембриджшир",
+  "date": "15–25 січ.",
+  "until": "2027-01-25",
+  "house": "Brown & Co",
+  "title": "Національний онлайн-аукціон сільгосптехніки",
+  "place": "Англія",
   "lots": "",
   "onSite": false
  },
  {
-  "date": "20 січ.",
-  "house": "Ritchie Bros",
-  "title": "Оновлення парку Plantforce",
-  "place": "Мальтбі, Англія",
-  "lots": "119 лотів",
+  "date": "16 січ.",
+  "until": "2027-01-16",
+  "house": "Malcolm Harrison",
+  "title": "Розпродаж парку будівельної компанії",
+  "place": "Англія",
+  "lots": "",
+  "onSite": false
+ },
+ {
+  "date": "30 січ.",
+  "until": "2027-01-30",
+  "house": "Malcolm Harrison",
+  "title": "Новорічний аукціон: техніка, трактори, вантажівки",
+  "place": "Прис, Англія",
+  "lots": "",
   "onSite": false
  }
 ];
@@ -5793,4 +5897,15 @@ const BASE_LOTS: AuctionLot[] = [
  }
 ];
 
-export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS].filter(keepPickup);
+// Аукціонні доми, умови яких забороняють експорт в Україну: їхні лоти не показуємо і не купуємо.
+// Ritchie Bros (UK, Maltby): «export to ... UKRAINE ... is categorically prohibited per Ritchie Bros. policy» (Site Specific Terms, 07.10.2025).
+// Їхні фінальні ціни лишаються лише як ринкові орієнтири на сторінці результатів.
+export const NO_UKRAINE_EXPORT = new Set(['Ritchie Bros']);
+const BANNED_AUCTIONS = new Set(AUCTIONS.filter((a) => NO_UKRAINE_EXPORT.has(a.house)).map((a) => a.id));
+
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS]
+  .filter(keepPickup)
+  .filter((l) => !BANNED_AUCTIONS.has(l.auction));
+
+// Аукціони, лоти яких є на сайті (для фільтра на сторінці аукціонів)
+export const BUYABLE_AUCTIONS: AuctionInfo[] = AUCTIONS.filter((a) => !BANNED_AUCTIONS.has(a.id) && AUCTION_LOTS.some((l) => l.auction === a.id));

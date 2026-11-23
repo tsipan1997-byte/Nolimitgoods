@@ -74,7 +74,7 @@ export default function SoldPricesStrip() {
                 className="snap-start shrink-0 w-[72%] sm:w-auto rounded-2xl border border-slate-200 bg-white overflow-hidden flex flex-col hover:border-emerald-300"
               >
                 <div className="relative aspect-[4/3] bg-slate-100">
-                  <LotPhoto auction={r.auction} item={r.item} src={r.img} alt={`${r.title} ${r.year ?? ''} — продано на аукціоні ${r.house}`} />
+                  <LotPhoto auction={r.auction} item={r.item} src={r.img} alt={`${r.title} ${r.year ?? ''} — продано на аукціоні в Англії`} />
                   <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[11px] font-bold">Продано</span>
                 </div>
                 <div className="p-3 flex flex-col flex-1">

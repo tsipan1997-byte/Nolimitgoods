@@ -2,6 +2,7 @@ import { VEHICLE_LOTS, keepPickup } from './auction-vehicles';
 import { WILSONS_LOTS } from './auction-wilsons';
 import { CHEFFINS_LOTS } from './auction-cheffins';
 import { BRIGHTWELLS_LOTS } from './auction-brightwells';
+import { EUROPE_LOTS, EUROPE_AUCTIONS } from './auction-europe';
 
 // Лоти з аукціонів спецтехніки Великої Британії, відібрані під попит в Україні.
 // Згенеровано 16.11.2026 з каталогів Ritchie Bros і Euro Auctions. Ставки тут не зберігаються:
@@ -26,15 +27,17 @@ export type AuctionLot = {
   endsAt: number; // закриття торгів по лоту (або день живих торгів), мс UTC
   live: boolean; // живі торги: лот продається в день торгів, заявку треба дати напередодні
   img: string; // фото з каталогу аукціону
+  gallery?: string[]; // усі фото лота (якщо є) — гортаються на картці
   url: string; // сторінка лота (для менеджера, на сайті не показується)
 };
 
 export type AuctionInfo = {
   id: string; house: string; name: string; place: string; dates: string; format: string;
   totalLots: number; unreserved: boolean; url: string;
+  currency?: 'GBP' | 'EUR'; // валюта торгів; за замовчуванням фунти
 };
 
-export const AUCTIONS: AuctionInfo[] = [
+const UK_AUCTIONS: AuctionInfo[] = [
  {
   "id": "rb-nov",
   "house": "Ritchie Bros",
@@ -146,6 +149,8 @@ export const AUCTIONS: AuctionInfo[] = [
   "url": "https://www.brightwells.com/department/plant-machinery/sale/6093"
  }
 ];
+
+export const AUCTIONS: AuctionInfo[] = [...UK_AUCTIONS, ...EUROPE_AUCTIONS];
 
 export type CalendarItem = { date: string; house: string; title: string; place: string; lots: string; onSite: boolean; auction?: string };
 
@@ -339,6 +344,15 @@ export function ourFee(hammerGbp: number) {
 // Комісія Ritchie Bros для покупця у Британії: 10% до £6 500, далі £650 + 2.35% від суми понад £6 500
 export function rbFee(hammerGbp: number) {
   return hammerGbp <= 6500 ? Math.round(hammerGbp * 0.1) : Math.round(650 + (hammerGbp - 6500) * 0.0235);
+}
+
+// Комісія Ritchie Bros для покупця в Європі (крім Британії), євро:
+// до €5 500 — 15% (мін. €100); до €13 500 — 10% (мін. €825); до €79 000 — 4,85% (мін. €1 350); понад — €3 850
+export function rbFeeEu(hammerEur: number) {
+  if (hammerEur <= 5500) return Math.max(100, Math.round(hammerEur * 0.15));
+  if (hammerEur <= 13500) return Math.max(825, Math.round(hammerEur * 0.1));
+  if (hammerEur <= 79000) return Math.max(1350, Math.round(hammerEur * 0.0485));
+  return 3850;
 }
 
 export const AUCTION_META = { exportDocsGbp: 70 };
@@ -5793,4 +5807,4 @@ const BASE_LOTS: AuctionLot[] = [
  }
 ];
 
-export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS].filter(keepPickup);
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS, ...EUROPE_LOTS].filter(keepPickup);

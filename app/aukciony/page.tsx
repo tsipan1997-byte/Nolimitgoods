@@ -54,6 +54,7 @@ export default function AuctionsPage() {
   const [now, setNow] = useState<number | null>(null);
   const [cat, setCat] = useState<AuctionCategory | 'all'>('all');
   const [auction, setAuction] = useState<string>('all');
+  const [lotId, setLotId] = useState<string | null>(null); // ?lot=<ID лота> — показати тільки цей лот
   const [q, setQ] = useState('');
   const [sort, setSort] = useState<SortKey>('closing');
   const [onlyUnused, setOnlyUnused] = useState(false);
@@ -72,13 +73,19 @@ export default function AuctionsPage() {
   useEffect(() => {
     const c = new URLSearchParams(window.location.search).get('cat');
     if (c && c in CATEGORY_LABELS) setCat(c as AuctionCategory);
+    // Пряме посилання на лот для клієнта: /aukciony?lot=16292336#lots
+    const id = new URLSearchParams(window.location.search).get('lot');
+    if (id && AUCTION_LOTS.some((l) => l.item === id)) {
+      setLotId(id);
+      setTimeout(() => document.getElementById('lots')?.scrollIntoView(), 300);
+    }
   }, []);
 
   useEffect(() => setShown(PAGE_SIZE), [cat, auction, q, sort, onlyUnused]);
 
   const base = useMemo(
-    () => AUCTION_LOTS.filter((l) => (auction === 'all' || l.auction === auction) && (!onlyUnused || l.unused)),
-    [auction, onlyUnused]
+    () => AUCTION_LOTS.filter((l) => (lotId ? l.item === lotId : (auction === 'all' || l.auction === auction) && (!onlyUnused || l.unused))),
+    [auction, onlyUnused, lotId]
   );
 
   const counts = useMemo(() => {
@@ -273,7 +280,7 @@ export default function AuctionsPage() {
         <div className="mt-5 flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap">
           <button
             type="button"
-            onClick={() => setAuction('all')}
+            onClick={() => { setLotId(null); setAuction('all'); }}
             className={`shrink-0 h-10 px-4 rounded-xl text-sm font-bold border ${auction === 'all' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200'}`}
           >
             Усі аукціони
@@ -282,7 +289,7 @@ export default function AuctionsPage() {
             <button
               key={a.id}
               type="button"
-              onClick={() => setAuction(a.id)}
+              onClick={() => { setLotId(null); setAuction(a.id); }}
               className={`shrink-0 h-10 px-4 rounded-xl text-sm font-bold border ${auction === a.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200'}`}
             >
               {a.house} · {a.dates.replace(' 2026', '')}

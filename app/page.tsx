@@ -7,6 +7,7 @@ import RFQSection from './components/rfq-section';
 import PriceShowcase from './components/price-showcase';
 import CategoryTiles from './components/category-tiles';
 import AuctionsTeaser from './components/auctions-teaser';
+import SoldPricesStrip from './components/sold-prices-strip';
 import InteractiveDiagram from './components/interactive-diagram';
 import QuoteCart from './components/quote-cart';
 import SocialSection from './components/social-section';
@@ -23,6 +24,9 @@ export default function HomePage() {
       <Header />
 
       <HeroSection />
+
+      {/* За скільки продали техніку на аукціоні + ціна під ключ — одразу під першим екраном */}
+      <SoldPricesStrip />
 
       {/* Плитки категорій каталогу */}
       <CategoryTiles />

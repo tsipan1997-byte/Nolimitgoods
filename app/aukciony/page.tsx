@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Gavel, Search, ShieldCheck, Truck, FileText, Wallet, ArrowRight, Eye, ChevronDown } from 'lucide-react';
+import { Gavel, Search, ShieldCheck, Truck, FileText, Wallet, ArrowRight, Eye, ChevronDown, TrendingUp } from 'lucide-react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
@@ -184,6 +184,9 @@ export default function AuctionsPage() {
             <a href="#lots" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold">
               Дивитися лоти <ArrowRight className="w-4 h-4" />
             </a>
+            <Link href="/rezultaty-aukcioniv" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold">
+              <TrendingUp className="w-4 h-4" /> За скільки продали і ціна під ключ
+            </Link>
             <button
               type="button"
               onClick={() => openForm(null)}

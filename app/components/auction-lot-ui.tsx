@@ -7,13 +7,14 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Zap, Hammer, Wrench, HardHat, Forklift, Tractor, Truck, CarFront, Clock, MapPin, Gauge, Calendar, X,
-  CheckCircle2, Sparkles, Send, Radio,
+  CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight,
 } from 'lucide-react';
 import { CONTACT } from '@/lib/site-config';
-import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
+import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
 import { lotPhotoUrl } from '@/lib/lot-photos';
+import { lotWeight, weightLabel } from '@/lib/lot-weights';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
 import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
 import { publicPlace, tradeDates } from '@/lib/auction-public';
@@ -56,6 +57,7 @@ export function timeLeft(ms: number, now: number) {
 }
 
 export const gbp = (n: number) => `£${n.toLocaleString('uk-UA')}`;
+export const eur = (n: number) => `€${n.toLocaleString('uk-UA')}`;
 
 export function isClosed(l: AuctionLot, now: number) {
   // Для живих торгів лот вважаємо закритим після кінця дня торгів
@@ -65,18 +67,19 @@ export function isClosed(l: AuctionLot, now: number) {
 const updatedFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
 export function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) {
-  const p = closed ? null : lotPrice(lot.auction, lot.lot);
+  const p = closed ? null : lotPrice(lot.auction, lot.lot, lot.item);
+  const sign = AUCTION_BY_ID[lot.auction]?.currency === 'EUR' ? '€' : '£';
   const updated = PRICES_UPDATED_AT ? updatedFmt.format(new Date(PRICES_UPDATED_AT)) : null;
   if (p && p.bid) {
     return (
       <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
         <div className="flex items-baseline justify-between gap-2">
           <span className="text-xs text-slate-500">{closed ? 'Остання ставка' : 'Поточна ставка'}</span>
-          <span className="text-xl font-black">£{p.bid.toLocaleString('en-GB')}</span>
+          <span className="text-xl font-black">{sign}{p.bid.toLocaleString('en-GB')}</span>
         </div>
         <div className="text-[11px] text-slate-400">
-          {p.bids} {stavok(p.bids)}
-          {updated && ` · оновлено ${updated} (Київ)`} · без збору аукціону, комісії і доставки
+          {p.bids > 0 && `${p.bids} ${stavok(p.bids)} · `}
+          {updated && `оновлено ${updated} (Київ) · `}без збору аукціону, комісії і доставки
         </div>
       </div>
     );
@@ -102,11 +105,40 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
   const photos = [lotPhotoUrl(lot.auction, lot.item), lot.img].filter(Boolean) as string[];
   const [photoIdx, setPhotoIdx] = useState(0);
   const imgOk = photoIdx < photos.length;
+  // Галерея: усі фото лота гортаються стрілками, по кліку відкриваються на весь екран
+  const gallery = lot.gallery && lot.gallery.length > 1 ? lot.gallery : null;
+  const weight = lotWeight(lot);
+  const [g, setG] = useState(0);
+  const [viewer, setViewer] = useState(false);
+  const step = (d: number) => gallery && setG((i) => (i + d + gallery.length) % gallery.length);
+  const place = lot.location.includes('Іспанія') || lot.location.includes('Нідерланди') ? 'Європа' : 'Велика Британія';
 
   return (
     <article className={`flex flex-col rounded-xl sm:rounded-2xl border bg-white overflow-hidden transition-shadow hover:shadow-lg border-slate-200 ${closed ? 'bg-slate-50' : ''}`}>
       <div className="relative aspect-[4/3] bg-slate-100">
-        {imgOk ? (
+        {gallery ? (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={gallery[g]}
+              alt={`${lot.title}${lot.year ? `, ${lot.year}` : ''} — фото ${g + 1} з ${gallery.length}`}
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              onClick={() => setViewer(true)}
+              className="absolute inset-0 w-full h-full object-cover cursor-zoom-in"
+            />
+            <button type="button" aria-label="Попереднє фото" onClick={() => step(-1)} className="absolute left-1.5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/85 hover:bg-white text-slate-900 flex items-center justify-center shadow">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button type="button" aria-label="Наступне фото" onClick={() => step(1)} className="absolute right-1.5 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white/85 hover:bg-white text-slate-900 flex items-center justify-center shadow">
+              <ChevronRight className="w-5 h-5" />
+            </button>
+            <button type="button" onClick={() => setViewer(true)} className="absolute bottom-2 right-2 px-2 py-1 rounded-md bg-slate-900/80 text-white text-[11px] font-bold inline-flex items-center gap-1">
+              <Images className="w-3.5 h-3.5" /> {g + 1}/{gallery.length}
+            </button>
+          </>
+        ) : imgOk ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={photos[photoIdx]}
@@ -158,6 +190,18 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           <span className="hidden sm:inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {publicPlace(lot.location)}</span>
         </div>
 
+        {lot.engine && (
+          <p className="mt-2 text-sm font-semibold text-slate-700 inline-flex items-start gap-1.5">
+            <Zap className="w-4 h-4 mt-0.5 text-red-600 shrink-0" /> <span>Двигун: {lot.engine}</span>
+          </p>
+        )}
+
+        {weight && (
+          <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm font-semibold text-slate-700 inline-flex items-start gap-1.5">
+            <Weight className="w-4 h-4 mt-0.5 text-red-600 shrink-0" /> <span>Вага: {weightLabel(weight)}</span>
+          </p>
+        )}
+
         {lot.specs && <p className="hidden sm:block mt-2 text-sm text-slate-500 line-clamp-3">{lot.specs}</p>}
 
         <div className="hidden sm:block"><PriceBox lot={lot} closed={closed} /></div>
@@ -184,7 +228,43 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           </button>
         </div>
       </div>
+      {gallery && viewer && <PhotoViewer photos={gallery} index={g} onIndex={setG} title={lot.title} onClose={() => setViewer(false)} />}
     </article>
+  );
+}
+
+function PhotoViewer({ photos, index, onIndex, title, onClose }: { photos: string[]; index: number; onIndex: (i: number) => void; title: string; onClose: () => void }) {
+  const go = (d: number) => onIndex((index + d + photos.length) % photos.length);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft') go(-1);
+      if (e.key === 'ArrowRight') go(1);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+  return (
+    <div className="fixed inset-0 z-[110] flex flex-col bg-slate-950/95" onClick={onClose} role="dialog" aria-modal="true" aria-label={`Фото: ${title}`}>
+      <div className="flex items-center justify-between gap-4 p-3 text-white">
+        <span className="text-sm font-bold truncate">{title} · {index + 1}/{photos.length}</span>
+        <button type="button" onClick={onClose} aria-label="Закрити" className="p-2 rounded-xl hover:bg-white/10 shrink-0"><X className="w-6 h-6" /></button>
+      </div>
+      <div className="relative flex-1 min-h-0 flex items-center justify-center px-12" onClick={(e) => e.stopPropagation()}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={photos[index]} alt={`${title} — фото ${index + 1}`} referrerPolicy="no-referrer" className="max-h-full max-w-full object-contain" />
+        <button type="button" aria-label="Попереднє фото" onClick={() => go(-1)} className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center"><ChevronLeft className="w-6 h-6" /></button>
+        <button type="button" aria-label="Наступне фото" onClick={() => go(1)} className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/15 hover:bg-white/25 text-white flex items-center justify-center"><ChevronRight className="w-6 h-6" /></button>
+      </div>
+      <div className="flex gap-2 overflow-x-auto p-3" onClick={(e) => e.stopPropagation()}>
+        {photos.map((src, i) => (
+          <button key={src} type="button" onClick={() => onIndex(i)} className={`shrink-0 w-20 h-14 rounded-md overflow-hidden border-2 ${i === index ? 'border-red-500' : 'border-transparent opacity-60 hover:opacity-100'}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={src} alt="" loading="lazy" referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+          </button>
+        ))}
+      </div>
+    </div>
   );
 }
 
@@ -198,6 +278,9 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
   const a = lot ? AUCTION_BY_ID[lot.auction] : null;
   const bid = parseInt(maxBid || '0', 10) || 0;
   const isRb = a?.house === 'Ritchie Bros';
+  const isEur = a?.currency === 'EUR';
+  const money = isEur ? eur : gbp;
+  const auctionFee = (n: number) => (isEur ? rbFeeEu(n) : rbFee(n));
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -219,7 +302,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
           `${lot.lot ? `Лот ${lot.lot}: ` : ''}${lot.title}`,
           `Оригінал: ${lot.original} (ID ${lot.item})`,
           `Торги: ${lotWhen(lot)} (Київ)`,
-          `Максимальна ціна клієнта: ${bid ? gbp(bid) : 'не вказав'}${bid ? ` · наша комісія ${gbp(ourFee(bid))}` : ''}`,
+          `Максимальна ціна клієнта: ${bid ? money(bid) : 'не вказав'}${bid ? ` · наша комісія ${money(ourFee(bid))}` : ''}`,
           `Посилання: ${lot.url}`,
         ]
       : [topic ? `ЗАПИТ НА ПІДБІР: ${topic}` : 'ЗАПИТ НА ПІДБІР ТЕХНІКИ З АУКЦІОНІВ', `Бюджет: ${bid ? gbp(bid) : 'не вказав'}`];
@@ -303,7 +386,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
               {contactError && <span className="mt-1 block text-xs font-semibold text-red-600">{CONTACT_ERROR}</span>}
             </label>
             <label className="block">
-              <span className="text-sm font-bold">{lot ? 'Ваша максимальна ціна лота, £' : 'Бюджет, £'}</span>
+              <span className="text-sm font-bold">{lot ? `Ваша максимальна ціна лота, ${isEur ? '€' : '£'}` : 'Бюджет, £'}</span>
               <input
                 inputMode="numeric"
                 value={maxBid}
@@ -315,21 +398,21 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
 
             {lot && bid > 0 && (
               <div className="rounded-xl bg-slate-50 border border-slate-200 p-4 text-sm space-y-1">
-                <div className="flex justify-between"><span>Ціна лота (максимум)</span><b>{gbp(bid)}</b></div>
+                <div className="flex justify-between"><span>Ціна лота (максимум)</span><b>{money(bid)}</b></div>
                 <div className="flex justify-between">
                   <span>Комісія аукціону</span>
-                  <b>{isRb ? gbp(rbFee(bid)) : 'за тарифом аукціону'}</b>
+                  <b>{isRb ? money(auctionFee(bid)) : 'за тарифом аукціону'}</b>
                 </div>
                 <div className="flex justify-between">
-                  <span>Наша послуга ({pct(bid > FEE.threshold ? FEE.highPct : FEE.lowPct)}%{ourFee(bid) === minFee(bid) ? `, мінімум для лота ${bid <= 5000 ? 'до £5 000' : bid < 10000 ? 'до £10 000' : 'від £10 000'}` : ''})</span>
-                  <b>{gbp(ourFee(bid))}</b>
+                  <span>Наша послуга ({pct(bid > FEE.threshold ? FEE.highPct : FEE.lowPct)}%{ourFee(bid) === minFee(bid) ? `, мінімум для лота ${bid <= 5000 ? 'до 5 000' : bid < 10000 ? 'до 10 000' : 'від 10 000'}` : ''})</span>
+                  <b>{money(ourFee(bid))}</b>
                 </div>
-                <div className="flex justify-between"><span>Експортні документи</span><b>~{gbp(AUCTION_META.exportDocsGbp)}</b></div>
+                <div className="flex justify-between"><span>Експортні документи</span><b>~{money(AUCTION_META.exportDocsGbp)}</b></div>
                 <div className="flex justify-between text-slate-500"><span>Доставка в Україну</span><span>порахуємо під габарит</span></div>
                 {isRb && (
                   <div className="pt-2 mt-2 border-t border-slate-200 flex justify-between font-black">
                     <span>Разом без доставки</span>
-                    <span>{gbp(bid + rbFee(bid) + ourFee(bid) + AUCTION_META.exportDocsGbp)}</span>
+                    <span>{money(bid + auctionFee(bid) + ourFee(bid) + AUCTION_META.exportDocsGbp)}</span>
                   </div>
                 )}
               </div>

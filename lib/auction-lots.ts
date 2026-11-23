@@ -2,6 +2,8 @@ import { VEHICLE_LOTS, keepPickup } from './auction-vehicles';
 import { WILSONS_LOTS } from './auction-wilsons';
 import { CHEFFINS_LOTS } from './auction-cheffins';
 import { BRIGHTWELLS_LOTS } from './auction-brightwells';
+import { EA_DROMORE_AUCTION, EA_DROMORE_LOTS } from './auction-ea-dromore';
+import { DEC_UK_AUCTIONS, DEC_UK_LOTS } from './auction-dec-uk';
 
 // Лоти з аукціонів спецтехніки Великої Британії, відібрані під попит в Україні.
 // Згенеровано 16.11.2026 з каталогів Ritchie Bros і Euro Auctions. Ставки тут не зберігаються:
@@ -146,6 +148,7 @@ export const AUCTIONS: AuctionInfo[] = [
   "url": "https://www.brightwells.com/department/plant-machinery/sale/6093"
  }
 ];
+AUCTIONS.push(EA_DROMORE_AUCTION, ...DEC_UK_AUCTIONS);
 
 export type CalendarItem = { date: string; until: string; house: string; title: string; place: string; lots: string; onSite: boolean; auction?: string };
 
@@ -284,7 +287,7 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "title": "Техніка і комерційний транспорт",
   "place": "Еррол, Шотландія",
   "lots": "",
-  "onSite": false,
+  "onSite": true,
   "auction": "ml-errol-dec"
  },
  {
@@ -294,7 +297,7 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "title": "Вантажівки і техніка",
   "place": "Ньюкасл, Англія",
   "lots": "",
-  "onSite": false,
+  "onSite": true,
   "auction": "wilsons-newcastle-dec"
  },
  {
@@ -314,7 +317,7 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "title": "Будівельна техніка і вантажівки",
   "place": "Дромор, Північна Ірландія",
   "lots": "",
-  "onSite": false,
+  "onSite": true,
   "auction": "ea-dromore-dec"
  },
  {
@@ -324,7 +327,7 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "title": "Техніка, трактори, вантажівки",
   "place": "Прис, Англія",
   "lots": "",
-  "onSite": false,
+  "onSite": true,
   "auction": "mh-prees-dec"
  },
  {
@@ -5903,7 +5906,7 @@ const BASE_LOTS: AuctionLot[] = [
 export const NO_UKRAINE_EXPORT = new Set(['Ritchie Bros']);
 const BANNED_AUCTIONS = new Set(AUCTIONS.filter((a) => NO_UKRAINE_EXPORT.has(a.house)).map((a) => a.id));
 
-export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS]
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS, ...EA_DROMORE_LOTS, ...DEC_UK_LOTS]
   .filter(keepPickup)
   .filter((l) => !BANNED_AUCTIONS.has(l.auction));
 

@@ -3,7 +3,7 @@
 // Додати сторінку: допишіть об'єкт у LANDINGS — вона з'явиться в sitemap і меню «Дивіться також».
 
 import type { AuctionCategory, AuctionLot } from './auction-lots';
-import { COMPRESSOR_ITEMS, SPAIN_EXCAVATOR_ITEMS } from './auction-europe';
+import { COMPRESSOR_ITEMS } from './auction-europe';
 
 export type Landing = {
   slug: string;
@@ -427,7 +427,7 @@ export const LANDINGS: Landing[] = [
     kicker: 'Екскаватори',
     intro: 'Гусеничні екскаватори 13–50 т, колісні, бульдозери і фронтальні навантажувачі — від британських прокатних і кар\'єрних компаній. Найбільший вибір — на Euro Auctions у Лідсі.',
     keywords: ['екскаватор з Англії', 'купити екскаватор з аукціону', 'Hitachi ZX з Англії', 'Volvo EC з Англії', 'екскаватор б/у з Європи', 'экскаватор из Англии'],
-    filter: (l) => l.category === 'excavators' && !SPAIN_EXCAVATOR_ITEMS.has(l.item),
+    filter: cat('excavators'),
     cat: 'excavators',
     topic: 'екскаватор',
     sections: [
@@ -437,36 +437,7 @@ export const LANDINGS: Landing[] = [
       ],
     ],
     faq: COMMON_FAQ,
-    related: ['ekskavatory-z-ispanii', 'jcb-3cx-z-anglii', 'gidromoloty-z-anglii', 'navisne-obladnannia-z-anglii', 'samoskydy-z-anglii'],
-  },
-  {
-    slug: 'ekskavatory-z-ispanii',
-    group: 'Спецтехніка',
-    title: 'Екскаватори з аукціону в Іспанії — Hitachi, Takeuchi, Bobcat, Cat',
-    description: 'Гусеничні, колісні та міні-екскаватори з аукціону Ritchie Bros в Оканьї (Іспанія), торги 25 листопада: Hitachi, Volvo, Komatsu, Cat, Takeuchi, Bobcat, Kubota, Yanmar. Усі фото, поточні ставки, доставка в Україну під ключ.',
-    h1: 'Екскаватори з аукціону в Іспанії',
-    kicker: 'Екскаватори',
-    intro: 'Аукціон Ritchie Bros в Оканьї під Мадридом, торги 25 листопада. Зібрали понад 70 машин: гусеничні від 6 до 67 т, колісні та міні-екскаватори 1–6 т від прокатних компаній. На кожній картці — фото з огляду, мотогодини, що аукціон перевірив і які зауваження знайшов, поточна ставка в євро. Називайте свою максимальну ціну — ставимо за вас і привозимо в Україну під ключ.',
-    keywords: ['екскаватор з Іспанії', 'екскаватор з аукціону Європи', 'міні-екскаватор б/у з Європи', 'Takeuchi TB260 б/у', 'Hitachi ZX85 б/у', 'Bobcat E27', 'Ritchie Bros Іспанія', 'екскаватор Ritchie Bros'],
-    filter: (l) => SPAIN_EXCAVATOR_ITEMS.has(l.item),
-    cat: 'excavators',
-    topic: 'екскаватор',
-    sections: [
-      [
-        'Що за аукціон',
-        'Ritchie Bros — найбільший аукціон техніки у світі. Торги в Оканьї без резервних цін: кожен лот продається тому, хто дав найбільшу ставку, хоч якою б вона була. Торги онлайн, з таймером: лоти закриваються по черзі 25 листопада з 14:05 до 15:01 за київським часом.',
-      ],
-      [
-        'На що дивимось перед ставкою',
-        'Мотогодини, чи запускається двигун і чи працюють ходова та гідравліка на огляді аукціону, люфти в пальцях, зварювання на стрілі й рукояті, стан гусениць. Усі зауваження аукціону переклали й написали в описі лота.',
-      ],
-      [
-        'Ціна під ключ',
-        'До ціни молотка додається комісія аукціону, наша послуга, експортні документи, доставка тралом з Іспанії і розмитнення (ПДВ 20% і мито за кодом товару — уточнює митний брокер). Повну суму рахуємо до ставки.',
-      ],
-    ],
-    faq: COMMON_FAQ,
-    related: ['ekskavatory-z-anglii', 'gidromoloty-z-anglii', 'kompresory-z-yevropy'],
+    related: ['jcb-3cx-z-anglii', 'gidromoloty-z-anglii', 'navisne-obladnannia-z-anglii', 'samoskydy-z-anglii'],
   },
   {
     slug: 'gidromoloty-z-anglii',

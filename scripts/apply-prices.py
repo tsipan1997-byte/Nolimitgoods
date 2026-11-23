@@ -5,8 +5,10 @@ prices.json — {"rb-nov:62": {"bid": 27000, "bids": 28}, ...}. Лоти з 0 с
 """
 import json, sys, datetime, pathlib
 src = json.load(open(sys.argv[1]))
-prices = {k: {"bid": v["bid"], "bids": v["bids"]} for k, v in src.items() if v.get("bid") and v.get("bids", 0) > 0}
-out = {"updatedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "prices": prices}
 p = pathlib.Path(__file__).resolve().parent.parent / "lib" / "auction-prices.json"
+# Зливаємо з наявними цінами: результати закритих торгів (інших аукціонів) не стираються.
+prices = json.loads(p.read_text()).get("prices", {}) if p.exists() else {}
+prices.update({k: {"bid": v["bid"], "bids": v["bids"]} for k, v in src.items() if v.get("bid") and v.get("bids", 0) > 0})
+out = {"updatedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "prices": prices}
 p.write_text(json.dumps(out, ensure_ascii=False, indent=0) + "\n")
 print(f"{len(prices)} lots written, updatedAt {out['updatedAt']}")

@@ -1,220 +1,220 @@
 {
-"updatedAt": "2026-11-23T08:31:47Z",
+"updatedAt": "2026-11-23T18:07:40Z",
 "prices": {
 "rb-nov:438": {
-"bid": 5,
+"bid": 2300,
 "bids": 1
 },
 "rb-nov:439": {
-"bid": 5,
+"bid": 1600,
 "bids": 1
 },
 "rb-nov:440": {
-"bid": 100,
+"bid": 3500,
 "bids": 13
 },
 "rb-nov:441": {
-"bid": 900,
+"bid": 5250,
 "bids": 14
 },
 "rb-nov:442": {
-"bid": 800,
+"bid": 6000,
 "bids": 12
 },
 "rb-nov:443": {
-"bid": 1100,
+"bid": 4750,
 "bids": 16
 },
 "rb-nov:444": {
-"bid": 1100,
+"bid": 6000,
 "bids": 6
 },
 "rb-nov:445": {
-"bid": 900,
+"bid": 6250,
 "bids": 18
 },
 "rb-nov:446": {
-"bid": 4500,
+"bid": 5250,
 "bids": 28
 },
 "rb-nov:447": {
-"bid": 325,
+"bid": 1500,
 "bids": 13
 },
 "rb-nov:448": {
-"bid": 600,
+"bid": 750,
 "bids": 39
 },
 "rb-nov:449": {
-"bid": 150,
+"bid": 1000,
 "bids": 18
 },
 "rb-nov:450": {
-"bid": 30,
+"bid": 250,
 "bids": 5
 },
 "rb-nov:451": {
-"bid": 2750,
+"bid": 5250,
 "bids": 11
 },
 "rb-nov:452": {
-"bid": 2750,
+"bid": 5250,
 "bids": 5
 },
 "rb-nov:453": {
-"bid": 240,
+"bid": 400,
 "bids": 6
 },
 "rb-nov:454": {
-"bid": 180,
+"bid": 425,
 "bids": 15
 },
 "rb-nov:455": {
-"bid": 95,
+"bid": 425,
 "bids": 13
 },
 "rb-nov:456": {
-"bid": 110,
+"bid": 425,
 "bids": 11
 },
 "rb-nov:457": {
-"bid": 55,
+"bid": 190,
 "bids": 11
 },
 "rb-nov:458": {
-"bid": 110,
+"bid": 325,
 "bids": 18
 },
 "rb-nov:459": {
-"bid": 110,
+"bid": 375,
 "bids": 11
 },
 "rb-nov:460": {
-"bid": 10,
+"bid": 80,
 "bids": 2
 },
 "rb-nov:461": {
-"bid": 15,
+"bid": 90,
 "bids": 3
 },
 "rb-nov:462": {
-"bid": 5,
+"bid": 65,
 "bids": 1
 },
 "rb-nov:463": {
-"bid": 450,
+"bid": 550,
 "bids": 25
 },
 "rb-nov:464": {
-"bid": 350,
+"bid": 700,
 "bids": 21
 },
 "rb-nov:465": {
-"bid": 170,
+"bid": 850,
 "bids": 17
 },
 "rb-nov:480": {
-"bid": 3750,
+"bid": 4000,
 "bids": 41
 },
 "rb-nov:481": {
-"bid": 1600,
+"bid": 4000,
 "bids": 40
 },
 "rb-nov:482": {
-"bid": 1700,
+"bid": 5250,
 "bids": 31
 },
 "rb-nov:483": {
-"bid": 1700,
+"bid": 5500,
 "bids": 28
 },
 "rb-nov:750": {
-"bid": 15,
+"bid": 80,
 "bids": 3
 },
 "rb-nov:933": {
-"bid": 15,
+"bid": 2300,
 "bids": 3
 },
 "rb-nov:934": {
-"bid": 15,
+"bid": 1800,
 "bids": 3
 },
 "rb-nov:935": {
-"bid": 20,
+"bid": 1900,
 "bids": 4
 },
 "rb-nov:936": {
-"bid": 20,
+"bid": 2100,
 "bids": 4
 },
 "rb-nov:937": {
-"bid": 5,
+"bid": 1400,
 "bids": 1
 },
 "rb-nov:938": {
-"bid": 30,
+"bid": 1600,
 "bids": 6
 },
 "rb-nov:939": {
-"bid": 10,
+"bid": 1500,
 "bids": 2
 },
 "rb-nov:940": {
-"bid": 5,
+"bid": 1500,
 "bids": 1
 },
 "rb-nov:941": {
-"bid": 55,
+"bid": 950,
 "bids": 9
 },
 "rb-nov:942": {
-"bid": 25,
+"bid": 700,
 "bids": 6
 },
 "rb-nov:943": {
-"bid": 5,
+"bid": 900,
 "bids": 1
 },
 "rb-nov:944": {
-"bid": 5,
+"bid": 800,
 "bids": 1
 },
 "rb-nov:945": {
-"bid": 5,
+"bid": 800,
 "bids": 1
 },
 "rb-nov:946": {
-"bid": 5,
+"bid": 950,
 "bids": 1
 },
 "rb-nov:949": {
-"bid": 5,
+"bid": 1400,
 "bids": 1
 },
 "rb-nov:951": {
-"bid": 1600,
+"bid": 3750,
 "bids": 19
 },
 "rb-nov:952": {
-"bid": 950,
+"bid": 4250,
 "bids": 31
 },
 "rb-nov:953": {
-"bid": 1600,
+"bid": 2100,
 "bids": 20
 },
 "rb-nov:954": {
-"bid": 180,
+"bid": 325,
 "bids": 7
 },
 "rb-nov:955": {
-"bid": 650,
+"bid": 850,
 "bids": 31
 },
 "rb-nov:956": {
-"bid": 20,
+"bid": 275,
 "bids": 4
 },
 "rb-nov:957": {
@@ -226,71 +226,71 @@
 "bids": 23
 },
 "rb-nov:959": {
-"bid": 15,
+"bid": 1000,
 "bids": 3
 },
 "rb-nov:960": {
-"bid": 160,
+"bid": 1500,
 "bids": 10
 },
 "rb-nov:961": {
-"bid": 550,
+"bid": 1200,
 "bids": 30
 },
 "rb-nov:1010": {
-"bid": 2100,
+"bid": 8750,
 "bids": 19
 },
 "rb-nov:1011": {
-"bid": 1600,
+"bid": 10000,
 "bids": 21
 },
 "rb-nov:1012": {
-"bid": 1500,
+"bid": 10500,
 "bids": 20
 },
 "rb-nov:1013": {
-"bid": 1600,
+"bid": 11500,
 "bids": 21
 },
 "rb-nov:1014": {
-"bid": 1700,
+"bid": 6250,
 "bids": 18
 },
 "rb-nov:1015": {
-"bid": 1400,
+"bid": 9500,
 "bids": 19
 },
 "rb-nov:1016": {
-"bid": 1300,
+"bid": 8250,
 "bids": 18
 },
 "rb-nov:1017": {
-"bid": 1300,
+"bid": 13000,
 "bids": 10
 },
 "rb-nov:1018": {
-"bid": 1300,
+"bid": 10500,
 "bids": 18
 },
 "rb-nov:1019": {
-"bid": 1300,
+"bid": 10500,
 "bids": 18
 },
 "rb-nov:1020": {
-"bid": 1300,
+"bid": 13500,
 "bids": 12
 },
 "rb-nov:1021": {
-"bid": 130,
+"bid": 1800,
 "bids": 4
 },
 "rb-nov:1026": {
-"bid": 55,
+"bid": 2750,
 "bids": 9
 },
 "rb-nov:1027": {
-"bid": 3500,
+"bid": 4000,
 "bids": 31
 },
 "rb-nov:1028": {
@@ -298,279 +298,271 @@
 "bids": 26
 },
 "rb-nov:1029": {
-"bid": 3750,
+"bid": 4250,
 "bids": 28
 },
 "rb-nov:1031": {
-"bid": 1100,
+"bid": 4000,
 "bids": 28
 },
 "rb-nov:1032": {
-"bid": 550,
+"bid": 3250,
 "bids": 12
 },
 "rb-nov:1045": {
-"bid": 150,
+"bid": 650,
 "bids": 14
 },
 "rb-nov:1046": {
-"bid": 2200,
+"bid": 3750,
 "bids": 35
 },
 "rb-nov:1100": {
-"bid": 1900,
+"bid": 3250,
 "bids": 19
 },
 "rb-nov:1101": {
-"bid": 2500,
+"bid": 6750,
 "bids": 27
 },
 "rb-nov:1102": {
-"bid": 2300,
+"bid": 12500,
 "bids": 31
 },
 "rb-nov:62": {
-"bid": 41000,
+"bid": 157500,
 "bids": 35
 },
 "rb-nov:63": {
-"bid": 5000,
+"bid": 45000,
 "bids": 9
 },
 "rb-nov:64": {
-"bid": 5750,
+"bid": 42000,
 "bids": 7
 },
 "rb-nov:65": {
-"bid": 5250,
+"bid": 40000,
 "bids": 15
 },
 "rb-nov:70": {
-"bid": 1600,
+"bid": 31000,
 "bids": 5
 },
 "rb-nov:71": {
-"bid": 240,
+"bid": 33000,
 "bids": 21
 },
 "rb-nov:72": {
-"bid": 35,
+"bid": 33000,
 "bids": 5
 },
 "rb-nov:73": {
-"bid": 55,
+"bid": 32000,
 "bids": 10
 },
 "rb-nov:74": {
-"bid": 25,
+"bid": 30000,
 "bids": 3
 },
 "rb-nov:75": {
-"bid": 45,
+"bid": 28000,
 "bids": 7
 },
 "rb-nov:81": {
-"bid": 5250,
+"bid": 30000,
 "bids": 11
 },
 "rb-nov:87": {
-"bid": 2300,
+"bid": 31000,
 "bids": 23
 },
 "rb-nov:88": {
-"bid": 3000,
+"bid": 45000,
 "bids": 12
 },
 "rb-nov:90": {
-"bid": 31000,
+"bid": 34000,
 "bids": 38
 },
 "rb-nov:91": {
-"bid": 2750,
+"bid": 30000,
 "bids": 5
 },
 "rb-nov:93": {
-"bid": 25000,
+"bid": 37000,
 "bids": 69
 },
 "rb-nov:116": {
-"bid": 6500,
+"bid": 20000,
 "bids": 36
 },
-"rb-nov:117": {
-"bid": 13500,
-"bids": 35
-},
 "rb-nov:157": {
-"bid": 600,
+"bid": 41000,
 "bids": 47
 },
 "rb-nov:158": {
-"bid": 1100,
+"bid": 40000,
 "bids": 12
 },
 "rb-nov:159": {
-"bid": 31000,
+"bid": 36000,
 "bids": 31
 },
 "rb-nov:160": {
-"bid": 14500,
+"bid": 64000,
 "bids": 31
 },
 "rb-nov:161": {
-"bid": 15,
+"bid": 7500,
 "bids": 3
 },
 "rb-nov:162": {
-"bid": 25,
+"bid": 36000,
 "bids": 4
 },
 "rb-nov:163": {
-"bid": 60,
+"bid": 38000,
 "bids": 12
 },
 "rb-nov:164": {
-"bid": 5000,
+"bid": 39000,
 "bids": 13
 },
 "rb-nov:165": {
-"bid": 95,
+"bid": 20500,
 "bids": 19
 },
-"rb-nov:166": {
-"bid": 26000,
-"bids": 53
-},
 "rb-nov:167": {
-"bid": 3250,
+"bid": 21500,
 "bids": 10
 },
 "rb-nov:168": {
-"bid": 40000,
+"bid": 42000,
 "bids": 86
 },
 "rb-nov:169": {
-"bid": 41000,
+"bid": 43000,
 "bids": 85
 },
 "rb-nov:170": {
-"bid": 41000,
+"bid": 45000,
 "bids": 47
 },
 "rb-nov:171": {
-"bid": 40000,
+"bid": 44000,
 "bids": 74
 },
 "rb-nov:172": {
-"bid": 46000,
+"bid": 60000,
 "bids": 143
 },
 "rb-nov:173": {
-"bid": 19000,
+"bid": 35000,
 "bids": 77
 },
 "rb-nov:174": {
-"bid": 25000,
+"bid": 30000,
 "bids": 49
 },
 "rb-nov:175": {
-"bid": 30000,
+"bid": 39000,
 "bids": 66
 },
 "rb-nov:176": {
-"bid": 26000,
+"bid": 38000,
 "bids": 59
 },
 "rb-nov:177": {
-"bid": 16000,
+"bid": 35000,
 "bids": 23
 },
 "rb-nov:178": {
-"bid": 20500,
+"bid": 29000,
 "bids": 87
 },
 "rb-nov:179": {
-"bid": 5250,
+"bid": 21500,
 "bids": 19
 },
 "rb-nov:180": {
-"bid": 5000,
+"bid": 16500,
 "bids": 26
 },
 "rb-nov:181": {
-"bid": 15500,
+"bid": 20000,
 "bids": 27
 },
 "rb-nov:182": {
-"bid": 20000,
+"bid": 36000,
 "bids": 59
 },
 "rb-nov:183": {
-"bid": 14000,
+"bid": 31000,
 "bids": 39
 },
 "rb-nov:184": {
-"bid": 18500,
+"bid": 28000,
 "bids": 37
 },
 "rb-nov:185": {
-"bid": 8250,
+"bid": 26000,
 "bids": 31
 },
 "rb-nov:186": {
-"bid": 6500,
+"bid": 23000,
 "bids": 36
 },
 "rb-nov:187": {
-"bid": 8000,
+"bid": 22500,
 "bids": 42
 },
 "rb-nov:188": {
-"bid": 20500,
+"bid": 32000,
 "bids": 58
 },
 "rb-nov:189": {
-"bid": 9250,
+"bid": 26000,
 "bids": 54
 },
 "rb-nov:190": {
-"bid": 17500,
+"bid": 25000,
 "bids": 34
 },
 "rb-nov:191": {
-"bid": 8250,
+"bid": 23000,
 "bids": 29
 },
 "rb-nov:192": {
-"bid": 7750,
+"bid": 18000,
 "bids": 45
 },
 "rb-nov:193": {
-"bid": 3500,
+"bid": 14500,
 "bids": 27
 },
 "rb-nov:194": {
-"bid": 4250,
+"bid": 14500,
 "bids": 16
 },
 "rb-nov:195": {
-"bid": 5500,
+"bid": 15000,
 "bids": 18
 },
 "rb-nov:264": {
-"bid": 61000,
+"bid": 75000,
 "bids": 107
 },
 "rb-nov:265": {
-"bid": 43000,
+"bid": 61000,
 "bids": 42
 },
 "rb-nov:950": {
-"bid": 5,
+"bid": 1300,
 "bids": 1
 },
 "rb-nov:1022": {
-"bid": 110,
+"bid": 1600,
 "bids": 13
 },
 "ea-dormagen-dec:#200320504": {

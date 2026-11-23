@@ -65,18 +65,19 @@ export function isClosed(l: AuctionLot, now: number) {
 const updatedFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
 
 export function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) {
-  const p = closed ? null : lotPrice(lot.auction, lot.lot);
+  const p = closed ? null : lotPrice(lot.auction, lot.lot, lot.item);
+  const sign = AUCTION_BY_ID[lot.auction]?.currency === 'EUR' ? '€' : '£';
   const updated = PRICES_UPDATED_AT ? updatedFmt.format(new Date(PRICES_UPDATED_AT)) : null;
   if (p && p.bid) {
     return (
       <div className="mt-4 rounded-xl bg-slate-50 border border-slate-200 px-3 py-2">
         <div className="flex items-baseline justify-between gap-2">
           <span className="text-xs text-slate-500">{closed ? 'Остання ставка' : 'Поточна ставка'}</span>
-          <span className="text-xl font-black">£{p.bid.toLocaleString('en-GB')}</span>
+          <span className="text-xl font-black">{sign}{p.bid.toLocaleString('en-GB')}</span>
         </div>
         <div className="text-[11px] text-slate-400">
-          {p.bids} {stavok(p.bids)}
-          {updated && ` · оновлено ${updated} (Київ)`} · без збору аукціону, комісії і доставки
+          {p.bids > 0 && `${p.bids} ${stavok(p.bids)} · `}
+          {updated && `оновлено ${updated} (Київ) · `}без збору аукціону, комісії і доставки
         </div>
       </div>
     );

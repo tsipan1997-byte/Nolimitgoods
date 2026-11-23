@@ -37,7 +37,7 @@ export type AuctionInfo = {
   currency?: 'GBP' | 'EUR'; // валюта торгів; за замовчуванням фунти
 };
 
-const UK_AUCTIONS: AuctionInfo[] = [
+export const AUCTIONS: AuctionInfo[] = [
  {
   "id": "rb-nov",
   "house": "Ritchie Bros",
@@ -150,7 +150,8 @@ const UK_AUCTIONS: AuctionInfo[] = [
  }
 ];
 
-export const AUCTIONS: AuctionInfo[] = [...UK_AUCTIONS, ...EUROPE_AUCTIONS];
+// Європейські аукціони (окремий файл). Додаємо push-ем, щоб масив вище лишався чистим JSON для scripts/auto-bids.
+AUCTIONS.push(...EUROPE_AUCTIONS);
 
 export type CalendarItem = { date: string; house: string; title: string; place: string; lots: string; onSite: boolean; auction?: string };
 

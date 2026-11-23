@@ -5,6 +5,7 @@ import { BRIGHTWELLS_LOTS } from './auction-brightwells';
 import { EA_DROMORE_AUCTION, EA_DROMORE_LOTS } from './auction-ea-dromore';
 import { DEC_UK_AUCTIONS, DEC_UK_LOTS } from './auction-dec-uk';
 import { EUROPE_LOTS, EUROPE_AUCTIONS } from './auction-europe';
+import { ZARAGOZA_LOTS, ZARAGOZA_AUCTION } from './auction-zaragoza';
 
 // Лоти з аукціонів спецтехніки Великої Британії, відібрані під попит в Україні.
 // Згенеровано 16.11.2026 з каталогів Ritchie Bros і Euro Auctions. Ставки тут не зберігаються:
@@ -155,7 +156,7 @@ export const AUCTIONS: AuctionInfo[] = [
 AUCTIONS.push(EA_DROMORE_AUCTION, ...DEC_UK_AUCTIONS);
 
 // Європейські аукціони (окремий файл). Додаємо push-ем, щоб масив вище лишався чистим JSON для scripts/auto-bids.
-AUCTIONS.push(...EUROPE_AUCTIONS);
+AUCTIONS.push(...EUROPE_AUCTIONS, ZARAGOZA_AUCTION);
 
 export type CalendarItem = { date: string; until: string; house: string; title: string; place: string; lots: string; onSite: boolean; auction?: string };
 
@@ -5922,7 +5923,7 @@ const BASE_LOTS: AuctionLot[] = [
 export const NO_UKRAINE_EXPORT = new Set(['Ritchie Bros']);
 const BANNED_AUCTIONS = new Set(AUCTIONS.filter((a) => NO_UKRAINE_EXPORT.has(a.house)).map((a) => a.id));
 
-export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS, ...EUROPE_LOTS, ...EA_DROMORE_LOTS, ...DEC_UK_LOTS]
+export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS, ...EUROPE_LOTS, ...ZARAGOZA_LOTS, ...EA_DROMORE_LOTS, ...DEC_UK_LOTS]
   .filter(keepPickup)
   .filter((l) => !BANNED_AUCTIONS.has(l.auction));
 

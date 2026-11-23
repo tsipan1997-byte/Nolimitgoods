@@ -4,6 +4,7 @@
 
 import type { AuctionCategory, AuctionLot } from './auction-lots';
 import { COMPRESSOR_ITEMS } from './auction-europe';
+import { ZARAGOZA_EXCAVATOR_ITEMS } from './auction-zaragoza';
 
 export type Landing = {
   slug: string;
@@ -427,7 +428,7 @@ export const LANDINGS: Landing[] = [
     kicker: 'Екскаватори',
     intro: 'Гусеничні екскаватори 13–50 т, колісні, бульдозери і фронтальні навантажувачі — від британських прокатних і кар\'єрних компаній. Найбільший вибір — на Euro Auctions у Лідсі.',
     keywords: ['екскаватор з Англії', 'купити екскаватор з аукціону', 'Hitachi ZX з Англії', 'Volvo EC з Англії', 'екскаватор б/у з Європи', 'экскаватор из Англии'],
-    filter: cat('excavators'),
+    filter: (l) => l.category === 'excavators' && !ZARAGOZA_EXCAVATOR_ITEMS.has(l.item),
     cat: 'excavators',
     topic: 'екскаватор',
     sections: [
@@ -437,7 +438,36 @@ export const LANDINGS: Landing[] = [
       ],
     ],
     faq: COMMON_FAQ,
-    related: ['jcb-3cx-z-anglii', 'gidromoloty-z-anglii', 'navisne-obladnannia-z-anglii', 'samoskydy-z-anglii'],
+    related: ['ekskavatory-z-ispanii', 'jcb-3cx-z-anglii', 'gidromoloty-z-anglii', 'navisne-obladnannia-z-anglii', 'samoskydy-z-anglii'],
+  },
+  {
+    slug: 'ekskavatory-z-ispanii',
+    group: 'Спецтехніка',
+    title: 'Екскаватори з аукціону в Іспанії — Hitachi, Volvo, Cat, JCB, Yanmar',
+    description: 'Гусеничні, колісні та міні-екскаватори з аукціону в Сарагосі (Іспанія), торги 10 грудня: Hitachi ZX210, Cat 313, Case CX130, Volvo, JCB, Yanmar, Bobcat, Kubota. Усі фото, вага, доставка в Україну під ключ.',
+    h1: 'Екскаватори з аукціону в Іспанії',
+    kicker: 'Екскаватори',
+    intro: 'Аукціон техніки в Сарагосі, торги 10 грудня. Зібрали 68 машин: гусеничні від 8 до 23 т, колісні Volvo і Wacker Neuson та міні-екскаватори 1–6 т. На кожній картці — фото з каталогу, вага, комплектація і документи. Називайте свою максимальну ціну — ставимо за вас і привозимо в Україну під ключ.',
+    keywords: ['екскаватор з Іспанії', 'екскаватор з аукціону Європи', 'міні-екскаватор б/у з Європи', 'Hitachi ZX210 б/у', 'Volvo ECR25D', 'JCB 16C-1', 'аукціон техніки Сарагоса', 'аукціон спецтехніки Іспанія'],
+    filter: (l) => ZARAGOZA_EXCAVATOR_ITEMS.has(l.item),
+    cat: 'excavators',
+    topic: 'екскаватор',
+    sections: [
+      [
+        'Що за аукціон',
+        'Один з найбільших аукціонів техніки в Іспанії. Торги в Сарагосі живі, з онлайн-ставками, без резервних цін: кожен лот продається тому, хто дав найбільшу ставку. Екскаватори йдуть у перший день, 10 грудня.',
+      ],
+      [
+        'На що дивимось перед ставкою',
+        'Мотогодини, стан гусениць, ходової й ковша, люфти в пальцях, зварювання на стрілі й рукояті, документи (декларація CE). До торгів техніку можна оглянути на майданчику — організуємо відео запуску.',
+      ],
+      [
+        'Ціна під ключ',
+        'До ціни молотка додається комісія аукціону, наша послуга, експортні документи, доставка тралом з Іспанії і розмитнення (ПДВ 20% і мито за кодом товару — уточнює митний брокер). Повну суму рахуємо до ставки.',
+      ],
+    ],
+    faq: COMMON_FAQ,
+    related: ['ekskavatory-z-anglii', 'gidromoloty-z-anglii', 'kompresory-z-yevropy'],
   },
   {
     slug: 'gidromoloty-z-anglii',

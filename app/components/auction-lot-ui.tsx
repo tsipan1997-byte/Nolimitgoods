@@ -187,6 +187,12 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           <span className="hidden sm:inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {lot.location}</span>
         </div>
 
+        {lot.engine && (
+          <p className="mt-2 text-sm font-semibold text-slate-700 inline-flex items-start gap-1.5">
+            <Zap className="w-4 h-4 mt-0.5 text-red-600 shrink-0" /> <span>Двигун: {lot.engine}</span>
+          </p>
+        )}
+
         {lot.specs && <p className="hidden sm:block mt-2 text-sm text-slate-500 line-clamp-3">{lot.specs}</p>}
 
         <div className="hidden sm:block"><PriceBox lot={lot} closed={closed} /></div>

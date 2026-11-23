@@ -54,6 +54,9 @@ export default function SoldPricesStrip() {
               Фінальні ціни молотка, підтверджені аукціоном, і орієнтир під ключ: з комісіями, доставкою і розмитненням. Щоб ви знали, на яку суму
               розраховувати.
             </p>
+            <p className="mt-2 inline-block rounded-lg bg-amber-50 border border-amber-200 px-3 py-1.5 text-[13px] md:text-sm font-semibold text-amber-800">
+              + ПДВ Англії 20% на аукціоні — повертається після експорту техніки, умови обговорюємо з кожним клієнтом індивідуально
+            </p>
           </div>
           <Link href="/rezultaty-aukcioniv" className="hidden md:inline-flex h-12 px-6 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold items-center gap-2 shrink-0">
             Усі {TOTAL} результатів <ArrowRight className="w-4 h-4" />

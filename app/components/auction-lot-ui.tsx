@@ -7,13 +7,14 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Zap, Hammer, Wrench, HardHat, Forklift, Tractor, Truck, CarFront, Clock, MapPin, Gauge, Calendar, X,
-  CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images,
+  CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight,
 } from 'lucide-react';
 import { CONTACT } from '@/lib/site-config';
 import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
 import { lotPhotoUrl } from '@/lib/lot-photos';
+import { lotWeight, weightLabel } from '@/lib/lot-weights';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
 import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
 
@@ -105,6 +106,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
   const imgOk = photoIdx < photos.length;
   // Галерея: усі фото лота гортаються стрілками, по кліку відкриваються на весь екран
   const gallery = lot.gallery && lot.gallery.length > 1 ? lot.gallery : null;
+  const weight = lotWeight(lot);
   const [g, setG] = useState(0);
   const [viewer, setViewer] = useState(false);
   const step = (d: number) => gallery && setG((i) => (i + d + gallery.length) % gallery.length);
@@ -190,6 +192,12 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
         {lot.engine && (
           <p className="mt-2 text-sm font-semibold text-slate-700 inline-flex items-start gap-1.5">
             <Zap className="w-4 h-4 mt-0.5 text-red-600 shrink-0" /> <span>Двигун: {lot.engine}</span>
+          </p>
+        )}
+
+        {weight && (
+          <p className="mt-1.5 sm:mt-2 text-xs sm:text-sm font-semibold text-slate-700 inline-flex items-start gap-1.5">
+            <Weight className="w-4 h-4 mt-0.5 text-red-600 shrink-0" /> <span>Вага: {weightLabel(weight)}</span>
           </p>
         )}
 

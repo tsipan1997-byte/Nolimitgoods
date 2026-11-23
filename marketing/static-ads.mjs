@@ -7,13 +7,14 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const dir = path.dirname(fileURLToPath(import.meta.url));
-const OUT = path.join(dir, '..', 'public', 'ads', '2026-11-23');
+const OUT = path.join(dir, '..', 'public', 'ads', '2026-11-23-v2');
 fs.mkdirSync(OUT, { recursive: true });
 GlobalFonts.registerFromPath('/System/Library/Fonts/SFNS.ttf', 'SF');
 
 const RED = '#e11d2e', PINK = '#f87171', MUTED = '#cbd5e1', DIM = '#94a3b8', WHITE = '#ffffff', INK = '#0b1220';
 
-// Ціни — тільки перевірені результати Ritchie Bros (Мальтбі), 18–19.11.2026, з lib/auction-archive.json.
+// Без Ritchie Bros: їхні правила забороняють експорт в Україну. Без конкретних цін,
+// доки немає перевірених результатів інших аукціонів.
 const ADS = [
   {
     id: 'a_auctions',
@@ -28,32 +29,32 @@ const ADS = [
   },
   {
     id: 'b_jcb3cx',
-    pill: 'РЕАЛЬНА ЦІНА',
-    head: ['JCB 3CX 2017'],
-    accent: 'пішов за £20 000',
-    lines: ['4 736 мотогодин · Ritchie Bros', 'торги 18–19 листопада'],
-    bold: 'Купимо такий самий під ваш бюджет',
+    pill: 'ЕКСКАВАТОРИ-НАВАНТАЖУВАЧІ',
+    head: ['JCB 3CX'],
+    accent: 'з аукціону Англії',
+    lines: ['підберемо лот під ваш бюджет', 'ставимо за вашим лімітом'],
+    bold: 'Доставка під ключ в Україну',
     cardTitle: 'Підбір з аукціонів Англії',
-    cardSub: 'ставимо за вас · доставка в Україну',
+    cardSub: 'торги щотижня · тисячі лотів',
     cta: 'Отримати підбір →',
   },
   {
     id: 'c_kubota',
-    pill: 'ЕКСКАВАТОРИ 8 т',
-    head: ['Kubota KX080'],
-    accent: 'від £14 500',
-    lines: ['2012–2021 р. · £14 500–32 000', 'реальні ціни Ritchie Bros, 18–19.11'],
+    pill: 'ЕКСКАВАТОРИ',
+    head: ['Kubota · Volvo', 'JCB · CAT'],
+    accent: 'з аукціонів Англії',
+    lines: ['мініекскаватори та гусеничні 5–20 т', 'фото, мотогодини й стан до торгів'],
     bold: 'Знайдемо лот під ваш ліміт',
     cardTitle: 'Торги щотижня',
-    cardSub: 'Ritchie Bros · Euro Auctions · Cheffins',
+    cardSub: 'аукціон · експорт · доставка',
     cta: 'Підібрати →',
   },
   {
     id: 'd_telehandlers',
     pill: 'ТЕЛЕСКОПИ',
-    head: ['Manitou та JCB', '2022–2024'],
-    accent: '£30 000–45 000',
-    lines: ['MT625H · MT933 · 531-70 · 560-80', 'реальні ціни Ritchie Bros, 18–19.11'],
+    head: ['Manitou та JCB'],
+    accent: 'з аукціонів Англії',
+    lines: ['телескопічні навантажувачі 2018–2024', 'для ферм і будівництва'],
     bold: 'Ставимо за вашим лімітом — комісія від 1,99%',
     cardTitle: 'Під ключ в Україну',
     cardSub: 'аукціон · експорт · доставка',

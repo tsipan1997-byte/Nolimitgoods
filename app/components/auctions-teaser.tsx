@@ -78,7 +78,7 @@ export default function AuctionsTeaser() {
               <div className="mt-0.5 font-mono text-[15px] leading-7 md:text-2xl font-bold text-slate-900 whitespace-nowrap">{next && now ? left(next.endsAt, now) : '…'}</div>
               {nextHouse && next && (
                 <div className="text-[10px] text-slate-500 truncate">
-                  {nextHouse.house}, {dayFmt.format(new Date(next.endsAt))}
+                  Торги {dayFmt.format(new Date(next.endsAt))}
                 </div>
               )}
             </div>

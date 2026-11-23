@@ -69,6 +69,9 @@ export default async function ResultsPage() {
             розмитненням. Аукціон без резервної ціни — лот продано саме за цю суму. Ціни у фунтах, євро і доларах за курсом НБУ
             {rates.date ? ` на ${rates.date}` : ''}.
           </p>
+          <p className="mt-3 inline-block rounded-lg bg-amber-50 border border-amber-200 px-3 py-1.5 text-[13px] md:text-sm font-semibold text-amber-800">
+            + ПДВ Англії 20% (від ціни молотка і збору аукціону) — повертається після експорту техніки, умови обговорюємо з кожним клієнтом індивідуально
+          </p>
           <div className="mt-5 grid grid-cols-3 gap-2 max-w-xl">
             <div className="rounded-2xl border border-slate-200 bg-white p-3">
               <div className="text-[11px] font-semibold uppercase text-slate-500">Лотів</div>
@@ -159,7 +162,7 @@ export default async function ResultsPage() {
             {rs.map((r) => (
               <article key={r.auction + r.item} className="rounded-xl sm:rounded-2xl border border-slate-200 overflow-hidden flex flex-col">
                 <div className="relative aspect-[4/3] bg-slate-100">
-                  <LotPhoto auction={r.auction} item={r.item} src={r.img} alt={`${r.title} ${r.year ?? ''} — продано на аукціоні ${r.house}`} />
+                  <LotPhoto auction={r.auction} item={r.item} src={r.img} alt={`${r.title} ${r.year ?? ''} — продано на аукціоні в Англії`} />
                   <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[11px] font-bold">
                     {r.unreserved ? 'Продано' : 'Остання ставка'}
                   </span>
@@ -190,7 +193,7 @@ export default async function ResultsPage() {
                       );
                     })()}
                     <div className="text-[11px] text-slate-400 mt-0.5 inline-flex items-center gap-1">
-                      <Gavel className="w-3 h-3" /> {r.house}, {dayFmt.format(new Date(r.closedAt))}
+                      <Gavel className="w-3 h-3" /> Торги {dayFmt.format(new Date(r.closedAt))}
                     </div>
                   </div>
                 </div>
@@ -212,8 +215,9 @@ export default async function ResultsPage() {
         </div>
         <p className="mt-4 text-xs text-slate-500">
           «Продано за» — фінальна ціна молотка, підтверджена аукціоном. «Під ключ в Україні» — орієнтир: ціна молотка + збір аукціону за його
-          тарифом + наша комісія 1,99–2,99% + експортні документи + доставка до України + розмитнення (ПДВ 20%, мито де воно є) + брокер. Точну
-          суму під конкретний лот рахуємо перед торгами. Курс НБУ{rates.date ? ` на ${rates.date}` : ''}, суми округлені.
+          тарифом + наша комісія 1,99–2,99% + експортні документи + доставка до України + розмитнення (ПДВ 20%, мито де воно є) + брокер. Окремо
+          на аукціоні платиться ПДВ Англії 20% від ціни молотка і збору аукціону: це тимчасова сума, вона повертається після того, як
+          техніка вивезена на експорт, тому в ціну під ключ не входить. Умови по ПДВ Англії обговорюємо з кожним клієнтом індивідуально. Точну суму під конкретний лот рахуємо перед торгами. Курс НБУ{rates.date ? ` на ${rates.date}` : ''}, суми округлені.
         </p>
       </section>
 

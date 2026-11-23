@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 
 const TITLE = 'Аукціони спецтехніки Великої Британії — купити екскаватор, JCB, трактор з аукціону | NoLimitGoods';
 const DESCRIPTION =
-  'Купуємо спецтехніку на аукціонах Англії під ваше замовлення: екскаватори, JCB 3CX, телескопічні навантажувачі, трактори John Deere і New Holland, генератори, гідромолоти. Ritchie Bros, Euro Auctions, Cheffins. Комісія 1,99–2,99%, огляд перед ставкою, експорт і доставка в Україну.';
+  'Купуємо спецтехніку на аукціонах Англії під ваше замовлення: екскаватори, JCB 3CX, телескопічні навантажувачі, трактори John Deere і New Holland, генератори, гідромолоти. Euro Auctions, Cheffins, Wilsons, Brightwells. Комісія 1,99–2,99%, огляд перед ставкою, експорт і доставка в Україну.';
 
 export const metadata: Metadata = {
   title: TITLE,
@@ -15,7 +15,6 @@ export const metadata: Metadata = {
     'купити спецтехніку з аукціону',
     'спецтехніка з Англії',
     'спецтехніка з Європи під замовлення',
-    'Ritchie Bros Україна',
     'Euro Auctions Україна',
     'купити екскаватор з аукціону',
     'JCB 3CX з Англії',

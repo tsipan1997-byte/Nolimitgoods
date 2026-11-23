@@ -72,7 +72,7 @@ export default function DeliveriesSection() {
                     {isUk ? 'Купуємо техніку на аукціонах Англії' : 'We bid at UK auctions for you'}
                   </h4>
                   <p className="text-xs text-slate-500">
-                    {isUk ? 'Ritchie Bros, Euro Auctions, Cheffins' : 'Ritchie Bros, Euro Auctions, Cheffins'}
+                    {isUk ? 'Euro Auctions, Cheffins, Wilsons, Brightwells' : 'Euro Auctions, Cheffins, Wilsons, Brightwells'}
                   </p>
                 </div>
               </div>

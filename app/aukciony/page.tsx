@@ -2,14 +2,15 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
-import { Gavel, Search, ShieldCheck, Truck, FileText, Wallet, ArrowRight, Eye, ChevronDown } from 'lucide-react';
+import { Gavel, Search, ShieldCheck, Truck, FileText, Wallet, ArrowRight, Eye, ChevronDown, TrendingUp } from 'lucide-react';
 import Header from '../components/header';
 import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
-import { AUCTIONS, AUCTION_CALENDAR, AUCTION_LOTS, AUCTION_META, CATEGORY_LABELS, FEE, pct, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
+import { BUYABLE_AUCTIONS, AUCTION_CALENDAR, AUCTION_LOTS, AUCTION_META, CATEGORY_LABELS, FEE, pct, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotiv } from '@/lib/plural';
 import TelegramChannelCta from '../components/telegram-channel-cta';
 import { CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
+import { publicPlace, tradeDates } from '@/lib/auction-public';
 
 
 const CATEGORY_ORDER: AuctionCategory[] = ['excavators', 'telehandlers', 'agro', 'pickups', 'trucks', 'energy', 'breakers', 'attachments'];
@@ -34,11 +35,11 @@ const FAQ: [string, string][] = [
   ],
   [
     'Чи можна оглянути техніку перед покупкою?',
-    'Так. Наш склад у Ковентрі, до майданчиків Ritchie Bros (Мальтбі) і Euro Auctions (Лідс) — 1,5–2 години. За окрему плату приїдемо, зробимо фото й відео, запустимо двигун і перевіримо гідравліку до ставки.',
+    'Так. Наш склад у Ковентрі, до майданчиків Euro Auctions (Лідс), Cheffins (Кембридж) і Brightwells (Леомінстер) — 1,5–2 години. За окрему плату приїдемо, зробимо фото й відео, запустимо двигун і перевіримо гідравліку до ставки.',
   ],
   [
     'Які аукціони техніки є у Великій Британії?',
-    'Найбільші — Euro Auctions (Лідс, Дромор), Ritchie Bros (Мальтбі), Cheffins (Кембридж, сільгосптехніка), а також Malcolm Harrison, Wilsons, Watts & Associates, Sweeney Kincaid та інші. Купуємо на будь-якому з них.',
+    'Найбільші — Euro Auctions (Лідс, Дромор), Cheffins (Кембридж, сільгосптехніка), Brightwells (Леомінстер), а також Malcolm Harrison, Wilsons, Watts & Associates, Sweeney Kincaid та інші. Купуємо на будь-якому з них.',
   ],
   [
     'Скільки часу займає доставка техніки з Англії в Україну?',
@@ -71,10 +72,13 @@ export default function AuctionsPage() {
 
   // Посилання з тематичних сторінок: /aukciony?cat=pickups#lots
   useEffect(() => {
-    const c = new URLSearchParams(window.location.search).get('cat');
+    const sp = new URLSearchParams(window.location.search);
+    const c = sp.get('cat');
     if (c && c in CATEGORY_LABELS) setCat(c as AuctionCategory);
+    const a = sp.get('auction');
+    if (a && BUYABLE_AUCTIONS.some((x) => x.id === a)) setAuction(a);
     // Пряме посилання на лот для клієнта: /aukciony?lot=16292336#lots
-    const id = new URLSearchParams(window.location.search).get('lot');
+    const id = sp.get('lot');
     if (id && AUCTION_LOTS.some((l) => l.item === id)) {
       setLotId(id);
       setTimeout(() => document.getElementById('lots')?.scrollIntoView(), 300);
@@ -137,7 +141,7 @@ export default function AuctionsPage() {
     areaServed: ['UA', 'GB'],
     serviceType: 'Агент з купівлі техніки на аукціонах',
     description:
-      'Купуємо екскаватори, телескопічні навантажувачі, трактори, генератори та навісне на аукціонах Ritchie Bros, Euro Auctions, Cheffins та інших у Великій Британії. Ставка за вашим лімітом, експорт і доставка в Україну.',
+      'Купуємо екскаватори, телескопічні навантажувачі, трактори, генератори та навісне на аукціонах Euro Auctions, Cheffins, Wilsons та інших у Великій Британії. Ставка за вашим лімітом, експорт і доставка в Україну.',
   };
 
   return (
@@ -157,7 +161,7 @@ export default function AuctionsPage() {
           </h1>
           <p className="mt-4 text-slate-600 text-base md:text-lg max-w-3xl">
             Екскаватори, JCB 3CX, телескопічні навантажувачі, трактори John Deere і New Holland, генератори, гідромолоти.
-            Ви обираєте лот і називаєте максимальну ціну — ми ставимо за вас на Ritchie Bros, Euro Auctions та інших аукціонах,
+            Ви обираєте лот і називаєте максимальну ціну — ми ставимо за вас на Euro Auctions, Cheffins, Wilsons та інших аукціонах,
             викуповуємо, оформлюємо експорт і доставляємо.
           </p>
 
@@ -191,6 +195,9 @@ export default function AuctionsPage() {
             <a href="#lots" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold">
               Дивитися лоти <ArrowRight className="w-4 h-4" />
             </a>
+            <Link href="/rezultaty-aukcioniv" className="inline-flex items-center gap-2 h-12 px-6 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold">
+              <TrendingUp className="w-4 h-4" /> За скільки продали і ціна під ключ
+            </Link>
             <button
               type="button"
               onClick={() => openForm(null)}
@@ -214,9 +221,9 @@ export default function AuctionsPage() {
               <div key={c.date + c.house + c.title} className="flex items-center gap-4 rounded-xl border border-slate-200 p-3">
                 <div className="w-24 shrink-0 text-sm font-black text-red-600">{c.date}</div>
                 <div className="min-w-0 flex-1">
-                  <div className="font-bold text-sm truncate">{c.house} · {c.title}</div>
+                  <div className="font-bold text-sm truncate">{c.title}</div>
                   <div className="text-xs text-slate-500 truncate">
-                    {c.place}
+                    {publicPlace(c.place)}
                     {c.lots ? ` · ${c.lots}` : ''}
                   </div>
                 </div>
@@ -285,14 +292,14 @@ export default function AuctionsPage() {
           >
             Усі аукціони
           </button>
-          {AUCTIONS.map((a) => (
+          {BUYABLE_AUCTIONS.map((a) => (
             <button
               key={a.id}
               type="button"
               onClick={() => { setLotId(null); setAuction(a.id); }}
               className={`shrink-0 h-10 px-4 rounded-xl text-sm font-bold border ${auction === a.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200'}`}
             >
-              {a.house} · {a.dates.replace(' 2026', '')}
+              {tradeDates(a.dates)} · {publicPlace(a.place)}
             </button>
           ))}
         </div>
@@ -415,7 +422,7 @@ export default function AuctionsPage() {
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[
               [ShieldCheck, 'Тільки до вашого ліміту', 'Максимальну ціну фіксуємо письмово. Вище — не купуємо і повертаємо передоплату.'],
-              [Eye, 'Огляд перед ставкою', 'Склад у Ковентрі — 1,5–2 години до Мальтбі та Лідса. Фото, відео, запуск двигуна.'],
+              [Eye, 'Огляд перед ставкою', 'Склад у Ковентрі — 1,5–2 години до Лідса та Кембриджа. Фото, відео, запуск двигуна.'],
               [FileText, 'Під ключ з розмитненням', 'Експортні документи у Великій Британії і розмитнення в Україні — беремо на себе.'],
               [Truck, 'Доставка будь-якого габариту', 'Від палети з навісним до трала для 30-тонного екскаватора.'],
             ].map(([Icon, t, d]) => {
@@ -451,10 +458,10 @@ export default function AuctionsPage() {
             </p>
           </div>
           <div>
-            <h2 className="text-xl font-black text-slate-900">Аукціони Ritchie Bros, Euro Auctions, Cheffins</h2>
+            <h2 className="text-xl font-black text-slate-900">Аукціони Euro Auctions, Cheffins, Wilsons, Brightwells</h2>
             <p className="mt-3">
-              Ritchie Bros проводить онлайн-торги в Мальтбі щомісяця, Euro Auctions — великі живі аукціони в Лідсі та
-              Дроморі, Cheffins — щомісячні аукціони сільгосптехніки біля Кембриджа. Ми відстежуємо їх усі та додаємо на цю
+              Euro Auctions проводить великі живі аукціони в Лідсі та Дроморі, Wilsons і Brightwells — регулярні торги
+              техніки та комерційного транспорту, Cheffins — щомісячні аукціони сільгосптехніки біля Кембриджа. Ми відстежуємо їх усі та додаємо на цю
               сторінку лоти, які найчастіше потрібні в Україні: будівельну техніку для відбудови, сільгосптехніку для
               агрохолдингів, генератори для бізнесу, гідромолоти й грейфери для демонтажу.
             </p>
@@ -495,7 +502,7 @@ export default function AuctionsPage() {
             </button>
           </div>
           <p className="mt-6 text-xs text-slate-500">
-            Ritchie Bros, Euro Auctions, Cheffins та інші — незалежні аукціонні доми. NoLimitGoods Ltd не є їхнім
+            Euro Auctions, Cheffins, Wilsons, Brightwells та інші — незалежні аукціонні доми. NoLimitGoods Ltd не є їхнім
             представником: ми купуємо лоти як покупець на ваше замовлення. Фото та описи — з каталогів аукціонів; актуальні
             ставки та наявність уточнюйте в менеджера.
           </p>

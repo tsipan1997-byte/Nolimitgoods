@@ -17,6 +17,7 @@ import { lotPhotoUrl } from '@/lib/lot-photos';
 import { lotWeight, weightLabel } from '@/lib/lot-weights';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
 import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
+import { publicPlace, tradeDates } from '@/lib/auction-public';
 
 export const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ className?: string }>> = {
   energy: Zap,
@@ -141,7 +142,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={photos[photoIdx]}
-            alt={`${lot.title}${lot.year ? `, ${lot.year}` : ''} — аукціон ${a?.house ?? ''}, ${place}`}
+            alt={`${lot.title}${lot.year ? `, ${lot.year}` : ''} — аукціон, ${publicPlace(lot.location)}`}
             loading="lazy"
             decoding="async"
             referrerPolicy="no-referrer"
@@ -154,7 +155,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           </div>
         )}
         <div className="absolute top-2 left-2 flex flex-wrap gap-1.5">
-          <span className="hidden sm:inline px-2 py-1 rounded-md bg-slate-900/85 text-white text-[11px] font-black">{a?.house}</span>
+          <span className="hidden sm:inline px-2 py-1 rounded-md bg-slate-900/85 text-white text-[11px] font-black">{tradeDates(a?.dates)}</span>
           {lot.lot && <span className="px-2 py-1 rounded-md bg-white/90 text-slate-900 text-[11px] font-black">Лот {lot.lot}</span>}
         </div>
         <div className="absolute top-2 right-2 flex flex-wrap justify-end gap-1.5">
@@ -186,7 +187,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           {lot.hours !== null && (
             <span className="inline-flex items-center gap-1"><Gauge className="w-4 h-4 text-slate-400" /> {lot.hours.toLocaleString('uk-UA')} мотогод.</span>
           )}
-          <span className="hidden sm:inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {lot.location}</span>
+          <span className="hidden sm:inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {publicPlace(lot.location)}</span>
         </div>
 
         {lot.engine && (
@@ -344,7 +345,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
             <div className="text-xs font-bold uppercase text-red-600">
-              {lot ? `${a?.house}${lot.lot ? ` · лот ${lot.lot}` : ''}` : 'Підбір техніки'}
+              {lot ? `${tradeDates(a?.dates)}${lot.lot ? ` · лот ${lot.lot}` : ''}` : 'Підбір техніки'}
             </div>
             <h3 className="mt-1 text-xl font-black">{lot ? lot.title : 'Знайдемо техніку на аукціонах під вас'}</h3>
             {lot && <p className="text-sm text-slate-500 mt-1">{lotWhen(lot)} (Київ)</p>}

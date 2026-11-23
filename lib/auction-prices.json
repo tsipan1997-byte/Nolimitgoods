@@ -1,5 +1,5 @@
 {
-"updatedAt": "2026-11-23T18:07:40Z",
+"updatedAt": "2026-11-23T19:44:11Z",
 "prices": {
 "rb-nov:438": {
 "bid": 2300,
@@ -572,6 +572,314 @@
 "ea-leeds-nov:#140569349": {
 "bid": 650,
 "bids": 0
+},
+"rb-ocana-nov:589": {
+"bid": 22000,
+"bids": 43
+},
+"rb-ocana-nov:590": {
+"bid": 13000,
+"bids": 48
+},
+"rb-ocana-nov:591": {
+"bid": 9250,
+"bids": 17
+},
+"rb-ocana-nov:592": {
+"bid": 5,
+"bids": 1
+},
+"rb-ocana-nov:593": {
+"bid": 20,
+"bids": 3
+},
+"rb-ocana-nov:594": {
+"bid": 10,
+"bids": 2
+},
+"rb-ocana-nov:596": {
+"bid": 3250,
+"bids": 5
+},
+"rb-ocana-nov:597": {
+"bid": 5,
+"bids": 1
+},
+"rb-ocana-nov:598": {
+"bid": 3250,
+"bids": 8
+},
+"rb-ocana-nov:599": {
+"bid": 20,
+"bids": 4
+},
+"rb-ocana-nov:600": {
+"bid": 20,
+"bids": 4
+},
+"rb-ocana-nov:601": {
+"bid": 25,
+"bids": 5
+},
+"rb-ocana-nov:602": {
+"bid": 10,
+"bids": 2
+},
+"rb-ocana-nov:603": {
+"bid": 35,
+"bids": 7
+},
+"rb-ocana-nov:604": {
+"bid": 80,
+"bids": 17
+},
+"rb-ocana-nov:605": {
+"bid": 100,
+"bids": 21
+},
+"rb-ocana-nov:606": {
+"bid": 550,
+"bids": 35
+},
+"rb-ocana-nov:607": {
+"bid": 9000,
+"bids": 67
+},
+"rb-ocana-nov:608": {
+"bid": 85,
+"bids": 15
+},
+"rb-ocana-nov:609": {
+"bid": 4000,
+"bids": 41
+},
+"rb-ocana-nov:610": {
+"bid": 1600,
+"bids": 59
+},
+"rb-ocana-nov:611": {
+"bid": 6750,
+"bids": 42
+},
+"rb-ocana-nov:612": {
+"bid": 1600,
+"bids": 50
+},
+"rb-ocana-nov:613": {
+"bid": 1800,
+"bids": 36
+},
+"rb-ocana-nov:614": {
+"bid": 1500,
+"bids": 19
+},
+"rb-ocana-nov:615": {
+"bid": 4000,
+"bids": 61
+},
+"rb-ocana-nov:616": {
+"bid": 275,
+"bids": 13
+},
+"rb-ocana-nov:617": {
+"bid": 1600,
+"bids": 39
+},
+"rb-ocana-nov:618": {
+"bid": 75,
+"bids": 9
+},
+"rb-ocana-nov:619": {
+"bid": 3000,
+"bids": 50
+},
+"rb-ocana-nov:620": {
+"bid": 7000,
+"bids": 83
+},
+"rb-ocana-nov:621": {
+"bid": 5250,
+"bids": 55
+},
+"rb-ocana-nov:622": {
+"bid": 1500,
+"bids": 15
+},
+"rb-ocana-nov:624": {
+"bid": 16500,
+"bids": 53
+},
+"rb-ocana-nov:625": {
+"bid": 7250,
+"bids": 40
+},
+"rb-ocana-nov:626": {
+"bid": 4500,
+"bids": 48
+},
+"rb-ocana-nov:627": {
+"bid": 220,
+"bids": 18
+},
+"rb-ocana-nov:628": {
+"bid": 200,
+"bids": 22
+},
+"rb-ocana-nov:629": {
+"bid": 140,
+"bids": 16
+},
+"rb-ocana-nov:630": {
+"bid": 55,
+"bids": 3
+},
+"rb-ocana-nov:631": {
+"bid": 140,
+"bids": 24
+},
+"rb-ocana-nov:632": {
+"bid": 15,
+"bids": 3
+},
+"rb-ocana-nov:633": {
+"bid": 2100,
+"bids": 25
+},
+"rb-ocana-nov:634": {
+"bid": 160,
+"bids": 13
+},
+"rb-ocana-nov:635": {
+"bid": 170,
+"bids": 18
+},
+"rb-ocana-nov:636": {
+"bid": 6000,
+"bids": 30
+},
+"rb-ocana-nov:637": {
+"bid": 12500,
+"bids": 34
+},
+"rb-ocana-nov:638": {
+"bid": 4250,
+"bids": 59
+},
+"rb-ocana-nov:640": {
+"bid": 1600,
+"bids": 31
+},
+"rb-ocana-nov:641": {
+"bid": 2200,
+"bids": 30
+},
+"rb-ocana-nov:642": {
+"bid": 110,
+"bids": 19
+},
+"rb-ocana-nov:643": {
+"bid": 2000,
+"bids": 38
+},
+"rb-ocana-nov:644": {
+"bid": 220,
+"bids": 9
+},
+"rb-ocana-nov:646": {
+"bid": 110,
+"bids": 11
+},
+"rb-ocana-nov:647": {
+"bid": 475,
+"bids": 24
+},
+"rb-ocana-nov:648": {
+"bid": 40,
+"bids": 8
+},
+"rb-ocana-nov:649": {
+"bid": 3250,
+"bids": 46
+},
+"rb-ocana-nov:650": {
+"bid": 4000,
+"bids": 33
+},
+"rb-ocana-nov:651": {
+"bid": 2750,
+"bids": 37
+},
+"rb-ocana-nov:653": {
+"bid": 6000,
+"bids": 34
+},
+"rb-ocana-nov:654": {
+"bid": 6000,
+"bids": 31
+},
+"rb-ocana-nov:655": {
+"bid": 325,
+"bids": 24
+},
+"rb-ocana-nov:656": {
+"bid": 3500,
+"bids": 48
+},
+"rb-ocana-nov:661": {
+"bid": 4250,
+"bids": 33
+},
+"rb-ocana-nov:662": {
+"bid": 7750,
+"bids": 42
+},
+"rb-ocana-nov:663": {
+"bid": 5250,
+"bids": 42
+},
+"rb-ocana-nov:664": {
+"bid": 9250,
+"bids": 44
+},
+"rb-ocana-nov:665": {
+"bid": 8250,
+"bids": 39
+},
+"rb-ocana-nov:666": {
+"bid": 9250,
+"bids": 36
+},
+"rb-ocana-nov:667": {
+"bid": 3500,
+"bids": 55
+},
+"rb-ocana-nov:668": {
+"bid": 550,
+"bids": 24
+},
+"rb-ocana-nov:686": {
+"bid": 8250,
+"bids": 60
+},
+"rb-ocana-nov:719": {
+"bid": 1700,
+"bids": 30
+},
+"rb-ocana-nov:720": {
+"bid": 3250,
+"bids": 12
+},
+"rb-ocana-nov:721": {
+"bid": 3000,
+"bids": 22
+},
+"rb-ocana-nov:722": {
+"bid": 1800,
+"bids": 11
+},
+"rb-ocana-nov:725": {
+"bid": 2750,
+"bids": 9
 }
 }
 }

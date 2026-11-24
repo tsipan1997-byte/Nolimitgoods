@@ -69,7 +69,7 @@ export function lotPost(l: AuctionLot) {
   ]
     .filter((x, i, arr) => x !== '' || (arr[i - 1] !== '' && i > 0))
     .join('\n');
-  return { key: `lot:${l.auction}:${l.item}`, photo: lotPhotoUrl(l.auction, l.item) || l.img, caption, url, button: 'Хочу цей лот', title: l.original as string | undefined };
+  return { key: `lot:${l.auction}:${l.item}`, photo: l.img || lotPhotoUrl(l.auction, l.item), caption, url, button: 'Хочу цей лот', title: l.original as string | undefined };
 }
 
 export function soldPost(r: AuctionResult) {

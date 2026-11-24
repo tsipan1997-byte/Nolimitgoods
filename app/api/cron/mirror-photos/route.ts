@@ -33,7 +33,11 @@ export async function GET(req: Request) {
   } while (cursor);
 
   const wanted = new Map<string, string>();
-  for (const l of AUCTION_LOTS) if (l.img) wanted.set(lotPhotoPath(l.auction, l.item), l.img);
+  // Копіюємо лише лоти, торги яких закінчуються протягом 3 днів (або вже закінчились): поки торги
+  // далеко, сайт показує оригінальне фото аукціону, а копія потрібна тільки для архіву результатів.
+  // Так сховище не витрачає операції на лоти, які можуть ще зникнути з сайту.
+  const soon = Date.now() + 3 * 86_400_000;
+  for (const l of AUCTION_LOTS) if (l.img && l.endsAt <= soon) wanted.set(lotPhotoPath(l.auction, l.item), l.img);
   for (const r of allResults()) if (r.img) wanted.set(lotPhotoPath(r.auction, r.item), r.img);
   const todo = [...wanted.entries()].filter(([p]) => !have.has(p)).slice(0, MAX_PER_RUN);
 

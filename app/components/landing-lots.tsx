@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { ChevronDown, Send } from 'lucide-react';
-import type { AuctionLot } from '@/lib/auction-lots';
-import { LotCard, RequestModal } from './auction-lot-ui';
+import type { AuctionInfo, AuctionLot } from '@/lib/auction-core';
+import { AuctionsProvider, LotCard, RequestModal } from './auction-lot-ui';
 
 const STEP = 12;
 
 // Сітка лотів + форма заявки на тематичній сторінці.
 // Перші лоти рендеряться на сервері (Google бачить фото й назви), решта — кнопкою «Показати ще».
-export default function LandingLots({ lots, page, topic }: { lots: AuctionLot[]; page: string; topic: string }) {
+export default function LandingLots({ lots, auctions, page, topic }: { lots: AuctionLot[]; auctions: AuctionInfo[]; page: string; topic: string }) {
   const [now, setNow] = useState<number | null>(null);
   const [shown, setShown] = useState(STEP);
   const [selected, setSelected] = useState<AuctionLot | null>(null);
@@ -35,7 +35,7 @@ export default function LandingLots({ lots, page, topic }: { lots: AuctionLot[];
   };
 
   return (
-    <>
+    <AuctionsProvider auctions={auctions}>
       {lots.length === 0 ? (
         <div className="rounded-2xl border-2 border-dashed border-slate-200 p-8 text-center">
           <p className="font-bold">Зараз на сторінці немає відкритих лотів цієї категорії</p>
@@ -69,7 +69,7 @@ export default function LandingLots({ lots, page, topic }: { lots: AuctionLot[];
       </div>
 
       {open && <RequestModal lot={selected} onClose={() => setOpen(false)} page={page} source={`Сторінка ${page}`} topic={topic} />}
-    </>
+    </AuctionsProvider>
   );
 }
 

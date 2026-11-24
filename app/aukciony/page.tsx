@@ -6,10 +6,10 @@ import { Gavel, Search, ShieldCheck, Truck, FileText, Wallet, ArrowRight, Eye, C
 import Header from '../components/header';
 import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
-import { BUYABLE_AUCTIONS, AUCTION_CALENDAR, AUCTION_LOTS, AUCTION_META, CATEGORY_LABELS, FEE, pct, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
+import { AUCTIONS, BUYABLE_AUCTIONS, AUCTION_CALENDAR, AUCTION_LOTS, AUCTION_META, CATEGORY_LABELS, FEE, pct, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotiv } from '@/lib/plural';
 import TelegramChannelCta from '../components/telegram-channel-cta';
-import { CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
+import { AuctionsProvider, CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
 import { publicPlace, tradeDates } from '@/lib/auction-public';
 
 
@@ -145,6 +145,7 @@ export default function AuctionsPage() {
   };
 
   return (
+    <AuctionsProvider auctions={AUCTIONS}>
     <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-red-500 selection:text-white">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }} />
@@ -514,5 +515,6 @@ export default function AuctionsPage() {
 
       {formOpen && <RequestModal lot={selected} onClose={() => setFormOpen(false)} />}
     </div>
+    </AuctionsProvider>
   );
 }

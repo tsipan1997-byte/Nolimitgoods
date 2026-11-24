@@ -8,7 +8,7 @@ import FloatingContact from '../components/floating-contact';
 import LandingLots, { LandingRequestButton } from '../components/landing-lots';
 import TelegramChannelCta from '../components/telegram-channel-cta';
 import { LANDINGS, LANDING_BY_SLUG, type Landing } from '@/lib/landings';
-import { AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
+import { AUCTIONS, AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
 import { CONTACT } from '@/lib/site-config';
 import { allResults } from '@/lib/auction-results';
 import LotPhoto from '../components/lot-photo';
@@ -151,7 +151,7 @@ export default function LandingPage({ params }: { params: { landing: string } })
             </Link>
           )}
         </div>
-        <LandingLots lots={lots} page={`/${l.slug}`} topic={l.topic} />
+        <LandingLots lots={lots} auctions={AUCTIONS.filter((a) => lots.some((x) => x.auction === a.id))} page={`/${l.slug}`} topic={l.topic} />
         <div className="mt-6">
           <TelegramChannelCta topic={l.topic} />
         </div>

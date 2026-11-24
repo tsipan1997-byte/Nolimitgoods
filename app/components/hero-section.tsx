@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ShieldCheck, Truck, ArrowRight, Camera, Search, Tag } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { CATALOG } from '@/lib/catalog';
-import { AUCTION_LOTS } from '@/lib/auction-lots';
 import { KRAMP_COUNTS } from '@/lib/catalog-stats';
 import HeroQuickForm from './hero-quick-form';
 
@@ -13,7 +12,8 @@ import HeroQuickForm from './hero-quick-form';
 const CATALOG_TOTAL_ROUNDED = Math.floor((CATALOG.length + Object.values(KRAMP_COUNTS).reduce((a, b) => a + b, 0)) / 100) * 100;
 
 // Головний екран у стилі великого магазину: світлий, з фото справжньої відправки.
-export default function HeroSection() {
+// Кількість лотів передає сервер (app/page.tsx), щоб не тягнути в браузер весь масив лотів
+export default function HeroSection({ lotsTotal }: { lotsTotal: number }) {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
@@ -75,7 +75,7 @@ export default function HeroSection() {
             </Link>
             <Link href="/aukciony" className="rounded-2xl border border-slate-200 bg-white p-3 hover:border-red-300">
               <div className="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500">{isUk ? 'Лотів аукціонів' : 'Auction lots'}</div>
-              <div className="font-mono text-lg sm:text-2xl font-bold text-slate-900">{AUCTION_LOTS.length}</div>
+              <div className="font-mono text-lg sm:text-2xl font-bold text-slate-900">{lotsTotal}</div>
             </Link>
             <div className="rounded-2xl bg-red-600 p-3 text-white">
               <div className="text-[10px] sm:text-[11px] font-semibold uppercase text-red-100">{isUk ? 'Доставка' : 'Delivery'}</div>

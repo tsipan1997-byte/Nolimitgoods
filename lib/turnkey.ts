@@ -2,7 +2,7 @@
 // + доставка до України + розмитнення (мито, ПДВ 20%) + брокер. Це орієнтир для клієнта, а не оферта:
 // точний розрахунок робимо під конкретний лот перед торгами.
 
-import { AUCTION_META, FEE, ourFee, rbFee, type AuctionLot } from './auction-lots';
+import { AUCTION_META, FEE, ourFee, rbFee, type AuctionLot } from './auction-core';
 
 export const GBP_USD = 1.3; // орієнтовний курс для постів, округлюємо результат
 

@@ -3,24 +3,25 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, CalendarDays, Images } from 'lucide-react';
-import { AUCTION_CALENDAR, AUCTION_LOTS } from '@/lib/auction-lots';
+import type { HomeLots } from '@/lib/home-lots';
 import { publicPlace } from '@/lib/auction-public';
 
 // Блок на головній: найближчі аукціони техніки за датами (без назв аукціонних домів) —
 // перехід до лотів з фото і до календаря на сторінці аукціонів.
 
-const LOTS_BY_AUCTION = AUCTION_LOTS.reduce<Record<string, number>>((m, l) => ((m[l.auction] = (m[l.auction] || 0) + 1), m), {});
 const today = () => new Date().toISOString().slice(0, 10);
 
-export default function UpcomingAuctions() {
+// Лічильники лотів і календар рахує сервер — див. lib/home-lots.ts
+export default function UpcomingAuctions({ data }: { data: Pick<HomeLots, 'byAuction' | 'calendar' | 'total'> }) {
+  const LOTS_BY_AUCTION = data.byAuction;
   // Дату «сьогодні» беремо в браузері, щоб минулі торги зникали без перезбирання сайту
   const [now, setNow] = useState('2026-11-23');
   useEffect(() => setNow(today()), []);
-  const items = AUCTION_CALENDAR.filter((c) => c.until >= now)
+  const items = data.calendar.filter((c) => c.until >= now)
     .sort((a, b) => Number(b.onSite && !!LOTS_BY_AUCTION[b.auction ?? '']) - Number(a.onSite && !!LOTS_BY_AUCTION[a.auction ?? '']) || 0)
     .slice(0, 8)
     .sort((a, b) => a.until.localeCompare(b.until));
-  const totalLots = AUCTION_LOTS.length;
+  const totalLots = data.total;
 
   if (!items.length) return null;
 

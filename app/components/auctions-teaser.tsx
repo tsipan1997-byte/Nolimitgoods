@@ -4,32 +4,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Gavel, ArrowRight, Clock, Send } from 'lucide-react';
 import { SOCIAL } from '@/lib/site-config';
-import { AUCTIONS, AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
+import { FEE, pct } from '@/lib/auction-core';
+import type { HomeLots } from '@/lib/home-lots';
 import { lotiv } from '@/lib/plural';
 
 // Блок аукціонів на головній, світлий стиль:
 // відлік до найближчих торгів + лічильники (варіант A), категорії з фото (B), чесна ціна (D).
-
-const TILES: { href: string; label: string; pick: (l: AuctionLot) => boolean; count: (l: AuctionLot) => boolean }[] = [
-  { href: '/pikapy-z-anglii', label: 'Пікапи', pick: (l) => /Hilux/.test(l.original) && (l.year ?? 0) >= 2022, count: (l) => l.category === 'pickups' },
-  { href: '/samoskydy-z-anglii', label: 'Самоскиди', pick: (l) => l.category === 'trucks' && (l.year ?? 0) >= 2021, count: (l) => l.category === 'trucks' },
-  { href: '/heneratory-z-anglii', label: 'Генератори', pick: (l) => l.category === 'energy' && !!l.year, count: (l) => l.category === 'energy' },
-  { href: '/traktory-z-anglii', label: 'Трактори', pick: (l) => l.category === 'agro' && /Tractor/.test(l.original), count: (l) => l.category === 'agro' },
-  { href: '/ekskavatory-z-anglii', label: 'Екскаватори', pick: (l) => l.category === 'excavators' && /Excavator/.test(l.original), count: (l) => l.category === 'excavators' },
-  { href: '/teleskopichni-navantazhuvachi-z-anglii', label: 'Телескопи', pick: (l) => l.category === 'telehandlers', count: (l) => l.category === 'telehandlers' },
-  { href: '/jcb-3cx-z-anglii', label: 'JCB 3CX', pick: (l) => /3CX/.test(l.original), count: (l) => /3CX|4CX|backhoe/i.test(l.original) },
-  { href: '/gidromoloty-z-anglii', label: 'Гідромолоти', pick: (l) => l.category === 'breakers', count: (l) => l.category === 'breakers' },
-];
-const TILE_LOTS = TILES.map((t) => ({
-  ...t,
-  lot: AUCTION_LOTS.find((l) => l.img && t.pick(l)),
-  n: AUCTION_LOTS.filter(t.count).length,
-})).filter((t) => t.lot);
-
-// Стрічка «скоро торги»: свіжі лоти з різних категорій
-const FEED = (['pickups', 'trucks', 'excavators', 'telehandlers', 'agro', 'energy'] as const)
-  .map((c) => AUCTION_LOTS.filter((l) => l.category === c && l.img && !l.inoperable).sort((a, b) => (b.year ?? 0) - (a.year ?? 0))[0])
-  .filter(Boolean) as AuctionLot[];
 
 const dayFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: 'numeric', month: 'long' });
 
@@ -42,15 +22,16 @@ function left(ms: number, now: number) {
   return days > 0 ? `${days}д ${h}г` : `${h}г ${m}хв`;
 }
 
-export default function AuctionsTeaser() {
+// Дані (лічильники, плитки, стрічка) рахує сервер — див. lib/home-lots.ts
+export default function AuctionsTeaser({ data }: { data: Pick<HomeLots, 'tiles' | 'feed' | 'closings' | 'total'> }) {
+  const { tiles, feed, closings, total } = data;
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
     setNow(Date.now());
     const t = setInterval(() => setNow(Date.now()), 30_000);
     return () => clearInterval(t);
   }, []);
-  const next = useMemo(() => (now ? AUCTION_LOTS.filter((l) => l.endsAt > now).sort((a, b) => a.endsAt - b.endsAt)[0] : null), [now]);
-  const nextHouse = next ? AUCTIONS.find((a) => a.id === next.auction) : null;
+  const nextAt = useMemo(() => (now ? closings.find((t) => t > now) ?? null : null), [now, closings]);
 
   return (
     <section className="bg-white border-y border-slate-200">
@@ -69,16 +50,16 @@ export default function AuctionsTeaser() {
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
               <div className="text-[11px] font-semibold uppercase text-slate-500">Лотів з фото</div>
-              <div className="mt-0.5 font-mono text-xl md:text-2xl font-bold text-slate-900">{AUCTION_LOTS.length}</div>
+              <div className="mt-0.5 font-mono text-xl md:text-2xl font-bold text-slate-900">{total}</div>
             </div>
             <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
               <div className="text-[11px] font-semibold uppercase text-slate-500 inline-flex items-center gap-1">
                 <Clock className="w-3 h-3" /> До торгів
               </div>
-              <div className="mt-0.5 font-mono text-[15px] leading-7 md:text-2xl font-bold text-slate-900 whitespace-nowrap">{next && now ? left(next.endsAt, now) : '…'}</div>
-              {nextHouse && next && (
+              <div className="mt-0.5 font-mono text-[15px] leading-7 md:text-2xl font-bold text-slate-900 whitespace-nowrap">{nextAt && now ? left(nextAt, now) : '…'}</div>
+              {nextAt && (
                 <div className="text-[10px] text-slate-500 truncate">
-                  Торги {dayFmt.format(new Date(next.endsAt))}
+                  Торги {dayFmt.format(new Date(nextAt))}
                 </div>
               )}
             </div>
@@ -91,10 +72,10 @@ export default function AuctionsTeaser() {
 
         {/* Категорії з фото */}
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
-          {TILE_LOTS.map((t) => (
+          {tiles.map((t) => (
             <Link key={t.href} href={t.href} className="group relative aspect-[4/3] sm:aspect-[4/5] rounded-2xl overflow-hidden bg-slate-200">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={t.lot!.img} alt={`${t.label} з аукціонів Англії`} loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" />
+              <img src={t.img} alt={`${t.label} з аукціонів Англії`} loading="lazy" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover transition-transform group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/10 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-2.5 text-white">
                 <div className="font-black text-sm leading-tight">{t.label}</div>
@@ -112,11 +93,11 @@ export default function AuctionsTeaser() {
             <div className="flex items-baseline justify-between">
               <h3 className="font-black text-lg text-slate-900">Скоро торги</h3>
               <Link href="/aukciony#lots" className="text-sm font-bold text-red-600 inline-flex items-center gap-1">
-                Усі {AUCTION_LOTS.length} <ArrowRight className="w-4 h-4" />
+                Усі {total} <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
             <div className="mt-3 grid sm:grid-cols-2 gap-2.5">
-              {FEED.map((l) => (
+              {feed.map((l) => (
                 <Link key={l.item} href="/aukciony#lots" className="flex gap-3 rounded-2xl border border-slate-200 bg-white p-2.5 hover:border-red-300 transition-colors">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={l.img} alt={l.title} loading="lazy" referrerPolicy="no-referrer" className="w-24 h-[72px] rounded-xl object-cover shrink-0 bg-slate-100" />

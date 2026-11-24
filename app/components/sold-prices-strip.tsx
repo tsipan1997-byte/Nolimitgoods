@@ -4,25 +4,11 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, TrendingUp } from 'lucide-react';
 import LotPhoto from './lot-photo';
-import { allResults, type AuctionResult } from '@/lib/auction-results';
-import type { AuctionCategory } from '@/lib/auction-lots';
+import type { AuctionResult } from '@/lib/auction-results';
 import { turnkeyGbp } from '@/lib/turnkey';
 
 // Блок на головній одразу під першим екраном: за скільки реально продали техніку на аукціоні
 // і скільки вона коштувала б під ключ в Україні. Тільки техніка (без ковшів, молотів, генераторів).
-
-const ORDER: AuctionCategory[] = ['agro', 'excavators', 'telehandlers', 'trucks', 'pickups'];
-
-// По черзі з кожної категорії — найдорожчі лоти, щоб у стрічці були і трактори, і екскаватори, і телескопи
-function pick(n: number): AuctionResult[] {
-  const all = allResults().filter((r) => ORDER.includes(r.category) && r.img);
-  const byCat = ORDER.map((c) => all.filter((r) => r.category === c).sort((a, b) => b.bid - a.bid));
-  const out: AuctionResult[] = [];
-  for (let i = 0; out.length < n && byCat.some((l) => l[i]); i++) for (const l of byCat) if (l[i] && out.length < n) out.push(l[i]);
-  return out;
-}
-const RESULTS = pick(8);
-const TOTAL = allResults().filter((r) => ORDER.includes(r.category)).length;
 
 type Rates = { eur: number; usd: number };
 const FALLBACK: Rates = { eur: 1.17, usd: 1.3 };
@@ -30,7 +16,8 @@ const FALLBACK: Rates = { eur: 1.17, usd: 1.3 };
 const sp = (n: number) => n.toLocaleString('uk-UA').replace(/ /g, ' ');
 const rnd = (n: number) => Math.round(n / (n > 20000 ? 500 : 100)) * (n > 20000 ? 500 : 100);
 
-export default function SoldPricesStrip() {
+// Вибірку лотів робить сервер (lib/home-lots.ts), сюди приходять лише 8 результатів
+export default function SoldPricesStrip({ results: RESULTS, total: TOTAL }: { results: AuctionResult[]; total: number }) {
   const [rates, setRates] = useState<Rates>(FALLBACK);
   useEffect(() => {
     fetch('/api/rates')

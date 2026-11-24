@@ -3,14 +3,14 @@
 // Спільні елементи лотів аукціонів: картка лота, блок ціни, форма заявки.
 // Використовуються на /aukciony і на тематичних сторінках (пікапи, генератори, вантажівки…).
 
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Zap, Hammer, Wrench, HardHat, Forklift, Tractor, Truck, CarFront, Clock, MapPin, Gauge, Calendar, X,
   CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight,
 } from 'lucide-react';
 import { CONTACT } from '@/lib/site-config';
-import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
+import { AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionInfo, type AuctionLot } from '@/lib/auction-core';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
 import { lotPhotoUrl } from '@/lib/lot-photos';
@@ -30,7 +30,14 @@ export const CATEGORY_ICONS: Record<AuctionCategory, React.ComponentType<{ class
   trucks: Truck,
 };
 
-export const AUCTION_BY_ID = Object.fromEntries(AUCTIONS.map((a) => [a.id, a]));
+// Довідник аукціонів передає сторінка через AuctionsProvider (а не імпорт з auction-lots):
+// так у браузер не потрапляє весь масив лотів (~1 МБ), якщо сторінці потрібні лише кілька карток.
+const AuctionsContext = createContext<Record<string, AuctionInfo>>({});
+export function AuctionsProvider({ auctions, children }: { auctions: AuctionInfo[]; children: React.ReactNode }) {
+  const [byId] = useState(() => Object.fromEntries(auctions.map((a) => [a.id, a])));
+  return <AuctionsContext.Provider value={byId}>{children}</AuctionsContext.Provider>;
+}
+const useAuctionById = () => useContext(AuctionsContext);
 
 // Час показуємо за Києвом: так зручніше клієнтам в Україні
 const kyivFmt = new Intl.DateTimeFormat('uk-UA', {
@@ -68,7 +75,7 @@ const updatedFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', d
 
 export function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) {
   const p = closed ? null : lotPrice(lot.auction, lot.lot, lot.item);
-  const sign = AUCTION_BY_ID[lot.auction]?.currency === 'EUR' ? '€' : '£';
+  const sign = useAuctionById()[lot.auction]?.currency === 'EUR' ? '€' : '£';
   const updated = PRICES_UPDATED_AT ? updatedFmt.format(new Date(PRICES_UPDATED_AT)) : null;
   if (p && p.bid) {
     return (
@@ -97,12 +104,15 @@ export function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) 
 
 export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number | null; onRequest: () => void }) {
   const Icon = CATEGORY_ICONS[lot.category];
-  const a = AUCTION_BY_ID[lot.auction];
+  const a = useAuctionById()[lot.auction];
   const closed = now !== null && isClosed(lot, now);
   const left = now !== null && !lot.live ? timeLeft(lot.endsAt, now) : null;
   const urgent = now !== null && !closed && lot.endsAt - now < 24 * 3_600_000;
-  // Фото: наша копія у сховищі → оригінал з аукціону → іконка
-  const photos = [lotPhotoUrl(lot.auction, lot.item), lot.img].filter(Boolean) as string[];
+  // Фото: поки торги йдуть — оригінал з аукціону (він ще є), наша копія у сховищі лише запасна;
+  // після торгів — спершу наша копія (оригінали аукціони прибирають). Так сховище Vercel Blob
+  // не віддає фото кожному відвідувачу сторінки з живими лотами.
+  const ours = lotPhotoUrl(lot.auction, lot.item);
+  const photos = (closed ? [ours, lot.img] : [lot.img, ours]).filter(Boolean) as string[];
   const [photoIdx, setPhotoIdx] = useState(0);
   const imgOk = photoIdx < photos.length;
   // Галерея: усі фото лота гортаються стрілками, по кліку відкриваються на весь екран
@@ -275,7 +285,8 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
   const [hp, setHp] = useState('');
   const [contactError, setContactError] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
-  const a = lot ? AUCTION_BY_ID[lot.auction] : null;
+  const byId = useAuctionById();
+  const a = lot ? byId[lot.auction] : null;
   const bid = parseInt(maxBid || '0', 10) || 0;
   const isRb = a?.house === 'Ritchie Bros';
   const isEur = a?.currency === 'EUR';

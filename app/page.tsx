@@ -1,5 +1,4 @@
-'use client';
-
+// Серверний компонент: дані аукціонів рахуються тут під час збирання, у браузер ідуть лише props.
 import React from 'react';
 import Header from './components/header';
 import HeroSection from './components/hero-section';
@@ -18,25 +17,27 @@ import DeliveriesSection from './components/deliveries-section';
 import ContactSection from './components/contact-section';
 import Footer from './components/footer';
 import FloatingContact from './components/floating-contact';
+import { homeLots } from '@/lib/home-lots';
 
 export default function HomePage() {
+  const lots = homeLots();
   return (
     <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-red-500 selection:text-white">
       <Header />
 
-      <HeroSection />
+      <HeroSection lotsTotal={lots.total} />
 
       {/* Найближчі аукціони за датами + перехід до лотів з фото */}
-      <UpcomingAuctions />
+      <UpcomingAuctions data={{ byAuction: lots.byAuction, calendar: lots.calendar, total: lots.total }} />
 
       {/* За скільки продали техніку на аукціоні + ціна під ключ — одразу під першим екраном */}
-      <SoldPricesStrip />
+      <SoldPricesStrip results={lots.sold} total={lots.soldTotal} />
 
       {/* Плитки категорій каталогу */}
       <CategoryTiles />
 
       {/* Аукціони спецтехніки Великої Британії */}
-      <AuctionsTeaser />
+      <AuctionsTeaser data={{ tiles: lots.tiles, feed: lots.feed, closings: lots.closings, total: lots.total }} />
 
       {/* Приклади реальних цін з живим курсом гривні */}
       <PriceShowcase />

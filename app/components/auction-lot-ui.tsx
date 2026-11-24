@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Zap, Hammer, Wrench, HardHat, Forklift, Tractor, Truck, CarFront, Clock, MapPin, Gauge, Calendar, X,
-  CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight,
+  CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight, ExternalLink,
 } from 'lucide-react';
 import { CONTACT } from '@/lib/site-config';
 import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
@@ -190,6 +190,18 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           <span className="hidden sm:inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {publicPlace(lot.location)}</span>
         </div>
 
+        {a?.house && (
+          <a
+            href={lot.url}
+            target="_blank"
+            rel="noopener nofollow"
+            className="mt-1.5 sm:mt-2 inline-flex items-center gap-1 text-[11px] sm:text-xs text-slate-500 hover:text-red-600 underline decoration-slate-300 underline-offset-2"
+            title={`Лот на сайті ${a.house}`}
+          >
+            Фото й опис: {a.house} <ExternalLink className="w-3 h-3 shrink-0" />
+          </a>
+        )}
+
         {lot.engine && (
           <p className="mt-2 text-sm font-semibold text-slate-700 inline-flex items-start gap-1.5">
             <Zap className="w-4 h-4 mt-0.5 text-red-600 shrink-0" /> <span>Двигун: {lot.engine}</span>
@@ -228,12 +240,12 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           </button>
         </div>
       </div>
-      {gallery && viewer && <PhotoViewer photos={gallery} index={g} onIndex={setG} title={lot.title} onClose={() => setViewer(false)} />}
+      {gallery && viewer && <PhotoViewer photos={gallery} index={g} onIndex={setG} title={lot.title} credit={a?.house} onClose={() => setViewer(false)} />}
     </article>
   );
 }
 
-function PhotoViewer({ photos, index, onIndex, title, onClose }: { photos: string[]; index: number; onIndex: (i: number) => void; title: string; onClose: () => void }) {
+function PhotoViewer({ photos, index, onIndex, title, credit, onClose }: { photos: string[]; index: number; onIndex: (i: number) => void; title: string; credit?: string; onClose: () => void }) {
   const go = (d: number) => onIndex((index + d + photos.length) % photos.length);
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -247,7 +259,7 @@ function PhotoViewer({ photos, index, onIndex, title, onClose }: { photos: strin
   return (
     <div className="fixed inset-0 z-[110] flex flex-col bg-slate-950/95" onClick={onClose} role="dialog" aria-modal="true" aria-label={`Фото: ${title}`}>
       <div className="flex items-center justify-between gap-4 p-3 text-white">
-        <span className="text-sm font-bold truncate">{title} · {index + 1}/{photos.length}</span>
+        <span className="text-sm font-bold truncate">{title} · {index + 1}/{photos.length}{credit && <span className="font-normal text-white/60"> · фото: {credit}</span>}</span>
         <button type="button" onClick={onClose} aria-label="Закрити" className="p-2 rounded-xl hover:bg-white/10 shrink-0"><X className="w-6 h-6" /></button>
       </div>
       <div className="relative flex-1 min-h-0 flex items-center justify-center px-12" onClick={(e) => e.stopPropagation()}>

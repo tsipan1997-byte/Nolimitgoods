@@ -299,7 +299,7 @@ export default function AuctionsPage() {
               onClick={() => { setLotId(null); setAuction(a.id); }}
               className={`shrink-0 h-10 px-4 rounded-xl text-sm font-bold border ${auction === a.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200'}`}
             >
-              {tradeDates(a.dates)} · {publicPlace(a.place)}
+              {a.house} · {tradeDates(a.dates)} · {publicPlace(a.place)}
             </button>
           ))}
         </div>

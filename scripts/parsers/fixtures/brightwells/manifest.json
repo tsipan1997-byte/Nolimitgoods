@@ -1,0 +1,7 @@
+{
+ "GET https://www.brightwells.com/plant-machinery/": "dept.html",
+ "GET https://www.brightwells.com/department/plant-machinery/sale/6092": "sale-6092.html",
+ "GET https://www.brightwells.com/department/plant-machinery/sale/6093": "sale-6093.html",
+ "POST https://api.brightwells.com/api/1/sales/6092/lots/data 3b7b643661": "lots-6092.json",
+ "POST https://api.brightwells.com/api/1/sales/6093/lots/data 3b7b643661": "lots-6093.json"
+}

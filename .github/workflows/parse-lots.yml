@@ -1,0 +1,146 @@
+# Автопарсер лотів аукціонів (Euro Auctions, Wilsons, Cheffins, Brightwells) → lots.json.
+# Документація: scripts/parsers/README.md
+#
+# Запуск вручну: Actions → «Parse auction lots» → Run workflow.
+# Розклад вимкнено, поки Іван не погодить, що парсер працює в Actions (а не на VPS) і куди публікувати фід.
+
+name: Parse auction lots
+
+on:
+  workflow_dispatch:
+    inputs:
+      sources:
+        description: 'Джерела через кому (порожньо = усі ввімкнені): euroauctions,wilsons,cheffins,brightwells'
+        required: false
+        default: ''
+      limit:
+        description: 'Максимум лотів з кожного джерела (порожньо = без обмеження)'
+        required: false
+        default: ''
+      strict:
+        description: 'Падати, якщо впало хоч одне джерело'
+        type: boolean
+        default: false
+      browser:
+        description: 'Ставити Chromium (потрібен для Cheffins/auctionmarts і запасних шляхів EA/Wilsons)'
+        type: boolean
+        default: true
+      publish:
+        description: 'Куди публікувати: none | commit (lib/lots-feed.json у гілку) | blob (Vercel Blob)'
+        type: choice
+        options: [none, commit, blob]
+        default: none
+  # Розкоментувати після погодження Івана (кожні 2 години, хвилина 17 — щоб не потрапляти в пік о :00).
+  # Для розкладу inputs порожні → джерела всі, публікація береться з репозиторної змінної vars.LOTS_PUBLISH (none/commit/blob).
+  # schedule:
+  #   - cron: '17 */2 * * *'
+
+concurrency:
+  group: parse-lots
+  cancel-in-progress: false
+
+permissions:
+  contents: write # потрібно лише для варіанта А (коміт lib/lots-feed.json); для none/blob вистачило б read
+
+jobs:
+  parse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      PUBLISH: ${{ github.event.inputs.publish || vars.LOTS_PUBLISH || 'none' }}
+      # Euro Auctions: необовʼязковий ручний список каталогів "1050:leeds-...-2026,1059:dromore-...-2026"
+      EA_AUCTIONS: ${{ vars.EA_AUCTIONS }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Ставимо лише залежності парсера (cheerio, undici, playwright) у scripts/parsers — без Next.js і всього сайту.
+      # lock-файла немає, тому npm install, а не npm ci.
+      - name: Install parser deps
+        run: npm install --prefix scripts/parsers --no-audit --no-fund
+
+      - name: Cache Playwright browsers
+        if: ${{ github.event.inputs.browser != 'false' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('scripts/parsers/package.json') }}
+
+      - name: Install Chromium (лише для браузерних джерел)
+        if: ${{ github.event.inputs.browser != 'false' }}
+        working-directory: scripts/parsers
+        run: npx playwright install --with-deps chromium
+
+      # Стан між запусками (щоб active → closed/sold і архів працювали): кеш scripts/parsers/out
+      # плюс, якщо фід уже публікується комітом, — lib/lots-feed.json як запасне джерело стану.
+      - name: Restore previous state
+        uses: actions/cache/restore@v4
+        with:
+          path: scripts/parsers/out
+          key: parse-lots-state-${{ github.run_id }}
+          restore-keys: parse-lots-state-
+
+      - name: Seed state from published feed
+        run: |
+          if [ ! -f scripts/parsers/out/lots.json ] && [ -f lib/lots-feed.json ]; then
+            mkdir -p scripts/parsers/out && cp lib/lots-feed.json scripts/parsers/out/lots.json
+          fi
+
+      - name: Parse
+        id: parse
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.sources }}" ]; then ARGS="$ARGS --source=${{ github.event.inputs.sources }}"; fi
+          if [ -n "${{ github.event.inputs.limit }}" ]; then ARGS="$ARGS --limit=${{ github.event.inputs.limit }}"; fi
+          if [ "${{ github.event.inputs.strict }}" = "true" ]; then ARGS="$ARGS --strict"; fi
+          if [ "${{ github.event.inputs.browser }}" = "false" ]; then ARGS="$ARGS --no-browser"; fi
+          node scripts/parsers/run.mjs $ARGS
+
+      - name: Save state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: scripts/parsers/out
+          key: parse-lots-state-${{ github.run_id }}
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lots-${{ github.run_id }}
+          path: scripts/parsers/out/
+          retention-days: 14
+
+      # Сповіщення: при падінні workflow і коли у фіді є проблеми (джерело з помилкою, 0 лотів, застарілі дані).
+      # Без секретів скрипт працює в dry-run (лише друкує текст).
+      - name: Telegram alert
+        if: failure() || success()
+        env:
+          TELEGRAM_ALERT_BOT_TOKEN: ${{ secrets.TELEGRAM_ALERT_BOT_TOKEN }}
+          TELEGRAM_ALERT_CHAT_ID: ${{ secrets.TELEGRAM_ALERT_CHAT_ID }}
+        run: node scripts/parsers/alert-telegram.mjs scripts/parsers/out/lots.json --max-age-hours=3
+
+      # ---- Публікація ----
+      # Варіант А: коміт lib/lots-feed.json у поточну гілку → Vercel перезбирає сайт.
+      - name: Publish (A) commit lib/lots-feed.json
+        if: ${{ success() && env.PUBLISH == 'commit' }}
+        run: |
+          cp scripts/parsers/out/lots.json lib/lots-feed.json
+          git config user.name "lots-parser[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add lib/lots-feed.json
+          if git diff --cached --quiet; then echo "без змін"; exit 0; fi
+          git commit -m "Auctions: lots feed $(date -u +'%Y-%m-%d %H:%M') UTC (parser)"
+          git push
+
+      # Варіант Б: Vercel Blob (сайт читає фід за стабільною URL, без перезбірки). Потрібен секрет BLOB_READ_WRITE_TOKEN.
+      - name: Publish (B) Vercel Blob
+        if: ${{ success() && env.PUBLISH == 'blob' }}
+        env:
+          BLOB_READ_WRITE_TOKEN: ${{ secrets.BLOB_READ_WRITE_TOKEN }}
+        run: |
+          npm install --prefix scripts/parsers --no-save --no-audit --no-fund @vercel/blob@1
+          node scripts/parsers/publish-blob.mjs scripts/parsers/out/lots.json --pathname=lots-feed.json

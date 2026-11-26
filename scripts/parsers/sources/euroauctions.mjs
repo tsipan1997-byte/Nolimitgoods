@@ -12,7 +12,7 @@
 // Додаткові аукціони можна задати вручну: EA_AUCTIONS="1050:leeds-25th-26th-27th-28th-november-2026,1059:dromore-11th-12th-december-2026".
 
 import { defineSource } from '../lib/source.mjs';
-import { load, clean, embeddedJson, findLotArrays, genericLot, anchorCards, labeled } from '../lib/extract.mjs';
+import { load, clean, textOf, embeddedJson, findLotArrays, genericLot, anchorCards, labeled } from '../lib/extract.mjs';
 import { parseDate, zonedToUtc, auctionId, toNum } from '../lib/model.mjs';
 import { sniffPage } from '../lib/browser.mjs';
 
@@ -89,11 +89,12 @@ async function listAuctions(ctx) {
       const m = href.match(/\/auctions\/([a-z0-9-]+-20\d\d)\/?(?:[?#]|$)/i);
       if (!m) return;
       const slug = m[1].toLowerCase();
-      const card = clean($(el).closest('article, li, .card, [class*="auction"], div').first().text());
+      const card = textOf($, $(el).closest('article, li, .card, [class*="auction"], div').first());
       if (!found.has(slug)) found.set(slug, { slug, card });
     });
     ctx.log.info(`аукціонів у списку: ${found.size}`);
   } catch (e) {
+    if (!process.env.EA_AUCTIONS) throw e;
     ctx.log.warn(`список аукціонів недоступний (${e.message}) — беру лише EA_AUCTIONS`);
   }
   // ручний список із змінної середовища
@@ -113,7 +114,7 @@ async function listAuctions(ctx) {
         a = html.match(/equipment-search\?(?:[^"'<>]*&)?a=(\d{3,5})/)?.[1] || html.match(/auction-(\d{3,5})\//)?.[1] || '';
         const $ = load(html);
         name = clean($('h1').first().text());
-        totalLots ??= toNum(clean($('body').text()).match(/([\d,]+)\s+(?:lots|items)/i)?.[1]);
+        totalLots ??= toNum(textOf($, 'body').match(/([\d,]+)\s+(?:lots|items)/i)?.[1]);
       } catch (e) {
         ctx.log.warn(`сторінка аукціону ${slug}: ${e.message}`);
       }
@@ -177,7 +178,14 @@ function fromJson(o, auction) {
   };
 }
 
-const dedupe = (lots) => [...new Map(lots.filter((l) => l.item).map((l) => [l.item, l])).values()];
+const empty = (v) => v == null || v === '' || (Array.isArray(v) && !v.length);
+const fillMissing = (a, b) => {
+  if (!a) return b;
+  const r = { ...a };
+  for (const [k, v] of Object.entries(b)) if (empty(r[k]) && !empty(v)) r[k] = v;
+  return r;
+};
+const dedupe = (lots) => [...lots.reduce((m, l) => (l.item ? m.set(l.item, fillMissing(m.get(l.item), l)) : m), new Map()).values()];
 
 async function listLots(auction, ctx) {
   const a = auction._ref.a;
@@ -194,7 +202,8 @@ async function listLots(auction, ctx) {
     }
     const lots = parseSearchPage(html, auction);
     const before = all.size;
-    for (const l of lots) all.set(l.item, l);
+    // дубль лота на іншій сторінці: доповнюємо порожні поля, не затираємо заповнені
+    for (const l of lots) all.set(l.item, fillMissing(all.get(l.item), l));
     ctx.log.debug(`a=${a} сторінка ${p}: ${lots.length} карток, нових ${all.size - before}`);
     if (p === 1 && !lots.length) {
       const viaBrowser = await browserFallback(auction, ctx);

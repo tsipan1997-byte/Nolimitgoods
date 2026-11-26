@@ -1,0 +1,11 @@
+{
+ "GET https://www.euroauctions.com/en/auctions": "auctions.html",
+ "GET https://www.euroauctions.com/en/auctions/leeds-25th-26th-27th-28th-november-2026": "auction-leeds.html",
+ "GET https://www.euroauctions.com/en/auctions/dromore-11th-12th-december-2026": "auction-dromore.html",
+ "GET https://www.euroauctions.com/en/auctions/zaragoza-10th-11th-december-2026": "auction-zaragoza.html",
+ "GET https://www.euroauctions.com/en/auctions/leeds-16th-17th-september-2026": "auction-leeds-sep.html",
+ "GET https://www.euroauctions.com/en/equipment-search?a=1050": "search-1050-p1.html",
+ "GET https://www.euroauctions.com/en/equipment-search?a=1050&page=2": "search-1050-p2.html",
+ "GET https://www.euroauctions.com/en/equipment-search?a=1059": "search-1059-json.html",
+ "GET https://www.euroauctions.com/en/equipment-search?a=*": "empty.html"
+}

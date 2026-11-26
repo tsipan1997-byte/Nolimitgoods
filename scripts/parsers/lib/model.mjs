@@ -67,8 +67,21 @@ const EXCLUDE = [
 
 // Порядок важливий: спершу основна машина, потім навісне (бо "excavator c/w hammer" — це екскаватор).
 /** @type {[AuctionCategory, RegExp, string][]} [категорія, регулярка, українська назва типу] */
+// Спершу — навісне «для екскаватора» і причепи: інакше "Breaker to suit 20 Ton Excavator" стане екскаватором.
+const FOR_MACHINE = /\b(to suit|suits?|suitable for|for|fits?)\s+(an?\s+)?([\d.\s-]+\s*(t|ton|tonne)s?\s+)?(mini[- ]?)?(excavators?|diggers?|telehandlers?|loaders?|skid ?steers?|machines?|jcb|cat|kubota)\b|\b(excavator|digger)\s+(grab|bucket|attachment|rake|shear|breaker|hammer)s?\b|\bmounted digger attachment\b|\bexcavator mounted\b/i;
+/** @type {[AuctionCategory, RegExp, string][]} */
+const PRE = [
+  ['agro', /\b(grain|bale|monocoque|silage|blower|muck|livestock|agri\w*)\b.*\btrailers?\b|\btrailers?\b.*\b(grain chute|bale)\b/i, 'Причіп'],
+  ['trucks', /\btrailers?\b(?!.*\b(towable|trailer[- ]mounted)\b)/i, 'Причіп'],
+  ['attachments', /\bfront loader\b|\b(wood ?)?chipper\b|\bpotato lifter\b/i, 'Навісне обладнання'],
+];
+const PRE_FOR = [
+  ['breakers', /\bbreakers?\b|\bhammers?\b/i, 'Гідромолот'],
+  ['attachments', /./, 'Навісне обладнання'],
+];
+
 const RULES = [
-  ['telehandlers', /\btele(scopic)?[ -]?handlers?\b|\bloadall\b|\bmanitou\s+m[tl][x]?\s?\d|\bmerlo\b|\bjcb\s+5\d\d[- ]\d+|\bcat\s+th\d|\bdieci\b/i, 'Телескопічний навантажувач'],
+  ['telehandlers', /\btele(scopic)?[ -]?handlers?\b|\btelescopic loader\b|\btelestar\b|\bloadall\b|\bmanitou\s+m[tl][x]?\s?\d|\bmerlo\b|\bjcb\s+5\d\d[- ]\d+|\bcat\s+th\d|\bdieci\b/i, 'Телескопічний навантажувач'],
   ['excavators', /\bmini[- ]?excavator|\bmicro[- ]?excavator|\bmini digger\b/i, 'Міні-екскаватор'],
   ['excavators', /\bwheeled excavator|\bwheel excavator\b/i, 'Колісний екскаватор'],
   ['excavators', /\bexcavators?\b|\bdigger\b/i, 'Гусеничний екскаватор'],
@@ -76,16 +89,25 @@ const RULES = [
   ['excavators', /\bskid[- ]?steer|\bcompact track loader|\btracked loader/i, 'Міні-навантажувач'],
   ['excavators', /\bwheel(ed)? loader|\bloading shovel\b/i, 'Фронтальний навантажувач'],
   ['excavators', /\b(bull)?dozer\b|\bcrawler tractor\b/i, 'Бульдозер'],
+  ['excavators', /\barticulated dump ?truck|\badt\b|\bmoxy\b|\bbell b\d|\bvolvo a\d\d/i, 'Шарнірний самоскид'],
   ['excavators', /\bdumpers?\b/i, 'Думпер'],
-  ['agro', /\b(cambridge|land|ring|flat|grass|crosskill)\s+rollers?\b/i, 'Сільгосптехніка'],
+  ['excavators', /\bfork ?lifts?\b|\brough terrain forklift|\bmaterial handler\b/i, 'Навантажувач'],
+  ['agro', /\b(cambridge|land|ring|flat|grass|crosskill)\s+(rollers?|rolls)\b|\bridger\b|\bbed former\b|\bplanter\b|\bclod separator\b|\bdestoner\b|\bheader\b|\bpress\b(?=.*\b(front|mounted|flexi))|\bcrumbler\b|\binjector\b|\b(bed|potato|beet) lifter\b|\belevator\b(?!.*\b(lift|platform))|\bpress,|\brear press\b|\bweeder\b|\bhoe\b(?!.*backhoe)/i, 'Сільгосптехніка'],
   ['excavators', /\b(road |vibratory |twin drum |single drum )?rollers?\b(?!.*\bshutter)/i, 'Каток'],
   ['excavators', /\bgraders?\b/i, 'Грейдер'],
-  ['trucks', /\barticulated dump truck|\badt\b|\bmoxy\b|\bbell b\d/i, 'Шарнірно-зчленований самоскид'],
   ['agro', /\bcombine\b|\bharvester\b|\bforage\b|\bbaler\b|\bsprayer\b|\bdrill\b(?!.*\bbit)|\bplough\b|\bcultivator\b|\bharrow\b|\bspreader\b|\bforwarder\b|\bmulcher\b|\bmower conditioner\b|\bdisc mower\b|\btedder\b|\brake\b|\bwrapper\b|\bsubsoiler\b|\btopper\b|\bflail\b|\btelescopic loader\b(?=.*\bagri)/i, 'Сільгосптехніка'],
   ['agro', /\btractors?\b(?!\s+unit)|\bfastrac\b/i, 'Трактор'],
-  ['pickups', /\bpick[- ]?ups?\b|\bhilux\b|\branger\b|\bl200\b|\bnavara\b|\bd-?max\b|\bamarok\b|\bdefender\b|\bland cruiser\b|\bdouble cab\b|\bdual cab\b|\bking cab\b|\bclub cab\b/i, 'Пікап'],
-  ['trucks', /\btipper\b|\blorry\b|\btrucks?\b|\btractor unit\b|\bhgv\b|\bbeaver ?tail\b|\bplant (lorry|truck)|\bhook ?loader\b|\bskip loader\b|\bcurtain ?side\b|\bconcrete mixer\b|\b(daf|scania|iveco)\b|\bman tg[slmx]\b|\bvolvo f[hlm]\b|\b(actros|atego|axor|arocs|antos)\b|\brenault (premium|range|midlum|kerax|d wide)\b/i, 'Вантажівка'],
+  ['pickups', /\bpick[- ]?ups?\b|\bhilux\b|\branger\b|\bl200\b|\bnavara\b|\bd-?max\b|\bamarok\b|\bdefender\b|\bland cruiser\b|\butv\b|\butility vehicle\b|\bgator\b|\bkawasaki mule\b|\bmule\s+\d|\brange rover\b|\bfreelander\b|\bdiscovery\b(?=.*\bland rover|\btd)|\b4x4\b|\bdouble cab\b|\bdual cab\b|\bking cab\b|\bclub cab\b/i, 'Пікап'],
   ['energy', /\bgenerators?\b|\bgen ?set\b|\b\d+\s?kva\b|\bcompressors?\b|\blighting towers?\b|\bwelder generator\b|\btransformer\b|\bsolar\b|\bbattery storage\b/i, 'Генератор'],
+  ['trucks', /\btipper\b|\blorry\b|\btrucks?\b|\btractor unit\b|\bhgv\b|\bbeaver ?tail\b|\bplant (lorry|truck)|\bhook ?loader\b|\bskip loader\b|\bcurtain ?side\b|\bconcrete mixer\b|\b(daf|scania|iveco)\b|\bman tg[slmx]\b|\bvolvo f[hlm]\b|\b(actros|atego|axor|arocs|antos)\b|\brenault (premium|range|midlum|kerax|d wide|\d{3}\s?dxi)\b|\bhino\s+\d|\bmitsubishi canter\b|\bisuzu (n|f)[a-z]{2}\b/i, 'Вантажівка'],
+  // Модельні ряди без слова «excavator»/«tractor» у назві (Euro Auctions часто пише лише бренд і модель)
+  ['excavators', /\b(hitachi\s+zx|komatsu\s+pc|cat(erpillar)?\s+3\d\d|volvo\s+ec[rw]?\d|doosan\s+dx|develon\s+dx|kobelco\s+sk|case\s+cx|liebherr\s+[ra]\s?\d|hyundai\s+(r|hx)\d|sany\s+sy|takeuchi\s+tb|kubota\s+(u|kx)\d|yanmar\s+(vio|sv|b)\d|bobcat\s+e\d|wacker neuson\s+e[tz]\d|jcb\s+\d{3}\s?(x|lc|xl|nlc|xlc)\b|jcb\s+(js|jz|\d{2,3}c|\d{2,3}z|8\d{3}|19c|hydradig)|liugong\s+9\d|xcmg\s+xe|kato\s+hd|sunward\s+swe|ihi\s+\d{2}|doosan\s+dh|komatsu\s+pw|takeuchi|kubota\s+kx)/i, 'Гусеничний екскаватор'],
+  ['excavators', /\b(cat(erpillar)?\s+9\d\d[a-z]?|volvo\s+l\d{2,3}|komatsu\s+wa\d|jcb\s+4[0-9]{2}\b|liebherr\s+l\s?5\d\d|doosan\s+dl|hyundai\s+hl|case\s+\d{3}[a-z]?\s*wheel)/i, 'Фронтальний навантажувач'],
+  ['excavators', /\b(cat(erpillar)?\s+d\d[a-z]?|komatsu\s+d\d{2}|liebherr\s+pr\s?\d)/i, 'Бульдозер'],
+  ['excavators', /\b(thwaites|terex\s+(ta|hd)\d|ausa\s+d\d|jcb\s+\d+t\s?(hi|st)?)/i, 'Думпер'],
+  ['excavators', /\b(bomag\s+bw|hamm\s+(hd|h)\d|dynapac\s+(ca|cc)\d|benford\s+tv)/i, 'Каток'],
+  ['agro', /\b(john deere\s+\d{4}|new holland\s+t\d|massey ferguson\s+\d|fendt\s+\d{3}|claas\s+(arion|axion|xerion)|case ih\s+(puma|maxxum|magnum|optum|quadtrac)|deutz[- ]fahr\s+(agrotron|\d)|valtra\s+[nt]\d|kubota\s+m\d|mccormick|zetor|landini|same\s+(explorer|virtus))/i, 'Трактор'],
+  ['telehandlers', /\b(manitou\s+(mt|mlt|mrt)|jcb\s+5\d\d|cat\s+th|genie\s+gth|bobcat\s+t[l]\d|kramer\s+\d{3}|claas\s+scorpion|jcb\s+tm\d|new holland\s+lm\d|new holland\s+th|massey ferguson\s+th)/i, 'Телескопічний навантажувач'],
   ['breakers', /\b(rock |hydraulic )?breakers?\b|\b(rock |hydraulic )?hammers?\b/i, 'Гідромолот'],
   ['attachments', /\bgrabs?\b|\bshears?\b|\bpulveri[sz]er\b|\bcrusher bucket\b|\bmuncher\b|\bprocessor\b|\bsorting\b|\bdemolition\b|\btilt ?rotator\b|\bquick ?hitch\b|\bripper\b|\bauger\b|\bbuckets?\b|\bpallet forks\b|\bclamp\b|\bcompactor plate\b|\bscreening bucket\b|\battachment\b/i, 'Навісне обладнання'],
 ];
@@ -107,6 +129,7 @@ const SUBTYPES = [
   [/\btipper\b/i, 'Самоскид'],
   [/\bbeaver ?tail|\bplant (lorry|truck)/i, 'Евакуатор техніки'],
   [/\btractor unit\b/i, 'Сідельний тягач'],
+  [/\btrailer/i, 'Причіп'],
 ];
 
 /**
@@ -116,11 +139,14 @@ const SUBTYPES = [
 export function categorize(text, hint = '') {
   const t = `${text || ''} ${hint || ''}`;
   if (EXCLUDE.some((re) => re.test(t))) return { category: null, kind: '' };
-  for (const [category, re, kind] of RULES) {
-    if (re.test(t)) {
+  // спершу лише назва (точніший тип), потім назва + підказка (категорія/шлях на сайті)
+  for (const s of hint ? [text || '', t] : [text || '']) {
+    const rules = FOR_MACHINE.test(s) ? [...PRE, ...PRE_FOR] : [...PRE, ...RULES];
+    for (const [category, re, kind] of rules) {
+      if (!re.test(s)) continue;
       const sub = SUBTYPES.find(([r]) => r.test(text || ''));
       // підтип беремо лише якщо він не суперечить категорії (наприклад, "excavator c/w bucket" лишається екскаватором)
-      const subOk = sub && ((category === 'energy') || (category === 'attachments') || (category === 'agro' && kind === 'Сільгосптехніка') || category === 'trucks');
+      const subOk = sub && (category === 'energy' || category === 'attachments' || (category === 'agro' && kind === 'Сільгосптехніка') || category === 'trucks');
       return { category, kind: subOk ? sub[1] : kind };
     }
   }
@@ -132,6 +158,7 @@ export function makeTitle(original, kind, unused) {
   const clean = String(original || '')
     .replace(/^\s*(unused|new)\s+/i, '')
     .replace(/^\s*(19|20)\d\d\s+/, '')
+    .split(/\s+[—–]\s+|\s+-\s+/)[0] // "Hitachi ZX210LC-6 — 700mm Pads, CV…" → "Hitachi ZX210LC-6"
     .replace(/\s+/g, ' ')
     .trim();
   if (!kind) return clean;
@@ -243,7 +270,7 @@ export function uaDateRange(from, to, tz = 'Europe/London') {
 
 /** id аукціону: `${prefix}-${slug місця}-${yyyy}-${mm}` → 'ea-leeds-2026-11'. */
 export function auctionId(prefix, place, ms, tz = 'Europe/London') {
-  const slug = String(place || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'sale';
+  const slug = String(place || '').toLowerCase().replace(/['’]s\b/g, 's').normalize('NFKD').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 30) || 'sale';
   if (!ms) return `${prefix}-${slug}`;
   const f = Object.fromEntries(new Intl.DateTimeFormat('en-GB', { timeZone: tz, year: 'numeric', month: '2-digit' }).formatToParts(new Date(ms)).map((p) => [p.type, p.value]));
   return `${prefix}-${slug}-${f.year}-${f.month}`;

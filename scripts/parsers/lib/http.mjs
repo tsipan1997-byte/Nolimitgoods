@@ -152,9 +152,14 @@ export function createHttp(o) {
         return text;
       } catch (e) {
         err = e.name === 'AbortError' ? new Error(`timeout ${timeoutMs}ms ${url}`) : e;
+        // глибока причина від undici (напр. "Proxy response (403) !== 200 when HTTP Tunneling")
+        const deep = [e.cause, e.cause?.cause].filter(Boolean).map((c) => c.message).join(' / ');
+        if (deep && !(err instanceof HttpError)) err = Object.assign(new Error(`${err.message}: ${deep} [${url}]`), { cause: e });
+        // 403/407 від проксі = хост заборонений політикою мережі → ретраї марні
+        if (/Proxy response \((403|407)\)/.test(deep)) { err.message = `хост заблоковано проксі/мережевою політикою (${deep}) [${url}]`; break; }
         if (e.fatal || attempt === retries) break;
         const back = 1000 * 2 ** attempt;
-        log.warn(`retry ${attempt + 1}/${retries} через ${back}ms: ${err.message}${err.cause ? ' / ' + err.cause.message : ''}`);
+        log.warn(`retry ${attempt + 1}/${retries} через ${back}ms: ${err.message}`);
         await sleep(back);
       } finally {
         clearTimeout(t);

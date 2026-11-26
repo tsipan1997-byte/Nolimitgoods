@@ -5,7 +5,7 @@
 // Якщо HTML без карток — запасний шлях через headless Chromium (перехоплення XHR JSON).
 
 import { defineSource } from '../lib/source.mjs';
-import { load, clean, embeddedJson, findLotArrays, genericLot, anchorCards, labeled } from '../lib/extract.mjs';
+import { load, clean, textOf, embeddedJson, findLotArrays, genericLot, anchorCards, labeled } from '../lib/extract.mjs';
 import { parseDate, auctionId, toNum } from '../lib/model.mjs';
 import { sniffPage } from '../lib/browser.mjs';
 
@@ -16,7 +16,7 @@ const WANT = /plant|machinery|commercial|agri|tractor|construction|groundcare|tr
 const SKIP = /classic|motorbike|car-auction|cars-|salvage|jewel|art|antique|property|house/i;
 
 const PLACES = [
-  [/mallusk|belfast/i, 'Белфаст, Північна Ірландія', 'GBP'],
+  [/belfast|mallusk/i, 'Белфаст, Північна Ірландія', 'GBP'],
   [/portadown/i, 'Портадаун, Північна Ірландія', 'GBP'],
   [/newcastle/i, 'Ньюкасл, Англія', 'GBP'],
   [/dublin|kildare|naas/i, 'Дублін, Ірландія', 'EUR'],
@@ -38,7 +38,7 @@ export function parseAuctionList(html, now = new Date()) {
     const [, slug, sid] = m;
     if (!WANT.test(slug) || SKIP.test(slug)) return;
     const $box = $(el).closest('article, li, .card, [class*="auction"], [class*="Auction"]').first();
-    const text = clean(($box.length ? $box : $(el).parent()).text());
+    const text = textOf($, $box.length ? $box : $(el).parent(), ' | ');
     const prev = out.get(sid);
     if (prev && prev.text.length >= text.length) return;
     out.set(sid, { slug, sid, href, text, title: clean($box.find('h2,h3,h4').first().text()) || clean($(el).text()) });

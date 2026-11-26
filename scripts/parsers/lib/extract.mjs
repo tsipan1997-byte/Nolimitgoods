@@ -6,6 +6,9 @@ import * as cheerio from 'cheerio';
 export const load = (html) => cheerio.load(html);
 export const clean = (s) => String(s ?? '').replace(/\s+/g, ' ').trim();
 
+/** Текст елемента з пробілами між блоками (cheerio .text() склеює "2026" і "9,479" у "20269,479"). */
+export const textOf = ($, el, sep = ' ') => clean($(el).find('*').addBack().contents().filter((_, n) => n.type === 'text').map((_, n) => $(n).text()).get().join(sep));
+
 /** Регістронезалежний доступ до поля з кількома можливими назвами; підтримує шляхи 'a.b' та 'images[0]'. */
 export function pick(obj, keys) {
   if (!obj || typeof obj !== 'object') return undefined;

@@ -77,7 +77,7 @@ export function lotFromCard(row, auction) {
     text: row.text,
     img: row.img,
     url: row.href.startsWith('http') ? row.href : MARTS + row.href,
-    endsAt: parseDate(endTxt) ?? auction.endsAt ?? auction.startsAt ?? null,
+    endsAt: parseDate(endTxt) ?? (auction.live ? auction.startsAt : auction.endsAt) ?? auction.startsAt ?? null,
     currentBid: toNum(String(row.text || '').match(/current bid\s*:?\s*£\s?([\d,]+)/i)?.[1]),
   };
 }
@@ -87,7 +87,7 @@ export function parseCatalogueHtml(html, auction) {
   const out = [];
   for (const j of embeddedJson(html)) for (const arr of findLotArrays(j, 3)) for (const o of arr) {
     const g = genericLot(o);
-    out.push({ ...g, auction: auction.id, item: g.item.slice(0, 40), url: g.url || `${MARTS}/lot/${g.item}`, endsAt: parseDate(g.endsAt) ?? auction.endsAt });
+    out.push({ ...g, auction: auction.id, item: g.item.slice(0, 40), url: g.url || `${MARTS}/lot/${g.item}`, endsAt: parseDate(g.endsAt) ?? (auction.live ? auction.startsAt : auction.endsAt) });
   }
   if (out.length) return out;
   const $ = load(html);

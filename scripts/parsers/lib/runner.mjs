@@ -27,7 +27,7 @@ export async function runSource(src, { limit = Infinity, offlineDir, saveDir, br
     offline: offlineDir ? new OfflineStore(path.join(offlineDir, src.id)) : null,
     record: saveDir ? new RecordStore(path.join(saveDir, src.id)) : null,
   });
-  const ctx = { ...http, log, limit, offline: !!offlineDir, getBrowser: () => (browser ? browser.get() : Promise.resolve(null)), now };
+  const ctx = { ...http, log, limit, offline: !!offlineDir, getBrowser: () => (browser && !offlineDir ? browser.get() : Promise.resolve(null)), now };
   const res = { source: src.id, house: src.house, name: src.name, ok: false, startedAt: new Date(started).toISOString(), durationMs: 0, counts: {}, warnings: [], auctions: [], lots: [] };
   try {
     let rawAuctions = [];

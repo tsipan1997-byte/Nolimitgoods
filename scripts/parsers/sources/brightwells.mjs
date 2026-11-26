@@ -6,7 +6,7 @@
 //     scripts/auto-bids уже ходить у цей API звичайним fetch з Node, браузер не потрібен.
 
 import { defineSource } from '../lib/source.mjs';
-import { load, clean, pick, genericLot } from '../lib/extract.mjs';
+import { load, clean, textOf, pick, genericLot } from '../lib/extract.mjs';
 import { parseDate, auctionId, toNum } from '../lib/model.mjs';
 
 const SITE = 'https://www.brightwells.com';
@@ -24,7 +24,7 @@ export function parseDept(html) {
 export function parseSalePage(html, saleId) {
   const $ = load(html);
   const title = clean($('h1').first().text()) || clean($('title').text()).replace(/\s*[|–-]\s*Brightwells.*$/i, '');
-  const text = clean($('body').text());
+  const text = textOf($, 'body');
   const dates = [...text.matchAll(/\b\d{1,2}(?:st|nd|rd|th)?\s+(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+\d{4}(?:[^\d]{1,6}\d{1,2}[:.]\d\d\s*(?:am|pm)?)?/gi)].map((m) => parseDate(m[0])).filter(Boolean).sort((a, b) => a - b);
   const startsAt = dates[0] ?? null;
   const endsAt = dates[dates.length - 1] ?? startsAt;

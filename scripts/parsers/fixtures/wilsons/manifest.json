@@ -1,0 +1,7 @@
+{
+ "GET https://www.wilsonsauctions.com/auctions": "auctions.html",
+ "GET https://www.wilsonsauctions.com/auctions?category=plant-machinery": 404,
+ "GET https://www.wilsonsauctions.com/auctions/plant-machinery-commercial-auction-6301": "lots-6301-p1.html",
+ "GET https://www.wilsonsauctions.com/auctions/plant-machinery-auction-dublin-6310": "lots-6310-p1.html",
+ "GET https://www.wilsonsauctions.com/auctions/*": "empty.html"
+}

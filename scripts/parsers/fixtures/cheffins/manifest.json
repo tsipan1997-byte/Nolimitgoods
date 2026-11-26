@@ -1,0 +1,7 @@
+{
+ "GET https://www.cheffins.co.uk/machinery-vintage-auctions.htm": "list.html",
+ "GET https://cheffins.auctionmarts.com/sales/Y21zLWRlYw": "cms-group.html",
+ "GET https://cheffins.auctionmarts.com/lots/YzE2MmYzMTItcmF5bGVpZ2g?page=1&pageSize=60": "rayleigh-p1.html",
+ "GET https://cheffins.auctionmarts.com/lots/Y21zLXRyYWN0b3Jz?page=1&pageSize=60": "cms-tractors-p1.html",
+ "GET https://cheffins.auctionmarts.com/lots/*": "empty.html"
+}

@@ -66,7 +66,8 @@ export function mergeFeed(prev, results, opt = {}) {
   const archived = [];
   for (const [id, l] of lots) {
     if (l.status === 'active') continue;
-    const when = Math.max(l.endsAt || 0, Date.parse(l.closedAt || l.lastSeenAt || 0) || 0);
+    // дата торгів, а якщо її немає — коли лот зник з каталогу
+    const when = l.endsAt || Date.parse(l.closedAt || l.lastSeenAt || 0) || 0;
     if (when && when < t - archiveMs) { archived.push(l); lots.delete(id); stats.archived++; }
   }
 

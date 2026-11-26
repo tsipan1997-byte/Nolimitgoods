@@ -1,0 +1,19 @@
+{
+  "name": "nlg-lot-parsers",
+  "private": true,
+  "description": "Автопарсер лотів аукціонів (Euro Auctions, Wilsons, Cheffins, Brightwells). Окремий package.json, щоб у CI ставити лише 2 залежності, а не весь Next.js.",
+  "type": "module",
+  "engines": { "node": ">=20.18" },
+  "scripts": {
+    "parse": "node run.mjs",
+    "test": "node test.mjs",
+    "alert": "node alert-telegram.mjs"
+  },
+  "dependencies": {
+    "cheerio": "1.2.0",
+    "undici": "^6.21.0"
+  },
+  "optionalDependencies": {
+    "playwright": "1.49.1"
+  }
+}

@@ -5,6 +5,8 @@ import { CATEGORIES, GROUPS, TYPE_LABEL, partSlug } from '@/lib/catalog';
 import { allParts, findPart, relatedParts } from '@/lib/parts-server';
 import { clientPriceGbp, shippingGbp } from '@/lib/pricing';
 import PartView from './view';
+import { getTenant } from '@/lib/tenant-server';
+import { absUrl } from '@/lib/tenants';
 
 // Окрема сторінка на кожну деталь — щоб Google знаходив нас за запитом «номер + ціна».
 export const dynamicParams = false;
@@ -52,7 +54,9 @@ export default function Page({ params }: { params: { slug: string } }) {
     price: clientPriceGbp(r, null),
   }));
 
-  const url = `https://www.nolimitgoods.com/part/${params.slug}`;
+  // WHITE LABEL: домен і продавець у schema.org — з конфігу партнера.
+  const t = getTenant();
+  const url = absUrl(t, `/part/${params.slug}`);
   const ship = shippingGbp(item.weightKg, item.oversized);
   const jsonLd: Record<string, unknown> = {
     '@context': 'https://schema.org',
@@ -63,7 +67,7 @@ export default function Page({ params }: { params: { slug: string } }) {
     brand: { '@type': 'Brand', name: item.brand },
     description: `${item.titleEn}. ${item.fitsEn}`,
     url,
-    image: `https://www.nolimitgoods.com${item.image ?? '/images/hero-collage.jpg'}`,
+    image: `${t.siteUrl}${item.image ?? '/images/hero-collage.jpg'}`,
     itemCondition: item.type === 'used' ? 'https://schema.org/UsedCondition' : 'https://schema.org/NewCondition',
   };
   // Для деталей у USD/EUR курсу НБУ під час збірки немає — віддаємо ціну у валюті постачальника (з нашою націнкою),
@@ -77,7 +81,7 @@ export default function Page({ params }: { params: { slug: string } }) {
       priceCurrency: offerCurrency,
       price: offerPrice.toFixed(2),
       availability: 'https://schema.org/BackOrder',
-      seller: { '@type': 'Organization', name: 'NoLimitGoods Ltd' },
+      seller: { '@type': 'Organization', name: t.company.legalName },
       ...(ship !== null && {
         shippingDetails: {
           '@type': 'OfferShippingDetails',

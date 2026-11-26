@@ -8,13 +8,18 @@ import LotPhoto from '../components/lot-photo';
 import { allResults, priceStats } from '@/lib/auction-results';
 import { CATEGORY_LABELS, type AuctionCategory } from '@/lib/auction-lots';
 import { turnkeyGbp } from '@/lib/turnkey';
+import { getTenant } from '@/lib/tenant-server';
 
-export const metadata: Metadata = {
-  title: 'Результати аукціонів техніки Англії — за скільки продали | NoLimitGoods',
-  description:
-    'Реальні ціни продажу техніки на аукціонах Великої Британії: екскаватори, телескопи, трактори, генератори. За скільки продали і скільки коштує під ключ в Україні — у фунтах, євро і доларах.',
-  alternates: { canonical: '/rezultaty-aukcioniv' },
-};
+// WHITE LABEL: назва бренду — з конфігу партнера (для NoLimitGoods — як було).
+export function generateMetadata(): Metadata {
+  const t = getTenant();
+  return {
+    title: `Результати аукціонів техніки Англії — за скільки продали | ${t.brand.name}`,
+    description:
+      'Реальні ціни продажу техніки на аукціонах Великої Британії: екскаватори, телескопи, трактори, генератори. За скільки продали і скільки коштує під ключ в Україні — у фунтах, євро і доларах.',
+    alternates: { canonical: '/rezultaty-aukcioniv' },
+  };
+}
 
 const gbp = (n: number) => `£${n.toLocaleString('en-GB')}`;
 const sp = (n: number) => n.toLocaleString('uk-UA').replace(/\u00a0/g, ' ');

@@ -3,10 +3,22 @@ import { CATEGORIES, partSlug, MODEL_PAGES } from '@/lib/catalog';
 import { allParts } from '@/lib/parts-server';
 import { MACHINE_BRANDS } from '@/lib/spectehnika';
 import { LANDINGS } from '@/lib/landings';
+import { getTenant } from '@/lib/tenant-server';
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const base = 'https://www.nolimitgoods.com';
+  const t = getTenant();
+  // WHITE LABEL: домен партнера; без розділу запчастин (features.parts = false) — лише аукціонний портал.
+  const base = t.siteUrl;
   const now = new Date();
+  if (!t.features.parts) {
+    return [
+      // Головна партнера веде на /aukciony
+      { url: `${base}/aukciony`, lastModified: now, changeFrequency: 'daily', priority: 1 },
+      { url: `${base}/rezultaty-aukcioniv`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+      ...LANDINGS.map((l) => ({ url: `${base}/${l.slug}`, lastModified: now, changeFrequency: 'daily' as const, priority: 0.8 })),
+      { url: `${base}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    ];
+  }
   return [
     { url: base, lastModified: now, changeFrequency: 'weekly', priority: 1 },
     { url: `${base}/catalog`, lastModified: now, changeFrequency: 'weekly', priority: 0.9 },

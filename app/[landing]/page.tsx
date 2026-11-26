@@ -7,13 +7,12 @@ import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
 import LandingLots, { LandingRequestButton } from '../components/landing-lots';
 import TelegramChannelCta from '../components/telegram-channel-cta';
-import { LANDINGS, LANDING_BY_SLUG, type Landing } from '@/lib/landings';
+import { LANDINGS, LANDING_BY_SLUG, fillLandingText, type Landing } from '@/lib/landings';
 import { AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
-import { CONTACT } from '@/lib/site-config';
+import { getTenant } from '@/lib/tenant-server';
+import { absUrl } from '@/lib/tenants';
 import { allResults } from '@/lib/auction-results';
 import LotPhoto from '../components/lot-photo';
-
-const BASE = 'https://www.nolimitgoods.com';
 
 export const dynamicParams = false;
 
@@ -32,6 +31,8 @@ export function generateMetadata({ params }: { params: { landing: string } }): M
   if (!l) return {};
   const lots = lotsFor(l);
   const og = lots[0]?.img;
+  // WHITE LABEL: домен, siteName і OG-картинка — з конфігу партнера (для NoLimitGoods — як було).
+  const t = getTenant();
   return {
     title: l.title,
     description: l.description,
@@ -40,11 +41,11 @@ export function generateMetadata({ params }: { params: { landing: string } }): M
     openGraph: {
       title: l.title,
       description: l.description,
-      url: `${BASE}/${l.slug}`,
+      url: absUrl(t, `/${l.slug}`),
       type: 'website',
       locale: 'uk_UA',
-      siteName: 'NoLimitGoods Ltd',
-      images: og ? [{ url: og, alt: l.h1 }] : [{ url: '/ads/og_aukciony_nlg.jpg', width: 1200, height: 630 }],
+      siteName: t.brand.nameLegal,
+      images: og ? [{ url: og, alt: l.h1 }] : [{ url: t.brand.ogAuctionsImage, width: 1200, height: 630 }],
     },
   };
 }
@@ -52,6 +53,10 @@ export function generateMetadata({ params }: { params: { landing: string } }): M
 export default function LandingPage({ params }: { params: { landing: string } }) {
   const l = LANDING_BY_SLUG[params.landing];
   if (!l) notFound();
+  const tenant = getTenant();
+  const BASE = tenant.siteUrl;
+  // Хто виставляє інвойс: NoLimitGoods — своя юрособа; партнер — нейтрально (експорт оформлює британський партнер).
+  const fill = (s: string) => fillLandingText(s, tenant.isDefault ? tenant.company.legalName : 'експортера');
   const lots = lotsFor(l);
   const years = lots.map((x) => x.year).filter(Boolean) as number[];
   const related = l.related.map((s) => LANDING_BY_SLUG[s]).filter(Boolean);
@@ -71,7 +76,7 @@ export default function LandingPage({ params }: { params: { landing: string } })
     {
       '@context': 'https://schema.org',
       '@type': 'FAQPage',
-      mainEntity: l.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })),
+      mainEntity: l.faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: fill(a) } })),
     },
     {
       '@context': 'https://schema.org',
@@ -213,8 +218,8 @@ export default function LandingPage({ params }: { params: { landing: string } })
       <section className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 md:py-10 space-y-6 text-[15px] text-slate-700 leading-relaxed">
         {l.sections.map(([h, t]) => (
           <div key={h}>
-            <h2 className="text-lg md:text-xl font-black text-slate-900">{h}</h2>
-            <p className="mt-2">{t}</p>
+            <h2 className="text-lg md:text-xl font-black text-slate-900">{fill(h)}</h2>
+            <p className="mt-2">{fill(t)}</p>
           </div>
         ))}
       </section>
@@ -229,7 +234,7 @@ export default function LandingPage({ params }: { params: { landing: string } })
                 <summary className="cursor-pointer font-bold list-none flex items-center justify-between gap-3">
                   {q} <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-open:rotate-180" />
                 </summary>
-                <p className="mt-2 text-sm text-slate-600">{a}</p>
+                <p className="mt-2 text-sm text-slate-600">{fill(a)}</p>
               </details>
             ))}
           </div>
@@ -238,7 +243,7 @@ export default function LandingPage({ params }: { params: { landing: string } })
             <div>
               <div className="font-black text-lg">Не знайшли потрібне?</div>
               <div className="text-sm text-slate-600">
-                Напишіть, що шукаєте, — підберемо на найближчих аукціонах. Телефон: {CONTACT.phoneUk} (UK) · {CONTACT.phoneUa} (UA)
+                Напишіть, що шукаєте, — підберемо на найближчих аукціонах. Телефон: {tenant.contact.phoneUk} (UK) · {tenant.contact.phoneUa} (UA)
               </div>
             </div>
             <LandingRequestButton className="h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shrink-0">Залишити запит</LandingRequestButton>
@@ -261,8 +266,8 @@ export default function LandingPage({ params }: { params: { landing: string } })
           )}
 
           <p className="mt-6 text-xs text-slate-500">
-            Аукціонні доми, на яких ми купуємо, — незалежні компанії. NoLimitGoods Ltd не є їхнім представником: ми купуємо лоти як
-            покупець на ваше замовлення. Інформація про розмитнення — довідкова, не є юридичною консультацією.
+            {/* Один текстовий вузол (шаблонний рядок), щоб HTML для NoLimitGoods лишився як був */}
+            {`Аукціонні доми, на яких ми купуємо, — незалежні компанії. ${tenant.company.legalName} не є їхнім представником: ми купуємо лоти як покупець на ваше замовлення. Інформація про розмитнення — довідкова, не є юридичною консультацією.`}
           </p>
         </div>
       </section>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MODEL_PAGES, itemsForModel } from '@/lib/catalog';
 import ModelPageView from './view';
+import { getTenant } from '@/lib/tenant-server';
 
 // Статичні сторінки під популярні в Україні моделі: /zapchastyny/tesla-model-y тощо.
 export function generateStaticParams() {
@@ -11,7 +12,8 @@ export function generateStaticParams() {
 export function generateMetadata({ params }: { params: { model: string } }): Metadata {
   const m = MODEL_PAGES.find((x) => x.slug === params.model);
   if (!m) return {};
-  const title = `Запчастини ${m.name} з доставкою в Україну — ціни | NoLimitGoods`;
+  const t = getTenant();
+  const title = `Запчастини ${m.name} з доставкою в Україну — ціни | ${t.brand.name}`;
   return {
     title,
     description: `${m.introUk} Ціни у фунтах і гривнях, доставка в Україну 5–14 робочих днів. Оригінал, аналог, б/у.`,

@@ -1,5 +1,5 @@
 {
-"updatedAt": "2026-11-26T12:08:52Z",
+"updatedAt": "2026-11-26T16:07:32Z",
 "prices": {
 "rb-nov:438": {
 "bid": 2300,
@@ -582,7 +582,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140510933": {
-"bid": 43500,
+"bid": 164000,
 "bids": 0
 },
 "ea-leeds-nov:#140546440": {
@@ -622,7 +622,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140558785": {
-"bid": 26500,
+"bid": 28000,
 "bids": 0
 },
 "ea-leeds-nov:#140560297": {
@@ -634,11 +634,11 @@
 "bids": 0
 },
 "ea-leeds-nov:#140560455": {
-"bid": 1600,
+"bid": 4250,
 "bids": 0
 },
 "ea-leeds-nov:#140561295": {
-"bid": 1900,
+"bid": 5000,
 "bids": 0
 },
 "ea-leeds-nov:#140561520": {
@@ -646,7 +646,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140563350": {
-"bid": 22500,
+"bid": 28000,
 "bids": 0
 },
 "ea-leeds-nov:#140565245": {
@@ -670,7 +670,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140566839": {
-"bid": 1100,
+"bid": 74000,
 "bids": 0
 },
 "ea-leeds-nov:#140566889": {
@@ -690,7 +690,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140567407": {
-"bid": 9500,
+"bid": 39000,
 "bids": 0
 },
 "ea-leeds-nov:#140568140": {
@@ -698,7 +698,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140568173": {
-"bid": 15000,
+"bid": 53000,
 "bids": 0
 },
 "ea-leeds-nov:#140568631": {
@@ -710,7 +710,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140569316": {
-"bid": 1200,
+"bid": 54000,
 "bids": 0
 },
 "ea-leeds-nov:#140569329": {
@@ -718,7 +718,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140569331": {
-"bid": 1000,
+"bid": 39000,
 "bids": 0
 },
 "ea-leeds-nov:#140569565": {
@@ -730,7 +730,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140569719": {
-"bid": 1800,
+"bid": 3750,
 "bids": 0
 },
 "ea-leeds-nov:#140570041": {
@@ -738,11 +738,11 @@
 "bids": 0
 },
 "ea-leeds-nov:#140570071": {
-"bid": 21000,
+"bid": 91000,
 "bids": 0
 },
 "ea-leeds-nov:#140570268": {
-"bid": 1100,
+"bid": 39000,
 "bids": 0
 },
 "ea-leeds-nov:#140571946": {
@@ -778,7 +778,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140573075": {
-"bid": 29000,
+"bid": 66000,
 "bids": 0
 },
 "ea-leeds-nov:#140573432": {
@@ -786,7 +786,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140573546": {
-"bid": 1000,
+"bid": 56000,
 "bids": 0
 },
 "ea-leeds-nov:#140573826": {
@@ -810,7 +810,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140575411": {
-"bid": 13500,
+"bid": 37500,
 "bids": 0
 },
 "ea-leeds-nov:#140575649": {
@@ -834,7 +834,7 @@
 "bids": 0
 },
 "ea-leeds-nov:#140576586": {
-"bid": 21000,
+"bid": 47000,
 "bids": 0
 },
 "ea-leeds-nov:#140576634": {
@@ -866,44 +866,44 @@
 "bids": 5
 },
 "bw-nov:1408": {
-"bid": 716,
-"bids": 9
+"bid": 790,
+"bids": 12
 },
 "bw-nov:1423": {
-"bid": 100,
-"bids": 1
+"bid": 250,
+"bids": 5
 },
 "bw-nov:1426": {
-"bid": 100,
-"bids": 1
+"bid": 800,
+"bids": 3
 },
 "bw-nov:1427": {
-"bid": 100,
-"bids": 1
+"bid": 800,
+"bids": 3
 },
 "bw-nov:1429": {
-"bid": 654,
-"bids": 1
+"bid": 777,
+"bids": 4
 },
 "bw-nov:1430": {
-"bid": 45,
-"bids": 5
+"bid": 55,
+"bids": 8
 },
 "bw-nov:2252": {
-"bid": 60,
-"bids": 6
+"bid": 275,
+"bids": 21
 },
 "bw-nov:2257": {
-"bid": 4,
-"bids": 2
+"bid": 201,
+"bids": 25
 },
 "bw-nov:2516": {
-"bid": 380,
-"bids": 5
+"bid": 410,
+"bids": 6
 },
 "bw-nov:2526": {
-"bid": 280,
-"bids": 3
+"bid": 601,
+"bids": 6
 },
 "bw-nov:2528": {
 "bid": 20,
@@ -954,32 +954,32 @@
 "bids": 0
 },
 "bw-nov:1431": {
-"bid": null,
-"bids": 0
+"bid": 50,
+"bids": 1
 },
 "bw-nov:1432": {
-"bid": null,
-"bids": 0
+"bid": 100,
+"bids": 2
 },
 "bw-nov:1433": {
-"bid": null,
-"bids": 0
+"bid": 140,
+"bids": 3
 },
 "bw-nov:1434": {
-"bid": 20,
-"bids": 2
+"bid": 150,
+"bids": 3
 },
 "bw-nov:1435": {
-"bid": 20,
-"bids": 2
+"bid": 40,
+"bids": 3
 },
 "bw-nov:1436": {
 "bid": null,
 "bids": 0
 },
 "bw-nov:2519": {
-"bid": null,
-"bids": 0
+"bid": 100,
+"bids": 2
 },
 "bw-nov:2599": {
 "bid": null,
@@ -991,6 +991,38 @@
 },
 "bw-nov:3507": {
 "bid": null,
+"bids": 0
+},
+"ea-leeds-nov:#140551827": {
+"bid": 100000,
+"bids": 0
+},
+"ea-leeds-nov:#140560040": {
+"bid": 5000,
+"bids": 0
+},
+"ea-leeds-nov:#140566663": {
+"bid": 77000,
+"bids": 0
+},
+"ea-leeds-nov:#140566690": {
+"bid": 49000,
+"bids": 0
+},
+"ea-leeds-nov:#140569848": {
+"bid": 33000,
+"bids": 0
+},
+"ea-leeds-nov:#140572231": {
+"bid": 38000,
+"bids": 0
+},
+"ea-leeds-nov:#140573506": {
+"bid": 40000,
+"bids": 0
+},
+"ea-leeds-nov:#140575410": {
+"bid": 1000,
 "bids": 0
 }
 }

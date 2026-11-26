@@ -62,7 +62,7 @@ export default function FeaturesSection() {
                 <Warehouse className="w-6 h-6 text-red-500" />
               </div>
               <h3 className="text-lg font-bold text-white mb-1">
-                {isUk ? 'Хаб у Ковентрі (UK)' : 'Coventry Hub (UK)'}
+                {tenant.isDefault ? (isUk ? 'Хаб у Ковентрі (UK)' : 'Coventry Hub (UK)') : (isUk ? 'Склад партнера в Ковентрі (UK)' : 'Partner warehouse, Coventry (UK)')}
               </h3>
               <div className="text-xs text-amber-400/90 font-medium mb-3">
                 {tenant.isDefault ? '374 Hipswell Highway, CV2 5FR' : 'Coventry, UK'}

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { useTenant } from '@/lib/tenant-context';
 import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
+import { feeLabels, importMargin } from '@/lib/turnkey';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
 import { lotPhotoUrl } from '@/lib/lot-photos';
@@ -420,10 +421,17 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
                   <span>Комісія аукціону</span>
                   <b>{isRb ? money(auctionFee(bid)) : 'за тарифом аукціону'}</b>
                 </div>
+                {tenant.pricing.mode === 'nlg' ? (
                 <div className="flex justify-between">
                   <span>Наша послуга ({pct(bid > FEE.threshold ? FEE.highPct : FEE.lowPct)}%{ourFee(bid) === minFee(bid) ? `, мінімум для лота ${bid <= 5000 ? 'до 5 000' : bid < 10000 ? 'до 10 000' : 'від 10 000'}` : ''})</span>
                   <b>{money(ourFee(bid))}</b>
                 </div>
+                ) : (
+                <div className="flex justify-between">
+                  <span>Комісія за викуп і супровід ({feeLabels(tenant.pricing).range}, мінімум {feeLabels(tenant.pricing).min})</span>
+                  <b>{money(importMargin(tenant.pricing, bid).total)}</b>
+                </div>
+                )}
                 <div className="flex justify-between"><span>Експортні документи</span><b>~{money(AUCTION_META.exportDocsGbp)}</b></div>
                 <div className="flex justify-between text-slate-500"><span>Доставка в Україну</span><span>порахуємо під габарит</span></div>
                 {isRb && (

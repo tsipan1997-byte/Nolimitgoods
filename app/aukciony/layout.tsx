@@ -2,14 +2,16 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { getTenant } from '@/lib/tenant-server';
 import { absUrl } from '@/lib/tenants';
+import { feeLabels } from '@/lib/turnkey';
 
 const TITLE_BASE = 'Аукціони спецтехніки Великої Британії — купити екскаватор, JCB, трактор з аукціону';
-const DESCRIPTION =
-  'Купуємо спецтехніку на аукціонах Англії під ваше замовлення: екскаватори, JCB 3CX, телескопічні навантажувачі, трактори John Deere і New Holland, генератори, гідромолоти. Euro Auctions, Cheffins, Wilsons, Brightwells. Комісія 1,99–2,99%, огляд перед ставкою, експорт і доставка в Україну.';
+const description = (fee: string) =>
+  `Купуємо спецтехніку на аукціонах Англії під ваше замовлення: екскаватори, JCB 3CX, телескопічні навантажувачі, трактори John Deere і New Holland, генератори, гідромолоти. Euro Auctions, Cheffins, Wilsons, Brightwells. Комісія ${fee}, огляд перед ставкою, експорт і доставка в Україну.`;
 
 // WHITE LABEL: бренд, домен і OG-картинка — з конфігу партнера (для NoLimitGoods — як було).
 export function generateMetadata(): Metadata {
   const t = getTenant();
+  const DESCRIPTION = description(feeLabels(t.pricing).range);
   return {
     title: `${TITLE_BASE} | ${t.brand.name}`,
     description: DESCRIPTION,

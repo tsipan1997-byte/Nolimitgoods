@@ -10,7 +10,7 @@
 
 import { defineSource } from '../lib/source.mjs';
 import { load, clean, embeddedJson, findLotArrays, genericLot } from '../lib/extract.mjs';
-import { parseDate, auctionId, toNum } from '../lib/model.mjs';
+import { parseDate, auctionId, toNum, zonedToUtc } from '../lib/model.mjs';
 
 const LIST = 'https://www.cheffins.co.uk/machinery-vintage-auctions.htm';
 const MARTS = 'https://cheffins.auctionmarts.com';
@@ -20,6 +20,44 @@ const SKIP_HEAD = /automobilia|collection|vintage|tools & workshop|horticultural
 /** Розбір сторінки зі списком аукціонів Cheffins. Експортується для тестів. */
 export function parseList(html, now = new Date()) {
   const $ = load(html);
+  // Поточна верстка (листопад 2026): картки .calmach-card з .cma-title / .cma-type / .ki__start / .ki__end / .ki__loc.
+  // Підпис («Starts:») стоїть ПЕРЕД значенням у тому самому .ki, тому старий розбір по рядках брав не те.
+  const cards = $('.calmach-card');
+  if (cards.length) {
+    const out = [];
+    const seen = new Set();
+    cards.each((_, c) => {
+      const $c = $(c);
+      const href = $c.find('a[href*="auctionmarts.com/"]').filter((_, a) => /catalogue/i.test($(a).text())).first().attr('href') || '';
+      if (!/auctionmarts\.com\/(lots|sales)\//.test(href)) return;
+      const url = href.split('?')[0];
+      if (seen.has(url)) return;
+      seen.add(url);
+      const ki = (cls) => clean($c.find(`.${cls}`).first().clone().find('.ki-label').remove().end().text());
+      const name = clean($c.find('.cma-title').first().text()) || 'Cheffins sale';
+      const type = clean($c.find('.cma-type').first().text());
+      const desc = clean($c.find('.cma-desc').first().text());
+      if (SKIP.test(`${name} ${type}`) || /\bvintage|classic\b/i.test(desc) && !/machinery sale/i.test(name)) return;
+      const startsAt = parseDate(ki('ki__start'));
+      const endsAt = parseDate(ki('ki__end')) ?? startsAt;
+      if (endsAt && endsAt < now.getTime() - 36 * 3600e3) return;
+      const loc = ki('ki__loc');
+      const live = /machinery sale|live|on-?site/i.test(`${name} ${type}`) && !/timed/i.test(type);
+      out.push({
+        id: auctionId('ch', name.replace(/['’]s\b/g, '').replace(/\b(ltd|limited|farms?|&|and|the)\b/gi, ' ').trim().split(/\s+/).slice(0, 3).join('-'), startsAt || endsAt),
+        name,
+        place: loc ? `${loc}, Англія` : 'Кембриджшир, Англія',
+        startsAt,
+        endsAt,
+        live,
+        url,
+        currency: 'GBP',
+        location: loc || 'Кембриджшир',
+        _ref: { url, group: /\/sales\//.test(url), info: `${type}\n${desc}` },
+      });
+    });
+    return out;
+  }
   const res = new Map();
   $('a[href]').each((_, a) => {
     const href = $(a).attr('href') || '';
@@ -63,22 +101,50 @@ export function parseList(html, now = new Date()) {
 }
 
 /** Розбір картки .lot-grid-item (текст + посилання) у сирий лот. Експортується для тестів. */
-export function lotFromCard(row, auction) {
+export function lotFromCard(row, auction, now = null) {
   const id = (row.href.match(/\/lot\/([A-Za-z0-9=_-]+)/) || [])[1] || '';
-  const lines = String(row.text || '').split(/\n+/).map((s) => clean(s)).filter(Boolean);
-  const lotno = clean(row.lotno) || (lines[0]?.match(/^(?:lot\s*)?(\d+[a-z]?)$/i) || [])[1] || '';
-  const title = lines.find((l) => l !== lotno && !/^lot\s*\d/i.test(l) && !/^(ends|closing|current|bid|estimate|opening|watch|£|\d+\s*bids?)/i.test(l) && l.length > 4) || '';
-  const endTxt = String(row.text || '').match(/(?:ends|closing|closes)\s*:?\s*([^\n]+)/i)?.[1];
+  const raw = String(row.text || '');
+  const lines = raw.split(/\n+/).map((s) => clean(s)).filter(Boolean);
+  // Службові рядки картки auctionmarts: «Live Auction», «Timed Auction», «SOLD», «LOT 1», «Final bid», «£60.00»,
+  // «Ended at», «4/24/2026, 9:02:39 AM», «Buyer's Premium…», «LOG IN TO BID».
+  const SERVICE = /^((live|timed|online)\s+auction|sold|unsold|passed|withdrawn|open|closed|ended|upcoming|in progress|not started|lot\s*\d+[a-z]?|\d+[a-z]?|final bid|current bid|starting bid|opening bid|winning bid|ended at|ends at|ends in|closes( at)?|closing|time left|vat rate|\d+(\.\d+)?%|estimate.*|buyer'?s premium.*|log in to .*|bid now|place bid|watch|£\s?[\d,.]+|\d+\s*bids?|\d{1,2}\/\d{1,2}\/\d{4}.*|\d+[dhms](\s+\d+[dhms])*)$/i;
+  // «LOT 0 — IMPORTANT SALE INFORMATION» та подібні інформаційні картки — не лоти
+  if (/important (sale )?information|terms (and|&) conditions|viewing (times|information)|collection (times|information)/i.test(raw)) return { auction: auction.id, item: '', original: '' };
+  const lotno = (clean(row.lotno) || lines.find((l) => /^lot\s*\d/i.test(l)) || '').replace(/^lot\s*/i, '');
+  const title = lines.find((l) => !SERVICE.test(l) && l.length > 3) || '';
+  // auctionmarts пише дату в американському форматі M/D/YYYY, h:mm:ss AM
+  const us = raw.match(/(?:ended at|ends at|closes(?: at)?|closing)\s*:?\s*\n?\s*(\d{1,2})\/(\d{1,2})\/(\d{4}),?\s*(\d{1,2}):(\d\d)(?::\d\d)?\s*(AM|PM)?/i);
+  let endsAt = null;
+  if (us) {
+    let h = +us[4];
+    if (us[6]?.toUpperCase() === 'PM' && h < 12) h += 12;
+    if (us[6]?.toUpperCase() === 'AM' && h === 12) h = 0;
+    endsAt = zonedToUtc(+us[3], +us[1] - 1, +us[2], h, +us[5]);
+  }
+  // торги з таймером: «Time left\n4d 23h» → приблизний час закриття від моменту збору
+  const left = !endsAt && raw.match(/time left\s*\n?\s*((?:\d+\s*[dhms]\s*)+)/i);
+  if (left) {
+    const unit = { d: 864e5, h: 36e5, m: 6e4, s: 1e3 };
+    const ms = [...left[1].matchAll(/(\d+)\s*([dhms])/gi)].reduce((s, [, n, u]) => s + +n * unit[u.toLowerCase()], 0);
+    if (ms) endsAt = (now ? now.getTime() : Date.now()) + ms;
+  }
+  const sold = /^sold$/im.test(raw);
+  const finalBid = toNum(raw.match(/final bid\s*\n?\s*£\s?([\d,]+(?:\.\d\d)?)/i)?.[1]);
+  const currentBid = toNum(raw.match(/(?:current|winning) bid\s*:?\s*\n?\s*£\s?([\d,]+(?:\.\d\d)?)/i)?.[1]) ?? (sold ? null : finalBid);
+  const ended = /^(sold|unsold|passed|ended|closed)$/im.test(raw) || /ended at/i.test(raw);
   return {
     auction: auction.id,
     item: id.slice(0, 40), // так само, як у lib/auction-cheffins.ts
     lot: lotno,
     original: title,
-    text: row.text,
+    // у евристики (години, пробіг) — лише назва й опис без службових рядків і часу закриття
+    text: lines.filter((l) => !SERVICE.test(l) && l !== title).join('\n'),
     img: row.img,
     url: row.href.startsWith('http') ? row.href : MARTS + row.href,
-    endsAt: parseDate(endTxt) ?? (auction.live ? auction.startsAt : auction.endsAt) ?? auction.startsAt ?? null,
-    currentBid: toNum(String(row.text || '').match(/current bid\s*:?\s*£\s?([\d,]+)/i)?.[1]),
+    endsAt: endsAt ?? (auction.live ? auction.startsAt : auction.endsAt) ?? auction.startsAt ?? null,
+    currentBid,
+    ...(sold && finalBid ? { status: 'sold', soldPrice: finalBid } : ended ? { status: 'closed' } : {}),
+    location: auction.location,
   };
 }
 
@@ -151,7 +217,7 @@ async function catalogueViaBrowser(url, auction, ctx, limit) {
       if (rows.length === before || got.length < 60) break;
     }
   } finally { await page.close(); }
-  return rows.map((r) => lotFromCard(r, auction));
+  return rows.map((r) => lotFromCard(r, auction, ctx.now)).filter((l) => l.item);
 }
 
 async function listLots(auction, ctx) {

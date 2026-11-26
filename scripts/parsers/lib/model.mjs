@@ -63,6 +63,13 @@ const EXCLUDE = [
   /\btoy\b/i, /\bpedal\b/i, /\bspares?\s+(only|box)\b/i, /\bbox of\b/i, /\bpallet of\b/i, /\bquantity of\b/i, /\bqty of\b/i,
   /\bpower ?washer\b/i, /\bhand tools?\b/i, /\bstrimmer\b/i, /\blawn ?mower\b/i, /\bride[- ]on mower\b/i, /\bgolf\b/i,
   /\bshipping container\b/i, /\bportacabin\b/i, /\bwelfare unit\b/i, /\boffice\b/i, /\bfurniture\b/i,
+  // інструментальні шафи/ящики («Roller Tool Chest», «Roller Cabinet») — інакше «roller» дає «Каток»
+  /\btool (chest|box|cabinet|kit|set)s?\b/i, /\broller cabinet\b/i, /\b\d+\s*drawer\b/i, /\bworkbench\b/i,
+  // дрібний інструмент і витратні матеріали: пильні диски, ключі, фарборозпилювачі
+  /\b(cut|cutting|tile|stone|diamond|saw|porcelain)\s+blades?\b/i, /\bblades?\s*\(\d+\s*of\)/i, /\bkeys?\s+set\b|\bmaster keys?\b/i,
+  /\bpaint sprayer\b|\bairless\b/i,
+  // квадроцикли (TaoTao Ranger 250 тощо) — не пікапи
+  /\btaotao\b/i, /\bquad ?bikes?\b/i, /\batv\b/i,
 ];
 
 // Порядок важливий: спершу основна машина, потім навісне (бо "excavator c/w hammer" — це екскаватор).

@@ -2,7 +2,7 @@
 // + доставка до України + розмитнення (мито, ПДВ 20%) + брокер. Це орієнтир для клієнта, а не оферта:
 // точний розрахунок робимо під конкретний лот перед торгами.
 
-import { AUCTIONS, AUCTION_META, FEE, ourFee, rbFee, type AuctionLot } from './auction-lots';
+import { AUCTIONS, AUCTION_META, FEE, ourFee, pct, rbFee, type AuctionLot } from './auction-lots';
 import type { TenantPricing } from './tenants';
 
 export const GBP_USD = 1.3; // орієнтовний курс для постів, округлюємо результат
@@ -98,6 +98,16 @@ type PriceLot = Pick<AuctionLot, 'auction' | 'category' | 'title' | 'original'>;
 export function isUkLot(l: Pick<AuctionLot, 'auction'>): boolean {
   const a = AUCTIONS.find((x) => x.id === l.auction);
   return (a?.currency ?? 'GBP') === 'GBP';
+}
+
+/**
+ * Підписи комісії для інтерфейсу. NoLimitGoods — «1,99–2,99%»; партнер — його маржа з конфігу (lib/tenants.ts → pricing).
+ * Нашу частку (50% маржі або мінімум £150/£299/£799) клієнту партнера не показуємо — це внутрішній розподіл.
+ */
+export function feeLabels(p: Pick<TenantPricing, 'mode' | 'partnerMarginPct' | 'partnerMarginMinGbp'>): { range: string; from: string; min: string; isPartner: boolean } {
+  if (p.mode === 'nlg') return { range: `${pct(FEE.highPct)}–${pct(FEE.lowPct)}%`, from: `${pct(FEE.highPct)}%`, min: '£150', isPartner: false };
+  const v = `${pct(+(p.partnerMarginPct * 100).toFixed(2))}%`;
+  return { range: v, from: v, min: `£${p.partnerMarginMinGbp.toLocaleString('en-GB')}`, isPartner: true };
 }
 
 /** Мінімум нашої частки за молотком (£150 / £299 / £799). */

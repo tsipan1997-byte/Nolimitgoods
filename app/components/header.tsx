@@ -83,7 +83,7 @@ export default function Header() {
             <div className="flex items-center gap-5">
               <span className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-red-500" />
-                {isUk ? 'Власний хаб у Ковентрі, Велика Британія' : 'Own hub in Coventry, UK'}
+                {tenant.isDefault ? (isUk ? 'Власний хаб у Ковентрі, Велика Британія' : 'Own hub in Coventry, UK') : (isUk ? 'Склад партнера в Ковентрі, Велика Британія' : 'Partner warehouse in Coventry, UK')}
               </span>
               <span className="flex items-center gap-1.5">
                 <Truck className="w-3.5 h-3.5 text-red-500" />

@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { Gavel, ArrowRight, Clock, Send } from 'lucide-react';
 import { useTenant } from '@/lib/tenant-context';
+import { feeLabels } from '@/lib/turnkey';
 import { AUCTIONS, AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
 import { lotiv } from '@/lib/plural';
 
@@ -43,7 +44,8 @@ function left(ms: number, now: number) {
 }
 
 export default function AuctionsTeaser() {
-  const { social: SOCIAL } = useTenant();
+  const { social: SOCIAL, pricing } = useTenant();
+  const fee = feeLabels(pricing);
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
     setNow(Date.now());
@@ -85,7 +87,7 @@ export default function AuctionsTeaser() {
             </div>
             <div className="rounded-2xl bg-red-600 p-3 text-white">
               <div className="text-[11px] font-semibold uppercase text-red-100">Комісія від</div>
-              <div className="mt-0.5 font-mono text-xl md:text-2xl font-bold">{pct(FEE.highPct)}%</div>
+              <div className="mt-0.5 font-mono text-xl md:text-2xl font-bold">{fee.from}</div>
             </div>
           </div>
         </div>
@@ -136,6 +138,12 @@ export default function AuctionsTeaser() {
 
           <div className="rounded-2xl bg-slate-50 border border-slate-200 p-5">
             <h3 className="font-black text-lg text-slate-900">Чесна ціна</h3>
+            {fee.isPartner ? (
+              <div className="mt-3 text-sm text-slate-600">
+                <div className="font-mono text-2xl font-bold text-slate-900">{fee.range}</div>
+                від ціни лота, мінімум <b className="text-slate-900">{fee.min}</b> за лот
+              </div>
+            ) : (
             <div className="mt-3 grid grid-cols-2 gap-3">
               <div>
                 <div className="font-mono text-2xl font-bold text-slate-900">{pct(FEE.lowPct)}%</div>
@@ -149,6 +157,7 @@ export default function AuctionsTeaser() {
                 Мінімум за лот: <b className="text-slate-900">£150</b> до £5 000 · <b className="text-slate-900">£299</b> до £10 000 · <b className="text-slate-900">£799</b> від £10 000
               </div>
             </div>
+            )}
             <ul className="mt-3 space-y-1.5 text-sm text-slate-600">
               <li>Не виграли — повертаємо передоплату повністю</li>
               <li>Огляд перед ставкою: склад у Ковентрі</li>

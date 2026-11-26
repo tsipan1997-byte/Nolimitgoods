@@ -90,11 +90,24 @@ export class RecordStore {
   }
 }
 
+/** Назва захисту від ботів, якщо сторінка — його заглушка (Cloudflare, Barracuda тощо). Обходити їх НЕ робимо. */
+export function wafName(body = '') {
+  const b = String(body);
+  if (/cloudflare|cf-ray|just a moment|cf-chl/i.test(b)) return 'Cloudflare';
+  if (/barracuda|WEB_SCRAPING_BLOCKED/i.test(b)) return 'Barracuda';
+  if (/incapsula|imperva/i.test(b)) return 'Imperva';
+  if (/akamai|reference #\d+\.[0-9a-f]+/i.test(b)) return 'Akamai';
+  if (/<title>\s*(blocked|access denied|attention required)/i.test(b)) return 'захист від ботів';
+  return '';
+}
+
 export class HttpError extends Error {
   constructor(status, url, body = '') {
-    super(`HTTP ${status} ${url}${/cloudflare|cf-ray|just a moment/i.test(body) ? ' (Cloudflare)' : ''}`);
+    const waf = wafName(body);
+    super(`HTTP ${status} ${url}${waf ? ` (${waf}: сайт блокує автоматичний збір — потрібен дозвіл або фід від аукціону)` : ''}`);
     this.status = status;
     this.url = url;
+    this.blocked = !!waf && (status === 403 || status === 429 || status === 503);
   }
 }
 

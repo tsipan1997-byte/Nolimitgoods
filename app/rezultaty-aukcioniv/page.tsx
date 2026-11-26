@@ -9,6 +9,7 @@ import { allResults, priceStats } from '@/lib/auction-results';
 import { CATEGORY_LABELS, type AuctionCategory } from '@/lib/auction-lots';
 import { turnkeyGbpFor } from '@/lib/turnkey';
 import { getTenant } from '@/lib/tenant-server';
+import { feeLabels } from '@/lib/turnkey';
 
 // WHITE LABEL: назва бренду — з конфігу партнера (для NoLimitGoods — як було).
 export function generateMetadata(): Metadata {
@@ -213,7 +214,7 @@ export default async function ResultsPage() {
         <div className="rounded-2xl bg-slate-50 border border-slate-200 p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4 justify-between">
           <div>
             <div className="font-black text-lg">Хочете таку саму техніку за таку ціну?</div>
-            <div className="text-sm text-slate-600">Назвіть модель і ліміт — поставимо на найближчому аукціоні. Комісія 1,99–2,99%.</div>
+            <div className="text-sm text-slate-600">Назвіть модель і ліміт — поставимо на найближчому аукціоні. Комісія {feeLabels(pricing).range}.</div>
           </div>
           <Link href="/aukciony#lots" className="h-12 px-6 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold inline-flex items-center justify-center gap-2 shrink-0">
             Обрати лот <ArrowRight className="w-4 h-4" />
@@ -221,7 +222,7 @@ export default async function ResultsPage() {
         </div>
         <p className="mt-4 text-xs text-slate-500">
           «Продано за» — фінальна ціна молотка, підтверджена аукціоном. «Під ключ в Україні» — орієнтир: ціна молотка + збір аукціону за його
-          тарифом + наша комісія 1,99–2,99% + експортні документи + доставка до України + розмитнення (ПДВ 20%, мито де воно є) + брокер. Окремо
+          тарифом + {pricing.mode === 'nlg' ? 'наша комісія' : 'комісія за викуп і супровід'} {feeLabels(pricing).range} + експортні документи + доставка до України + розмитнення (ПДВ 20%, мито де воно є) + брокер. Окремо
           на аукціоні платиться ПДВ Англії 20% від ціни молотка і збору аукціону: це тимчасова сума, вона повертається після того, як
           техніка вивезена на експорт, тому в ціну під ключ не входить. Умови по ПДВ Англії обговорюємо з кожним клієнтом індивідуально. Точну суму під конкретний лот рахуємо перед торгами. Курс НБУ{rates.date ? ` на ${rates.date}` : ''}, суми округлені.
         </p>

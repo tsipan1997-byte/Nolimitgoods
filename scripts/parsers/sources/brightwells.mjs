@@ -107,6 +107,9 @@ export default defineSource({
   id: 'brightwells',
   house: 'Brightwells',
   name: 'Brightwells — Plant & Machinery',
+  // Вимкнено за замовчуванням: сайт віддає 403 через Cloudflare (перевірено 26.11.2026).
+  // Обходити захист не робимо — увімкнути після дозволу/фіду від Brightwells.
+  enabled: false,
   needsBrowser: false,
   currency: 'GBP',
   baseUrl: SITE,

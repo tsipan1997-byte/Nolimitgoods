@@ -12,6 +12,7 @@ import TelegramChannelCta from '../components/telegram-channel-cta';
 import { CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
 import { publicPlace, tradeDates } from '@/lib/auction-public';
 import { useTenant } from '@/lib/tenant-context';
+import { feeLabels } from '@/lib/turnkey';
 
 
 const CATEGORY_ORDER: AuctionCategory[] = ['excavators', 'telehandlers', 'agro', 'pickups', 'trucks', 'energy', 'breakers', 'attachments'];
@@ -66,7 +67,11 @@ export default function AuctionsPage() {
     ? FAQ
     : FAQ.map(([q2, a]) => [
         q2,
-        q2 === 'Чи треба платити британський VAT?' && tenant.pricing.showUkVatDeposit ? FAQ_PARTNER_VAT : a.replace(FAQ_NLG_SENTENCE, FAQ_PARTNER_SENTENCE),
+        q2 === 'Чи треба платити британський VAT?' && tenant.pricing.showUkVatDeposit
+          ? FAQ_PARTNER_VAT
+          : q2 === 'Скільки коштує ваша послуга?'
+            ? `${feeLabels(tenant.pricing).range} від ціни лота, але не менше ${feeLabels(tenant.pricing).min} за лот. До цього додається комісія самого аукціону, експортні документи та доставка. Усе фіксуємо в інвойсі до оплати.`
+            : a.replace(FAQ_NLG_SENTENCE, FAQ_PARTNER_SENTENCE),
       ]);
   const [now, setNow] = useState<number | null>(null);
   const [cat, setCat] = useState<AuctionCategory | 'all'>('all');
@@ -188,9 +193,9 @@ export default function AuctionsPage() {
               <div className="text-sm text-slate-500">з {openStats.auctions} аукціонів, з фото</div>
             </div>
             <div className="rounded-2xl bg-white border border-slate-200 p-4">
-              <div className="text-xs text-slate-500 font-semibold uppercase">Наша комісія</div>
+              <div className="text-xs text-slate-500 font-semibold uppercase">{tenant.isDefault ? 'Наша комісія' : 'Комісія'}</div>
               <div className="mt-1 text-2xl font-black">
-                {pct(FEE.highPct)}–{pct(FEE.lowPct)}%
+                {feeLabels(tenant.pricing).range}
               </div>
               <div className="text-sm text-slate-500">від ціни лота, без прихованих доплат</div>
             </div>
@@ -410,6 +415,14 @@ export default function AuctionsPage() {
               <Wallet className="w-5 h-5 text-red-600" /> Ціна для вас: прозоро, з інвойсом
             </div>
             <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
+              {tenant.pricing.mode !== 'nlg' ? (
+                <div className="rounded-xl bg-slate-50 p-4 md:col-span-2">
+                  <div className="font-black text-lg">{feeLabels(tenant.pricing).range}</div>
+                  <div className="text-slate-600">
+                    комісія за викуп і супровід від ціни лота, мінімум {feeLabels(tenant.pricing).min} за лот (береться більша сума)
+                  </div>
+                </div>
+              ) : (<>
               <div className="rounded-xl bg-slate-50 p-4">
                 <div className="font-black text-lg">{pct(FEE.lowPct)}%</div>
                 <div className="text-slate-600">наша послуга, якщо лот до {gbp(FEE.threshold)}</div>
@@ -427,6 +440,7 @@ export default function AuctionsPage() {
                 </div>
                 <div className="mt-2 text-xs text-slate-500">Береться більша сума: відсоток або мінімум.</div>
               </div>
+              </>)}
               <div className="rounded-xl bg-slate-50 p-4">
                 <div className="font-black text-lg">+ аукціон і доставка</div>
                 <div className="text-slate-600">

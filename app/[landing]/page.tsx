@@ -10,6 +10,7 @@ import TelegramChannelCta from '../components/telegram-channel-cta';
 import { LANDINGS, LANDING_BY_SLUG, fillLandingText, type Landing } from '@/lib/landings';
 import { AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
 import { getTenant } from '@/lib/tenant-server';
+import { feeLabels } from '@/lib/turnkey';
 import { absUrl } from '@/lib/tenants';
 import { allResults } from '@/lib/auction-results';
 import LotPhoto from '../components/lot-photo';
@@ -128,7 +129,7 @@ export default function LandingPage({ params }: { params: { landing: string } })
             </div>
             <div className="rounded-xl bg-red-600 p-3">
               <div className="text-[11px] text-red-100 font-semibold uppercase">Комісія</div>
-              <div className="text-[15px] leading-6 sm:text-xl md:text-2xl font-black whitespace-nowrap">{pct(FEE.highPct)}–{pct(FEE.lowPct)}%</div>
+              <div className="text-[15px] leading-6 sm:text-xl md:text-2xl font-black whitespace-nowrap">{feeLabels(tenant.pricing).range}</div>
             </div>
           </div>
 

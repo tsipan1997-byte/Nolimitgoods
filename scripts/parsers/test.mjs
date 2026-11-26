@@ -177,13 +177,15 @@ test('алерт: проблеми у фіді', () => {
   assert.deepEqual(checkFeed(null), ['файл lots.json відсутній або не читається']);
 });
 
-test('CLI: run.mjs --offline пише <source>.json і lots.json; alert dry-run', () => {
+test('CLI: run.mjs --offline пише <source>.json і lots.json; alert dry-run', async () => {
   const out = fs.mkdtempSync(path.join(os.tmpdir(), 'parsers-'));
   const pub = path.join(out, 'pub', 'lots-feed.json');
   const env = { ...process.env, TELEGRAM_ALERT_BOT_TOKEN: '', TELEGRAM_ALERT_CHAT_ID: '' };
-  const r = spawnSync(process.execPath, [path.join(HERE, 'run.mjs'), `--offline=${FIX}`, `--out=${out}`, '--now=2026-11-26T09:00:00Z', '--limit=3', `--publish=${pub}`, '--strict'], { encoding: 'utf8', env });
+  const r = spawnSync(process.execPath, [path.join(HERE, 'run.mjs'), '--source=euroauctions,wilsons,cheffins,brightwells', `--offline=${FIX}`, `--out=${out}`, '--now=2026-11-26T09:00:00Z', '--limit=3', `--publish=${pub}`, '--strict'], { encoding: 'utf8', env });
   assert.equal(r.status, 0, r.stderr + r.stdout);
   for (const f of ['euroauctions', 'wilsons', 'cheffins', 'brightwells', 'lots']) assert.ok(fs.existsSync(path.join(out, `${f}.json`)), f);
+  // за замовчуванням Wilsons і Brightwells вимкнені (сайти блокують збір), а BCA/дилери — заглушки
+  assert.deepEqual(SOURCES.filter((s) => s.enabled).map((s) => s.id), ['euroauctions', 'cheffins']);
   const feed = JSON.parse(fs.readFileSync(pub, 'utf8'));
   assert.deepEqual(Object.keys(feed).sort(), ['auctions', 'generatedAt', 'lots', 'sources']);
   assert.ok(feed.lots.length > 0);
@@ -195,4 +197,41 @@ test('CLI: run.mjs --offline пише <source>.json і lots.json; alert dry-run'
   assert.equal(a.status, 0, a.stderr);
   assert.match(a.stdout, /dry-run/); // bca впав → є проблема → лише друк, без відправки
   fs.rmSync(out, { recursive: true, force: true });
+});
+
+test('Cheffins: картки auctionmarts 2026 (Timed / Live, службові рядки, US-дата, продані)', async () => {
+  const { lotFromCard } = await import('./sources/cheffins.mjs');
+  const auction = { id: 'ch-x', live: false, startsAt: null, endsAt: Date.UTC(2026, 11, 1), location: 'Essex, CM3 2AG' };
+  const now = new Date('2026-11-26T10:00:00Z');
+  const timed = lotFromCard({ lotno: 'LOT 2', href: '/lot/ZDkyMGYyNGUtNjlhNi00ZmNiLWI5NWEtYzdhYzY4MzJlMmMz', img: '',
+    text: 'Timed Auction\nIN PROGRESS\nLOT 2\n2014 FENDT 516 Vario 50kph 4wd TRACTOR\nTime left\n4d 23h\nBuyer\'s Premium: 3.5% + VAT (minimum £2.50 + VAT per lot)\nVAT Rate\n20%\nLOG IN TO VIEW PRICES & BID' }, auction, now);
+  assert.equal(timed.lot, '2');
+  assert.equal(timed.original, '2014 FENDT 516 Vario 50kph 4wd TRACTOR');
+  assert.equal(timed.location, 'Essex, CM3 2AG');
+  assert.equal(timed.endsAt, now.getTime() + (4 * 24 + 23) * 3600e3);
+  assert.ok(!/time left|vat rate/i.test(timed.text));
+  const info = lotFromCard({ lotno: 'LOT 0', href: '/lot/abc', img: '', text: 'Timed Auction\nIN PROGRESS\nLOT 0\nIMPORTANT SALE INFORMATION\nTime left\n4d 23h' }, auction, now);
+  assert.equal(info.item, '');
+  const sold = lotFromCard({ lotno: 'LOT 1', href: '/lot/MDA1MjU0ODMtOTc3Yi00NTQ2', img: '',
+    text: 'Live Auction\nSOLD\nLOT 1\nJCB 3CX Sitemaster\nFinal bid\n£12,500.00\nEnded at\n4/24/2026, 9:02:39 AM\nLOG IN TO BID' }, auction, now);
+  assert.equal(sold.original, 'JCB 3CX Sitemaster');
+  assert.equal(sold.status, 'sold');
+  assert.equal(sold.soldPrice, 12500);
+  assert.equal(new Date(sold.endsAt).toISOString(), '2026-04-24T08:02:00.000Z'); // 9:02 BST
+});
+
+test('категорії: інструментальні шафи, диски, ключі, квадроцикли — не техніка', async () => {
+  const { categorize } = await import('./lib/model.mjs');
+  for (const t of ['Unused Boss Roller Tool Chest, 7 Drawer', 'Boss 72" 17 Drawer Tool Chest/Roller Cabinet', 'Gator 10" Porcelain Cut Blade (4 of)', 'TAOTAO Ranger 250', '42 Heavy Construction Equipment Master Keys Set to suit CAT', 'Dyna Power Electric Airless Paint Sprayer'])
+    assert.equal(categorize(t).category, null, t);
+  assert.equal(categorize('Bomag BW120 twin drum roller').kind, 'Каток');
+  assert.equal(categorize('2015 John Deere Gator XUV 855D').category, 'pickups');
+});
+
+test('wafName: Cloudflare / Barracuda розпізнаються, звичайна сторінка — ні', async () => {
+  const { wafName, HttpError } = await import('./lib/http.mjs');
+  assert.equal(wafName('<title>Blocked</title> ... WEB_SCRAPING_BLOCKED_CATEGORY © Barracuda Networks'), 'Barracuda');
+  assert.equal(wafName('<title>Just a moment...</title> cf-ray'), 'Cloudflare');
+  assert.equal(wafName('<html><title>Plant auction</title></html>'), '');
+  assert.equal(new HttpError(403, 'https://x', 'cf-ray').blocked, true);
 });

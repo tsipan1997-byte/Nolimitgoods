@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTenant } from '@/lib/tenant-context';
+import { feeLabels } from '@/lib/turnkey';
 import {
   ShieldCheck,
   ArrowRight,
@@ -883,6 +885,7 @@ const AUCTION_PROMOS = [
 ].map((p) => ({ ...p, img: AUCTION_LOTS.find((l) => l.img && p.pick(l.original))?.img }));
 
 function AuctionPromoCard({ promo, isUk }: { promo: (typeof AUCTION_PROMOS)[number]; isUk: boolean }) {
+  const fee = feeLabels(useTenant().pricing);
   return (
     <Link href={promo.href} className="group relative rounded-2xl overflow-hidden bg-slate-900 text-white min-h-[22rem] flex flex-col justify-end shadow-xs hover:shadow-md transition-all">
       {promo.img && (
@@ -893,7 +896,7 @@ function AuctionPromoCard({ promo, isUk }: { promo: (typeof AUCTION_PROMOS)[numb
       <div className="relative p-4 space-y-2">
         <span className="inline-flex px-2.5 py-1 rounded-full bg-red-600 text-[10px] font-black uppercase tracking-wider">{isUk ? 'Нове · аукціони UK' : 'New · UK auctions'}</span>
         <h3 className="text-lg font-black leading-tight">{isUk ? promo.titleUk : promo.titleEn}</h3>
-        <p className="text-xs text-slate-300">{promo.noteUk} · {isUk ? 'комісія від 1,99%' : 'fee from 1.99%'}</p>
+        <p className="text-xs text-slate-300">{promo.noteUk} · {isUk ? `комісія від ${fee.from}` : `fee from ${fee.from.replace(',', '.')}`}</p>
         <span className="mt-1 w-full py-2 px-3 rounded-xl bg-white text-slate-900 font-bold text-[11px] tracking-wider uppercase flex items-center justify-center gap-1.5">
           {isUk ? 'Дивитися лоти з фото' : 'See lots'} <ArrowRight className="w-3.5 h-3.5" />
         </span>

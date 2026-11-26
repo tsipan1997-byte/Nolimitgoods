@@ -8,6 +8,7 @@ import { defineSource } from '../lib/source.mjs';
 import { load, clean, textOf, embeddedJson, findLotArrays, genericLot, anchorCards, labeled } from '../lib/extract.mjs';
 import { parseDate, auctionId, toNum } from '../lib/model.mjs';
 import { sniffPage } from '../lib/browser.mjs';
+import { wafName } from '../lib/http.mjs';
 
 const BASE = 'https://www.wilsonsauctions.com';
 const LIST_URLS = [`${BASE}/auctions`, `${BASE}/auctions?category=plant-machinery`];
@@ -119,6 +120,9 @@ async function listLots(auction, ctx) {
       const b = await ctx.getBrowser();
       if (!b) { ctx.log.warn(`${auction.url}: карток немає в HTML, браузер недоступний`); break; }
       const { html: h2, json } = await sniffPage(b, auction.url, { log: ctx.log });
+      // Wilsons стоїть за Barracuda з категорією WEB_SCRAPING_BLOCKED — це пряма заборона збору. Не обходимо.
+      const waf = wafName(h2);
+      if (waf && !json.length) throw new Error(`${auction.url}: ${waf} блокує автоматичний збір (сайт забороняє скрапінг) — потрібен письмовий дозвіл або фід/API від Wilsons`);
       for (const j of json) for (const arr of findLotArrays(j.data, 3)) {
         ctx.log.info(`API знайдено: ${j.method} ${j.url} → ${arr.length}`);
         for (const o of arr) { const g = genericLot(o); all.set(g.item, { ...g, auction: auction.id, url: g.url || `${auction.url}/lots/${g.item}`, endsAt: auction.startsAt }); }
@@ -135,6 +139,9 @@ export default defineSource({
   id: 'wilsons',
   house: 'Wilsons Auctions',
   name: 'Wilsons Auctions — Plant & Machinery',
+  // Вимкнено за замовчуванням: сайт блокує автоматичний збір (Barracuda, WEB_SCRAPING_BLOCKED, перевірено 26.11.2026).
+  // Увімкнути лише після письмового дозволу або отримання фіду/API від Wilsons. Явний запуск --source=wilsons працює.
+  enabled: false,
   needsBrowser: false,
   browserFallback: true,
   currency: 'GBP',

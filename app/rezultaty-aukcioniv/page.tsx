@@ -7,7 +7,7 @@ import FloatingContact from '../components/floating-contact';
 import LotPhoto from '../components/lot-photo';
 import { allResults, priceStats } from '@/lib/auction-results';
 import { CATEGORY_LABELS, type AuctionCategory } from '@/lib/auction-lots';
-import { turnkeyGbp } from '@/lib/turnkey';
+import { turnkeyGbpFor } from '@/lib/turnkey';
 import { getTenant } from '@/lib/tenant-server';
 
 // WHITE LABEL: назва бренду — з конфігу партнера (для NoLimitGoods — як було).
@@ -50,6 +50,7 @@ const dayFmt = new Intl.DateTimeFormat('uk-UA', { timeZone: 'Europe/Kyiv', day: 
 const ORDER: AuctionCategory[] = ['agro', 'excavators', 'telehandlers', 'trucks', 'pickups'];
 
 export default async function ResultsPage() {
+  const pricing = getTenant().pricing;
   const rates = await getRates();
   const results = allResults().filter((r) => ORDER.includes(r.category));
   const stats = priceStats(results).filter((s) => s.count >= 2).slice(0, 24);
@@ -140,7 +141,7 @@ export default async function ResultsPage() {
                     <td className="hidden sm:table-cell px-3 py-2.5 text-right font-mono whitespace-nowrap">{gbp(s.max)}</td>
                     <td className="px-3 py-2.5 text-right whitespace-nowrap">
                       {(() => {
-                        const t = turnkeyGbp(s.sample, s.median);
+                        const t = turnkeyGbpFor(pricing, s.sample, s.median);
                         const mid = (t[0] + t[1]) / 2;
                         return (
                           <>
@@ -186,7 +187,7 @@ export default async function ResultsPage() {
                       ≈ {money(r.bid * rates.gbpEur, '€')} · {money(r.bid * rates.gbpUsd, '$')}
                     </div>
                     {(() => {
-                      const t = turnkeyGbp(r, r.bid);
+                      const t = turnkeyGbpFor(pricing, r, r.bid);
                       return (
                         <div className="mt-2 rounded-lg bg-emerald-50 border border-emerald-200 px-2 py-1.5">
                           <div className="text-[11px] font-semibold text-emerald-800">Під ключ в Україні ≈</div>

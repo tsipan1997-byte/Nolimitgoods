@@ -6,7 +6,8 @@ import { ArrowRight, TrendingUp } from 'lucide-react';
 import LotPhoto from './lot-photo';
 import { allResults, type AuctionResult } from '@/lib/auction-results';
 import type { AuctionCategory } from '@/lib/auction-lots';
-import { turnkeyGbp } from '@/lib/turnkey';
+import { turnkeyGbpFor } from '@/lib/turnkey';
+import { useTenant } from '@/lib/tenant-context';
 
 // Блок на головній одразу під першим екраном: за скільки реально продали техніку на аукціоні
 // і скільки вона коштувала б під ключ в Україні. Тільки техніка (без ковшів, молотів, генераторів).
@@ -31,6 +32,7 @@ const sp = (n: number) => n.toLocaleString('uk-UA').replace(/ /g, ' ');
 const rnd = (n: number) => Math.round(n / (n > 20000 ? 500 : 100)) * (n > 20000 ? 500 : 100);
 
 export default function SoldPricesStrip() {
+  const pricing = useTenant().pricing;
   const [rates, setRates] = useState<Rates>(FALLBACK);
   useEffect(() => {
     fetch('/api/rates')
@@ -65,7 +67,7 @@ export default function SoldPricesStrip() {
 
         <div className="mt-5 -mx-4 px-4 sm:mx-0 sm:px-0 flex sm:grid sm:grid-cols-2 lg:grid-cols-4 gap-3 overflow-x-auto snap-x snap-mandatory pb-1">
           {RESULTS.map((r) => {
-            const t = turnkeyGbp(r, r.bid);
+            const t = turnkeyGbpFor(pricing, r, r.bid);
             const lo = rnd(t[0]), hi = Math.max(rnd(t[1]), lo);
             return (
               <Link

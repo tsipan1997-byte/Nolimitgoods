@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Zap, Hammer, Wrench, HardHat, Forklift, Tractor, Truck, CarFront, Clock, MapPin, Gauge, Calendar, X,
-  CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight, ExternalLink,
+  CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight,
 } from 'lucide-react';
 import { CONTACT } from '@/lib/site-config';
 import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
@@ -189,18 +189,6 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           )}
           <span className="hidden sm:inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {publicPlace(lot.location)}</span>
         </div>
-
-        {a?.house && (
-          <a
-            href={lot.url}
-            target="_blank"
-            rel="noopener nofollow"
-            className="mt-1.5 sm:mt-2 inline-flex items-center gap-1 text-[11px] sm:text-xs text-slate-500 hover:text-red-600 underline decoration-slate-300 underline-offset-2"
-            title={`Лот на сайті ${a.house}`}
-          >
-            Фото й опис: {a.house} <ExternalLink className="w-3 h-3 shrink-0" />
-          </a>
-        )}
 
         {lot.engine && (
           <p className="mt-2 text-sm font-semibold text-slate-700 inline-flex items-start gap-1.5">

@@ -1,5 +1,5 @@
 {
-"updatedAt": "2026-11-23T18:07:40Z",
+"updatedAt": "2026-11-26T12:08:52Z",
 "prices": {
 "rb-nov:438": {
 "bid": 2300,
@@ -571,6 +571,426 @@
 },
 "ea-leeds-nov:#140569349": {
 "bid": 650,
+"bids": 0
+},
+"ea-leeds-nov:#100379418": {
+"bid": 28000,
+"bids": 0
+},
+"ea-leeds-nov:#100379419": {
+"bid": 32000,
+"bids": 0
+},
+"ea-leeds-nov:#140510933": {
+"bid": 43500,
+"bids": 0
+},
+"ea-leeds-nov:#140546440": {
+"bid": 33000,
+"bids": 0
+},
+"ea-leeds-nov:#140546441": {
+"bid": 33500,
+"bids": 0
+},
+"ea-leeds-nov:#140550324": {
+"bid": 75000,
+"bids": 0
+},
+"ea-leeds-nov:#140551504": {
+"bid": 21000,
+"bids": 0
+},
+"ea-leeds-nov:#140556453": {
+"bid": 25500,
+"bids": 0
+},
+"ea-leeds-nov:#140556456": {
+"bid": 24000,
+"bids": 0
+},
+"ea-leeds-nov:#140557538": {
+"bid": 3250,
+"bids": 0
+},
+"ea-leeds-nov:#140557539": {
+"bid": 3250,
+"bids": 0
+},
+"ea-leeds-nov:#140557540": {
+"bid": 4500,
+"bids": 0
+},
+"ea-leeds-nov:#140558785": {
+"bid": 26500,
+"bids": 0
+},
+"ea-leeds-nov:#140560297": {
+"bid": 4750,
+"bids": 0
+},
+"ea-leeds-nov:#140560299": {
+"bid": 4750,
+"bids": 0
+},
+"ea-leeds-nov:#140560455": {
+"bid": 1600,
+"bids": 0
+},
+"ea-leeds-nov:#140561295": {
+"bid": 1900,
+"bids": 0
+},
+"ea-leeds-nov:#140561520": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140563350": {
+"bid": 22500,
+"bids": 0
+},
+"ea-leeds-nov:#140565245": {
+"bid": 59000,
+"bids": 0
+},
+"ea-leeds-nov:#140565345": {
+"bid": 45000,
+"bids": 0
+},
+"ea-leeds-nov:#140565612": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140566692": {
+"bid": 82500,
+"bids": 0
+},
+"ea-leeds-nov:#140566769": {
+"bid": 23500,
+"bids": 0
+},
+"ea-leeds-nov:#140566839": {
+"bid": 1100,
+"bids": 0
+},
+"ea-leeds-nov:#140566889": {
+"bid": 58000,
+"bids": 0
+},
+"ea-leeds-nov:#140566945": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140566984": {
+"bid": 16000,
+"bids": 0
+},
+"ea-leeds-nov:#140567140": {
+"bid": 2300,
+"bids": 0
+},
+"ea-leeds-nov:#140567407": {
+"bid": 9500,
+"bids": 0
+},
+"ea-leeds-nov:#140568140": {
+"bid": 25500,
+"bids": 0
+},
+"ea-leeds-nov:#140568173": {
+"bid": 15000,
+"bids": 0
+},
+"ea-leeds-nov:#140568631": {
+"bid": 12000,
+"bids": 0
+},
+"ea-leeds-nov:#140569199": {
+"bid": 46500,
+"bids": 0
+},
+"ea-leeds-nov:#140569316": {
+"bid": 1200,
+"bids": 0
+},
+"ea-leeds-nov:#140569329": {
+"bid": 32500,
+"bids": 0
+},
+"ea-leeds-nov:#140569331": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140569565": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140569566": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140569719": {
+"bid": 1800,
+"bids": 0
+},
+"ea-leeds-nov:#140570041": {
+"bid": 68000,
+"bids": 0
+},
+"ea-leeds-nov:#140570071": {
+"bid": 21000,
+"bids": 0
+},
+"ea-leeds-nov:#140570268": {
+"bid": 1100,
+"bids": 0
+},
+"ea-leeds-nov:#140571946": {
+"bid": 31000,
+"bids": 0
+},
+"ea-leeds-nov:#140572033": {
+"bid": 14000,
+"bids": 0
+},
+"ea-leeds-nov:#140572040": {
+"bid": 67500,
+"bids": 0
+},
+"ea-leeds-nov:#140572163": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140572316": {
+"bid": 3200,
+"bids": 0
+},
+"ea-leeds-nov:#140572317": {
+"bid": 4600,
+"bids": 0
+},
+"ea-leeds-nov:#140572397": {
+"bid": 3400,
+"bids": 0
+},
+"ea-leeds-nov:#140572400": {
+"bid": 2400,
+"bids": 0
+},
+"ea-leeds-nov:#140573075": {
+"bid": 29000,
+"bids": 0
+},
+"ea-leeds-nov:#140573432": {
+"bid": 27500,
+"bids": 0
+},
+"ea-leeds-nov:#140573546": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140573826": {
+"bid": 5000,
+"bids": 0
+},
+"ea-leeds-nov:#140573921": {
+"bid": 51000,
+"bids": 0
+},
+"ea-leeds-nov:#140574330": {
+"bid": 9000,
+"bids": 0
+},
+"ea-leeds-nov:#140574510": {
+"bid": 14000,
+"bids": 0
+},
+"ea-leeds-nov:#140575145": {
+"bid": 42000,
+"bids": 0
+},
+"ea-leeds-nov:#140575411": {
+"bid": 13500,
+"bids": 0
+},
+"ea-leeds-nov:#140575649": {
+"bid": 31000,
+"bids": 0
+},
+"ea-leeds-nov:#140575819": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140575821": {
+"bid": 11500,
+"bids": 0
+},
+"ea-leeds-nov:#140576260": {
+"bid": 13500,
+"bids": 0
+},
+"ea-leeds-nov:#140576274": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140576586": {
+"bid": 21000,
+"bids": 0
+},
+"ea-leeds-nov:#140576634": {
+"bid": 1300,
+"bids": 0
+},
+"ea-leeds-nov:#140576668": {
+"bid": 29000,
+"bids": 0
+},
+"ea-leeds-nov:#140576672": {
+"bid": 36500,
+"bids": 0
+},
+"ea-leeds-nov:#140576695": {
+"bid": 29000,
+"bids": 0
+},
+"bw-nov:207": {
+"bid": 800,
+"bids": 11
+},
+"bw-nov:208": {
+"bid": 600,
+"bids": 7
+},
+"bw-nov:289": {
+"bid": 70,
+"bids": 5
+},
+"bw-nov:1408": {
+"bid": 716,
+"bids": 9
+},
+"bw-nov:1423": {
+"bid": 100,
+"bids": 1
+},
+"bw-nov:1426": {
+"bid": 100,
+"bids": 1
+},
+"bw-nov:1427": {
+"bid": 100,
+"bids": 1
+},
+"bw-nov:1429": {
+"bid": 654,
+"bids": 1
+},
+"bw-nov:1430": {
+"bid": 45,
+"bids": 5
+},
+"bw-nov:2252": {
+"bid": 60,
+"bids": 6
+},
+"bw-nov:2257": {
+"bid": 4,
+"bids": 2
+},
+"bw-nov:2516": {
+"bid": 380,
+"bids": 5
+},
+"bw-nov:2526": {
+"bid": 280,
+"bids": 3
+},
+"bw-nov:2528": {
+"bid": 20,
+"bids": 1
+},
+"bw-nov:2606": {
+"bid": 675,
+"bids": 6
+},
+"ea-leeds-nov:#140558747": {
+"bid": 65000,
+"bids": 0
+},
+"ea-leeds-nov:#140567475": {
+"bid": 3200,
+"bids": 0
+},
+"ea-leeds-nov:#140567476": {
+"bid": 3200,
+"bids": 0
+},
+"ea-leeds-nov:#140570915": {
+"bid": 1000,
+"bids": 0
+},
+"ea-leeds-nov:#140573837": {
+"bid": 5750,
+"bids": 0
+},
+"ea-leeds-nov:#140573872": {
+"bid": 2600,
+"bids": 0
+},
+"ea-leeds-nov:#140574346": {
+"bid": 7000,
+"bids": 0
+},
+"ea-leeds-nov:#140574511": {
+"bid": 8000,
+"bids": 0
+},
+"ea-leeds-nov:#140575817": {
+"bid": 41000,
+"bids": 0
+},
+"ea-leeds-nov:#140566609": {
+"bid": 1000,
+"bids": 0
+},
+"bw-nov:1431": {
+"bid": null,
+"bids": 0
+},
+"bw-nov:1432": {
+"bid": null,
+"bids": 0
+},
+"bw-nov:1433": {
+"bid": null,
+"bids": 0
+},
+"bw-nov:1434": {
+"bid": 20,
+"bids": 2
+},
+"bw-nov:1435": {
+"bid": 20,
+"bids": 2
+},
+"bw-nov:1436": {
+"bid": null,
+"bids": 0
+},
+"bw-nov:2519": {
+"bid": null,
+"bids": 0
+},
+"bw-nov:2599": {
+"bid": null,
+"bids": 0
+},
+"bw-nov:2600": {
+"bid": null,
+"bids": 0
+},
+"bw-nov:3507": {
+"bid": null,
 "bids": 0
 }
 }

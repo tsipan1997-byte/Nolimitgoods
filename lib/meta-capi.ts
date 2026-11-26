@@ -11,10 +11,12 @@
 // ============================================================================
 
 import { createHash } from 'crypto';
+import { envOf, type Tenant } from './tenants';
+import { getTenantFromRequest } from './tenant-server';
 
-const PIXEL_ID = '1667641475157850';
+// Pixel ID і токен — з конфігу партнера (lib/tenants.ts → analytics). Для NoLimitGoods:
+// піксель 1667641475157850 і META_CAPI_TOKEN, як і раніше.
 const API_VERSION = 'v21.0';
-const SITE_URL = 'https://www.nolimitgoods.com';
 const TIMEOUT_MS = 3000;
 
 export type MetaEventInput = {
@@ -52,16 +54,18 @@ function cookie(request: Request, name: string): string | undefined {
   return m ? decodeURIComponent(m[1]) : undefined;
 }
 
-function sourceUrl(page: string | undefined): string {
-  if (!page) return SITE_URL;
+function sourceUrl(siteUrl: string, page: string | undefined): string {
+  if (!page) return siteUrl;
   if (/^https?:\/\//.test(page)) return page.slice(0, 500);
-  return SITE_URL + (page.startsWith('/') ? page : `/${page}`).slice(0, 400);
+  return siteUrl + (page.startsWith('/') ? page : `/${page}`).slice(0, 400);
 }
 
 // Ніколи не кидає помилку і не логує токен: заявка клієнта важливіша за статистику.
-export async function sendMetaEvent(input: MetaEventInput): Promise<boolean> {
-  const token = process.env.META_CAPI_TOKEN;
-  if (!token) return false;
+export async function sendMetaEvent(input: MetaEventInput, tenantOverride?: Tenant): Promise<boolean> {
+  const tenant = tenantOverride ?? getTenantFromRequest(input.request);
+  const pixelId = tenant.analytics.metaPixelId;
+  const token = envOf(tenant.analytics.metaCapiTokenEnv);
+  if (!pixelId || !token) return false;
 
   try {
     const h = input.request.headers;
@@ -86,7 +90,7 @@ export async function sendMetaEvent(input: MetaEventInput): Promise<boolean> {
           event_name: input.eventName,
           event_time: Math.floor(Date.now() / 1000),
           event_id: input.eventId.slice(0, 100),
-          event_source_url: sourceUrl(input.page),
+          event_source_url: sourceUrl(tenant.siteUrl, input.page),
           action_source: 'website',
           user_data: userData,
           custom_data: customData,
@@ -100,7 +104,7 @@ export async function sendMetaEvent(input: MetaEventInput): Promise<boolean> {
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
     try {
       const res = await fetch(
-        `https://graph.facebook.com/${API_VERSION}/${PIXEL_ID}/events?access_token=${encodeURIComponent(token)}`,
+        `https://graph.facebook.com/${API_VERSION}/${pixelId}/events?access_token=${encodeURIComponent(token)}`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

@@ -6,7 +6,9 @@ import { LanguageProvider } from '@/lib/language-context';
 import CookieConsent from './cookie-consent';
 import MobileContactBar from './components/mobile-contact-bar';
 import MetaTracking from './components/meta-tracking';
-import { CONTACT, SOCIAL } from '@/lib/site-config';
+import { absUrl, toPublicTenant, type Tenant } from '@/lib/tenants';
+import { getTenant } from '@/lib/tenant-server';
+import { TenantProvider } from '@/lib/tenant-context';
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] });
 
@@ -14,95 +16,138 @@ const SITE_TITLE = 'Запчастини для спецтехніки, сіль
 const SITE_DESCRIPTION =
   'Знайдемо і привеземо запчастини для спецтехніки (JCB, Caterpillar, Komatsu, Volvo, Manitou), тракторів, вантажівок і авто: оригінал, якісний аналог або б/у. Підбір за VIN, номером чи фото. Хаб у Великій Британії, доставка в Україну 5–14 робочих днів.';
 
-export const metadata: Metadata = {
-  metadataBase: new URL('https://www.nolimitgoods.com'),
-  title: SITE_TITLE,
-  description: SITE_DESCRIPTION,
-  keywords: [
-    'запчастини для спецтехніки',
-    'запчастини JCB',
-    'запчастини Caterpillar',
-    'запчастини для тракторів',
-    'запчастини з Англії',
-    'оригінальні запчастини',
-    'б/у запчастини',
-    'аналоги запчастин',
-    'NoLimitGoods',
-  ],
-  robots: { index: true, follow: true },
-  openGraph: {
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
-    type: 'website',
-    url: 'https://www.nolimitgoods.com',
-    siteName: 'NoLimitGoods Ltd',
-    locale: 'uk_UA',
-    images: [
-      {
-        url: '/og-nlg.png',
-        width: 1200,
-        height: 630,
-        alt: 'NoLimitGoods — запчастини до спецтехніки з Великобританії',
-      },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: SITE_TITLE,
-    description: SITE_DESCRIPTION,
-    images: ['/og-nlg.png'],
-  },
-};
+// Партнер (White Label) — аукціонний портал: свій заголовок і опис без NoLimitGoods
+function siteTexts(t: Tenant) {
+  if (t.isDefault) {
+    return {
+      title: SITE_TITLE,
+      description: SITE_DESCRIPTION,
+      ogAlt: 'NoLimitGoods — запчастини до спецтехніки з Великобританії',
+      keywords: [
+        'запчастини для спецтехніки',
+        'запчастини JCB',
+        'запчастини Caterpillar',
+        'запчастини для тракторів',
+        'запчастини з Англії',
+        'оригінальні запчастини',
+        'б/у запчастини',
+        'аналоги запчастин',
+        'NoLimitGoods',
+      ],
+    };
+  }
+  return {
+    title: `Техніка з аукціонів Великої Британії та Європи — ${t.brand.name}`,
+    description:
+      'Спецтехніка, трактори і вантажівки з аукціонів Великої Британії та Європи з доставкою в Україну: підбір лота, ставка за вас, викуп, експортні документи, доставка і розмитнення під ключ.',
+    ogAlt: `${t.brand.name} — техніка з аукціонів Європи`,
+    keywords: ['аукціони спецтехніки', 'техніка з Англії', 'трактор з аукціону', 'екскаватор з аукціону', t.brand.name],
+  };
+}
 
-const ORGANIZATION_JSON_LD = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: 'NoLimitGoods Ltd',
-  legalName: 'NoLimitGoods Limited',
-  url: 'https://www.nolimitgoods.com',
-  logo: 'https://www.nolimitgoods.com/logo.png',
-  email: CONTACT.email,
-  telephone: CONTACT.phoneUk.replace(/\s/g, ''),
-  contactPoint: [
-    { '@type': 'ContactPoint', telephone: CONTACT.phoneUk.replace(/\s/g, ''), contactType: 'sales', areaServed: ['GB', 'UA'], availableLanguage: ['uk', 'en'] },
-    ...(CONTACT.phoneUa
-      ? [{ '@type': 'ContactPoint', telephone: CONTACT.phoneUa.replace(/\s/g, ''), contactType: 'customer service', areaServed: 'UA', availableLanguage: ['uk'] }]
-      : []),
-  ],
-  sameAs: [SOCIAL.instagram, SOCIAL.facebook, SOCIAL.telegramChannel].filter(Boolean),
-  areaServed: ['UA', 'GB'],
-  vatID: 'GB372654187',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '374 Hipswell Highway',
-    addressLocality: 'Coventry',
-    postalCode: 'CV2 5FR',
-    addressCountry: 'GB',
-  },
-  description:
-    'Знайдемо і привеземо запчастини для спецтехніки, сільгосптехніки та авто: оригінал, аналог або б/у.',
-};
+export function generateMetadata(): Metadata {
+  const t = getTenant();
+  const x = siteTexts(t);
+  return {
+    metadataBase: new URL(t.siteUrl),
+    title: x.title,
+    description: x.description,
+    keywords: x.keywords,
+    robots: t.seo.indexable ? { index: true, follow: true } : { index: false, follow: false },
+    ...(t.brand.favicon ? { icons: { icon: t.brand.favicon, apple: t.brand.favicon } } : {}),
+    openGraph: {
+      title: x.title,
+      description: x.description,
+      type: 'website',
+      url: t.siteUrl,
+      siteName: t.brand.nameLegal,
+      locale: 'uk_UA',
+      images: [
+        {
+          url: t.brand.ogImage,
+          width: 1200,
+          height: 630,
+          alt: x.ogAlt,
+        },
+      ],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: x.title,
+      description: x.description,
+      images: [t.brand.ogImage],
+    },
+  };
+}
+
+function organizationJsonLd(t: Tenant) {
+  const c = t.contact;
+  const co = t.company;
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: t.brand.nameLegal,
+    legalName: co.legalNameFull,
+    url: t.siteUrl,
+    logo: absUrl(t, t.brand.logo),
+    email: c.email,
+    telephone: c.phoneUk.replace(/\s/g, ''),
+    contactPoint: [
+      { '@type': 'ContactPoint', telephone: c.phoneUk.replace(/\s/g, ''), contactType: 'sales', areaServed: t.isDefault ? ['GB', 'UA'] : 'UA', availableLanguage: t.isDefault ? ['uk', 'en'] : ['uk'] },
+      ...(c.phoneUa && c.phoneUa !== c.phoneUk
+        ? [{ '@type': 'ContactPoint', telephone: c.phoneUa.replace(/\s/g, ''), contactType: 'customer service', areaServed: 'UA', availableLanguage: ['uk'] }]
+        : []),
+    ],
+    sameAs: [t.social.instagram, t.social.facebook, t.social.telegramChannel].filter(Boolean),
+    areaServed: t.isDefault ? ['UA', 'GB'] : ['UA'],
+    ...(co.vat ? { vatID: co.vat } : {}),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: co.street,
+      addressLocality: co.city,
+      postalCode: co.postalCode,
+      addressCountry: co.countryCode,
+    },
+    description: t.isDefault
+      ? 'Знайдемо і привеземо запчастини для спецтехніки, сільгосптехніки та авто: оригінал, аналог або б/у.'
+      : 'Техніка з аукціонів Великої Британії та Європи з доставкою в Україну під ключ.',
+  };
+}
+
+// Перевизначення фірмової палітри (--brand-*) для партнера
+function paletteCss(t: Tenant): string | null {
+  if (!t.brand.palette) return null;
+  return `:root{${Object.entries(t.brand.palette).map(([k, v]) => `--brand-${k}:${v};`).join('')}}`;
+}
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const t = getTenant();
+  const { metaPixelId, googleAdsId, ga4Id } = t.analytics;
+  const gtagIds = [googleAdsId, ga4Id].filter(Boolean) as string[];
+  const palette = paletteCss(t);
   return (
     <html lang="uk" className="scroll-smooth dark">
       <head>
+        {palette && <style id="tenant-palette" dangerouslySetInnerHTML={{ __html: palette }} />}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd(t)) }}
         />
-        {/* Google Tag AW-670192610 */}
-        <script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=AW-670192610"
-        />
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
+        {/* Google Tag (Google Ads / GA4 з конфігу партнера, lib/tenants.ts) */}
+        {gtagIds.length > 0 && (
+          <script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${gtagIds[0]}`}
+          />
+        )}
+        {gtagIds.length > 0 && (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('consent', 'default', {
@@ -122,15 +167,17 @@ export default function RootLayout({
                 }
               } catch (e) {}
               gtag('js', new Date());
-              gtag('config', 'AW-670192610');
+              ${gtagIds.map((id) => `gtag('config', '${id}');`).join('\n              ')}
             `,
-          }}
-        />
+            }}
+          />
+        )}
       </head>
       <body className={`${inter.className} pb-14 md:pb-0 bg-white text-slate-900 antialiased selection:bg-red-600 selection:text-white`}>
-        {/* Meta Pixel Code */}
-        <Script id="facebook-pixel" strategy="afterInteractive">
-          {`
+        {/* Meta Pixel Code (ID з конфігу партнера) */}
+        {metaPixelId && (
+          <Script id="facebook-pixel" strategy="afterInteractive">
+            {`
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -148,19 +195,22 @@ export default function RootLayout({
             } catch (e) {
               fbq('consent', 'revoke');
             }
-            fbq('init', '1667641475157850');
+            fbq('init', '${metaPixelId}');
             fbq('track', 'PageView');
           `}
-        </Script>
+          </Script>
+        )}
 
         {/* Кліки по контактах → Meta (піксель + сервер /api/track) */}
         <MetaTracking />
 
-        <LanguageProvider>
-          {children}
-          <MobileContactBar />
-          <CookieConsent />
-        </LanguageProvider>
+        <TenantProvider tenant={toPublicTenant(t)}>
+          <LanguageProvider>
+            {children}
+            <MobileContactBar />
+            <CookieConsent />
+          </LanguageProvider>
+        </TenantProvider>
       </body>
     </html>
   );

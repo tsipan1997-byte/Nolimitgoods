@@ -3,13 +3,14 @@
 import React from 'react';
 import { MessageCircle, Phone, Send } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 
 // Панель месенджерів, приклеєна до низу екрана на телефоні. На комп'ютері не показується.
 // WhatsApp і Viber — український номер, Telegram і дзвінок — англійський.
 export default function MobileContactBar() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const CONTACT = useTenant().contact; // контакти партнера (White Label)
 
   const waText = encodeURIComponent(
     isUk ? 'Вітаю! Потрібна запчастина. ' : 'Hello! I need a part. '

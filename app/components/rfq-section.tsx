@@ -17,7 +17,7 @@ import {
   BadgeCheck,
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 import { getFbc, trackLead } from '@/lib/meta-client';
 
 interface RFQItemInput {
@@ -35,7 +35,6 @@ interface PhotoItem {
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
 
-const WHATSAPP_NUMBER = CONTACT.waNumber;
 const MAX_ITEMS = 10;
 const MAX_PHOTOS = 3;
 
@@ -80,6 +79,8 @@ async function compressImage(file: File): Promise<File> {
 export default function RFQSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const tenant = useTenant();
+  const CONTACT = tenant.contact; // контакти партнера (White Label)
 
   const [items, setItems] = useState<RFQItemInput[]>([emptyItem()]);
   const [comment, setComment] = useState('');
@@ -92,6 +93,8 @@ export default function RFQSection() {
   const [status, setStatus] = useState<Status>('idle');
   const [formError, setFormError] = useState('');
   const [leadId, setLeadId] = useState('');
+  // Для партнера показуємо номер без префікса NoLimitGoods (сервер підставить свій)
+  const shownLeadId = tenant.isDefault ? leadId : leadId.replace(/^NLG-/, '');
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const contactRef = useRef<HTMLInputElement>(null);
@@ -205,7 +208,9 @@ export default function RFQSection() {
     if (typeof window === 'undefined') return;
     const w = window as any;
     if (typeof w.gtag === 'function') {
-      w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
+      // Конверсія Google Ads — тільки якщо в партнера налаштована
+      const sendTo = tenant.analytics.googleAdsLeadConversion;
+      if (sendTo) w.gtag('event', 'conversion', { send_to: sendTo });
     }
     trackLead(id, { content_name: 'RFQ', num_items: activeItems.length });
   };
@@ -293,13 +298,13 @@ export default function RFQSection() {
       .map((it, i) => `${i + 1}. ${it.partNumber}${it.machineModel ? ` (${it.machineModel})` : ''} — ${it.quantity} шт`)
       .join('\n');
     const msg =
-      `Добрий день! Запит на процінку${leadId ? ` ${leadId}` : ''}:\n` +
+      `Добрий день! Запит на процінку${shownLeadId ? ` ${shownLeadId}` : ''}:\n` +
       (list || '') +
       (comment.trim() ? `\n${comment.trim()}` : '') +
       (partTypes.length ? `\nЦікавить: ${partTypes.join(', ')}` : '') +
       `\nДоставка: ${country}\nКонтакт: ${contact}` +
       (photos.length ? `\n(фото надішлю тут)` : '');
-    return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/${CONTACT.waNumber}?text=${encodeURIComponent(msg)}`;
   };
 
   const resetForm = () => {
@@ -405,15 +410,15 @@ export default function RFQSection() {
               </div>
               <div>
                 <span className="inline-block bg-slate-100 border border-slate-300 text-emerald-600 text-xs uppercase font-mono font-bold px-3 py-1 rounded-full mb-3">
-                  {isUk ? `Запит ${leadId} прийнято` : `Request ${leadId} received`}
+                  {isUk ? `Запит ${shownLeadId} прийнято` : `Request ${shownLeadId} received`}
                 </span>
                 <h3 className="text-2xl font-black text-slate-900 mb-2">
                   {isUk ? 'Дякуємо! Запит уже в менеджера' : 'Thank you! Your request is with our team'}
                 </h3>
                 <p className="text-sm text-slate-600 max-w-lg mx-auto leading-relaxed">
                   {isUk
-                    ? `Звʼяжемося з вами (${contact}) з цінами та термінами. Якщо зручніше — напишіть нам у месенджер, вказавши номер ${leadId}.`
-                    : `We'll contact you (${contact}) with prices and lead times. You can also message us quoting ${leadId}.`}
+                    ? `Звʼяжемося з вами (${contact}) з цінами та термінами. Якщо зручніше — напишіть нам у месенджер, вказавши номер ${shownLeadId}.`
+                    : `We'll contact you (${contact}) with prices and lead times. You can also message us quoting ${shownLeadId}.`}
                 </p>
               </div>
 

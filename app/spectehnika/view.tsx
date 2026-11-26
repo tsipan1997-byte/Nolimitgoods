@@ -21,7 +21,7 @@ import {
 import Header from '../components/header';
 import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 import { MACHINE_BRANDS, MACHINE_GROUPS, type MachineBrand, type MachineGroupId } from '@/lib/spectehnika';
 import { CONTACT_ERROR, CONTACT_LABEL, CONTACT_PLACEHOLDER, isPhoneOrTelegram } from '@/lib/contact-validation';
 import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
@@ -43,6 +43,8 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
   const [hp, setHp] = useState('');
   const [contactError, setContactError] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const tenant = useTenant();
+  const CONTACT = tenant.contact; // контакти партнера (White Label)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,7 +77,9 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
       if (res.ok) {
         const w = window as any;
         trackLead(leadId, { content_name: brand ? `Spec ${brand.name}` : 'Spec parts' });
-        if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
+        // Конверсія Google Ads — тільки якщо в партнера налаштована
+        const sendTo = tenant.analytics.googleAdsLeadConversion;
+        if (sendTo && typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: sendTo });
       }
       setStatus(res.ok ? 'done' : 'error');
     } catch {
@@ -166,6 +170,7 @@ function RequestForm({ brand }: { brand?: MachineBrand }) {
 }
 
 export default function SpecView({ brand }: { brand?: MachineBrand }) {
+  const tenant = useTenant();
   const others = brand ? MACHINE_BRANDS.filter((b) => b.slug !== brand.slug && b.group === brand.group) : [];
 
   return (
@@ -280,7 +285,7 @@ export default function SpecView({ brand }: { brand?: MachineBrand }) {
           {[
             ['Надішліть номер або фото', 'Номер деталі, фото таблички техніки чи старої деталі.'],
             ['Отримайте варіанти', 'Оригінал, аналог, б/у — з ціною до України і терміном.'],
-            ['Оплата', 'Рахунок від британської компанії NoLimitGoods Ltd.'],
+            ['Оплата', tenant.isDefault ? 'Рахунок від британської компанії NoLimitGoods Ltd.' : `Рахунок від ${tenant.company.legalName}.`],
             ['Доставка', 'Збираємо на складі в Ковентрі й відправляємо в Україну.'],
           ].map(([t, d], i) => (
             <li key={t} className="rounded-2xl bg-white border border-slate-200 p-6">

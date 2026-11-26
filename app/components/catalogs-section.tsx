@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ArrowUpRight, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { useTenant } from '@/lib/tenant-context';
 
 interface FeaturedPart {
   brand: string;
@@ -94,11 +95,12 @@ const featuredParts: FeaturedPart[] = [
 
 function PartCardImage({ src, alt }: { src: string; alt: string }) {
   const [error, setError] = useState(false);
+  const tenant = useTenant();
 
   if (error) {
     return (
       <div className="w-full h-full bg-slate-800 flex items-center justify-center text-slate-400 text-xs font-mono">
-        NoLimitGoods Hub
+        {`${tenant.brand.name} Hub`}
       </div>
     );
   }

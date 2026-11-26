@@ -3,12 +3,14 @@
 import React, { useState } from 'react';
 import { MessageSquare, Phone, X, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 
 export default function WhatsAppButton() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [open, setOpen] = useState(false);
+  const tenant = useTenant();
+  const CONTACT = tenant.contact; // контакти партнера (White Label)
 
   const phone = CONTACT.phoneUk.replace(/\s/g, '');
   const defaultMsg = isUk
@@ -87,8 +89,8 @@ export default function WhatsAppButton() {
           </div>
 
           <div className="mt-3 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500 font-mono">
-            <span>NoLimitGoods Ltd</span>
-            <span>VAT 372654187</span>
+            <span>{tenant.company.legalName}</span>
+            <span>{tenant.isDefault ? 'VAT 372654187' : tenant.company.vat ? `VAT ${tenant.company.vat}` : `${tenant.company.numberLabel} ${tenant.company.number}`}</span>
           </div>
         </div>
       )}

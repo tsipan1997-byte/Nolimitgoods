@@ -5,7 +5,7 @@ import { ShoppingCart, X, Trash2, Loader2, CheckCircle2, Minus, Plus } from 'luc
 import { useLanguage } from '@/lib/language-context';
 import type { CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, loadRates, shippingGbp, type Rates } from '@/lib/pricing';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 import { getFbc, trackLead, trafficTag } from '@/lib/meta-client';
 
 // ============================================================================
@@ -63,6 +63,8 @@ export function useCart() {
 export default function QuoteCart() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const tenant = useTenant();
+  const CONTACT = tenant.contact; // контакти партнера (White Label)
   const lines = useCart();
   const [open, setOpen] = useState(false);
   const [rates, setRates] = useState<Rates | null>(null);
@@ -70,6 +72,8 @@ export default function QuoteCart() {
   const [comment, setComment] = useState('');
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
   const [leadId, setLeadId] = useState('');
+  // Для партнера показуємо номер без префікса NoLimitGoods (сервер підставить свій)
+  const shownLeadId = tenant.isDefault ? leadId : leadId.replace(/^NLG-/, '');
 
   useEffect(() => {
     loadRates().then(setRates);
@@ -123,7 +127,9 @@ export default function QuoteCart() {
       const res = await fetch('/api/lead', { method: 'POST', body: fd });
       if (!res.ok) throw new Error(String(res.status));
       const w = window as any;
-      if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
+      // Конверсія Google Ads — тільки якщо в партнера налаштована
+      const sendTo = tenant.analytics.googleAdsLeadConversion;
+      if (sendTo && typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: sendTo });
       trackLead(id, { content_name: 'Catalog cart', num_items: count });
       write([]);
       setStatus('done');
@@ -166,7 +172,7 @@ export default function QuoteCart() {
             {status === 'done' ? (
               <div className="flex-1 flex flex-col items-center justify-center text-center px-6 gap-4">
                 <CheckCircle2 className="w-14 h-14 text-emerald-600" />
-                <h4 className="text-xl font-black text-slate-900">{isUk ? `Запит ${leadId} надіслано` : `Request ${leadId} sent`}</h4>
+                <h4 className="text-xl font-black text-slate-900">{isUk ? `Запит ${shownLeadId} надіслано` : `Request ${shownLeadId} sent`}</h4>
                 <p className="text-sm text-slate-500">
                   {isUk ? 'Менеджер підтвердить наявність, точну ціну й термін і звʼяжеться з вами.' : 'We will confirm stock, exact price and lead time and contact you.'}
                 </p>

@@ -3,10 +3,12 @@
 import React from 'react';
 import { ShieldCheck, Truck, Clock, Award, CheckCircle } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { useTenant } from '@/lib/tenant-context';
 
 export default function TrustBanner() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const tenant = useTenant();
 
   const metrics = [
     {
@@ -84,7 +86,7 @@ export default function TrustBanner() {
                 ? 'Прямі поставки оригінальних фільтрів, гідравліки та вузлів спецтехніки зі складу у Великобританії.'
                 : 'Direct supply of OEM filters, hydraulic components and machinery parts from UK warehouse.'}
             </p>
-            <span className="block mt-1 text-[11px] font-mono text-slate-500">NoLimitGoods Limited • Company No: 13146899</span>
+            <span className="block mt-1 text-[11px] font-mono text-slate-500">{`${tenant.company.legalNameFull} • ${tenant.company.numberLabel}: ${tenant.company.number}`}</span>
           </div>
         </div>
 

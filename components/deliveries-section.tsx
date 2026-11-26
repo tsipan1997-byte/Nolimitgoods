@@ -3,9 +3,11 @@
 import React from 'react';
 import { Truck, CheckCircle2, ShieldCheck, Box, ExternalLink } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { useTenant } from '@/lib/tenant-context';
 
 export default function DeliveriesSection() {
   const { language } = useLanguage();
+  const tenant = useTenant();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
   return (
@@ -40,7 +42,7 @@ export default function DeliveriesSection() {
               <iframe
                 className="w-full h-full"
                 src="https://www.youtube-nocookie.com/embed/69tvX5AiLz8"
-                title="Поставка фільтрів Donaldson в Україну | NoLimitGoods"
+                title={`Поставка фільтрів Donaldson в Україну | ${tenant.brand.name}`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />

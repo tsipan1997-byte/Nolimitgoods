@@ -3,12 +3,15 @@
 import React from 'react';
 import { ArrowUpRight, Video, Camera, Truck, Send } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { SOCIAL, REELS } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 import { InstagramIcon, FacebookIcon } from './social-icons';
 
 export default function SocialSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const tenant = useTenant();
+  const SOCIAL = tenant.social;
+  const REELS = tenant.features.reels;
 
   const points = isUk
     ? [
@@ -21,6 +24,9 @@ export default function SocialSection() {
         { icon: Camera, text: 'Photo reports from real orders' },
         { icon: Truck, text: 'What we shipped this week' },
       ];
+
+  // У партнера без жодної соцмережі секцію не показуємо
+  if (!SOCIAL.instagram && !SOCIAL.facebook && !SOCIAL.telegramChannel && REELS.length === 0) return null;
 
   return (
     <section id="social" className="py-16 sm:py-20 bg-white">
@@ -55,6 +61,7 @@ export default function SocialSection() {
             </div>
 
             <div className="flex flex-col gap-3">
+              {SOCIAL.instagram && (
               <a
                 href={SOCIAL.instagram}
                 target="_blank"
@@ -72,6 +79,7 @@ export default function SocialSection() {
                 <span className="hidden sm:inline text-sm font-bold">{isUk ? 'Підписатися' : 'Follow'}</span>
                 <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
+              )}
 
               {SOCIAL.facebook && (
                 <a
@@ -85,13 +93,14 @@ export default function SocialSection() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-lg font-black">Facebook</div>
-                    <div className="text-sm text-white/85 truncate">NoLimitGoods Ltd</div>
+                    <div className="text-sm text-white/85 truncate">{tenant.brand.nameLegal}</div>
                   </div>
                   <span className="hidden sm:inline text-sm font-bold">{isUk ? 'Перейти' : 'Visit'}</span>
                   <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
                 </a>
               )}
 
+              {SOCIAL.telegramChannel && (
               <a
                 href={SOCIAL.telegramChannel}
                 target="_blank"
@@ -108,6 +117,7 @@ export default function SocialSection() {
                 <span className="hidden sm:inline text-sm font-bold">{isUk ? 'Підписатись' : 'Join'}</span>
                 <ArrowUpRight className="w-5 h-5 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
               </a>
+              )}
             </div>
           </div>
           {REELS.length > 0 && (

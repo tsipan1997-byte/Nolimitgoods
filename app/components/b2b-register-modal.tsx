@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { X, Building2, ShieldCheck, Mail, Phone, MapPin, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { useTenant } from '@/lib/tenant-context';
 
 interface B2BRegisterModalProps {
   isOpen: boolean;
@@ -11,6 +12,7 @@ interface B2BRegisterModalProps {
 
 export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalProps) {
   const { language } = useLanguage();
+  const tenant = useTenant();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
   const [loading, setLoading] = useState(false);
@@ -102,7 +104,7 @@ export default function B2BRegisterModal({ isOpen, onClose }: B2BRegisterModalPr
             <div className="space-y-1">
               <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-800 text-[11px] font-bold uppercase tracking-wider">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                {isUk ? 'Прямий контракт із NoLimitGoods Ltd' : 'Direct UK Trade Account'}
+                {isUk ? `Прямий контракт із ${tenant.company.legalName}` : 'Direct UK Trade Account'}
               </div>
               <h2 className="text-2xl font-black text-slate-900 tracking-tight">
                 {isUk ? 'Реєстрація корпоративного клієнта' : 'B2B Client Registration'}

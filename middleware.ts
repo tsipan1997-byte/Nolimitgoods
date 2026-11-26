@@ -4,6 +4,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { PARTS_PATH_PREFIXES, tenantByHost, tenantById } from './lib/tenants';
 
+const PARTNER_BLOCKED_API = ['/api/rfq', '/api/b2b-register', '/api/review', '/api/checkout', '/api/parts', '/api/contact', '/api/cron'];
+
 export function middleware(request: NextRequest) {
   const fixed = process.env.TENANT_ID;
   const tenant = fixed ? tenantById(fixed) : tenantByHost(request.headers.get('x-forwarded-host') || request.headers.get('host'));
@@ -19,6 +21,10 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Партнер — це аукціонний портал: розділ запчастин NoLimitGoods у нього вимкнено.
+  // API запчастин (RFQ, B2B, відгуки, оплата) шлють дані в канали NoLimitGoods — для партнера закриті.
+  if (!tenant.features.parts && PARTNER_BLOCKED_API.some((p) => pathname.startsWith(p))) {
+    return NextResponse.json({ error: 'not_available' }, { status: 404 });
+  }
   if (!tenant.features.parts) {
     if (PARTS_PATH_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
       const url = request.nextUrl.clone();

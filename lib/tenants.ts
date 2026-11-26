@@ -145,6 +145,8 @@ export type Tenant = {
     reels: string[];
     /** Блок «Telegram-канал» з лотами. */
     telegramChannelCta: boolean;
+    /** Показувати назви аукціонних домів і посилання на оригінальний лот. У партнерів — приховані. */
+    showAuctionHouses: boolean;
   };
   seo: {
     /** Індексувати сайт (robots). Для демо — false. */
@@ -241,6 +243,7 @@ export const DEFAULT_TENANT: Tenant = {
     parts: true,
     reels: REELS,
     telegramChannelCta: true,
+    showAuctionHouses: true,
   },
   seo: { indexable: true },
 };
@@ -343,6 +346,7 @@ export const DEMO_TENANT: Tenant = {
     parts: false,
     reels: [],
     telegramChannelCta: false,
+    showAuctionHouses: false,
   },
   seo: { indexable: false },
 };

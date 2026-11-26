@@ -12,10 +12,15 @@ import {
   ArrowRight 
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { useTenant } from '@/lib/tenant-context';
 
 export default function FeaturesSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const tenant = useTenant();
+  const co = tenant.company;
+  // Реєстраційні дані партнера для юридичного блоку (NoLimitGoods — текст як був)
+  const partnerReg = `${co.numberLabel} ${co.number}${co.vat ? `, VAT ${co.vat}` : ''}`;
 
   return (
     <section id="services" className="py-24 bg-slate-900 text-white relative overflow-hidden border-b border-slate-800">
@@ -60,7 +65,7 @@ export default function FeaturesSection() {
                 {isUk ? 'Хаб у Ковентрі (UK)' : 'Coventry Hub (UK)'}
               </h3>
               <div className="text-xs text-amber-400/90 font-medium mb-3">
-                374 Hipswell Highway, CV2 5FR
+                {tenant.isDefault ? '374 Hipswell Highway, CV2 5FR' : 'Coventry, UK'}
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
                 {isUk 
@@ -90,11 +95,13 @@ export default function FeaturesSection() {
                 {isUk ? 'Митне оформлення DOUANE' : 'Customs & Transit'}
               </h3>
               <div className="text-xs text-amber-400/90 font-medium mb-3">
-                EORI GB079878335000
+                {tenant.isDefault ? 'EORI GB079878335000' : 'UK Export · T1'}
               </div>
               <p className="text-xs text-slate-400 leading-relaxed">
                 {isUk 
-                  ? 'Офіційний експортний інвойс NoLimitGoods Ltd, оформлення транзиту T1, нульова ставка VAT (0%).' 
+                  ? (tenant.isDefault
+                    ? 'Офіційний експортний інвойс NoLimitGoods Ltd, оформлення транзиту T1, нульова ставка VAT (0%).'
+                    : 'Офіційний експортний інвойс нашого британського партнера-експортера, оформлення транзиту T1, нульова ставка VAT (0%).')
                   : 'Official UK export invoicing, T1 declarations and full customs compliance.'}
               </p>
             </div>
@@ -174,12 +181,18 @@ export default function FeaturesSection() {
             </div>
             <div>
               <h4 className="text-lg font-bold text-white mb-1">
-                {isUk ? 'NoLimitGoods Limited — Офіційний експортер спецзапчастин' : 'NoLimitGoods Limited — Official Machinery Parts Exporter'}
+                {tenant.isDefault
+                  ? (isUk ? 'NoLimitGoods Limited — Офіційний експортер спецзапчастин' : 'NoLimitGoods Limited — Official Machinery Parts Exporter')
+                  : (isUk ? `${co.legalName} — офіційний постачальник спецзапчастин` : `${co.legalName} — Official Machinery Parts Supplier`)}
               </h4>
               <p className="text-sm text-slate-400 max-w-2xl">
-                {isUk
-                  ? 'Компанія зареєстрована в Реєстраційній палаті Англії та Уельсу (Company No. 13146899, VAT 372654187). Офіційний контракт, інвойси в GBP/EUR/USD, повна податкова чистота.'
-                  : 'Incorporated in England and Wales (Company No. 13146899, VAT 372654187). Compliant export billing and international contracts.'}
+                {tenant.isDefault
+                  ? (isUk
+                    ? 'Компанія зареєстрована в Реєстраційній палаті Англії та Уельсу (Company No. 13146899, VAT 372654187). Офіційний контракт, інвойси в GBP/EUR/USD, повна податкова чистота.'
+                    : 'Incorporated in England and Wales (Company No. 13146899, VAT 372654187). Compliant export billing and international contracts.')
+                  : (isUk
+                    ? `Зареєстрована компанія (${partnerReg}), ${co.address}. Офіційний контракт, прозорі документи на кожну поставку.`
+                    : `Registered company (${partnerReg}), ${co.address}. Official contract and full paperwork for every shipment.`)}
               </p>
             </div>
           </div>

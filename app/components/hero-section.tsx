@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Truck, ArrowRight, Camera, Search, Tag } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { useTenant } from '@/lib/tenant-context';
 import { CATALOG } from '@/lib/catalog';
 import { AUCTION_LOTS } from '@/lib/auction-lots';
 import { KRAMP_COUNTS } from '@/lib/catalog-stats';
@@ -16,6 +17,7 @@ const CATALOG_TOTAL_ROUNDED = Math.floor((CATALOG.length + Object.values(KRAMP_C
 export default function HeroSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const tenant = useTenant();
 
   const scrollToCalculator = () => {
     const el = document.getElementById('parts-calculator');
@@ -46,7 +48,9 @@ export default function HeroSection() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
-            {isUk ? 'NoLimitGoods Ltd · Ковентрі, Велика Британія' : 'NoLimitGoods Ltd · Coventry, UK'}
+            {tenant.isDefault
+              ? (isUk ? 'NoLimitGoods Ltd · Ковентрі, Велика Британія' : 'NoLimitGoods Ltd · Coventry, UK')
+              : (isUk ? `${tenant.brand.nameLegal} · склад у Ковентрі (UK)` : `${tenant.brand.nameLegal} · Coventry, UK hub`)}
           </div>
 
           <h1 className="mt-3 text-[28px] sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.08]">
@@ -99,7 +103,7 @@ export default function HeroSection() {
         <div className="relative hidden lg:block">
           <div className="relative aspect-[4/3] rounded-3xl overflow-hidden shadow-[0_30px_60px_-20px_rgba(15,23,42,0.35)] ring-1 ring-slate-200 bg-white">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/images/hero-collage.jpg" alt={isUk ? 'Запчастини NoLimitGoods' : 'NoLimitGoods parts'} className="w-full h-full object-cover" />
+            <img src="/images/hero-collage.jpg" alt={isUk ? `Запчастини ${tenant.brand.name}` : `${tenant.brand.name} parts`} className="w-full h-full object-cover" />
             <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-slate-900/70 to-transparent" />
             <div className="absolute left-4 bottom-4 right-4 flex items-end justify-between text-white">
               <div>

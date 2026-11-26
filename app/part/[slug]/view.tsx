@@ -9,7 +9,7 @@ import FloatingContact from '../../components/floating-contact';
 import QuoteCart, { addToCart } from '../../components/quote-cart';
 import { TYPE_LABEL, illustrationFor, type CatalogItem } from '@/lib/catalog';
 import { clientPriceGbp, fmtGbp, fmtUah, loadRates, shippingGbp, type Rates } from '@/lib/pricing';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 
 type Related = { slug: string; brand: string; partNumber: string; titleUk: string; price: number | null };
 
@@ -33,6 +33,8 @@ export default function PartView({
 }) {
   const [rates, setRates] = useState<Rates | null>(null);
   const [added, setAdded] = useState(false);
+  const tenant = useTenant();
+  const CONTACT = tenant.contact; // контакти партнера (White Label)
   useEffect(() => {
     loadRates().then(setRates);
   }, []);
@@ -149,7 +151,9 @@ export default function PartView({
                 { icon: Repeat, t: 'Оригінал, аналог або б/у', d: 'Запропонуємо дешевші варіанти, якщо є' },
                 { icon: Truck, t: '5–14 робочих днів', d: 'Відправка з Великої Британії в Україну' },
                 { icon: Camera, t: 'Фотозвіт', d: 'Фото деталі й номера перед відправкою' },
-                { icon: ShieldCheck, t: 'Британська компанія', d: 'NoLimitGoods Ltd, Ковентрі' },
+                tenant.isDefault
+                  ? { icon: ShieldCheck, t: 'Британська компанія', d: 'NoLimitGoods Ltd, Ковентрі' }
+                  : { icon: ShieldCheck, t: 'Офіційний договір', d: `${tenant.company.legalName}, склад у Ковентрі` },
               ].map((b) => (
                 <li key={b.t} className="flex gap-3 p-3 rounded-xl border border-slate-200">
                   <b.icon className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />

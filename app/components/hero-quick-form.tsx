@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import { Camera, Loader2, CheckCircle2, X, ArrowRight } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 import { getFbc, trackLead } from '@/lib/meta-client';
 
 // Швидка заявка на першому екрані: VIN / номер деталі, фото, телефон.
@@ -63,6 +63,8 @@ function getSource(): string {
 export default function HeroQuickForm() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const tenant = useTenant();
+  const CONTACT = tenant.contact; // контакти партнера (White Label)
 
   const [query, setQuery] = useState('');
   const [phone, setPhone] = useState('');
@@ -71,6 +73,8 @@ export default function HeroQuickForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [error, setError] = useState('');
   const [leadId, setLeadId] = useState('');
+  // Для партнера показуємо номер без префікса NoLimitGoods (сервер підставить свій)
+  const shownLeadId = tenant.isDefault ? leadId : leadId.replace(/^NLG-/, '');
   const fileRef = useRef<HTMLInputElement>(null);
   const phoneRef = useRef<HTMLInputElement>(null);
 
@@ -116,7 +120,9 @@ export default function HeroQuickForm() {
       const res = await fetch('/api/lead', { method: 'POST', body: fd });
       if (!res.ok) throw new Error(String(res.status));
       const w = window as any;
-      if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
+      // Конверсія Google Ads — тільки якщо в партнера налаштована
+      const sendTo = tenant.analytics.googleAdsLeadConversion;
+      if (sendTo && typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: sendTo });
       trackLead(id, { content_name: 'Hero form' });
       setStatus('success');
     } catch {
@@ -130,7 +136,7 @@ export default function HeroQuickForm() {
         <div className="flex items-start gap-3">
           <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0 mt-0.5" />
           <div>
-            <div className="font-black text-slate-900">{isUk ? `Заявку ${leadId} прийнято` : `Request ${leadId} received`}</div>
+            <div className="font-black text-slate-900">{isUk ? `Заявку ${shownLeadId} прийнято` : `Request ${shownLeadId} received`}</div>
             <p className="mt-1 text-sm text-slate-600">
               {isUk
                 ? `Підберемо оригінал, аналог і б/у та надішлемо ціни на ${phone}. Терміново? Пишіть у WhatsApp/Viber ${CONTACT.waDisplay}.`

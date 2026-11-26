@@ -3,15 +3,28 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Building2, Check, Copy, ExternalLink, ShieldCheck } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 
 export default function ContactSection() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
   const [copied, setCopied] = useState(false);
+  const tenant = useTenant();
+  const CONTACT = tenant.contact;
+  const co = tenant.company;
 
   const copyDetails = () => {
-    const text = `NoLimitGoods Limited
+    // Для партнера — реквізити його юрособи з конфігу (без EORI/VAT NoLimitGoods)
+    const text = !tenant.isDefault
+      ? [
+          co.legalNameFull,
+          `${co.numberLabel}: ${co.number}`,
+          co.vat ? `VAT: ${co.vat}` : '',
+          `Address: ${co.address}`,
+          `Email: ${CONTACT.email}`,
+          `Phone: ${CONTACT.phoneUk}${CONTACT.phoneUa && CONTACT.phoneUa !== CONTACT.phoneUk ? `\nWhatsApp/Viber: ${CONTACT.phoneUa}` : ''}`,
+        ].filter(Boolean).join('\n')
+      : `NoLimitGoods Limited
 Company No: 13146899
 VAT ID: GB 372 6541 87
 EORI: GB079878335000
@@ -31,15 +44,21 @@ Phone: ${CONTACT.phoneUk}${CONTACT.phoneUa ? `\nWhatsApp/Viber: ${CONTACT.phoneU
         <div className="text-center space-y-3">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100 border border-slate-300 text-slate-600 text-xs font-bold uppercase tracking-wider">
             <Building2 className="w-3.5 h-3.5 text-emerald-600" />
-            {isUk ? 'Офіційні реквізити юрособи UK' : 'Official UK Legal Entity Details'}
+            {tenant.isDefault
+              ? (isUk ? 'Офіційні реквізити юрособи UK' : 'Official UK Legal Entity Details')
+              : (isUk ? 'Офіційні реквізити компанії' : 'Official Company Details')}
           </div>
           <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
             {isUk ? 'Контакти та реєстрація компанії' : 'Company Contacts & Registration'}
           </h2>
           <p className="max-w-2xl mx-auto text-slate-500 text-sm sm:text-base">
-            {isUk 
-              ? 'Працюємо як британська компанія: договір, інвойс і всі документи для митного оформлення.'
-              : 'We operate as a UK company: contract, invoice and full customs paperwork.'}
+            {tenant.isDefault
+              ? (isUk 
+                ? 'Працюємо як британська компанія: договір, інвойс і всі документи для митного оформлення.'
+                : 'We operate as a UK company: contract, invoice and full customs paperwork.')
+              : (isUk
+                ? 'Працюємо офіційно: договір, рахунок і всі документи для митного оформлення.'
+                : 'We work officially: contract, invoice and full customs paperwork.')}
           </p>
         </div>
 
@@ -57,8 +76,17 @@ Phone: ${CONTACT.phoneUk}${CONTACT.phoneUa ? `\nWhatsApp/Viber: ${CONTACT.phoneU
               <div className="flex items-start gap-3">
                 <MapPin className="w-4 h-4 text-slate-500 shrink-0 mt-1" />
                 <div>
-                  <div className="font-bold text-slate-900">374 Hipswell Highway, Coventry</div>
-                  <div className="text-slate-500">West Midlands, CV2 5FR, United Kingdom</div>
+                  {tenant.isDefault ? (
+                    <>
+                      <div className="font-bold text-slate-900">374 Hipswell Highway, Coventry</div>
+                      <div className="text-slate-500">West Midlands, CV2 5FR, United Kingdom</div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-bold text-slate-900">{`${co.street}, ${co.city}`}</div>
+                      <div className="text-slate-500">{co.postalCode}</div>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -105,7 +133,7 @@ Phone: ${CONTACT.phoneUk}${CONTACT.phoneUa ? `\nWhatsApp/Viber: ${CONTACT.phoneU
               <div className="flex items-center justify-between">
                 <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                   <Building2 className="w-5 h-5 text-amber-500" />
-                  NoLimitGoods Limited
+                  {co.legalNameFull}
                 </h3>
                 <span className="px-2.5 py-1 rounded bg-white border border-slate-200 text-[11px] font-mono font-bold text-slate-600">
                   Active
@@ -114,17 +142,26 @@ Phone: ${CONTACT.phoneUk}${CONTACT.phoneUa ? `\nWhatsApp/Viber: ${CONTACT.phoneU
 
               <div className="space-y-2 text-xs font-mono text-slate-600">
                 <div className="flex justify-between py-1 border-b border-slate-200">
-                  <span className="text-slate-500">Company No:</span>
-                  <span className="text-slate-900 font-bold">13146899</span>
+                  <span className="text-slate-500">{`${co.numberLabel}:`}</span>
+                  <span className="text-slate-900 font-bold">{co.number}</span>
                 </div>
-                <div className="flex justify-between py-1 border-b border-slate-200">
-                  <span className="text-slate-500">VAT ID:</span>
-                  <span className="text-slate-900 font-bold">GB 372 6541 87</span>
-                </div>
-                <div className="flex justify-between py-1 border-b border-slate-200">
-                  <span className="text-slate-500">EORI Number:</span>
-                  <span className="text-slate-900 font-bold">GB079878335000</span>
-                </div>
+                {tenant.isDefault ? (
+                  <>
+                    <div className="flex justify-between py-1 border-b border-slate-200">
+                      <span className="text-slate-500">VAT ID:</span>
+                      <span className="text-slate-900 font-bold">GB 372 6541 87</span>
+                    </div>
+                    <div className="flex justify-between py-1 border-b border-slate-200">
+                      <span className="text-slate-500">EORI Number:</span>
+                      <span className="text-slate-900 font-bold">GB079878335000</span>
+                    </div>
+                  </>
+                ) : co.vat ? (
+                  <div className="flex justify-between py-1 border-b border-slate-200">
+                    <span className="text-slate-500">VAT ID:</span>
+                    <span className="text-slate-900 font-bold">{co.vat}</span>
+                  </div>
+                ) : null}
               </div>
             </div>
 

@@ -3,9 +3,11 @@
 import React from 'react';
 import { CheckCircle2, ShieldCheck, MapPin, Truck, ExternalLink } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
+import { useTenant } from '@/lib/tenant-context';
 
 export default function DeliveriesSection() {
   const { language } = useLanguage();
+  const tenant = useTenant();
   const isUk = language === 'uk' || (language as string) === 'ua';
 
   return (
@@ -41,7 +43,7 @@ export default function DeliveriesSection() {
               <iframe
                 className="w-full h-full"
                 src="https://www.youtube.com/embed/69tvX5AiLz8?playsinline=1&rel=0&modestbranding=1"
-                title="Поставка фільтрів Donaldson в Україну | NoLimitGoods LTD"
+                title={tenant.isDefault ? 'Поставка фільтрів Donaldson в Україну | NoLimitGoods LTD' : `Поставка фільтрів Donaldson в Україну | ${tenant.brand.name}`}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
                 loading="lazy"
@@ -59,7 +61,7 @@ export default function DeliveriesSection() {
               </h3>
               <p className="text-sm text-slate-600 leading-relaxed">
                 {isUk
-                  ? 'Кожна палета маркується наліпками DOUANE, комплектується на складі в Ковентрі (374 Hipswell Highway), страхується на повну інвойсну вартість та доставляється клієнтам у цілості.'
+                  ? `Кожна палета маркується наліпками DOUANE, комплектується на складі в Ковентрі${tenant.isDefault ? ' (374 Hipswell Highway)' : ''}, страхується на повну інвойсну вартість та доставляється клієнтам у цілості.`
                   : 'Palletized consignments with T1 transit documentation. Dispatched from Coventry and received directly at Ukrainian equipment terminals.'}
               </p>
             </div>
@@ -96,7 +98,8 @@ export default function DeliveriesSection() {
                     {isUk ? 'Склад (Coventry, UK)' : 'Coventry Hub Direct'}
                   </h4>
                   <p className="text-xs text-slate-500">
-                    374 Hipswell Highway, CV2 5FR
+                    {/* Точну адресу складу показуємо тільки на сайті NoLimitGoods */}
+                    {tenant.isDefault ? '374 Hipswell Highway, CV2 5FR' : 'Coventry, UK'}
                   </p>
                 </div>
               </div>

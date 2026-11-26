@@ -11,6 +11,7 @@ import { lotiv } from '@/lib/plural';
 import TelegramChannelCta from '../components/telegram-channel-cta';
 import { CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
 import { publicPlace, tradeDates } from '@/lib/auction-public';
+import { useTenant } from '@/lib/tenant-context';
 
 
 const CATEGORY_ORDER: AuctionCategory[] = ['excavators', 'telehandlers', 'agro', 'pickups', 'trucks', 'energy', 'breakers', 'attachments'];
@@ -51,7 +52,22 @@ const FAQ: [string, string][] = [
   ],
 ];
 
+// White Label: у партнера без назви NoLimitGoods — нейтральне формулювання про британського партнера-експортера
+const FAQ_NLG_SENTENCE = 'NoLimitGoods Ltd — британська компанія з власним складом у Ковентрі: ми реєструємось';
+const FAQ_PARTNER_SENTENCE = 'Разом із нашим британським партнером-експортером (власний склад у Ковентрі) ми реєструємось';
+
+// Партнер з депозитом UK VAT (lib/tenants.ts → pricing.showUkVatDeposit)
+const FAQ_PARTNER_VAT =
+  'Британський VAT 20% на ціну молотка і збір аукціону вноситься як депозит і повертається після експорту техніки з Великої Британії — в остаточну ціну він не входить. Працюємо під ключ: ціну з доставкою і розмитненням в Україні рахуємо до торгів.';
+
 export default function AuctionsPage() {
+  const tenant = useTenant();
+  const faq: [string, string][] = tenant.isDefault
+    ? FAQ
+    : FAQ.map(([q2, a]) => [
+        q2,
+        q2 === 'Чи треба платити британський VAT?' && tenant.pricing.showUkVatDeposit ? FAQ_PARTNER_VAT : a.replace(FAQ_NLG_SENTENCE, FAQ_PARTNER_SENTENCE),
+      ]);
   const [now, setNow] = useState<number | null>(null);
   const [cat, setCat] = useState<AuctionCategory | 'all'>('all');
   const [auction, setAuction] = useState<string>('all');
@@ -131,13 +147,13 @@ export default function AuctionsPage() {
   const faqJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: FAQ.map(([q2, a]) => ({ '@type': 'Question', name: q2, acceptedAnswer: { '@type': 'Answer', text: a } })),
+    mainEntity: faq.map(([q2, a]) => ({ '@type': 'Question', name: q2, acceptedAnswer: { '@type': 'Answer', text: a } })),
   };
   const serviceJsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Service',
     name: 'Купівля спецтехніки на аукціонах Великої Британії з доставкою в Україну',
-    provider: { '@type': 'Organization', name: 'NoLimitGoods Ltd', url: 'https://www.nolimitgoods.com' },
+    provider: { '@type': 'Organization', name: tenant.brand.nameLegal, url: tenant.siteUrl },
     areaServed: ['UA', 'GB'],
     serviceType: 'Агент з купівлі техніки на аукціонах',
     description:
@@ -299,7 +315,11 @@ export default function AuctionsPage() {
               onClick={() => { setLotId(null); setAuction(a.id); }}
               className={`shrink-0 h-10 px-4 rounded-xl text-sm font-bold border ${auction === a.id ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-700 border-slate-200'}`}
             >
-              {a.house} · {tradeDates(a.dates)} · {publicPlace(a.place)}
+              {tenant.features.showAuctionHouses ? (
+                <>{a.house} · {tradeDates(a.dates)} · {publicPlace(a.place)}</>
+              ) : (
+                <>{tradeDates(a.dates)} · {publicPlace(a.place)}</>
+              )}
             </button>
           ))}
         </div>
@@ -415,7 +435,9 @@ export default function AuctionsPage() {
               </div>
             </div>
             <p className="mt-3 text-xs text-slate-500">
-              Британський VAT при експорті до вашого рахунку не застосовується. Ціну під ключ — з доставкою і розмитненням в Україні — рахуємо до торгів.
+              {tenant.pricing.showUkVatDeposit
+                ? 'Британський VAT 20% на молоток і збір аукціону — депозит, який повертається після експорту. Ціну під ключ — з доставкою і розмитненням в Україні — рахуємо до торгів.'
+                : 'Британський VAT при експорті до вашого рахунку не застосовується. Ціну під ключ — з доставкою і розмитненням в Україні — рахуємо до торгів.'}
             </p>
           </div>
 
@@ -452,9 +474,11 @@ export default function AuctionsPage() {
             </p>
             <h3 className="mt-5 font-black text-slate-900">Купити екскаватор, JCB 3CX чи трактор з аукціону — з України</h3>
             <p className="mt-2">
-              Щоб купити на британському аукціоні самостійно, потрібна реєстрація, депозит до 25% від суми ставок, оплата
-              протягом тижня і вивіз з майданчика. NoLimitGoods Ltd бере це на себе: ставимо за вас, оплачуємо, забираємо
-              і доставляємо екскаватор, екскаватор-навантажувач, бульдозер, телескопічний навантажувач або трактор в Україну.
+              {'Щоб купити на британському аукціоні самостійно, потрібна реєстрація, депозит до 25% від суми ставок, оплата ' +
+                'протягом тижня і вивіз з майданчика. ' +
+                (tenant.isDefault ? 'NoLimitGoods Ltd бере це на себе' : 'Ми беремо це на себе') +
+                ': ставимо за вас, оплачуємо, забираємо ' +
+                'і доставляємо екскаватор, екскаватор-навантажувач, бульдозер, телескопічний навантажувач або трактор в Україну.'}
             </p>
           </div>
           <div>
@@ -483,7 +507,7 @@ export default function AuctionsPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <h2 className="text-2xl font-black">Питання про купівлю техніки з аукціонів</h2>
           <div className="mt-5 space-y-2">
-            {FAQ.map(([qq, a]) => (
+            {faq.map(([qq, a]) => (
               <details key={qq} className="group rounded-xl bg-white border border-slate-200 p-4">
                 <summary className="cursor-pointer font-bold list-none flex items-center justify-between gap-3">
                   {qq} <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-open:rotate-180" />
@@ -502,9 +526,9 @@ export default function AuctionsPage() {
             </button>
           </div>
           <p className="mt-6 text-xs text-slate-500">
-            Euro Auctions, Cheffins, Wilsons, Brightwells та інші — незалежні аукціонні доми. NoLimitGoods Ltd не є їхнім
-            представником: ми купуємо лоти як покупець на ваше замовлення. Фото та описи — з каталогів аукціонів; актуальні
-            ставки та наявність уточнюйте в менеджера.
+            {`Euro Auctions, Cheffins, Wilsons, Brightwells та інші — незалежні аукціонні доми. ${tenant.brand.nameLegal} не є їхнім ` +
+              'представником: ми купуємо лоти як покупець на ваше замовлення. Фото та описи — з каталогів аукціонів; актуальні ' +
+              'ставки та наявність уточнюйте в менеджера.'}
           </p>
         </div>
       </section>

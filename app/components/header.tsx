@@ -23,7 +23,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import B2BRegisterModal from './b2b-register-modal';
-import { SOCIAL, CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 import { InstagramIcon, FacebookIcon } from './social-icons';
 import { useCart } from './quote-cart';
 
@@ -34,11 +34,13 @@ export default function Header() {
   const { language, setLanguage } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
   const cart = useCart();
+  const tenant = useTenant();
+  const { social: SOCIAL, contact: CONTACT } = tenant;
   const cartCount = cart.reduce((a, l) => a + l.qty, 0);
 
   const toggleLanguage = () => setLanguage(isUk ? 'en' : 'uk');
 
-  const categories = [
+  const allCategories = [
     { href: '/catalog?cat=agro', icon: Tractor, uk: 'Агро і трактори', en: 'Farm & tractors' },
     { href: '/spectehnika', icon: HardHat, uk: 'Спецтехніка', en: 'Construction' },
     { href: '/catalog?cat=trucks', icon: Truck, uk: 'Вантажівки', en: 'Trucks' },
@@ -48,6 +50,11 @@ export default function Header() {
     { href: '/#diagram', icon: Wrench, uk: 'Схема двигуна', en: 'Engine diagram' },
     { href: '/#prices', icon: Tag, uk: 'Приклади цін', en: 'Price examples' },
   ];
+
+  // Партнер без розділу запчастин (White Label): лише аукціонні пункти меню
+  const categories = tenant.features.parts
+    ? allCategories
+    : allCategories.filter((c) => c.href === '/aukciony' || c.href === '/rezultaty-aukcioniv');
 
   const scrollToCalculator = () => {
     const el = document.getElementById('parts-calculator');
@@ -89,17 +96,21 @@ export default function Header() {
               </a>
               <a href={CONTACT.whatsapp} target="_blank" rel="noopener noreferrer" className="hover:text-white">WhatsApp</a>
               <a href={CONTACT.telegram} target="_blank" rel="noopener noreferrer" className="hover:text-white">Telegram</a>
+              {SOCIAL.instagram && (
               <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-white">
                 <InstagramIcon className="w-3.5 h-3.5" />
               </a>
+              )}
               {SOCIAL.facebook && (
                 <a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-white">
                   <FacebookIcon className="w-3.5 h-3.5" />
                 </a>
               )}
+              {SOCIAL.telegramChannel && (
               <a href={SOCIAL.telegramChannel} target="_blank" rel="noopener noreferrer" className="hover:text-white font-semibold text-[#5fc0ee]">
                 {isUk ? 'Канал з лотами' : 'Lots channel'}
               </a>
+              )}
               <button type="button" onClick={toggleLanguage} className="flex items-center gap-1 hover:text-white">
                 <Globe className="w-3.5 h-3.5" /> {isUk ? 'UA' : 'EN'}
               </button>
@@ -110,11 +121,12 @@ export default function Header() {
         {/* 2. Основна панель: лого, пошук, дії */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-3 sm:gap-6 h-16 md:h-20">
-            <Link href="/" className="flex items-center shrink-0" aria-label="NoLimitGoods">
+            <Link href="/" className="flex items-center shrink-0" aria-label={tenant.brand.name}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.png" alt="NoLimitGoods Ltd" className="h-9 md:h-12 w-auto object-contain" />
+              <img src={tenant.brand.logo} alt={tenant.brand.nameLegal} className="h-9 md:h-12 w-auto object-contain" />
             </Link>
 
+            {tenant.features.parts && (
             <form onSubmit={submitSearch} className="hidden md:flex flex-1 max-w-2xl">
               <div className="relative flex-1">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -130,8 +142,10 @@ export default function Header() {
                 {isUk ? 'Знайти' : 'Search'}
               </button>
             </form>
+            )}
 
             <div className="flex items-center gap-2 ml-auto">
+              {tenant.features.parts && (<>
               <button
                 type="button"
                 onClick={() => setIsB2BModalOpen(true)}
@@ -164,6 +178,7 @@ export default function Header() {
                 <span>{isUk ? 'Отримати ціну' : 'Get a quote'}</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
+              </>)}
 
               <button
                 type="button"
@@ -177,6 +192,7 @@ export default function Header() {
           </div>
 
           {/* Пошук на телефоні */}
+          {tenant.features.parts && (
           <form onSubmit={submitSearch} className="md:hidden flex pb-3">
             <input
               type="search"
@@ -189,14 +205,17 @@ export default function Header() {
               <Search className="w-5 h-5" />
             </button>
           </form>
+          )}
         </div>
 
         {/* 3. Меню категорій */}
         <nav className="hidden lg:block border-t border-slate-100 bg-white">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center gap-1">
+            {tenant.features.parts && (
             <Link href="/catalog" className="flex items-center gap-2 h-9 px-4 mr-2 rounded-lg bg-red-600 hover:bg-red-700 text-white text-sm font-bold">
               <Menu className="w-4 h-4" /> {isUk ? 'Каталог' : 'Catalog'}
             </Link>
+            )}
             {categories.map((c) => (
               <Link key={c.href} href={c.href} className={`${c.href.startsWith('/#') ? 'hidden xl:flex' : 'flex'} items-center gap-2 h-9 px-3 rounded-lg text-sm font-semibold whitespace-nowrap ${'hot' in c ? 'text-emerald-800 bg-emerald-50 hover:bg-emerald-100' : 'text-slate-700 hover:text-red-600 hover:bg-red-50'}`}>
                 <c.icon className="w-4 h-4" /> {isUk ? c.uk : c.en}
@@ -212,9 +231,11 @@ export default function Header() {
         {mobileMenuOpen && (
           <div className="lg:hidden bg-white border-t border-slate-100 px-4 pt-3 pb-6 space-y-3 shadow-lg">
             <nav className="flex flex-col">
+              {tenant.features.parts && (
               <Link href="/catalog" onClick={() => setMobileMenuOpen(false)} className="px-3 py-3 rounded-lg text-base font-bold text-red-600">
                 {isUk ? 'Увесь каталог' : 'Full catalog'}
               </Link>
+              )}
               {categories.map((c) => (
                 <Link key={c.href} href={c.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-lg text-base font-semibold text-slate-800 hover:bg-slate-50">
                   <c.icon className={`w-5 h-5 ${'hot' in c ? 'text-emerald-600' : 'text-slate-400'}`} /> {isUk ? c.uk : c.en}
@@ -225,15 +246,19 @@ export default function Header() {
               </Link>
             </nav>
             <div className="pt-3 border-t border-slate-100 grid grid-cols-2 gap-2">
+              {tenant.features.parts && (
               <button type="button" onClick={() => { setMobileMenuOpen(false); setIsB2BModalOpen(true); }} className="py-3 rounded-xl border border-slate-200 text-slate-800 font-bold text-sm">
                 {isUk ? 'B2B кабінет' : 'B2B'}
               </button>
+              )}
               <button type="button" onClick={toggleLanguage} className="py-3 rounded-xl border border-slate-200 text-slate-800 font-bold text-sm">
                 {isUk ? '🇬🇧 English' : '🇺🇦 Українська'}
               </button>
+              {tenant.features.parts && (
               <button type="button" onClick={() => { setMobileMenuOpen(false); scrollToCalculator(); }} className="col-span-2 py-3.5 rounded-xl bg-red-600 text-white font-bold text-sm">
                 {isUk ? 'Отримати ціну' : 'Get a quote'}
               </button>
+              )}
             </div>
           </div>
         )}

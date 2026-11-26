@@ -9,7 +9,7 @@ import {
   Zap, Hammer, Wrench, HardHat, Forklift, Tractor, Truck, CarFront, Clock, MapPin, Gauge, Calendar, X,
   CheckCircle2, Sparkles, Send, Radio, ChevronLeft, ChevronRight, Images, Weight, ExternalLink,
 } from 'lucide-react';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 import { AUCTIONS, AUCTION_META, FEE, pct, ourFee, minFee, rbFee, rbFeeEu, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotPrice, PRICES_UPDATED_AT } from '@/lib/auction-prices';
 import { stavok } from '@/lib/plural';
@@ -96,6 +96,7 @@ export function PriceBox({ lot, closed }: { lot: AuctionLot; closed: boolean }) 
 }
 
 export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number | null; onRequest: () => void }) {
+  const showHouse = useTenant().features.showAuctionHouses;
   const Icon = CATEGORY_ICONS[lot.category];
   const a = AUCTION_BY_ID[lot.auction];
   const closed = now !== null && isClosed(lot, now);
@@ -190,7 +191,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           <span className="hidden sm:inline-flex items-center gap-1"><MapPin className="w-4 h-4 text-slate-400" /> {publicPlace(lot.location)}</span>
         </div>
 
-        {a?.house && (
+        {showHouse && a?.house && (
           <a
             href={lot.url}
             target="_blank"
@@ -240,7 +241,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
           </button>
         </div>
       </div>
-      {gallery && viewer && <PhotoViewer photos={gallery} index={g} onIndex={setG} title={lot.title} credit={a?.house} onClose={() => setViewer(false)} />}
+      {gallery && viewer && <PhotoViewer photos={gallery} index={g} onIndex={setG} title={lot.title} credit={showHouse ? a?.house : undefined} onClose={() => setViewer(false)} />}
     </article>
   );
 }
@@ -287,6 +288,8 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
   const [hp, setHp] = useState('');
   const [contactError, setContactError] = useState(false);
   const [status, setStatus] = useState<'idle' | 'sending' | 'done' | 'error'>('idle');
+  const tenant = useTenant();
+  const CONTACT = tenant.contact; // контакти партнера (White Label)
   const a = lot ? AUCTION_BY_ID[lot.auction] : null;
   const bid = parseInt(maxBid || '0', 10) || 0;
   const isRb = a?.house === 'Ritchie Bros';
@@ -314,7 +317,7 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
           `${lot.lot ? `Лот ${lot.lot}: ` : ''}${lot.title}`,
           `Оригінал: ${lot.original} (ID ${lot.item})`,
           `Торги: ${lotWhen(lot)} (Київ)`,
-          `Максимальна ціна клієнта: ${bid ? money(bid) : 'не вказав'}${bid ? ` · наша комісія ${money(ourFee(bid))}` : ''}`,
+          `Максимальна ціна клієнта: ${bid ? money(bid) : 'не вказав'}${bid && tenant.isDefault ? ` · наша комісія ${money(ourFee(bid))}` : ''}`,
           `Посилання: ${lot.url}`,
         ]
       : [topic ? `ЗАПИТ НА ПІДБІР: ${topic}` : 'ЗАПИТ НА ПІДБІР ТЕХНІКИ З АУКЦІОНІВ', `Бюджет: ${bid ? gbp(bid) : 'не вказав'}`];
@@ -337,7 +340,9 @@ export function RequestModal({ lot, onClose, page = '/aukciony', source = 'Ст�
       const res = await fetch('/api/lead', { method: 'POST', body: fd });
       if (res.ok) {
         const w = window as any;
-        if (typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: 'AW-670192610/Sx8lCIG5m54dEOKnyb8C' });
+        // Конверсія Google Ads — тільки якщо в партнера налаштована
+        const sendTo = tenant.analytics.googleAdsLeadConversion;
+        if (sendTo && typeof w.gtag === 'function') w.gtag('event', 'conversion', { send_to: sendTo });
         trackLead(leadId, { content_name: 'Auction lot', value: bid || undefined, currency: 'GBP' });
       }
       setStatus(res.ok ? 'done' : 'error');

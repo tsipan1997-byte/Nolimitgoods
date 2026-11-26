@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { ClipboardList, BadgePoundSterling, CreditCard, PackageCheck, Building2, ExternalLink, Star } from 'lucide-react';
-import { COMPANY, CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 
 // «Як ми працюємо» + «Перевірте нас»: тільки реальні факти, які клієнт може перевірити сам.
 const STEPS = [
@@ -14,13 +14,19 @@ const STEPS = [
 ];
 
 export default function TrustSection() {
+  const tenant = useTenant();
+  const { company: COMPANY, contact: CONTACT } = tenant;
+  // Для партнера: без згадки «британської компанії» (партнер може бути з будь-якої країни)
+  const steps = tenant.isDefault
+    ? STEPS
+    : STEPS.map((s) => (s.t === 'Оплата' ? { ...s, d: 'Офіційний рахунок і договір. Після оплати замовляємо деталь.' } : s));
   const facts = [
     { k: 'Компанія', v: `${COMPANY.legalName}, з ${COMPANY.since} року` },
-    { k: 'Реєстраційний номер', v: COMPANY.number },
+    { k: tenant.isDefault ? 'Реєстраційний номер' : COMPANY.numberLabel, v: COMPANY.number },
     { k: 'VAT', v: COMPANY.vat },
     { k: 'Адреса', v: COMPANY.address },
     { k: 'Телефон', v: CONTACT.phone },
-  ];
+  ].filter((f) => f.v); // порожні поля (напр. VAT партнера) не показуємо
 
   return (
     <section id="how" className="py-16 sm:py-20 bg-slate-50 border-y border-slate-200 scroll-mt-20">
@@ -29,7 +35,7 @@ export default function TrustSection() {
         <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">Від заявки до деталі в Україні</h2>
 
         <ol className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {STEPS.map((s, i) => (
+          {steps.map((s, i) => (
             <li key={s.t} className="relative p-5 rounded-2xl bg-white border border-slate-200">
               <span className="absolute top-4 right-5 text-4xl font-black text-slate-100 select-none">{i + 1}</span>
               <s.icon className="w-7 h-7 text-red-600" />
@@ -46,7 +52,9 @@ export default function TrustSection() {
               <h3 className="text-xl sm:text-2xl font-black text-slate-900">Перевірте нас перед оплатою</h3>
             </div>
             <p className="mt-2 text-sm text-slate-600">
-              Ми офіційно зареєстрована британська компанія. Дані відкриті — перевірте в державному реєстрі Великої Британії.
+              {tenant.isDefault
+                ? 'Ми офіційно зареєстрована британська компанія. Дані відкриті — перевірте в державному реєстрі Великої Британії.'
+                : 'Ми офіційно зареєстрована компанія. Дані відкриті — перевірте в державному реєстрі.'}
             </p>
             <dl className="mt-5 grid grid-cols-[auto_1fr] gap-x-5 gap-y-2 text-sm">
               {facts.map((f) => (
@@ -56,14 +64,16 @@ export default function TrustSection() {
                 </React.Fragment>
               ))}
             </dl>
+            {COMPANY.registryUrl && (
             <a
               href={COMPANY.registryUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-6 inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-slate-900 hover:bg-red-600 text-white text-sm font-extrabold uppercase"
             >
-              Відкрити в Companies House <ExternalLink className="w-4 h-4" />
+              {tenant.isDefault ? 'Відкрити в Companies House ' : 'Відкрити в реєстрі '}<ExternalLink className="w-4 h-4" />
             </a>
+            )}
           </div>
 
           <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-red-600 to-red-700 text-white flex flex-col justify-between">

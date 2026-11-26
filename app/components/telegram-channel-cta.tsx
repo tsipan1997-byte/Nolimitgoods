@@ -1,9 +1,14 @@
+'use client';
+
 import React from 'react';
 import { Send } from 'lucide-react';
-import { SOCIAL } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 
 // Банер «підписатись на канал з лотами»: на сторінках аукціонів і тематичних сторінках
 export default function TelegramChannelCta({ topic = 'техніку' }: { topic?: string }) {
+  const { social: SOCIAL, features } = useTenant();
+  // У партнера без Telegram-каналу (або з вимкненим блоком) банер не показуємо
+  if (!features.telegramChannelCta || !SOCIAL.telegramChannel) return null;
   return (
     <a
       href={`${SOCIAL.telegramChannel}`}

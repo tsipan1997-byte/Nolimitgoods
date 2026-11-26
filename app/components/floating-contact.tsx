@@ -3,12 +3,13 @@
 import React, { useState } from 'react';
 import { MessageCircle, Phone, X, Send } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
-import { CONTACT } from '@/lib/site-config';
+import { useTenant } from '@/lib/tenant-context';
 
 export default function FloatingContact() {
   const [isOpen, setIsOpen] = useState(false);
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
+  const CONTACT = useTenant().contact; // контакти партнера (White Label)
 
   const phoneRaw = CONTACT.phoneUk.replace(/\s/g, '');
   const phoneDisplay = CONTACT.phoneUk;

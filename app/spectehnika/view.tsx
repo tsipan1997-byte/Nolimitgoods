@@ -199,9 +199,9 @@ export default function SpecView({ brand }: { brand?: MachineBrand }) {
                 : 'Будівельна техніка, телескопи, трактори, комбайни, двигуни і коробки. Шукаємо по складах дилерів і розбірок Великої Британії та Європи — понад 3 мільйони позицій.'}
             </p>
             <ul className="mt-6 grid gap-3 text-sm text-slate-200">
-              <li className="flex items-center gap-3"><Search className="w-5 h-5 text-red-500 shrink-0" /> Підбір за номером деталі, моделлю або серійним номером техніки</li>
-              <li className="flex items-center gap-3"><Clock className="w-5 h-5 text-red-500 shrink-0" /> Варіанти з цінами — зазвичай у той самий робочий день</li>
-              <li className="flex items-center gap-3"><Truck className="w-5 h-5 text-red-500 shrink-0" /> Доставка в Україну 5–14 робочих днів, документи для митниці</li>
+              <li className="flex items-center gap-3"><Search className="w-5 h-5 text-red-500 shrink-0" /> <Link href="/pidbir-zapchastyn" className="underline decoration-white/30 underline-offset-4 hover:text-white">Підбір за номером деталі, моделлю або серійним номером техніки</Link></li>
+              <li className="flex items-center gap-3"><Clock className="w-5 h-5 text-red-500 shrink-0" /> <Link href="/oryhinal-analog-bu" className="underline decoration-white/30 underline-offset-4 hover:text-white">Варіанти з цінами — зазвичай у той самий робочий день</Link></li>
+              <li className="flex items-center gap-3"><Truck className="w-5 h-5 text-red-500 shrink-0" /> <Link href="/dostavka" className="underline decoration-white/30 underline-offset-4 hover:text-white">Доставка в Україну 5–14 робочих днів, документи для митниці</Link></li>
             </ul>
             {brand && brand.models.length > 0 && (
               <div className="mt-6">

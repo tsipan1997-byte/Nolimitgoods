@@ -67,11 +67,11 @@ export default function AuctionsTeaser() {
             </p>
           </div>
           <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            <Link href="/aukciony#lots" className="rounded-2xl border border-slate-200 bg-slate-50 hover:border-red-300 p-3">
               <div className="text-[11px] font-semibold uppercase text-slate-500">Лотів з фото</div>
               <div className="mt-0.5 font-mono text-xl md:text-2xl font-bold text-slate-900">{AUCTION_LOTS.length}</div>
-            </div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+            </Link>
+            <Link href="/aukciony#calendar" className="rounded-2xl border border-slate-200 bg-slate-50 hover:border-red-300 p-3">
               <div className="text-[11px] font-semibold uppercase text-slate-500 inline-flex items-center gap-1">
                 <Clock className="w-3 h-3" /> До торгів
               </div>
@@ -81,11 +81,11 @@ export default function AuctionsTeaser() {
                   Торги {dayFmt.format(new Date(next.endsAt))}
                 </div>
               )}
-            </div>
-            <div className="rounded-2xl bg-red-600 p-3 text-white">
+            </Link>
+            <Link href="/komisiia" className="rounded-2xl bg-red-600 hover:bg-red-700 p-3 text-white">
               <div className="text-[11px] font-semibold uppercase text-red-100">Комісія від</div>
               <div className="mt-0.5 font-mono text-xl md:text-2xl font-bold">{pct(FEE.highPct)}%</div>
-            </div>
+            </Link>
           </div>
         </div>
 
@@ -134,7 +134,9 @@ export default function AuctionsTeaser() {
           </div>
 
           <div className="rounded-2xl bg-slate-50 border border-slate-200 p-5">
-            <h3 className="font-black text-lg text-slate-900">Чесна ціна</h3>
+            <h3 className="font-black text-lg text-slate-900">
+              <Link href="/komisiia" className="hover:text-red-600">Чесна ціна →</Link>
+            </h3>
             <div className="mt-3 grid grid-cols-2 gap-3">
               <div>
                 <div className="font-mono text-2xl font-bold text-slate-900">{pct(FEE.lowPct)}%</div>
@@ -149,9 +151,9 @@ export default function AuctionsTeaser() {
               </div>
             </div>
             <ul className="mt-3 space-y-1.5 text-sm text-slate-600">
-              <li>Не виграли — повертаємо передоплату повністю</li>
-              <li>Огляд перед ставкою: склад у Ковентрі</li>
-              <li>Під ключ: доставка і розмитнення в Україні</li>
+              <li><Link href="/yak-kupyty-na-aukcioni" className="underline decoration-slate-300 underline-offset-4 hover:text-red-600">Не виграли — повертаємо передоплату повністю</Link></li>
+              <li><Link href="/ohliad-tekhniky" className="underline decoration-slate-300 underline-offset-4 hover:text-red-600">Огляд перед ставкою: склад у Ковентрі</Link></li>
+              <li><Link href="/dostavka-tekhniky" className="underline decoration-slate-300 underline-offset-4 hover:text-red-600">Під ключ: доставка і розмитнення в Україні</Link></li>
             </ul>
             <Link href="/aukciony" className="mt-4 h-12 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold inline-flex w-full items-center justify-center gap-2">
               Перейти до аукціонів <ArrowRight className="w-4 h-4" />

@@ -8,6 +8,7 @@ import Footer from '../components/footer';
 import FloatingContact from '../components/floating-contact';
 import { BUYABLE_AUCTIONS, AUCTION_CALENDAR, AUCTION_LOTS, AUCTION_META, CATEGORY_LABELS, FEE, pct, type AuctionCategory, type AuctionLot } from '@/lib/auction-lots';
 import { lotiv } from '@/lib/plural';
+import { FAQ_MORE } from '@/lib/faq-links';
 import TelegramChannelCta from '../components/telegram-channel-cta';
 import { CATEGORY_ICONS, LotCard, RequestModal, isClosed, timeLeft, gbp } from '../components/auction-lot-ui';
 import { publicPlace, tradeDates } from '@/lib/auction-public';
@@ -17,6 +18,10 @@ const CATEGORY_ORDER: AuctionCategory[] = ['excavators', 'telehandlers', 'agro',
 const PAGE_SIZE = 24;
 
 type SortKey = 'closing' | 'newest' | 'hours';
+
+
+// Кроки «Як це працює» → довідкові сторінки
+const STEP_LINKS = ['/yak-kupyty-na-aukcioni', '/oplata', '/ohliad-tekhniky', '/dostavka-tekhniky'];
 
 
 // Питання й відповіді: показуються на сторінці та йдуть у розмітку FAQPage для Google
@@ -377,17 +382,20 @@ export default function AuctionsPage() {
               ['Ставимо і викуповуємо', 'Торгуємось до вашого ліміту. Можемо оглянути лот до торгів.'],
               ['Експорт і доставка', 'Забираємо з майданчика, оформлюємо експорт, веземо в Україну.'],
             ].map(([t, d], i) => (
-              <li key={t} className="rounded-2xl bg-white border border-slate-200 p-5">
-                <div className="w-9 h-9 rounded-full bg-red-600 text-white font-black flex items-center justify-center">{i + 1}</div>
-                <div className="mt-3 font-bold">{t}</div>
-                <p className="mt-1 text-sm text-slate-600">{d}</p>
+              <li key={t}>
+                <Link href={STEP_LINKS[i]} className="block h-full rounded-2xl bg-white border border-slate-200 hover:border-red-300 transition-colors p-5">
+                  <div className="w-9 h-9 rounded-full bg-red-600 text-white font-black flex items-center justify-center">{i + 1}</div>
+                  <div className="mt-3 font-bold">{t}</div>
+                  <p className="mt-1 text-sm text-slate-600">{d}</p>
+                </Link>
               </li>
             ))}
           </ol>
 
           <div className="mt-6 rounded-2xl bg-white border border-slate-200 p-5 md:p-6">
             <div className="flex items-center gap-2 font-bold">
-              <Wallet className="w-5 h-5 text-red-600" /> Ціна для вас: прозоро, з інвойсом
+              <Wallet className="w-5 h-5 text-red-600" />
+              <Link href="/komisiia" className="hover:text-red-600">Ціна для вас: прозоро, з інвойсом →</Link>
             </div>
             <div className="mt-3 grid gap-3 md:grid-cols-3 text-sm">
               <div className="rounded-xl bg-slate-50 p-4">
@@ -421,18 +429,18 @@ export default function AuctionsPage() {
 
           <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {[
-              [ShieldCheck, 'Тільки до вашого ліміту', 'Максимальну ціну фіксуємо письмово. Вище — не купуємо і повертаємо передоплату.'],
-              [Eye, 'Огляд перед ставкою', 'Склад у Ковентрі — 1,5–2 години до Лідса та Кембриджа. Фото, відео, запуск двигуна.'],
-              [FileText, 'Під ключ з розмитненням', 'Експортні документи у Великій Британії і розмитнення в Україні — беремо на себе.'],
-              [Truck, 'Доставка будь-якого габариту', 'Від палети з навісним до трала для 30-тонного екскаватора.'],
-            ].map(([Icon, t, d]) => {
+              [ShieldCheck, 'Тільки до вашого ліміту', 'Максимальну ціну фіксуємо письмово. Вище — не купуємо і повертаємо передоплату.', '/yak-kupyty-na-aukcioni'],
+              [Eye, 'Огляд перед ставкою', 'Склад у Ковентрі — 1,5–2 години до Лідса та Кембриджа. Фото, відео, запуск двигуна.', '/ohliad-tekhniky'],
+              [FileText, 'Під ключ з розмитненням', 'Експортні документи у Великій Британії і розмитнення в Україні — беремо на себе.', '/rozmytnennia-tekhniky-z-anglii'],
+              [Truck, 'Доставка будь-якого габариту', 'Від палети з навісним до трала для 30-тонного екскаватора.', '/dostavka-tekhniky'],
+            ].map(([Icon, t, d, href]) => {
               const I = Icon as React.ComponentType<{ className?: string }>;
               return (
-                <div key={t as string} className="rounded-2xl bg-white border border-slate-200 p-5">
+                <Link key={t as string} href={href as string} className="rounded-2xl bg-white border border-slate-200 hover:border-red-300 transition-colors p-5">
                   <I className="w-6 h-6 text-red-600" />
                   <div className="mt-3 font-bold">{t as string}</div>
                   <p className="mt-1 text-sm text-slate-600">{d as string}</p>
-                </div>
+                </Link>
               );
             })}
           </div>
@@ -489,6 +497,11 @@ export default function AuctionsPage() {
                   {qq} <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-open:rotate-180" />
                 </summary>
                 <p className="mt-2 text-sm text-slate-600">{a}</p>
+                {FAQ_MORE[qq] && (
+                  <Link href={FAQ_MORE[qq]} className="mt-2 inline-flex text-sm font-bold text-red-600 hover:text-red-700">
+                    Детальніше →
+                  </Link>
+                )}
               </details>
             ))}
           </div>

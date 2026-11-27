@@ -8,6 +8,26 @@ import { SOCIAL, CONTACT } from '@/lib/site-config';
 import { InstagramIcon, FacebookIcon } from './social-icons';
 import { useLanguage } from '@/lib/language-context';
 
+// Довідкові сторінки (тексти — у lib/info-pages*.ts; тут лише підписи, щоб не тягнути тексти в клієнт)
+const INFO_LINKS: [string, string][] = [
+  ['/yak-zamovyty', 'Як замовити'],
+  ['/pidbir-zapchastyn', 'Підбір запчастин'],
+  ['/oryhinal-analog-bu', 'Оригінал, аналог чи б/у'],
+  ['/oplata', 'Оплата'],
+  ['/fotozvit', 'Фотозвіт'],
+  ['/dostavka', 'Доставка запчастин'],
+  ['/dostavka-tekhniky', 'Доставка техніки'],
+  ['/nulove-myto', 'Нульове мито'],
+  ['/eksport-bez-vat', 'Експорт без VAT'],
+  ['/yak-kupyty-na-aukcioni', 'Як купити на аукціоні'],
+  ['/komisiia', 'Комісія'],
+  ['/ohliad-tekhniky', 'Огляд перед ставкою'],
+  ['/aukciony-velykoi-brytanii', 'Аукціони Великої Британії'],
+  ['/pro-kompaniiu', 'Про компанію'],
+  ['/sklad-koventri', 'Склад у Ковентрі'],
+  ['/kontakty', 'Контакти'],
+];
+
 export default function Footer() {
   const { language } = useLanguage();
   const isUk = language === 'uk' || (language as string) === 'ua';
@@ -97,10 +117,20 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href="/#contacts" className="hover:text-white transition-colors">
+                <a href="/pro-kompaniiu" className="hover:text-white transition-colors">
                   {isUk ? 'Юридичні реквізити' : 'Legal & Contacts'}
                 </a>
               </li>
+            </ul>
+            <h4 className="pt-3 text-white font-bold text-xs uppercase tracking-wider">
+              {isUk ? 'Корисне' : 'Useful'}
+            </h4>
+            <ul className="flex flex-wrap gap-x-3 gap-y-1.5 text-[11px]">
+              {INFO_LINKS.map(([href, label]) => (
+                <li key={href}>
+                  <a href={href} className="hover:text-white transition-colors">{label}</a>
+                </li>
+              ))}
             </ul>
             <h4 className="pt-3 text-white font-bold text-xs uppercase tracking-wider">
               {isUk ? 'Техніка з аукціонів Англії' : 'From UK auctions'}

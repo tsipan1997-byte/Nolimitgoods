@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React from 'react';
 import { CheckCircle2, ShieldCheck, MapPin, Truck, ExternalLink } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
@@ -65,7 +66,7 @@ export default function DeliveriesSection() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-start gap-3">
+              <Link href="/aukciony-velykoi-brytanii" className="p-4 rounded-xl bg-white border border-slate-200 hover:border-red-300 transition-colors flex items-start gap-3">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 mb-0.5">
@@ -75,9 +76,9 @@ export default function DeliveriesSection() {
                     {isUk ? 'Euro Auctions, Cheffins, Wilsons, Brightwells' : 'Euro Auctions, Cheffins, Wilsons, Brightwells'}
                   </p>
                 </div>
-              </div>
+              </Link>
 
-              <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-start gap-3">
+              <Link href="/dostavka-tekhniky" className="p-4 rounded-xl bg-white border border-slate-200 hover:border-red-300 transition-colors flex items-start gap-3">
                 <Truck className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 mb-0.5">
@@ -87,9 +88,9 @@ export default function DeliveriesSection() {
                     {isUk ? 'Від аукціону до вашого двору' : 'From the auction yard to your door'}
                   </p>
                 </div>
-              </div>
+              </Link>
 
-              <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-start gap-3">
+              <Link href="/sklad-koventri" className="p-4 rounded-xl bg-white border border-slate-200 hover:border-red-300 transition-colors flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 mb-0.5">
@@ -99,9 +100,9 @@ export default function DeliveriesSection() {
                     374 Hipswell Highway, CV2 5FR
                   </p>
                 </div>
-              </div>
+              </Link>
 
-              <div className="p-4 rounded-xl bg-white border border-slate-200 flex items-start gap-3">
+              <Link href="/rozmytnennia-tekhniky-z-anglii" className="p-4 rounded-xl bg-white border border-slate-200 hover:border-red-300 transition-colors flex items-start gap-3">
                 <ShieldCheck className="w-5 h-5 text-sky-600 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-sm font-bold text-slate-900 mb-0.5">
@@ -111,12 +112,12 @@ export default function DeliveriesSection() {
                     {isUk ? 'Повний пакет експортних документів' : 'Full export document set'}
                   </p>
                 </div>
-              </div>
+              </Link>
             </div>
 
             <div className="pt-2">
               <a
-                href="#rfq"
+                href="/#parts-calculator"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-xs uppercase tracking-wider transition-colors shadow-lg shadow-red-600/30"
               >
                 <span>{isUk ? 'Замовити партію або деталь' : 'Request Freight Dispatch'}</span>

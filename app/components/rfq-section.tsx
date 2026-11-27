@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import {
   MessageSquare,
@@ -316,14 +317,14 @@ export default function RFQSection() {
 
   const steps = isUk
     ? [
-        { icon: FileSearch, title: 'Надсилаєте запит', text: 'Артикул, VIN, фото або цілий список' },
-        { icon: Calculator, title: 'Рахуємо варіанти', text: 'Оригінал, аналог і б/у з цінами та термінами' },
-        { icon: Truck, title: 'Привозимо', text: 'Фотозвіт перед відправкою, доставка в Україну' },
+        { icon: FileSearch, href: '/pidbir-zapchastyn', title: 'Надсилаєте запит', text: 'Артикул, VIN, фото або цілий список' },
+        { icon: Calculator, href: '/oryhinal-analog-bu', title: 'Рахуємо варіанти', text: 'Оригінал, аналог і б/у з цінами та термінами' },
+        { icon: Truck, href: '/dostavka', title: 'Привозимо', text: 'Фотозвіт перед відправкою, доставка в Україну' },
       ]
     : [
-        { icon: FileSearch, title: 'Send a request', text: 'Part number, VIN, photo or a full list' },
-        { icon: Calculator, title: 'We quote options', text: 'Genuine, aftermarket and used, with prices and lead times' },
-        { icon: Truck, title: 'We deliver', text: 'Photo report before dispatch, door-to-door delivery' },
+        { icon: FileSearch, href: '/pidbir-zapchastyn', title: 'Send a request', text: 'Part number, VIN, photo or a full list' },
+        { icon: Calculator, href: '/oryhinal-analog-bu', title: 'We quote options', text: 'Genuine, aftermarket and used, with prices and lead times' },
+        { icon: Truck, href: '/dostavka', title: 'We deliver', text: 'Photo report before dispatch, door-to-door delivery' },
       ];
 
   const messengerButtons = (
@@ -383,7 +384,7 @@ export default function RFQSection() {
         {/* Як це працює */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
           {steps.map((s, i) => (
-            <div key={s.title} className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-slate-200">
+            <Link key={s.title} href={s.href} className="flex items-start gap-3 p-4 rounded-2xl bg-white border border-slate-200 hover:border-red-300 transition-colors">
               <div className="shrink-0 w-9 h-9 rounded-xl bg-red-600/15 border border-red-600/30 flex items-center justify-center">
                 <s.icon className="w-4 h-4 text-red-600" />
               </div>
@@ -393,7 +394,7 @@ export default function RFQSection() {
                 </div>
                 <div className="text-xs text-slate-500 mt-0.5 leading-snug">{s.text}</div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

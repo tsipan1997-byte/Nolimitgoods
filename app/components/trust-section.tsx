@@ -7,10 +7,10 @@ import { COMPANY, CONTACT } from '@/lib/site-config';
 
 // «Як ми працюємо» + «Перевірте нас»: тільки реальні факти, які клієнт може перевірити сам.
 const STEPS = [
-  { icon: ClipboardList, t: 'Заявка', d: 'Номер деталі, VIN або фото — через форму, Telegram чи WhatsApp.' },
-  { icon: BadgePoundSterling, t: 'Ціна', d: 'Рахуємо оригінал, аналог і б/у з доставкою, зазвичай протягом дня.' },
-  { icon: CreditCard, t: 'Оплата', d: 'Рахунок від британської компанії. Після оплати замовляємо деталь.' },
-  { icon: PackageCheck, t: 'Фотозвіт і трек', d: 'Фото деталі й номера перед відправкою, трек-номер до України.' },
+  { icon: ClipboardList, t: 'Заявка', href: '/pidbir-zapchastyn', d: 'Номер деталі, VIN або фото — через форму, Telegram чи WhatsApp.' },
+  { icon: BadgePoundSterling, t: 'Ціна', href: '/oryhinal-analog-bu', d: 'Рахуємо оригінал, аналог і б/у з доставкою, зазвичай протягом дня.' },
+  { icon: CreditCard, t: 'Оплата', href: '/oplata', d: 'Рахунок від британської компанії. Після оплати замовляємо деталь.' },
+  { icon: PackageCheck, t: 'Фотозвіт і трек', href: '/fotozvit', d: 'Фото деталі й номера перед відправкою, трек-номер до України.' },
 ];
 
 export default function TrustSection() {
@@ -26,15 +26,19 @@ export default function TrustSection() {
     <section id="how" className="py-16 sm:py-20 bg-slate-50 border-y border-slate-200 scroll-mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-red-600 mb-3">Як ми працюємо</p>
-        <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">Від заявки до деталі в Україні</h2>
+        <h2 className="text-3xl md:text-5xl font-black tracking-tight leading-tight text-slate-900">
+          <Link href="/yak-zamovyty" className="hover:text-red-600">Від заявки до деталі в Україні</Link>
+        </h2>
 
         <ol className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {STEPS.map((s, i) => (
-            <li key={s.t} className="relative p-5 rounded-2xl bg-white border border-slate-200">
-              <span className="absolute top-4 right-5 text-4xl font-black text-slate-100 select-none">{i + 1}</span>
-              <s.icon className="w-7 h-7 text-red-600" />
-              <div className="mt-3 text-lg font-black text-slate-900">{s.t}</div>
-              <p className="mt-1 text-sm text-slate-600">{s.d}</p>
+            <li key={s.t}>
+              <Link href={s.href} className="relative block h-full p-5 rounded-2xl bg-white border border-slate-200 hover:border-red-300 transition-colors">
+                <span className="absolute top-4 right-5 text-4xl font-black text-slate-100 select-none">{i + 1}</span>
+                <s.icon className="w-7 h-7 text-red-600" />
+                <div className="mt-3 text-lg font-black text-slate-900">{s.t}</div>
+                <p className="mt-1 text-sm text-slate-600">{s.d}</p>
+              </Link>
             </li>
           ))}
         </ol>
@@ -64,6 +68,9 @@ export default function TrustSection() {
             >
               Відкрити в Companies House <ExternalLink className="w-4 h-4" />
             </a>
+            <Link href="/pro-kompaniiu" className="mt-3 ml-0 sm:ml-4 inline-flex items-center text-sm font-bold text-slate-900 hover:text-red-600">
+              Як нас перевірити →
+            </Link>
           </div>
 
           <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-red-600 to-red-700 text-white flex flex-col justify-between">

@@ -10,6 +10,7 @@ import TelegramChannelCta from '../components/telegram-channel-cta';
 import { LANDINGS, LANDING_BY_SLUG, type Landing } from '@/lib/landings';
 import { AUCTION_LOTS, FEE, pct, type AuctionLot } from '@/lib/auction-lots';
 import { CONTACT } from '@/lib/site-config';
+import { FAQ_MORE } from '@/lib/faq-links';
 import { allResults } from '@/lib/auction-results';
 import LotPhoto from '../components/lot-photo';
 
@@ -193,17 +194,17 @@ export default function LandingPage({ params }: { params: { landing: string } })
           <div className="mt-5 grid grid-cols-2 lg:grid-cols-4 gap-3">
             {(
               [
-                [ShieldCheck, 'Ставка до вашого ліміту', 'Максимум фіксуємо письмово. Не виграли — повертаємо передоплату.'],
-                [Eye, 'Огляд перед торгами', 'Склад у Ковентрі, 1,5–2 год до Лідса й Кембриджа. Фото, відео, запуск.'],
-                [FileText, 'Під ключ з розмитненням', 'Експорт, CMR і розмитнення в Україні — беремо на себе. Британський VAT не платите.'],
-                [Truck, 'Доставка в Україну', 'Від палети до трала. До кордону — 5–10 днів.'],
+                [ShieldCheck, 'Ставка до вашого ліміту', 'Максимум фіксуємо письмово. Не виграли — повертаємо передоплату.', '/yak-kupyty-na-aukcioni'],
+                [Eye, 'Огляд перед торгами', 'Склад у Ковентрі, 1,5–2 год до Лідса й Кембриджа. Фото, відео, запуск.', '/ohliad-tekhniky'],
+                [FileText, 'Під ключ з розмитненням', 'Експорт, CMR і розмитнення в Україні — беремо на себе. Британський VAT не платите.', '/rozmytnennia-tekhniky-z-anglii'],
+                [Truck, 'Доставка в Україну', 'Від палети до трала. До кордону — 5–10 днів.', '/dostavka-tekhniky'],
               ] as const
-            ).map(([Icon, t, d]) => (
-              <div key={t} className="rounded-2xl bg-white border border-slate-200 p-4">
+            ).map(([Icon, t, d, href]) => (
+              <Link key={t} href={href} className="rounded-2xl bg-white border border-slate-200 hover:border-red-300 transition-colors p-4">
                 <Icon className="w-6 h-6 text-red-600" />
                 <div className="mt-2 font-bold text-sm md:text-base leading-snug">{t}</div>
                 <p className="mt-1 text-xs md:text-sm text-slate-600">{d}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -230,6 +231,11 @@ export default function LandingPage({ params }: { params: { landing: string } })
                   {q} <ChevronDown className="w-4 h-4 shrink-0 transition-transform group-open:rotate-180" />
                 </summary>
                 <p className="mt-2 text-sm text-slate-600">{a}</p>
+                {FAQ_MORE[q] && (
+                  <Link href={FAQ_MORE[q]} className="mt-2 inline-flex text-sm font-bold text-red-600 hover:text-red-700">
+                    Детальніше →
+                  </Link>
+                )}
               </details>
             ))}
           </div>

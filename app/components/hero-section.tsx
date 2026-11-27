@@ -25,29 +25,29 @@ export default function HeroSection() {
 
   const benefits = isUk
     ? [
-        { icon: Search, title: 'Знайдемо', text: 'Навіть рідкісний OEM — за VIN або фото' },
-        { icon: Truck, title: '5–14 роб. днів', text: 'Типовий термін доставки в Україну' },
-        { icon: Camera, title: 'Фотозвіт', text: 'Фото й відео деталі перед відправкою' },
-        { icon: ShieldCheck, title: 'UK Ltd', text: 'Офіційний інвойс британської компанії' },
+        { icon: Search, href: '/pidbir-zapchastyn', title: 'Знайдемо', text: 'Навіть рідкісний OEM — за VIN або фото' },
+        { icon: Truck, href: '/dostavka', title: '5–14 роб. днів', text: 'Типовий термін доставки в Україну' },
+        { icon: Camera, href: '/fotozvit', title: 'Фотозвіт', text: 'Фото й відео деталі перед відправкою' },
+        { icon: ShieldCheck, href: '/pro-kompaniiu', title: 'UK Ltd', text: 'Офіційний інвойс британської компанії' },
       ]
     : [
-        { icon: Search, title: 'We find it', text: 'Even rare OEM — by VIN or photo' },
-        { icon: Truck, title: '5–14 days', text: 'Typical delivery time' },
-        { icon: Camera, title: 'Photo report', text: 'Photos and video before dispatch' },
-        { icon: ShieldCheck, title: 'UK Ltd', text: 'Official invoice from a UK company' },
+        { icon: Search, href: '/pidbir-zapchastyn', title: 'We find it', text: 'Even rare OEM — by VIN or photo' },
+        { icon: Truck, href: '/dostavka', title: '5–14 days', text: 'Typical delivery time' },
+        { icon: Camera, href: '/fotozvit', title: 'Photo report', text: 'Photos and video before dispatch' },
+        { icon: ShieldCheck, href: '/pro-kompaniiu', title: 'UK Ltd', text: 'Official invoice from a UK company' },
       ];
 
   return (
     <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white border-b border-slate-200">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-6 lg:pt-12 lg:pb-12 grid lg:grid-cols-[1.1fr_0.9fr] gap-6 lg:gap-10 items-center">
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-700">
+          <Link href="/pro-kompaniiu" className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 hover:border-red-300 text-xs font-semibold text-slate-700">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
             </span>
             {isUk ? 'NoLimitGoods Ltd · Ковентрі, Велика Британія' : 'NoLimitGoods Ltd · Coventry, UK'}
-          </div>
+          </Link>
 
           <h1 className="mt-3 text-[28px] sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.08]">
             {isUk ? (
@@ -77,10 +77,10 @@ export default function HeroSection() {
               <div className="text-[10px] sm:text-[11px] font-semibold uppercase text-slate-500">{isUk ? 'Лотів аукціонів' : 'Auction lots'}</div>
               <div className="font-mono text-lg sm:text-2xl font-bold text-slate-900">{AUCTION_LOTS.length}</div>
             </Link>
-            <div className="rounded-2xl bg-red-600 p-3 text-white">
+            <Link href="/dostavka" className="rounded-2xl bg-red-600 hover:bg-red-700 p-3 text-white">
               <div className="text-[10px] sm:text-[11px] font-semibold uppercase text-red-100">{isUk ? 'Доставка' : 'Delivery'}</div>
               <div className="font-mono text-lg sm:text-2xl font-bold whitespace-nowrap">5–14 {isUk ? 'дн' : 'd'}</div>
-            </div>
+            </Link>
           </div>
 
           <HeroQuickForm />
@@ -116,7 +116,7 @@ export default function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
           {benefits.map((b) => (
-            <div key={b.title} className="flex items-start gap-2.5 p-3 sm:p-4 rounded-2xl bg-white border border-slate-200">
+            <Link key={b.title} href={b.href} className="flex items-start gap-2.5 p-3 sm:p-4 rounded-2xl bg-white border border-slate-200 hover:border-red-300 transition-colors">
               <div className="w-9 h-9 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
                 <b.icon className="w-4 h-4 text-red-600" />
               </div>
@@ -124,7 +124,7 @@ export default function HeroSection() {
                 <div className="text-sm font-black text-slate-900">{b.title}</div>
                 <div className="text-[11px] sm:text-xs text-slate-500 leading-snug mt-0.5">{b.text}</div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

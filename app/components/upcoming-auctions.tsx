@@ -53,7 +53,7 @@ export default function UpcomingAuctions() {
                 <div className="text-xs text-slate-500">{publicPlace(c.place)}</div>
                 <div className="mt-auto pt-2 text-xs font-bold">
                   {n ? (
-                    <span className="inline-flex items-center gap-1 text-emerald-700"><Images className="w-3.5 h-3.5" /> {n} лотів з фото на сайті</span>
+                    <span className="inline-flex items-center gap-1 text-terra-700"><Images className="w-3.5 h-3.5" /> {n} лотів з фото на сайті</span>
                   ) : (
                     <span className="text-slate-500">Підберемо лот за запитом</span>
                   )}
@@ -70,7 +70,7 @@ export default function UpcomingAuctions() {
           <Link href="/aukciony#calendar" className="h-12 px-5 rounded-xl border border-slate-300 hover:border-red-300 font-bold flex items-center justify-center gap-2 text-slate-800">
             <CalendarDays className="w-4 h-4" /> Календар аукціонів
           </Link>
-          <Link href="/rezultaty-aukcioniv" className="h-12 px-5 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 font-bold flex items-center justify-center gap-2 text-emerald-800">
+          <Link href="/rezultaty-aukcioniv" className="h-12 px-5 rounded-xl border border-terra-300 bg-terra-50 hover:bg-terra-100 font-bold flex items-center justify-center gap-2 text-terra-800">
             За скільки продали і ціна під ключ <ArrowRight className="w-4 h-4" />
           </Link>
         </div>

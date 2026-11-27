@@ -79,10 +79,10 @@ export default function FloatingContact() {
           <X className="w-6 h-6 text-slate-300" />
         ) : (
           <div className="relative flex items-center justify-center">
-            <MessageCircle className="w-6 h-6 text-emerald-400 group-hover:scale-110 transition-transform" />
+            <MessageCircle className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-terra-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-3 w-3 bg-terra-500" />
             </span>
           </div>
         )}

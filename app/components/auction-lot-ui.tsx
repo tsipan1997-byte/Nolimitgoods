@@ -160,7 +160,7 @@ export function LotCard({ lot, now, onRequest }: { lot: AuctionLot; now: number 
         </div>
         <div className="absolute top-2 right-2 flex flex-wrap justify-end gap-1.5">
           {lot.unused && (
-            <span className="px-2 py-1 rounded-md bg-emerald-500 text-white text-[11px] font-bold inline-flex items-center gap-1">
+            <span className="px-2 py-1 rounded-md bg-terra-600 text-white text-[11px] font-bold inline-flex items-center gap-1">
               <Sparkles className="w-3 h-3" /> Нове
             </span>
           )}

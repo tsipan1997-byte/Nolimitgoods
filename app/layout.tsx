@@ -127,7 +127,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${inter.className} pb-14 md:pb-0 bg-white text-slate-900 antialiased selection:bg-red-600 selection:text-white`}>
+      <body className={`${inter.className} pb-14 md:pb-0 bg-slate-50 text-slate-900 antialiased selection:bg-red-600 selection:text-white`}>
         {/* Meta Pixel Code */}
         <Script id="facebook-pixel" strategy="afterInteractive">
           {`

@@ -1,4 +1,20 @@
 import type { Config } from 'tailwindcss';
+import defaultColors from 'tailwindcss/colors';
+
+// Теплий графіт (основа — stone, світлі тони підігріті до кремового)
+const WARM = {
+  50: '#faf8f5',
+  100: '#f5f0e9',
+  200: '#ece6dd',
+  300: '#d6cdbf',
+  400: '#a8a29e',
+  500: '#78716c',
+  600: '#57534e',
+  700: '#44403c',
+  800: '#292524',
+  900: '#1c1917',
+  950: '#0c0a09',
+};
 
 const config: Config = {
   darkMode: ['class'],
@@ -20,6 +36,28 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       colors: {
+        // Варіант G «Теплий цегляний» (27.11.2026): холодний slate/gray → теплий кремово-коричневий,
+        // червоний на крок глибший (цегляний), «гарячі» акценти — теракотовий (terra-*), не м'ятний зелений.
+        slate: WARM,
+        gray: WARM,
+        red: {
+          ...defaultColors.red,
+          600: '#b91c1c',
+          700: '#991b1b',
+          800: '#7f1d1d',
+        },
+        terra: {
+          50: '#fdf6f0',
+          100: '#fbeee4',
+          200: '#f5d9c4',
+          300: '#eab896',
+          400: '#e0905f',
+          500: '#ea580c',
+          600: '#c2410c',
+          700: '#9a3412',
+          800: '#7c2d12',
+          900: '#5c210d',
+        },
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         card: {

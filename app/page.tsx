@@ -21,7 +21,7 @@ import FloatingContact from './components/floating-contact';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-white text-slate-900 flex flex-col selection:bg-red-500 selection:text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-red-500 selection:text-white">
       <Header />
 
       <HeroSection />

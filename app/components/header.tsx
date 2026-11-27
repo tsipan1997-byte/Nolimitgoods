@@ -198,7 +198,7 @@ export default function Header() {
               <Menu className="w-4 h-4" /> {isUk ? 'Каталог' : 'Catalog'}
             </Link>
             {categories.map((c) => (
-              <Link key={c.href} href={c.href} className={`${c.href.startsWith('/#') ? 'hidden xl:flex' : 'flex'} items-center gap-2 h-9 px-3 rounded-lg text-sm font-semibold whitespace-nowrap ${'hot' in c ? 'text-emerald-800 bg-emerald-50 hover:bg-emerald-100' : 'text-slate-700 hover:text-red-600 hover:bg-red-50'}`}>
+              <Link key={c.href} href={c.href} className={`${c.href.startsWith('/#') ? 'hidden xl:flex' : 'flex'} items-center gap-2 h-9 px-3 rounded-lg text-sm font-semibold whitespace-nowrap ${'hot' in c ? 'text-terra-700 bg-terra-100 hover:bg-terra-200' : 'text-slate-700 hover:text-red-600 hover:bg-red-50'}`}>
                 <c.icon className="w-4 h-4" /> {isUk ? c.uk : c.en}
               </Link>
             ))}
@@ -217,7 +217,7 @@ export default function Header() {
               </Link>
               {categories.map((c) => (
                 <Link key={c.href} href={c.href} onClick={() => setMobileMenuOpen(false)} className="flex items-center gap-3 px-3 py-3 rounded-lg text-base font-semibold text-slate-800 hover:bg-slate-50">
-                  <c.icon className={`w-5 h-5 ${'hot' in c ? 'text-emerald-600' : 'text-slate-400'}`} /> {isUk ? c.uk : c.en}
+                  <c.icon className={`w-5 h-5 ${'hot' in c ? 'text-terra-600' : 'text-slate-400'}`} /> {isUk ? c.uk : c.en}
                 </Link>
               ))}
               <Link href="/#contacts" onClick={() => setMobileMenuOpen(false)} className="px-3 py-3 rounded-lg text-base font-semibold text-slate-800">

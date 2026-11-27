@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NLG — 7 варіантів апгрейду</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0f172a;--muted:#64748b;--line:#e2e8f0;--bg:#f8fafc}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 16px 80px}
+h1{font-size:34px;font-weight:900;letter-spacing:-.02em;margin:0 0 6px}
+.lead{color:var(--muted);margin:0 0 32px;max-width:760px;line-height:1.55}
+.variant{background:#fff;border:1px solid var(--line);border-radius:24px;padding:28px;margin-bottom:28px}
+.vhead{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.vtag{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.vname{font-size:24px;font-weight:900;margin:2px 0 6px;letter-spacing:-.01em}
+.vdesc{color:#475569;max-width:640px;line-height:1.5;margin:0;font-size:15px}
+.sw{display:flex;gap:6px}
+.sw i{width:28px;height:28px;border-radius:8px;display:block;border:1px solid rgba(0,0,0,.08)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.stage{border:1px dashed #cbd5e1;border-radius:16px;padding:18px;background:#fff}
+.stage.dark{background:#0b1220;border-color:#1e293b}
+.lbl{font-size:11px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.changes{margin:18px 0 0;padding:14px 18px;background:#f8fafc;border-radius:14px;font-size:14px;color:#334155;line-height:1.6}
+.changes b{color:var(--ink)}
+
+/* базові форми компонентів (спільні) */
+.nav{display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+.nav a{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;color:#334155;transition:.15s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 20px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;border:0;cursor:pointer;transition:all .18s ease;font-family:inherit}
+.btn .arr{transition:transform .18s}
+.btn:hover .arr{transform:translateX(3px)}
+.card{border-radius:16px;padding:14px;min-width:0}
+.date{font-weight:900;font-size:20px}
+.ttl{font-weight:700;font-size:14px;margin:2px 0 2px}
+.sub{font-size:12px;color:#94a3b8}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;margin-top:10px;padding:4px 9px;border-radius:999px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;padding:5px 11px;border-radius:999px}
+.sold{border-radius:16px;overflow:hidden;width:100%}
+.ph{height:92px;background:linear-gradient(135deg,#cbd5e1,#94a3b8);position:relative}
+.ph span{position:absolute;top:8px;left:8px;font-size:11px;font-weight:800;padding:3px 8px;border-radius:6px}
+.sb{padding:12px}
+.price{font-family:'JetBrains Mono',monospace;font-weight:700;white-space:nowrap}
+.tk .price{font-size:13px}
+.fab{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;position:relative;border:0}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ───── ЗАРАЗ ───── */
+.v0 .nav a:hover{color:#dc2626;background:#fef2f2}
+.v0 .nav .cat{background:#dc2626;color:#fff;font-weight:700}
+.v0 .nav .hot{color:#065f46;background:#ecfdf5}
+.v0 .p{background:#dc2626;color:#fff}
+.v0 .s{background:#ecfdf5;border:1px solid #6ee7b7;color:#0f172a}
+.v0 .g{background:#fff;border:1px solid #e2e8f0;color:#0f172a}
+.v0 .card{border:1px solid #e2e8f0}
+.v0 .date{color:#dc2626}
+.v0 .badge{color:#047857;padding:0;margin-top:8px}
+.v0 .chip{background:#d1fae5;border:1px solid #a7f3d0;color:#065f46}
+.v0 .sold{border:1px solid #e2e8f0}
+.v0 .ph span{background:#059669;color:#fff}
+.v0 .tk{background:#ecfdf5;color:#064e3b;border-radius:8px;padding:6px 8px;margin-top:8px}
+.v0 .fab{background:#0f172a;color:#34d399}
+.v0 .fab .dot{position:absolute;top:13px;right:13px;background:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.35)}
+
+/* ───── A. Чистий червоний ───── */
+.vA .nav a:hover{color:#0f172a;background:#f1f5f9}
+.vA .nav .cat{background:#dc2626;color:#fff;font-weight:700;box-shadow:inset 0 -2px 0 rgba(0,0,0,.18)}
+.vA .nav .hot{color:#0f172a;background:transparent;box-shadow:inset 0 0 0 1.5px #fecaca}
+.vA .nav .hot .dot{background:#dc2626}
+.vA .p{background:#dc2626;color:#fff;box-shadow:inset 0 -2px 0 rgba(0,0,0,.2)}
+.vA .p:hover{background:#b91c1c}
+.vA .s{background:#0f172a;color:#fff}
+.vA .s:hover{background:#1e293b}
+.vA .g{background:#fff;color:#0f172a;box-shadow:inset 0 0 0 1.5px #e2e8f0}
+.vA .g:hover{box-shadow:inset 0 0 0 1.5px #0f172a}
+.vA .card{border:1px solid #e2e8f0;transition:.15s}
+.vA .card:hover{border-color:#0f172a}
+.vA .date{color:#0f172a}
+.vA .badge{background:#f1f5f9;color:#334155}
+.vA .badge .dot{background:#dc2626;width:6px;height:6px}
+.vA .chip{background:#fef2f2;color:#b91c1c}
+.vA .sold{border:1px solid #e2e8f0}
+.vA .ph span{background:#0f172a;color:#fff}
+.vA .tk{border-top:1px solid #f1f5f9;margin-top:10px;padding-top:8px}
+.vA .tk .price{color:#dc2626}
+.vA .fab{background:#dc2626;color:#fff;box-shadow:0 8px 20px -6px rgba(220,38,38,.5)}
+
+/* ───── B. Індустріальний графіт ───── */
+.vB .nav{background:#0f172a;padding:6px;border-radius:14px}
+.vB .nav a{color:#cbd5e1}
+.vB .nav a:hover{color:#fff;background:rgba(255,255,255,.07)}
+.vB .nav .cat{background:#dc2626;color:#fff;font-weight:800}
+.vB .nav .hot{color:#fff;background:rgba(251,191,36,.12);box-shadow:inset 0 0 0 1px rgba(251,191,36,.45)}
+.vB .nav .hot .dot{background:#fbbf24}
+.vB .btn{border-radius:10px;text-transform:uppercase;letter-spacing:.04em;font-size:13px;font-weight:800}
+.vB .p{background:#dc2626;color:#fff;box-shadow:0 3px 0 #991b1b}
+.vB .p:hover{transform:translateY(1px);box-shadow:0 2px 0 #991b1b}
+.vB .p:active{transform:translateY(3px);box-shadow:0 0 0 #991b1b}
+.vB .s{background:#1e293b;color:#fbbf24;box-shadow:0 3px 0 #020617}
+.vB .s:hover{transform:translateY(1px);box-shadow:0 2px 0 #020617}
+.vB .g{background:#fff;color:#0f172a;border:2px solid #0f172a}
+.vB .card{border:1px solid #e2e8f0;border-left:4px solid #0f172a;border-radius:10px}
+.vB .card:hover{border-left-color:#dc2626}
+.vB .date{color:#0f172a;font-family:'JetBrains Mono',monospace}
+.vB .badge{background:#0f172a;color:#fbbf24;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px}
+.vB .chip{background:#0f172a;color:#fbbf24;border-radius:6px}
+.vB .sold{border:1px solid #e2e8f0;border-radius:10px}
+.vB .ph span{background:#fbbf24;color:#0f172a}
+.vB .tk{background:#0f172a;color:#fff;border-radius:6px;padding:6px 8px;margin-top:8px}
+.vB .tk .price{color:#fbbf24}
+.vB .fab{background:#0f172a;color:#fbbf24;border-radius:14px;box-shadow:0 3px 0 #020617}
+
+/* ───── C. Глибокий зелений «гроші» ───── */
+.vC .nav a:hover{color:#dc2626;background:#fef2f2}
+.vC .nav .cat{background:#dc2626;color:#fff;font-weight:700}
+.vC .nav .hot{color:#14532d;background:transparent;box-shadow:inset 0 -2px 0 #15803d;border-radius:0}
+.vC .nav .hot .dot{background:#15803d}
+.vC .p{background:#dc2626;color:#fff}
+.vC .p:hover{background:#b91c1c}
+.vC .s{background:#14532d;color:#fff}
+.vC .s:hover{background:#166534}
+.vC .g{background:#fff;color:#0f172a;border:1px solid #cbd5e1}
+.vC .g:hover{border-color:#0f172a}
+.vC .card{border:1px solid #e2e8f0}
+.vC .card:hover{border-color:#15803d}
+.vC .date{color:#dc2626}
+.vC .badge{background:transparent;color:#14532d;border:1px solid #bbf7d0;padding:3px 8px}
+.vC .badge .dot{background:#15803d;width:6px;height:6px}
+.vC .chip{background:#14532d;color:#dcfce7}
+.vC .sold{border:1px solid #e2e8f0}
+.vC .ph span{background:#14532d;color:#fff}
+.vC .tk{border-left:3px solid #15803d;padding:2px 0 2px 8px;margin-top:10px;color:#14532d}
+.vC .fab{background:#0f172a;color:#fff}
+.vC .fab .dot{position:absolute;top:14px;right:14px;background:#22c55e;box-shadow:0 0 0 2px #0f172a}
+
+/* ───── D. Преміум ───── */
+.vD{background:linear-gradient(180deg,#fff, #fff7f7)}
+.vD .nav{background:rgba(255,255,255,.7);border:1px solid #f1f5f9;padding:5px;border-radius:14px;box-shadow:0 1px 2px rgba(15,23,42,.04)}
+.vD .nav a:hover{color:#0f172a;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.08)}
+.vD .nav .cat{background:linear-gradient(180deg,#ef4444,#dc2626);color:#fff;font-weight:700;box-shadow:0 4px 12px -4px rgba(220,38,38,.6),inset 0 1px 0 rgba(255,255,255,.25)}
+.vD .nav .hot{color:#0f172a;background:#fff;box-shadow:0 1px 3px rgba(15,23,42,.1)}
+.vD .nav .hot sup{font-size:9px;font-weight:800;background:#dc2626;color:#fff;padding:1px 5px;border-radius:999px;margin-left:2px}
+.vD .btn{border-radius:14px}
+.vD .p{background:linear-gradient(180deg,#ef4444,#dc2626);color:#fff;box-shadow:0 8px 20px -8px rgba(220,38,38,.65),inset 0 1px 0 rgba(255,255,255,.25)}
+.vD .p:hover{box-shadow:0 12px 26px -8px rgba(220,38,38,.75),inset 0 1px 0 rgba(255,255,255,.25);transform:translateY(-1px)}
+.vD .s{background:linear-gradient(180deg,#1e293b,#0f172a);color:#fff;box-shadow:0 8px 20px -10px rgba(15,23,42,.7),inset 0 1px 0 rgba(255,255,255,.12)}
+.vD .s:hover{transform:translateY(-1px)}
+.vD .g{background:#fff;color:#0f172a;box-shadow:0 1px 2px rgba(15,23,42,.06),0 0 0 1px #e2e8f0}
+.vD .g:hover{box-shadow:0 6px 16px -6px rgba(15,23,42,.18),0 0 0 1px #cbd5e1}
+.vD .card{background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.05),0 0 0 1px #f1f5f9;transition:.2s}
+.vD .card:hover{box-shadow:0 14px 30px -14px rgba(15,23,42,.25),0 0 0 1px #e2e8f0;transform:translateY(-2px)}
+.vD .date{background:linear-gradient(90deg,#dc2626,#f97316);-webkit-background-clip:text;background-clip:text;color:transparent}
+.vD .badge{background:#f8fafc;color:#334155;box-shadow:inset 0 0 0 1px #e2e8f0}
+.vD .badge b{color:#dc2626}
+.vD .chip{background:#fff;color:#0f172a;box-shadow:0 1px 3px rgba(15,23,42,.1)}
+.vD .chip .dot{background:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.15)}
+.vD .sold{background:#fff;box-shadow:0 1px 2px rgba(15,23,42,.05),0 0 0 1px #f1f5f9}
+.vD .ph span{background:rgba(15,23,42,.75);color:#fff;backdrop-filter:blur(4px)}
+.vD .tk{background:linear-gradient(90deg,#fef2f2,#fff);border-radius:8px;padding:6px 8px;margin-top:8px}
+.vD .tk .price{color:#b91c1c}
+.vD .fab{background:linear-gradient(180deg,#1e293b,#0f172a);color:#fff;box-shadow:0 12px 28px -10px rgba(15,23,42,.6),inset 0 1px 0 rgba(255,255,255,.15)}
+.vD .fab .dot{position:absolute;top:14px;right:14px;background:#ef4444;box-shadow:0 0 0 2px #0f172a}
+
+/* ───── E. Мінімал «пігулки» ───── */
+.vE .nav a{border-radius:999px;color:#475569}
+.vE .nav a:hover{color:#0f172a;background:#f1f5f9}
+.vE .nav .cat{background:#0f172a;color:#fff;font-weight:700}
+.vE .nav .hot{color:#dc2626;font-weight:700}
+.vE .nav .hot:hover{background:#fef2f2;color:#dc2626}
+.vE .btn{border-radius:999px;height:48px;padding:0 24px;font-weight:600}
+.vE .p{background:#dc2626;color:#fff}
+.vE .p:hover{background:#c81e1e}
+.vE .p .arr{display:inline-flex;width:26px;height:26px;border-radius:50%;background:rgba(255,255,255,.2);align-items:center;justify-content:center;margin-right:-12px}
+.vE .s{background:#f1f5f9;color:#0f172a}
+.vE .s:hover{background:#e2e8f0}
+.vE .g{background:transparent;color:#0f172a;text-decoration:underline;text-underline-offset:4px;text-decoration-color:#cbd5e1;padding:0 8px}
+.vE .g:hover{text-decoration-color:#dc2626}
+.vE .card{background:#f8fafc;border-radius:20px;transition:.15s}
+.vE .card:hover{background:#f1f5f9}
+.vE .date{color:#0f172a;font-weight:800}
+.vE .badge{background:#fff;color:#475569;font-weight:600}
+.vE .chip{background:transparent;color:#dc2626;padding:0;letter-spacing:.12em}
+.vE .sold{background:#f8fafc;border-radius:20px}
+.vE .ph{border-radius:20px 20px 0 0}
+.vE .ph span{background:#fff;color:#0f172a;border-radius:999px}
+.vE .tk{margin-top:8px}
+.vE .tk .price{color:#dc2626;font-size:15px}
+.vE .fab{background:#fff;color:#0f172a;box-shadow:0 0 0 1px #e2e8f0,0 6px 16px -6px rgba(15,23,42,.2)}
+
+/* ───── F. Чорний контраст ───── */
+.vF .nav{border-bottom:1px solid #e2e8f0;gap:0}
+.vF .nav a{border-radius:0;height:42px;color:#0f172a;font-weight:700;box-shadow:inset 0 -3px 0 transparent}
+.vF .nav a:hover{box-shadow:inset 0 -3px 0 #dc2626;background:transparent}
+.vF .nav .cat{background:#dc2626;color:#fff;border-radius:6px 6px 0 0}
+.vF .nav .hot{box-shadow:inset 0 -3px 0 #0f172a}
+.vF .nav .hot sup{font-size:9px;font-weight:900;color:#dc2626;margin-left:2px}
+.vF .btn{border-radius:6px;font-weight:800}
+.vF .p{background:#0f172a;color:#fff;padding:0 6px 0 20px}
+.vF .p .arr{background:#dc2626;width:34px;height:34px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;margin-left:6px}
+.vF .p:hover{background:#000}
+.vF .s{background:#dc2626;color:#fff}
+.vF .s:hover{background:#b91c1c}
+.vF .g{background:#fff;color:#0f172a;border:2px solid #0f172a}
+.vF .g:hover{background:#0f172a;color:#fff}
+.vF .card{border:2px solid #0f172a;border-radius:6px;padding:0;overflow:hidden}
+.vF .card>*{padding:0 12px}
+.vF .date{background:#0f172a;color:#fff;padding:8px 12px;font-size:17px;margin-bottom:8px}
+.vF .card .badge{margin:10px 12px 12px;padding:3px 8px;background:#dc2626;color:#fff;border-radius:4px}
+.vF .chip{background:#0f172a;color:#fff;border-radius:4px}
+.vF .chip .dot{background:#dc2626}
+.vF .sold{border:2px solid #0f172a;border-radius:6px}
+.vF .ph span{background:#dc2626;color:#fff;border-radius:4px}
+.vF .tk{background:#0f172a;color:#fff;margin:10px -12px -12px;padding:8px 12px}
+.vF .tk .price{color:#fff}
+.vF .fab{background:#dc2626;color:#fff;border-radius:8px}
+
+/* ───── G. Теплий цегляний ───── */
+.vG{background:#faf8f5;border-color:#ece6dd}
+.vG .stage{background:#fffdfa;border-color:#e7dfd3}
+.vG .nav a{color:#44403c}
+.vG .nav a:hover{background:#f5efe6;color:#1c1917}
+.vG .nav .cat{background:#b91c1c;color:#fff;font-weight:700}
+.vG .nav .hot{color:#9a3412;background:#fbeee4}
+.vG .nav .hot .dot{background:#ea580c}
+.vG .btn{border-radius:14px}
+.vG .p{background:#b91c1c;color:#fff;box-shadow:0 6px 16px -8px rgba(185,28,28,.6)}
+.vG .p:hover{background:#991b1b}
+.vG .s{background:#1c1917;color:#fafaf9}
+.vG .s:hover{background:#292524}
+.vG .g{background:#fffdfa;color:#1c1917;border:1px solid #d6cdbf}
+.vG .g:hover{border-color:#1c1917}
+.vG .card{background:#fff;border:1px solid #ece6dd;transition:.15s}
+.vG .card:hover{border-color:#d6cdbf;box-shadow:0 8px 20px -12px rgba(68,64,60,.3)}
+.vG .date{color:#b91c1c}
+.vG .sub{color:#a8a29e}
+.vG .badge{background:#f5efe6;color:#57534e}
+.vG .badge .dot{background:#ea580c;width:6px;height:6px}
+.vG .chip{background:#fbeee4;color:#9a3412}
+.vG .sold{background:#fff;border:1px solid #ece6dd}
+.vG .ph{background:linear-gradient(135deg,#d6cdbf,#a8a29e)}
+.vG .ph span{background:#1c1917;color:#fff}
+.vG .tk{background:#faf5ee;border-radius:8px;padding:6px 8px;margin-top:8px;color:#1c1917}
+.vG .tk .price{color:#9a3412}
+.vG .fab{background:#1c1917;color:#fff}
+
+.pick{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:800;padding:6px 12px;border-radius:999px;background:#0f172a;color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>No Limit Goods — 7 варіантів апгрейду</h1>
+  <p class="lead">Структура сайту, червоний бренд і шрифт Inter лишаються. Змінюються кнопки, бейджі й акценти: головна проблема зараз — блідо-м'ятний зелений (<code>emerald-50</code>) на «Ціни продажу», «Лотів з фото», «Під ключ». Він не з бренду, виглядає як кнопка іншого сайту і сперечається з червоним. Наводьте мишку на кнопки й картки — hover теж показано.</p>
+
+  <!-- ЗАРАЗ -->
+  <div class="variant v0">
+    <div class="vhead"><div><div class="vtag">Для порівняння</div><div class="vname">Зараз</div>
+      <p class="vdesc">Червоний + м'ятний зелений + синій Telegram. Три акцентні кольори на одному екрані, зелене підсвічування пласке і бліде.</p></div>
+      <div class="sw"><i style="background:#dc2626"></i><i style="background:#ecfdf5"></i><i style="background:#059669"></i><i style="background:#0f172a"></i></div></div>
+    <div class="grid">
+      <div class="stage"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#">↗ Ціни продажу</a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни продажу і під ключ</button><button class="btn g">Календар аукціонів</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip">↗ Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span><span class="dot"></span></button></div>
+      </div>
+      <div class="stage"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24 лист.</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge">▣ 14 лотів з фото на сайті</span></div>
+        <div class="sold"><div class="ph"><span>Продано</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- A -->
+  <div class="variant vA">
+    <div class="vhead"><div><div class="vtag">Варіант A · найбезпечніший</div><div class="vname">Чистий червоний</div>
+      <p class="vdesc">Повністю прибираємо зелений. Лишається пара червоний + графіт, як у логотипі. «Гарячі» пункти — тонка червона рамка й точка замість заливки. Другорядні кнопки — графітові. Кнопки отримують легку «нижню тінь», тож виглядають натисканими, а не пласкими.</p></div>
+      <div class="sw"><i style="background:#dc2626"></i><i style="background:#0f172a"></i><i style="background:#f1f5f9"></i><i style="background:#fef2f2"></i></div></div>
+    <div class="grid">
+      <div class="stage"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#"><span class="dot"></span> Ціни продажу</a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни продажу і під ключ <span class="arr">→</span></button><button class="btn g">Календар аукціонів</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip">↗ Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span></button></div>
+      </div>
+      <div class="stage"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24 лист.</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge"><span class="dot"></span> 14 лотів з фото</span></div>
+        <div class="sold"><div class="ph"><span>Продано</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px;color:#64748b">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+    <div class="changes"><b>Що міняємо:</b> усі <code>emerald-*</code> у меню, «Ціни продажу», «Лотів з фото», «Під ключ» → червоний/графіт. Робота: ~1 година, ризик нуль. <b>Мінус:</b> «гроші» (ціна під ключ) візуально не виділяються іншим кольором.</div>
+  </div>
+
+  <!-- B -->
+  <div class="variant vB">
+    <div class="vhead"><div><div class="vtag">Варіант B · «важка техніка»</div><div class="vname">Індустріальний графіт</div>
+      <p class="vdesc">Характер машинного двору: темне меню, кнопки з «фізичною» нижньою гранню (натискаються вниз), моноширинні дати й лічильники як на табличці техніки. Замість зеленого — сигнальний жовтий (колір спецтехніки) тільки для цін продажу.</p></div>
+      <div class="sw"><i style="background:#0f172a"></i><i style="background:#dc2626"></i><i style="background:#fbbf24"></i><i style="background:#1e293b"></i></div></div>
+    <div class="grid">
+      <div class="stage"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#"><span class="dot"></span> Ціни продажу</a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни під ключ</button><button class="btn g">Календар</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip">▲ Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span></button></div>
+      </div>
+      <div class="stage"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24.11</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge">14 ЛОТІВ · ФОТО</span></div>
+        <div class="sold"><div class="ph"><span>ПРОДАНО</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px;color:#94a3b8">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+    <div class="changes"><b>Що міняємо:</b> меню категорій стає темним, кнопки — з нижньою гранню, зелений → жовтий у секції «Ціни продажу». Робота: ~3 години. <b>Мінус:</b> найсильніша зміна характеру сайту; жовтий треба дозувати, інакше буде «будмагазин».</div>
+  </div>
+
+  <!-- C -->
+  <div class="variant vC">
+    <div class="vhead"><div><div class="vtag">Варіант C · зелений лишається, але дорослий</div><div class="vname">Глибокий зелений «гроші»</div>
+      <p class="vdesc">Якщо зелений як «ціна / продано / вигода» подобається — лишаємо сенс, міняємо виконання. Замість блідої м'ятної заливки — темний лісовий зелений, тонкі рамки й підкреслення. Зелений означає лише одне: реальні гроші й результати аукціонів.</p></div>
+      <div class="sw"><i style="background:#dc2626"></i><i style="background:#14532d"></i><i style="background:#15803d"></i><i style="background:#0f172a"></i></div></div>
+    <div class="grid">
+      <div class="stage"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#"><span class="dot"></span> Ціни продажу</a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни продажу і під ключ <span class="arr">→</span></button><button class="btn g">Календар аукціонів</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip">↗ Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span><span class="dot"></span></button></div>
+      </div>
+      <div class="stage"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24 лист.</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge"><span class="dot"></span> 14 лотів з фото</span></div>
+        <div class="sold"><div class="ph"><span>Продано</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+    <div class="changes"><b>Що міняємо:</b> <code>emerald-50/100</code> заливки → прозорі з рамкою; <code>emerald-600/700</code> → <code>green-800/900</code>; прибираємо «пульсуючі» зелені точки (animate-ping). Робота: ~1,5 години. <b>Мінус:</b> два акцентні кольори лишаються — треба суворо тримати зелений тільки для цін.</div>
+  </div>
+
+  <!-- D -->
+  <div class="variant vD">
+    <div class="vhead"><div><div class="vtag">Варіант D · найбільший апгрейд</div><div class="vname">Преміум</div>
+      <p class="vdesc">Той самий червоний, але «дорожчий»: м'який градієнт на кнопках, кольорова тінь під головною дією, картки піднімаються при наведенні, бейджі — білі «таблетки» з тінню. Відчуття сучасного сервісу, а не шаблону. Зелений зникає; «нове/гаряче» — маленька червона мітка.</p></div>
+      <div class="sw"><i style="background:linear-gradient(180deg,#ef4444,#dc2626)"></i><i style="background:linear-gradient(180deg,#1e293b,#0f172a)"></i><i style="background:#fff"></i><i style="background:#fff7f7"></i></div></div>
+    <div class="grid">
+      <div class="stage" style="background:transparent"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#">Ціни продажу <sup>NEW</sup></a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни продажу і під ключ <span class="arr">→</span></button><button class="btn g">Календар аукціонів</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip"><span class="dot"></span> Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span><span class="dot"></span></button></div>
+      </div>
+      <div class="stage" style="background:transparent"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24 лист.</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge"><b>14</b> лотів з фото</span></div>
+        <div class="sold"><div class="ph"><span>Продано</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px;color:#64748b">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+    <div class="changes"><b>Що міняємо:</b> спільні класи кнопок у <code>tailwind.config</code> (shadow-cta, градієнт), картки з hover-підйомом, нові бейджі, без зеленого. Робота: ~3–4 години, торкається більшості секцій. <b>Мінус:</b> тіні й градієнти треба тримати м'якими, інакше буде «2015-й».</div>
+  </div>
+
+  <h1 style="font-size:26px;margin-top:44px">Ще 3 варіанти</h1>
+  <p class="lead">Інші напрями: м'якший і легший (E), жорсткий контрастний (F), теплий (G).</p>
+
+  <!-- E -->
+  <div class="variant vE">
+    <div class="vhead"><div><div class="vtag">Варіант E · легкий і сучасний</div><div class="vname">Мінімал «пігулки»</div>
+      <p class="vdesc">Повністю круглі кнопки, багато повітря, ніяких рамок і тіней. Червоний тільки на головній дії, решта кнопок світло-сірі або просто підкреслене посилання. Картки без обводки, на сірому фоні. Спокійний, «дорогий» вигляд, як у сучасних сервісів.</p></div>
+      <div class="sw"><i style="background:#dc2626"></i><i style="background:#0f172a"></i><i style="background:#f1f5f9"></i><i style="background:#f8fafc"></i></div></div>
+    <div class="grid">
+      <div class="stage"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#">Ціни продажу</a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни продажу і під ключ</button><button class="btn g">Календар аукціонів</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip">Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span></button></div>
+      </div>
+      <div class="stage"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24 лист.</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge">📷 14 лотів з фото</span></div>
+        <div class="sold"><div class="ph"><span>Продано</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px;color:#64748b">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+    <div class="changes"><b>Що міняємо:</b> радіуси кнопок на повні, прибираємо рамки й зелені заливки, другорядні дії стають сірими або текстовими. Робота: ~2 години. <b>Мінус:</b> менше «важкої техніки» в характері, сайт стає м'якшим.</div>
+  </div>
+
+  <!-- F -->
+  <div class="variant vF">
+    <div class="vhead"><div><div class="vtag">Варіант F · сміливий</div><div class="vname">Чорний контраст</div>
+      <p class="vdesc">Чорний + червоний, гострі кути, товсті обводки. Головна кнопка чорна з червоним квадратом-стрілкою. У меню активний пункт підкреслюється товстою лінією. Картки аукціонів з чорною «шапкою»-датою, як квиток або бирка на лоті. Впевнено і по-чоловічому, добре під техніку.</p></div>
+      <div class="sw"><i style="background:#0f172a"></i><i style="background:#dc2626"></i><i style="background:#fff"></i><i style="background:#000"></i></div></div>
+    <div class="grid">
+      <div class="stage"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#">Ціни продажу<sup>●</sup></a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни під ключ</button><button class="btn g">Календар аукціонів</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip"><span class="dot"></span> Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span></button></div>
+      </div>
+      <div class="stage"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24 лист.</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge">14 лотів з фото</span></div>
+        <div class="sold"><div class="ph"><span>Продано</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px;color:#94a3b8">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+    <div class="changes"><b>Що міняємо:</b> головні кнопки стають чорними з червоною стрілкою, кути гостріші, меню з підкресленням, картки з чорною шапкою. Робота: ~3 години. <b>Мінус:</b> дуже контрастно; на телефоні товсті рамки треба робити тоншими.</div>
+  </div>
+
+  <!-- G -->
+  <div class="variant vG">
+    <div class="vhead"><div><div class="vtag">Варіант G · теплий</div><div class="vname">Теплий цегляний</div>
+      <p class="vdesc">Холодний білий + сірий замінюємо на теплий кремовий фон і темно-коричневий графіт. Червоний стає глибшим, цегляним, акцент на «гарячому» — теракотовий замість зеленого. Відчуття надійної сімейної компанії, а не холодного магазину.</p></div>
+      <div class="sw"><i style="background:#b91c1c"></i><i style="background:#1c1917"></i><i style="background:#ea580c"></i><i style="background:#faf8f5"></i></div></div>
+    <div class="grid">
+      <div class="stage"><div class="lbl">Меню · кнопки</div>
+        <div class="nav"><a class="cat" href="#">☰ Каталог</a><a href="#">Спецтехніка</a><a href="#">Аукціони</a><a class="hot" href="#"><span class="dot"></span> Ціни продажу</a></div>
+        <div class="row" style="margin-top:14px"><button class="btn p">Дізнатись ціну <span class="arr">→</span></button><button class="btn s">Ціни продажу і під ключ <span class="arr">→</span></button><button class="btn g">Календар аукціонів</button></div>
+        <div class="row" style="margin-top:14px"><span class="chip">↗ Реальні ціни продажу</span><button class="fab"><span style="font-size:22px">💬</span></button></div>
+      </div>
+      <div class="stage"><div class="lbl">Картки</div><div class="cards">
+        <div class="card"><div class="date">24 лист.</div><div class="ttl">Техніка, панелі і навіси</div><div class="sub">Euro Auctions</div><span class="badge"><span class="dot"></span> 14 лотів з фото</span></div>
+        <div class="sold"><div class="ph"><span>Продано</span></div><div class="sb"><div class="ttl">JCB 3CX 2018</div><div class="sub">Молоток: <span class="price">£24 500</span></div><div class="tk"><span style="font-size:11px;color:#78716c">Під ключ ≈</span> <span class="price">1 420 000 ₴</span></div></div></div>
+      </div></div>
+    </div>
+    <div class="changes"><b>Що міняємо:</b> фон сторінок на кремовий, <code>slate</code> → <code>stone</code>, червоний на темніший, зелений → теракотовий. Робота: ~3–4 години (торкається фону всіх секцій). <b>Мінус:</b> найсильніше змінює загальне відчуття сайту, не тільки кнопки.</div>
+  </div>
+
+  <p class="lead" style="margin-top:8px"><span class="pick">Моя рекомендація: D або F</span>. D — найпомітніший апгрейд без зміни стилю. F — якщо хочеться сміливіше й «під техніку». Можна змішувати: наприклад, кнопки з F, а картки з D.</p>
+</div>
+</body>
+</html>

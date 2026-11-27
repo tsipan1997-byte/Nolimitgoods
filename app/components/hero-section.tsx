@@ -38,13 +38,13 @@ export default function HeroSection() {
       ];
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-slate-50 to-white border-b border-slate-200">
+    <section className="relative overflow-hidden bg-gradient-to-b from-slate-100 to-slate-50 border-b border-slate-200">
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-5 pb-6 lg:pt-12 lg:pb-12 grid lg:grid-cols-[1.1fr_0.9fr] gap-6 lg:gap-10 items-center">
         <div>
           <Link href="/pro-kompaniiu" className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-slate-200 hover:border-red-300 text-xs font-semibold text-slate-700">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-terra-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-terra-500" />
             </span>
             {isUk ? 'NoLimitGoods Ltd · Ковентрі, Велика Британія' : 'NoLimitGoods Ltd · Coventry, UK'}
           </Link>

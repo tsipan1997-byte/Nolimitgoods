@@ -42,11 +42,11 @@ export default function SoldPricesStrip() {
   if (!RESULTS.length) return null;
 
   return (
-    <section id="sold" className="scroll-mt-28 bg-emerald-50/60 border-y border-emerald-100">
+    <section id="sold" className="scroll-mt-28 bg-terra-50/60 border-y border-terra-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold uppercase tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-terra-100 border border-terra-200 text-terra-800 text-xs font-bold uppercase tracking-wide">
               <TrendingUp className="w-4 h-4" /> Реальні ціни продажу
             </div>
             <h2 className="mt-3 text-2xl md:text-4xl font-black leading-tight text-slate-900">За скільки пішла техніка на аукціоні — і скільки це під ключ в Україні</h2>
@@ -58,7 +58,7 @@ export default function SoldPricesStrip() {
               + ПДВ Англії 20% на аукціоні — повертається після експорту техніки, умови обговорюємо з кожним клієнтом індивідуально
             </p>
           </div>
-          <Link href="/rezultaty-aukcioniv" className="hidden md:inline-flex h-12 px-6 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold items-center gap-2 shrink-0">
+          <Link href="/rezultaty-aukcioniv" className="hidden md:inline-flex h-12 px-6 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold items-center gap-2 shrink-0">
             Усі {TOTAL} результатів <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
@@ -71,11 +71,11 @@ export default function SoldPricesStrip() {
               <Link
                 key={r.auction + r.item}
                 href="/rezultaty-aukcioniv"
-                className="snap-start shrink-0 w-[72%] sm:w-auto rounded-2xl border border-slate-200 bg-white overflow-hidden flex flex-col hover:border-emerald-300"
+                className="snap-start shrink-0 w-[72%] sm:w-auto rounded-2xl border border-slate-200 bg-white overflow-hidden flex flex-col hover:border-terra-300"
               >
                 <div className="relative aspect-[4/3] bg-slate-100">
                   <LotPhoto auction={r.auction} item={r.item} src={r.img} alt={`${r.title} ${r.year ?? ''} — продано на аукціоні в Англії`} />
-                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-emerald-600 text-white text-[11px] font-bold">Продано</span>
+                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-900 text-white text-[11px] font-bold">Продано</span>
                 </div>
                 <div className="p-3 flex flex-col flex-1">
                   <h3 className="font-black text-sm md:text-base leading-snug line-clamp-2 text-slate-900">{r.title}</h3>
@@ -88,8 +88,8 @@ export default function SoldPricesStrip() {
                       <div className="font-mono text-lg font-bold leading-tight text-slate-900">£{sp(r.bid)}</div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[11px] font-semibold text-emerald-800">Під ключ ≈</div>
-                      <div className="font-mono text-sm md:text-base font-bold text-emerald-900 whitespace-nowrap">
+                      <div className="text-[11px] font-semibold text-terra-800">Під ключ ≈</div>
+                      <div className="font-mono text-sm md:text-base font-bold text-terra-900 whitespace-nowrap">
                         €{sp(rnd(lo * rates.eur))}–{sp(rnd(hi * rates.eur))}
                       </div>
                       <div className="text-[11px] text-slate-500 font-mono whitespace-nowrap">
@@ -103,7 +103,7 @@ export default function SoldPricesStrip() {
           })}
         </div>
 
-        <Link href="/rezultaty-aukcioniv" className="md:hidden mt-4 h-12 rounded-xl bg-emerald-700 text-white font-bold flex items-center justify-center gap-2">
+        <Link href="/rezultaty-aukcioniv" className="md:hidden mt-4 h-12 rounded-xl bg-slate-900 text-white font-bold flex items-center justify-center gap-2">
           Усі {TOTAL} результатів і ціни під ключ <ArrowRight className="w-4 h-4" />
         </Link>
       </div>

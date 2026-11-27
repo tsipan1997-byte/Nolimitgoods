@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Час збирання: за ним ховаємо аукціони й лоти, торги яких уже завершились (lib/auction-lots.ts)
+  env: { BUILD_TS: String(Date.now()) },
   // Головний домен — nolimitgoods.com. Старий .co.uk постійно (308) перекидає на .com з тим самим шляхом.
   async redirects() {
     return [

@@ -161,7 +161,13 @@ AUCTIONS.push(...EUROPE_AUCTIONS, ZARAGOZA_AUCTION);
 export type CalendarItem = { date: string; until: string; house: string; title: string; place: string; lots: string; onSite: boolean; auction?: string };
 
 // Найближчі аукціони техніки у Британії (місяць уперед)
-export const AUCTION_CALENDAR: CalendarItem[] = [
+// Момент збирання сайту (next.config.js → env.BUILD_TS): однаковий на сервері й у браузері.
+// Сайт перезбирається при кожному оновленні ставок, тож минулі торги й лоти зникають самі.
+const BUILD_TS = Number(process.env.BUILD_TS) || Date.now();
+const BUILD_DAY = new Date(BUILD_TS).toISOString().slice(0, 10);
+const lotOpen = (l: { endsAt: number; live?: boolean }) => (l.live ? l.endsAt + 10 * 3_600_000 : l.endsAt) > BUILD_TS;
+
+const CALENDAR_ALL: CalendarItem[] = [
  {
   "date": "24 лист.",
   "until": "2026-11-24",
@@ -429,6 +435,7 @@ export const AUCTION_CALENDAR: CalendarItem[] = [
   "onSite": false
  }
 ];
+export const AUCTION_CALENDAR: CalendarItem[] = CALENDAR_ALL.filter((c) => c.until >= BUILD_DAY);
 
 // Наша комісія: 2,99% якщо ціна лота до £40 000, 1,99% якщо дорожче.
 // Мінімум за лот — 3 сходинки: лот до £5 000 → £150; до £10 000 → £299; від £10 000 → £799.
@@ -5925,7 +5932,8 @@ const BANNED_AUCTIONS = new Set(AUCTIONS.filter((a) => NO_UKRAINE_EXPORT.has(a.h
 
 export const AUCTION_LOTS: AuctionLot[] = [...BASE_LOTS, ...VEHICLE_LOTS, ...WILSONS_LOTS, ...CHEFFINS_LOTS, ...BRIGHTWELLS_LOTS, ...EUROPE_LOTS, ...ZARAGOZA_LOTS, ...EA_DROMORE_LOTS, ...DEC_UK_LOTS]
   .filter(keepPickup)
-  .filter((l) => !BANNED_AUCTIONS.has(l.auction));
+  .filter((l) => !BANNED_AUCTIONS.has(l.auction))
+  .filter(lotOpen);
 
 // Аукціони, лоти яких є на сайті (для фільтра на сторінці аукціонів)
 export const BUYABLE_AUCTIONS: AuctionInfo[] = AUCTIONS.filter((a) => !BANNED_AUCTIONS.has(a.id) && AUCTION_LOTS.some((l) => l.auction === a.id));

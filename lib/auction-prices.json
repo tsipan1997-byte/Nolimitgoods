@@ -1,5 +1,5 @@
 {
-"updatedAt": "2026-11-27T17:50:29Z",
+"updatedAt": "2026-11-28T11:37:54Z",
 "prices": {
 "rb-nov:438": {
 "bid": 2300,
@@ -1026,8 +1026,8 @@
 "bids": 0
 },
 "rb-agri-dec:#15744133": {
-"bid": 11500,
-"bids": 1
+"bid": 13500,
+"bids": 6
 },
 "rb-agri-dec:#16008365": {
 "bid": 2000,
@@ -1040,6 +1040,70 @@
 "rb-agri-dec:#16023418": {
 "bid": 25000,
 "bids": 1
+},
+"rb-agri-dec:#15940535": {
+"bid": 18000,
+"bids": 3
+},
+"rb-agri-dec:#15940536": {
+"bid": 10000,
+"bids": 1
+},
+"rb-agri-dec:#15927210": {
+"bid": 10000,
+"bids": 1
+},
+"rb-agri-dec:#16276448": {
+"bid": 1000,
+"bids": 1
+},
+"rb-agri-dec:#16158125": {
+"bid": 20500,
+"bids": 7
+},
+"rb-agri-dec:#16136908": {
+"bid": 8750,
+"bids": 1
+},
+"rb-agri-dec:#16000652": {
+"bid": 6750,
+"bids": 1
+},
+"rb-agri-dec:#16136907": {
+"bid": 8250,
+"bids": 1
+},
+"rb-agri-dec:#16277132": {
+"bid": 6750,
+"bids": 1
+},
+"rb-agri-dec:#15879625": {
+"bid": 6000,
+"bids": 1
+},
+"rb-agri-dec:#15457761": {
+"bid": 37000,
+"bids": 1
+},
+"rb-agri-dec:#15457759": {
+"bid": 37000,
+"bids": 1
+},
+"rb-agri-dec:#16023417": {
+"bid": 31000,
+"bids": 16
+},
+"rb-agri-dec:#16023415": {
+"bid": 25000,
+"bids": 1
+},
+"rb-agri-dec:#15776020": {
+"bid": 5750,
+"bids": 7
+},
+"rb-agri-dec:#15776021": {
+"bid": 5750,
+"bids": 5
 }
 }
 }
